@@ -1,0 +1,29 @@
+<template>
+  <div class="wrap">
+    <button
+      class="control"
+      type="button"
+      aria-haspopup="listbox"
+      aria-expanded={isOpen}
+      aria-label="Select State"
+      onclick={toggleOpen}>
+      <span class={valueClass}>{displayValue}</span>
+      <span class="chev" aria-hidden="true"></span>
+    </button>
+
+    <div if:true={isOpen} class="menu" role="listbox">
+      <div class="menuInner">
+        <template for:each={optionList} for:item="opt">
+          <div
+            key={opt.value}
+            class={opt.className}
+            data-value={opt.value}
+            onclick={handleSelect}
+            role="option">
+            {opt.label}
+          </div>
+        </template>
+      </div>
+    </div>
+  </div>
+</template>

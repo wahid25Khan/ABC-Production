@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Package xmlns="http://soap.sforce.com/2006/04/metadata">
+    <!-- Apex -->
+    <types>
+        <members>*</members>
+        <name>ApexClass</name>
+    </types>
+    <types>
+        <members>*</members>
+        <name>ApexComponent</name>
+    </types>
+    <types>
+        <members>*</members>
+        <name>ApexPage</name>
+    </types>
+    <types>
+        <members>*</members>
+        <name>ApexTestSuite</name>
+    </types>
+    <types>
+        <members>*</members>
+        <name>ApexTrigger</name>
+    </types>
+    <!-- UI Components -->
+    <types>
+        <members>*</members>
+        <name>AuraDefinitionBundle</name>
+    </types>
+    <types>
+        <members>*</members>
+        <name>LightningComponentBundle</name>
+    </types>
+    <types>
+        <members>*</members>
+        <name>StaticResource</name>
+    </types>
+    <!-- Flows (Checkout, Pricing, Inventory automation) -->
+    <types>
+        <members>*</members>
+        <name>Flow</name>
+    </types>
+    <types>
+        <members>*</members>
+        <name>FlowDefinition</name>
+    </types>
+    <!-- Custom Objects & Fields (CartItem, OrderItem, QuantityRule, etc.) -->
+    <types>
+        <members>*</members>
+        <name>CustomObject</name>
+    </types>
+    <!-- Custom Metadata (pricing rules, config tables) -->
+    <types>
+        <members>*</members>
+        <name>CustomMetadata</name>
+    </types>
+    <!-- Custom Labels -->
+    <types>
+        <members>*</members>
+        <name>CustomLabels</name>
+    </types>
+    <!-- Permission Sets (Buyer User, Commerce User) -->
+    <types>
+        <members>*</members>
+        <name>PermissionSet</name>
+    </types>
+    <types>
+        <members>*</members>
+        <name>PermissionSetGroup</name>
+    </types>
+    <!-- Named Credentials (external pricing/inventory APIs) -->
+    <types>
+        <members>*</members>
+        <name>NamedCredential</name>
+    </types>
+    <!-- Remote Site Settings -->
+    <types>
+        <members>*</members>
+        <name>RemoteSiteSetting</name>
+    </types>
+    <!-- Connected Apps (Commerce integrations) -->
+    <types>
+        <members>*</members>
+        <name>ConnectedApp</name>
+    </types>
+    <!-- Experience Cloud / Storefront -->
+    <types>
+        <members>*</members>
+        <name>Network</name>
+    </types>
+    <types>
+        <members>*</members>
+        <name>ExperienceBundle</name>
+    </types>
+    <!-- B2B Commerce: Webstore Template & Product Attribute Sets -->
+    <types>
+        <members>*</members>
+        <name>WebStoreTemplate</name>
+    </types>
+    <types>
+        <members>*</members>
+        <name>ProductAttributeSet</name>
+    </types>
+    <version>66.0</version>
+</Package>

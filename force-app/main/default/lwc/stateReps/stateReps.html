@@ -1,0 +1,37 @@
+<template>
+  <section class="wrap">
+    <template if:true={hasState}>
+      <div class="grid">
+        <template for:each={reps} for:item="rep">
+          <div key={rep.key} class="rep">
+            <img
+              class="avatar"
+              src={rep.imageUrl}
+              alt={rep.name}
+              data-statefolder={rep.stateFolder}
+              data-imagebase={rep.imageBase}
+              data-forceshared={rep.forceShared}
+              data-try="0"
+              onerror={handleImgError}
+            />
+            <div class="name">{rep.name}</div>
+            <div class="role">{rep.title}</div>
+
+            <div class="icons">
+              <a class="iconBtn" href={rep.telHref} aria-label="Call">
+                <lightning-icon icon-name="utility:call" size="x-small"></lightning-icon>
+              </a>
+              <a class="iconBtn" href={rep.mailHref} aria-label="Email">
+                <lightning-icon icon-name="utility:email" size="x-small"></lightning-icon>
+              </a>
+            </div>
+          </div>
+        </template>
+      </div>
+    </template>
+
+    <template if:false={hasState}>
+      <div class="empty">Select a State to see representatives.</div>
+    </template>
+  </section>
+</template>

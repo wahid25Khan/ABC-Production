@@ -1,0 +1,70 @@
+<template>
+  <section class="similar-products" aria-live="polite">
+    <template if:true={loading}>
+      <p class="loading">Loading books...</p>
+    </template>
+
+    <template if:true={showProducts}>
+      <div class="heading-row">
+        <div class="heading-line" aria-hidden="true"></div>
+        <h2 class="heading-text">{headingText}</h2>
+        <div class="heading-line" aria-hidden="true"></div>
+      </div>
+
+      <div class="carousel-row">
+        <button
+          class="nav-button"
+          type="button"
+          title="Previous books"
+          aria-label="Previous books"
+          onclick={handlePrev}
+          disabled={disablePrev}>
+          <lightning-icon icon-name="utility:chevronleft" size="small" alternative-text="Previous"></lightning-icon>
+        </button>
+
+        <div class="products-viewport">
+          <div class={productsTrackClass}>
+            <template for:each={products} for:item="product">
+              <article key={product.id} class="product-card">
+                <button
+                  class="image-button"
+                  type="button"
+                  data-pid={product.id}
+                  title={product.name}
+                  onclick={handleClickProduct}>
+                  <div class="image-frame">
+                    <template if:true={product.imageUrl}>
+                      <img class="product-image" src={product.imageUrl} alt={product.name} loading="lazy" />
+                    </template>
+                    <template if:false={product.imageUrl}>
+                      <div class="image-placeholder">No image</div>
+                    </template>
+                  </div>
+                </button>
+
+                <button
+                  class="name-button"
+                  type="button"
+                  data-pid={product.id}
+                  title={product.name}
+                  onclick={handleClickProduct}>
+                  {product.name}
+                </button>
+              </article>
+            </template>
+          </div>
+        </div>
+
+        <button
+          class="nav-button"
+          type="button"
+          title="Next books"
+          aria-label="Next books"
+          onclick={handleNext}
+          disabled={disableNext}>
+          <lightning-icon icon-name="utility:chevronright" size="small" alternative-text="Next"></lightning-icon>
+        </button>
+      </div>
+    </template>
+  </section>
+</template>

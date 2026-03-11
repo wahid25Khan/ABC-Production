@@ -1,0 +1,7 @@
+<design:component>
+    <design:attribute name="defaultState" label="Default State"/>
+    <design:attribute name="refinementKey" label="Refinement Key (Field API Name)"/>
+    <design:attribute name="communityBase" label="Community Base Path"/>
+    <design:attribute name="resultsBasePath" label="Results Base Path"/>
+    <design:attribute name="urlMode" label="URL Mode (compat|short)"/>
+</design:component>

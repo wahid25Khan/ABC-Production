@@ -1,0 +1,52 @@
+<template>
+    <div class="main-wrapper">
+        <h1 class="main-heading">Download catalog</h1>
+        
+        <div class="dropdown-box">
+            <label class="dropdown-label">Which catalog are you looking for?</label>
+            <div class="select-wrapper">
+                <select class="state-select" onchange={handleStateChange}>
+                    <template for:each={stateOptions} for:item="option">
+                        <option key={option.value} value={option.value}>{option.label}</option>
+                    </template>
+                </select>
+            </div>
+        </div>
+
+        <template if:true={showCatalog}>
+            <div class="content-section">
+                <div class="image-box">
+                    <img onclick={openPdf} src={selectedStateData.imageUrl} alt={catalogTitle} class="catalog-image cursor-pointer" />
+                </div>
+                
+                <div class="text-box">
+                    <h2 class="state-title">{catalogTitle}</h2>
+                    <p class="state-desc">{catalogDescription}</p>
+                    <p class="state-desc">Catalog is in PDF format</p>
+                    
+                    <div class="button-wrapper">
+                        <button onclick={openPdf} class="download-btn">
+                            View or download PDF catalog
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </template>
+
+        <div class="instructions-section">
+            <h2 class="inst-heading">How to download a PDF catalog.</h2>
+            <div class="inst-step">
+                <strong>Step 1. Open the Link</strong>
+                <p>Initially, to open the PDF file attached with the link, you need to tap on the link, leading the PDF file to be opened on your respective browser. There might be a chance that you may get an impromptu option to download PDF from the link, which can be easily opened or saved on your computer.</p>
+            </div>
+            <div class="inst-step">
+                <strong>Step 2. Download via Toolbar</strong>
+                <p>With the PDF file opened, you need to simply access the toolbar of your browser present on the upper hand of the screen. You may find the appropriate icon to download the PDF file. However, if you fail to locate the icon, you can right-click on the browser to save the PDF file through the option of "Save as" or "Save Page as".</p>
+            </div>
+            <div class="inst-step">
+                <strong>Step 3. Save the PDF file</strong>
+                <p>With the prompt message on the front, you need to save the PDF by setting its download location and name. Tap on "Save" to download the file successfully.</p>
+            </div>
+        </div>
+    </div>
+</template>

@@ -1,0 +1,70 @@
+<template>
+    <div class="container">
+        <section class="section-wrapper">
+            <h2 class="heading">Sole source letters</h2>
+            <p class="description">
+                Our test prep coursebooks are only available for purchase through American Book Company. 
+                If you need to make adjustments to the sole source letter please contact our Customer Service team at 
+                <a href="tel:18882645877" class="phone-link">1-888-264-5877</a>.
+            </p>
+
+            <div class="grid-container">
+                <template for:each={stateLetters} for:item="state">
+                    <a key={state.id} href={state.url} target="_blank" class="grid-item">
+                        <img src={pdfIcon} alt="PDF Icon" class="file-icon" />
+                        <span class="file-label">{state.name}</span>
+                    </a>
+                </template>
+            </div>
+        </section>
+
+        <div class="divider"></div>
+
+        <section class="section-wrapper">
+            <h2 class="heading">Accessibility</h2>
+            <div class="grid-container single-item">
+                <a href="https://americanbookcompany.com/American-Book-Company-Accessibility-Conformance-Report.pdf" target="_blank" class="grid-item">
+                    <img src={pdfIcon} alt="PDF" class="file-icon" />
+                    <span class="file-label">VPAT</span>
+                </a>
+            </div>
+        </section>
+
+        <div class="divider"></div>
+
+        <section class="section-wrapper">
+            <h2 class="heading">Whitepapers</h2>
+            <div class="grid-container whitepapers-grid">
+                <a href="https://americanbookcompany.com/A-Validation-Study-of-ABC-Final.pdf" target="_blank" class="grid-item">
+                    <img src={pdfIcon} alt="PDF" class="file-icon" />
+                    <span class="file-label">ABC Test Prep Programs Validation Study</span>
+                </a>
+                <a href="https://view.officeapps.live.com/op/view.aspx?src=https%3A%2F%2Famericanbookcompany.com%2FA-Validation-Study-of-ABC-Final.doc&wdOrigin=BROWSELINK" target="_blank" class="grid-item">
+                    <img src={docIcon} alt="DOC" class="file-icon" />
+                    <span class="file-label">ABC Test Prep Programs Validation Study</span>
+                </a>
+                <a href="https://americanbookcompany.com/ABC-ESSA-Level-IV-Report.pdf" target="_blank" class="grid-item">
+                    <img src={pdfIcon} alt="PDF" class="file-icon" />
+                    <span class="file-label">Instructure Report</span>
+                </a>
+            </div>
+        </section>
+
+        <div class="divider"></div>
+
+        <section class="section-wrapper">
+            <h2 class="heading">CyberGlobal</h2>
+            <div class="grid-container whitepapers-grid">
+                <a href="https://americanbookcompany.com/docs/Certificate-of-Security.pdf" target="_blank" class="grid-item">
+                    <img src={pdfIcon} alt="PDF" class="file-icon" />
+                    <span class="file-label">Certificate of Security</span>
+                </a>
+
+                <a href="https://americanbookcompany.com/docs/Security-Assessment-Public-Report.pdf" target="_blank" class="grid-item">
+                    <img src={pdfIcon} alt="PDF" class="file-icon" />
+                    <span class="file-label">Security Assessment Public Report</span>
+                </a>
+            </div>
+        </section>
+    </div>
+</template>

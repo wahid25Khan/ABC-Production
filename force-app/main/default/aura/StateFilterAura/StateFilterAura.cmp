@@ -1,0 +1,55 @@
+<aura:component access="global"
+    implements="flexipage:availableForAllPageTypes,forceCommunity:availableForAllPageTypes">
+
+    <!-- Public configurable attributes -->
+    <aura:attribute name="refinementKey" type="String" default="State__c"/>
+    <aura:attribute name="refinementParam" type="String" default="refinement"/>
+    <aura:attribute name="refinementsParam" type="String" default="refinements"/>
+    <aura:attribute name="facetsParam" type="String" default="facets"/>
+
+    <aura:attribute name="defaultState" type="String" default="Alabama"/>
+
+    <!-- Base paths -->
+    <aura:attribute name="communityBase" type="String" default="/AmericanBookCompany"/>
+    <aura:attribute name="resultsBasePath" type="String" default="/AmericanBookCompany/global-search"/>
+    <aura:attribute name="urlMode" type="String" default="compat"/>
+
+    <!-- Internal state -->
+    <aura:attribute name="selectedValue" type="String" default=""/>
+    <aura:attribute name="isOpen" type="Boolean" default="false"/>
+    <aura:attribute name="optionList" type="Object[]" default="[]"/>
+    <aura:attribute name="storageKey" type="String" default="abc_selected_state"/>
+    <aura:attribute name="handlerKey" type="String" default=""/>
+
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+    <aura:handler name="destroy" value="{!this}" action="{!c.onDestroy}"/>
+
+    <div class="wrap">
+        <button class="control"
+                type="button"
+                aria-haspopup="listbox"
+                aria-expanded="{!v.isOpen}"
+                aria-label="Select State"
+                onclick="{!c.toggleOpen}">
+            <span class="{! empty(v.selectedValue) ? 'value placeholder' : 'value' }">
+                {! empty(v.selectedValue) ? v.selectedValue : 'Select State' }
+            </span>
+            <span class="chev" aria-hidden="true"></span>
+        </button>
+
+        <aura:if isTrue="{!v.isOpen}">
+            <div class="menu" role="listbox">
+                <div class="menuInner">
+                    <aura:iteration items="{!v.optionList}" var="opt">
+                        <div class="{!opt.className}"
+                             data-value="{!opt.value}"
+                             onclick="{!c.handleSelect}"
+                             role="option">
+                            {!opt.label}
+                        </div>
+                    </aura:iteration>
+                </div>
+            </div>
+        </aura:if>
+    </div>
+</aura:component>

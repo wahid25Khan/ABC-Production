@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
+  <apiVersion>62.0</apiVersion>
+  <isExposed>true</isExposed>
+  <targets>
+    <target>lightningCommunity__Page</target>
+    <target>lightningCommunity__Default</target>
+  </targets>
+  <targetConfigs>
+    <targetConfig targets="lightningCommunity__Default">
+
+      <property
+        name="storeName"
+        type="String"
+        label="Store Name"
+        default="AmericanBookCompany" />
+
+      <property
+        name="webStoreId"
+        type="String"
+        label="Web Store ID"
+        default="0ZEam000004dJDNGA2" />
+
+      <property
+        name="maxProducts"
+        type="Integer"
+        label="Max Products (including featured)"
+        default="9"
+        min="1"
+        max="20" />
+
+      <property
+        name="gridColumns"
+        type="Integer"
+        label="Grid Columns"
+        default="4"
+        min="2"
+        max="6" />
+
+      <property
+        name="refinementKey"
+        type="String"
+        label="Refinement Field API Name"
+        default="State__c" />
+
+      <property
+        name="shopAllUrl"
+        type="String"
+        label="Shop All Books URL"
+        default="https://americanbookcompany.my.site.com/AmericanBookCompany/global-search/all" />
+
+      <property
+        name="cartStateOrId"
+        type="String"
+        label="Cart State or Cart ID"
+        description="Use current (recommended), or provide a specific cart ID."
+        default="current" />
+
+    </targetConfig>
+  </targetConfigs>
+</LightningComponentBundle>

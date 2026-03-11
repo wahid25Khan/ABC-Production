@@ -1,0 +1,161 @@
+<template>
+  <section class="featured-state-books" aria-live="polite">
+
+    <template if:true={loading}>
+      <p class="loading-msg">Loading books...</p>
+    </template>
+
+    <template if:true={showProducts}>
+
+      <!-- ── Heading ────────────────────────────────────────────── -->
+      <div class="heading-row">
+        <div class="heading-line" aria-hidden="true"></div>
+        <h2 class="heading-text">{headingText}</h2>
+        <div class="heading-line" aria-hidden="true"></div>
+      </div>
+
+      <!-- ── Shop All button ───────────────────────────────────── -->
+      <div class="shop-all-row">
+        <a
+          href={resolvedShopAllUrl}
+          class="shop-all-btn"
+          onclick={handleShopAll}
+          aria-label="Shop all books">
+          Shop All Books
+        </a>
+      </div>
+
+      <!-- ── Main content: featured + grid ────────────────────── -->
+      <div class="content-layout">
+
+        <!-- Featured product (left) -->
+        <template if:true={featuredProduct}>
+          <div class="featured-col">
+            <article class="featured-card" data-pid={featuredProduct.id}>
+              <div class="featured-badge" aria-label="Featured">Featured</div>
+
+              <div class="featured-image-wrap">
+                <div
+                  class="featured-image-frame clickable-frame"
+                  data-pid={featuredProduct.id}
+                  onclick={handleClickProduct}>
+                  <template if:true={featuredProduct.imageUrl}>
+                    <img
+                      class="featured-image"
+                      src={featuredProduct.imageUrl}
+                      alt={featuredProduct.name}
+                      loading="lazy" />
+                  </template>
+                  <template if:false={featuredProduct.imageUrl}>
+                    <div class="image-placeholder">No image</div>
+                  </template>
+                </div>
+
+                <!-- Hover overlay for featured -->
+                <div class="card-overlay" aria-hidden="true">
+                  <button
+                    class="overlay-btn overlay-btn--look"
+                    type="button"
+                    disabled
+                    tabindex="-1">
+                    Look Inside
+                  </button>
+                  <button
+                    class="overlay-btn overlay-btn--shop"
+                    type="button"
+                    data-pid={featuredProduct.id}
+                    onclick={handleQuickShop}
+                    tabindex="-1">
+                    Quick Shop
+                  </button>
+                </div>
+              </div>
+
+              <button
+                class="featured-name-button"
+                type="button"
+                data-pid={featuredProduct.id}
+                onclick={handleClickProduct}>
+                {featuredProduct.name}
+              </button>
+            </article>
+          </div>
+        </template>
+
+        <!-- Product grid (right) -->
+        <div class={gridClass}>
+          <template for:each={gridProducts} for:item="product">
+            <article key={product.id} class="grid-card">
+
+              <div class="grid-image-wrap">
+                <div
+                  class="image-frame clickable-frame"
+                  data-pid={product.id}
+                  onclick={handleClickProduct}>
+                  <template if:true={product.imageUrl}>
+                    <img
+                      class="product-image"
+                      src={product.imageUrl}
+                      alt={product.name}
+                      loading="lazy" />
+                  </template>
+                  <template if:false={product.imageUrl}>
+                    <div class="image-placeholder">No image</div>
+                  </template>
+                </div>
+
+                <!-- Hover overlay for grid card -->
+                <div class="card-overlay" aria-hidden="true">
+                  <button
+                    class="overlay-btn overlay-btn--look"
+                    type="button"
+                    disabled
+                    tabindex="-1">
+                    Look Inside
+                  </button>
+                  <button
+                    class="overlay-btn overlay-btn--shop"
+                    type="button"
+                    data-pid={product.id}
+                    onclick={handleQuickShop}
+                    tabindex="-1">
+                    Quick Shop
+                  </button>
+                </div>
+              </div>
+
+              <button
+                class="name-button"
+                type="button"
+                data-pid={product.id}
+                onclick={handleClickProduct}>
+                {product.name}
+              </button>
+
+            </article>
+          </template>
+        </div>
+
+      </div><!-- /content-layout -->
+
+    </template><!-- /showProducts -->
+
+    <!-- ── Quick Shop Modal ─────────────────────────────────────── -->
+    <template if:true={isModalOpen}>
+      <c-quick-shop-modal
+        title={modalTitle}
+        isbn={modalIsbn}
+        book-image-url={modalImageUrl}
+        color-price={modalColorPrice}
+        color-price-bulk={modalColorPriceBulk}
+        bw-price={modalBwPrice}
+        bw-price-bulk={modalBwPriceBulk}
+        currency-iso-code={modalCurrencyIsoCode}
+        onaddtocart={handleAddToCart}
+        onviewdetails={handleViewDetails}
+        onclose={handleModalClose}>
+      </c-quick-shop-modal>
+    </template>
+
+  </section>
+</template>

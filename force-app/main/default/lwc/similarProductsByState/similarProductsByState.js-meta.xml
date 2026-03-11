@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
+  <apiVersion>59.0</apiVersion>
+  <isExposed>true</isExposed>
+  <targets>
+    <target>lightningCommunity__Page</target>
+    <target>lightningCommunity__Default</target>
+  </targets>
+  <targetConfigs>
+    <targetConfig targets="lightningCommunity__Default">
+      <property name="storeName" type="String" label="Store Name" default="AmericanBookCompany" />
+      <property name="webStoreId" type="String" label="Web Store Id" default="0ZEam000004dJDNGA2" />
+      <property name="searchTerm" type="String" label="Search Term" default="*" description="Required by some orgs for search/products API. Keep * for all products." />
+      <property name="maxProducts" type="Integer" label="Maximum Products" default="18" min="1" max="30" />
+      <property name="visibleCount" type="Integer" label="Visible Products" default="6" min="1" max="8" />
+      <property name="refinementKey" type="String" label="State Field API Name" default="State__c" />
+    </targetConfig>
+  </targetConfigs>
+</LightningComponentBundle>

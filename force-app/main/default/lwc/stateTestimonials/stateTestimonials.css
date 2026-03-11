@@ -1,0 +1,461 @@
+/* Container Sizing (Desktop vs Mobile) */
+.carousel-wrapper {
+    margin: 0 auto;
+    position: relative;
+    width: 100%;
+}
+@media (min-width: 768px) { .carousel-wrapper { width: 70%; } }
+@media (min-width: 1024px) { .carousel-wrapper { width: 80%; } }
+@media (min-width: 1280px) { .carousel-wrapper { width: 87%; } }
+
+/* Card Styling */
+.card {
+    margin-top: 1.5rem;
+    margin-bottom: 1.5rem;
+    overflow: hidden;
+    border-radius: 1rem;
+    border: 1px solid #e5e7eb; /* gray-300 */
+    padding: 1.5rem;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    background-color: #fff;
+    box-sizing: border-box;
+}
+
+/* Top Section (Video or Text) */
+.top-media-section {
+    height: 12rem; /* h-48 */
+    overflow: hidden;
+    color: #1f2937;
+    font-size: 1rem;
+}
+.video-iframe {
+    width: 100%;
+    height: 100%;
+    border-radius: 0.5rem;
+}
+.quote-text {
+    font-family: lato, sans-serif;
+    color: #1f2937;
+    line-height: 1.5;
+}
+
+/* Bottom Section (Author) */
+.bottom-author-section {
+    display: flex;
+    min-height: 112px;
+    align-items: center;
+    overflow: hidden;
+    padding-top: 1rem;
+}
+
+.logo-container {
+    width: 3rem; /* w-12 */
+    flex: none;
+    overflow: hidden;
+    border-radius: 9999px; /* rounded-full */
+    margin: 0.5rem;
+}
+.logo-img {
+    width: 100%;
+}
+
+.author-details {
+    margin-left: 0.5rem;
+    flex: 1;
+    overflow: hidden;
+    font-family: lato, sans-serif;
+}
+.author-name {
+    font-weight: 600;
+}
+.designation {
+    font-size: 0.875rem;
+    font-weight: 400;
+    white-space: pre;
+}
+.school-name {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+/* The ABC Red Text */
+.red-state-text {
+    color: #e53e3e; /* Adjust this to your exact ABC red hex */
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+/* Swiper overrides if needed */
+:host {
+    --swiper-theme-color: #e53e3e; /* Navigation arrow color */
+}
+
+:host {
+    --swiper-navigation-color: #374151; 
+    --swiper-navigation-size: 20px; 
+}
+
+.swiper-button-next,
+.swiper-button-prev {
+    background-color: #ffffff; /* White background */
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    border: 1px solid #e5e7eb;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: -25px;
+}
+
+.swiper-button-next::after,
+.swiper-button-prev::after {
+    font-weight: 900; 
+}
+
+.swiper-button-prev {
+    left: 5px; 
+}
+
+.swiper-button-next {
+    right: 5px; 
+}
+
+.swiper {
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+.carousel-wrapper {
+    margin: 0 auto;
+    position: relative;
+    width: 100%;
+}
+@media (min-width: 768px) { .carousel-wrapper { width: 70%; } }
+@media (min-width: 1024px) { .carousel-wrapper { width: 80%; } }
+@media (min-width: 1280px) { .carousel-wrapper { width: 87%; } }
+
+.swiper {
+    padding-left: 60px;
+    padding-right: 60px;
+    padding-bottom: 20px;
+    box-sizing: border-box;
+}
+
+.card {
+    margin-top: 1.5rem;
+    margin-bottom: 1rem;
+    overflow: hidden;
+    border-radius: 1rem;
+    border: 1px solid #e5e7eb;
+    padding: 1.25rem;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    background-color: #fff;
+    box-sizing: border-box;
+}
+
+.top-media-section {
+    height: 10rem;
+    overflow: hidden;
+    color: #1f2937;
+    font-size: 1rem;
+}
+.video-iframe {
+    width: 100%;
+    height: 100%;
+    border-radius: 0.5rem;
+}
+.quote-text {
+    font-family: lato, sans-serif;
+    color: #1f2937;
+    line-height: 1.5;
+}
+
+.bottom-author-section {
+    display: flex;
+    min-height: 96px;
+    align-items: center;
+    overflow: hidden;
+    padding-top: 0.75rem;
+}
+
+.logo-container {
+    width: 3rem; /* w-12 */
+    flex: none;
+    overflow: hidden;
+    border-radius: 9999px; /* rounded-full */
+    margin: 0.5rem;
+}
+.logo-img {
+    width: 100%;
+}
+
+.author-details {
+    margin-left: 0.5rem;
+    flex: 1;
+    overflow: hidden;
+    font-family: lato, sans-serif;
+}
+.author-name {
+    font-weight: 600;
+}
+.designation {
+    font-size: 0.875rem;
+    font-weight: 400;
+    white-space: pre;
+}
+.school-name {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+/* The ABC Red Text */
+.red-state-text {
+    color: #e53e3e; /* Adjust this to your exact ABC red hex */
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+/* --- Fix 1: Dynamic Positioning of White Circular Arrows Outside the Card Area --- */
+
+:host {
+    --swiper-navigation-color: #374151; 
+    --swiper-navigation-size: 20px; 
+}
+
+/* White Circular Buttons with Shadow */
+.swiper-button-next,
+.swiper-button-prev {
+    background-color: #ffffff; /* White background */
+    width: 50px; /* Circle width */
+    height: 50px; /* Circle height */
+    border-radius: 50%; /* Complete circle */
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); /* Shadow */
+    border: 1px solid #e5e7eb; /* Light border */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: -25px; /* Vertical centering adjustment */
+}
+
+/* Arrow thickness */
+.swiper-button-next::after,
+.swiper-button-prev::after {
+    font-weight: 900; 
+}
+
+/* Fix 1: Positioning arrows in the 60px side padding area of `.swiper` */
+/* This places them outside the `swiper-wrapper` and cards area. */
+.swiper-button-prev {
+    left: 5px; 
+    cursor: pointer;
+  }
+  
+  .swiper-button-next {
+    right: 5px; 
+    cursor: pointer;
+}
+
+/* --- Author Name (Outer Div) --- */
+.author-name {
+    font-weight: 600; /* Name remains bold for hierarchy */
+    color: #1f2937; /* Lighter name color (gray-800) */
+    white-space: normal; /* Ensure the whole name+designation block can wrap if needed */
+}
+
+/* --- FIX: Designation Style (Lighter, Smaller, Wrapping) --- */
+.designation {
+    font-size: 0.75rem; 
+    font-weight: normal; /* Override bold parent implicitly */
+    color: #6b7280; /* Grey color (gray-500) to make it visually lighter/less prominent */
+    
+    display: inline-block; /* Keep inline flow with name but handle box properties */
+    margin-left: 2px; /* Small gap after name */
+
+    /* Action: FIX TRIMMING/CUTOFF (Remove white-space: pre; and allow normal wrapping) */
+    white-space: normal; /* Key fix: allows text to wrap to the next line if it's too long! */
+    line-height: 1.2; /* Good line height for wrapped text */
+}
+/*==========================================================*/
+/* :host {
+  display: block;
+  width: 100%;
+}
+
+.wrap {
+  width: 100%;
+  padding: 22px 0 8px;
+}
+
+.head {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  margin-bottom: 30px;
+}
+
+.line {
+  flex: 1;
+  height: 1px;
+  background: #b8c2cf;
+}
+
+.title {
+  margin: 0;
+  font-size: 28px;
+  line-height: 1.2;
+  font-weight: 500;
+  color: #16345f;
+  white-space: nowrap;
+}
+
+.carouselWrap {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.viewport {
+  flex: 1;
+  overflow: hidden;
+}
+
+.cards {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.card {
+  min-height: 352px;
+  background: #fff;
+  border: 1px solid #d6dce4;
+  border-radius: 18px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.media {
+  padding: 16px 16px 0;
+}
+
+.frame,
+.nativeVideo,
+.img {
+  width: 100%;
+  height: 210px;
+  border: 0;
+  border-radius: 8px;
+  object-fit: cover;
+  display: block;
+  background: #f4f6f9;
+}
+
+.meta {
+  margin-top: auto;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 18px 18px 22px;
+}
+
+.logoDot {
+  width: 54px;
+  height: 54px;
+  min-width: 54px;
+  border-radius: 999px;
+  background: #18a54a;
+  color: #fff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 14px;
+}
+
+.metaText {
+  min-width: 0;
+}
+
+.name {
+  font-size: 15px;
+  line-height: 1.35;
+  color: #1f2937;
+  word-break: break-word;
+}
+
+.state {
+  margin-top: 4px;
+  font-size: 14px;
+  color: #d72626;
+}
+
+.nav {
+  width: 58px;
+  height: 58px;
+  min-width: 58px;
+  border: 1px solid #d6dce4;
+  border-radius: 999px;
+  background: #fff;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+  color: #334155;
+  cursor: pointer;
+  font-size: 40px;
+  line-height: 1;
+}
+
+.nav:hover {
+  background: #f8fafc;
+}
+
+.empty {
+  text-align: center;
+  color: #5f6368;
+  font-size: 15px;
+  padding: 26px 0;
+}
+
+@media (max-width: 1099px) {
+  .cards {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .title {
+    font-size: 24px;
+  }
+}
+
+@media (max-width: 767px) {
+  .cards {
+    grid-template-columns: 1fr;
+  }
+
+  .title {
+    font-size: 20px;
+    white-space: normal;
+    text-align: center;
+  }
+
+  .head {
+    gap: 12px;
+    margin-bottom: 18px;
+  }
+
+  .nav {
+    width: 46px;
+    height: 46px;
+    min-width: 46px;
+    font-size: 32px;
+  }
+
+  .frame,
+  .nativeVideo,
+  .img {
+    height: 190px;
+  }
+} */

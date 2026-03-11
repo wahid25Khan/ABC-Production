@@ -1,0 +1,195 @@
+<template>
+        <!-- <template if:true={isOpen}> -->
+        <section
+            class="slds-modal slds-fade-in-open"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="modalHeading"
+            tabindex="-1"
+        >
+            <div class="slds-modal__container modal-container">
+                <!-- Header -->
+                <header class="modal-header">
+                    <!-- <div class="header-text">
+                        <h2 id="modalHeading" class="title">{title}</h2>
+                        <div class="subtitle">{isbn}</div>
+                    </div> -->
+
+                    <button class="close-btn" type="button" onclick={handleClose} aria-label="Close">
+                        <lightning-icon icon-name="utility:close" size="small"></lightning-icon>
+                    </button>
+                </header>
+
+                <!-- Body -->
+                <div class="modal-body">
+                    <div class="content-grid">
+                        <!-- Left: Cover -->
+                        <div class="left-col">
+                            <div class="cover-frame">
+                                <template if:true={bookImageUrl}>
+                                    <img src={bookImageUrl} alt="Book cover" class="cover-img" />
+                                </template>
+                                <template if:false={bookImageUrl}>
+                                    <div class="cover-placeholder">
+                                        <lightning-icon icon-name="utility:image" size="large"></lightning-icon>
+                                        <div class="ph-text">Book Cover</div>
+                                    </div>
+                                </template>
+                            </div>
+                        </div>
+
+                        <!-- Right: Details -->
+                        <div class="right-col">
+                            <div class="header-text">
+                        <h2 id="modalHeading" class="title">{title}</h2>
+                        <div class="subtitle">{isbn}</div>
+                    </div>
+                    <div class="divider"></div>
+                            <!-- Tabs -->
+                            <div class="plan-toggle" role="tablist" aria-label="Format Options">
+                                <button
+                                    class={planClassColor}
+                                    type="button"
+                                    onclick={selectColorPlan}
+                                    role="tab"
+                                    aria-selected={isColorSelected}
+                                >
+                                    Color Print + Digital
+                                </button>
+
+                                <button
+                                    class={planClassBw}
+                                    type="button"
+                                    onclick={selectBwPlan}
+                                    role="tab"
+                                    aria-selected={isBwSelected}
+                                >
+                                    B&amp;W Print + Digital
+                                </button>
+
+                               
+                            </div>
+
+                            
+
+                            <!-- Pricing + Features -->
+                            <div class="row-split">
+                                <!-- Unit price -->
+                                <div class="price-card">
+                                    <div class="unit-price-display">
+                                        <span class="unit-price-label">Unit Price</span>
+                                        <span class="unit-price-value">{formattedUnitPrice}</span>
+                                    </div>
+                                </div>
+
+                                <!-- Features (exact layout like image) -->
+                                <div class="feature-cols">
+                                    <div class="feature-col">
+                                        <template for:each={featuresLeft} for:item="f">
+                                            <div key={f} class="feature-item">
+                                                <lightning-icon
+                                                    icon-name="utility:check"
+                                                    size="x-small"
+                                                    class="check-icn"
+                                                ></lightning-icon>
+                                                <span>{f}</span>
+                                            </div>
+                                        </template>
+                                    </div>
+
+                                    <div class="feature-col right">
+                                        <template for:each={featuresRight} for:item="f">
+                                            <div key={f} class="feature-item">
+                                                <lightning-icon
+                                                    icon-name="utility:check"
+                                                    size="x-small"
+                                                    class="check-icn"
+                                                ></lightning-icon>
+                                                <span>{f}</span>
+                                            </div>
+                                        </template>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Action strip -->
+                            <div class="action-strip">
+                                <div class="btns">
+                                  <div>
+                                    <div class="qty-label">Qty (min {minQty}, max {maxQty})</div>
+                                    <input type="number"
+                                        value={quantity}
+                                        min={minQty}
+                                        max={maxQty}
+                                        step={incrementQty}
+                                        onchange={handleQtyChange}
+                                        class="qty-input"
+                                    ></input>
+                                    <div class="order-total-line">Order Total: <strong>{totalPrice}</strong></div>
+                                    </div>
+                                    <div style="padding-top: 12px;">
+                                    <button 
+                                        class="btn-add"
+                                        onclick={handleAddToCart}>
+                                            Add to Cart
+                                    </button>
+                                    </div>
+                                    <div style="padding-top: 12px;">
+                                    <button 
+                                        class="btn-trial"
+                                        onclick={handleTrial}>
+                                            FREE Two-Week Trial!
+                                    </button>
+                                    </div>
+                                    <button
+                                        class="heart-btn"
+                                        type="button"
+                                        title="Save to favorites"
+                                        aria-label="Save to favorites"
+                                        onclick={toggleFavorite}>
+                                        <lightning-icon icon-name={heartIcon} size="small"></lightning-icon>
+                                    </button>
+                                </div>
+
+                                 <!-- <div class="btns">
+                                   <div>
+                                    <div class="qty-label">Quantity (min {minQty})</div>
+                                    <lightning-input
+                                        type="number"
+                                        variant="label-hidden"
+                                        value={quantity}
+                                        min={minQty}
+                                        step="1"
+                                        onchange={handleQtyChange}
+                                        class="qty-input"
+                                    ></lightning-input>
+                                    </div>
+                                    <button 
+                                        class="btn-add"
+                                        onclick={handleAddToCart}>
+                                            Add to Cart
+                                    </button>
+                                    <button 
+                                        class="btn-trial"
+                                        onclick={handleTrial}>
+                                            FREE Two-Week Trial!
+                                    </button>
+                                </div> -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Bottom full-width button -->
+                    <div class="footer-cta">
+                        <button class="details-btn" type="button" onclick={handleViewDetails}>
+                            See Full Product Details
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Backdrop -->
+        <div class="slds-backdrop slds-backdrop_open" onclick={handleBackdropClick}></div>
+    <!-- </template> -->
+</template>

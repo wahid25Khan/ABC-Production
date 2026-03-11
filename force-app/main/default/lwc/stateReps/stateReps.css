@@ -1,0 +1,79 @@
+:host {
+  display: block;
+  width: 100%;
+}
+
+.wrap {
+  width: 100%;
+  padding: 0;
+  margin: 0;
+}
+
+.grid {
+  width: 100%;
+  max-width: 760px;         /* keeps it like the 2nd image */
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-evenly;
+  align-items: flex-start;
+  gap: 40px;
+  flex-wrap: wrap;
+}
+
+.rep {
+  text-align: center;
+  width: 200px;
+}
+
+.avatar {
+  width: 92px;
+  height: 92px;
+  border-radius: 999px;
+  object-fit: cover;
+  display: block;
+  margin: 0 auto 12px auto;
+}
+
+.name {
+  font-weight: 500;
+  font-size: 16px;
+  margin: 0 0 6px 0;
+  color: #111;
+}
+
+.role {
+  font-size: 13px;
+  color: #d11a1a;
+  line-height: 1.25;
+  min-height: 34px;
+  margin: 0;
+}
+
+.icons {
+  margin-top: 10px;
+  display: flex;
+  justify-content: center;
+  gap: 14px;
+}
+
+/* icons without circles */
+.iconBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  border: none;
+  background: transparent;
+  padding: 0;
+  color: #000;
+}
+
+.iconBtn:hover {
+  opacity: 0.75;
+}
+
+.empty {
+  color: #5f6368;
+  font-size: 14px;
+  text-align: center;
+}
