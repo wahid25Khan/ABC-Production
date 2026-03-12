@@ -87,8 +87,8 @@ export default class CatalogDownloader extends LightningElement {
 
     // Open PDF in new tab
     openPdf() {
-        if (this.selectedStateData && this.selectedStateData.pdfUrl) {
-            window.open(this.selectedStateData.pdfUrl, '_blank');
+        if (this.selectedStateData?.pdfUrl) {
+            globalThis.open(this.selectedStateData.pdfUrl, '_blank');
         }
     }
 }

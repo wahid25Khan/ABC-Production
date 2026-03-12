@@ -84,7 +84,7 @@ export default class SimilarProductsByState extends LightningElement {
       const fetchedProducts = await this.fetchProductsByState(this.selectedState);
       this.products = fetchedProducts
         .map((item) => this.normalizeProduct(item))
-        .filter((item) => Boolean(item))
+        .filter(Boolean)
         .filter((item) => !this.isCurrentProduct(item))
         .slice(0, this.normalizedMaxProducts);
 
@@ -92,6 +92,7 @@ export default class SimilarProductsByState extends LightningElement {
       this.currentIndex = 0;
       this.scrollToCurrentIndex('auto');
     } catch (error) {
+      console.debug('initialize failed', error);
       this.resetProducts();
     } finally {
       this.loading = false;
@@ -127,6 +128,7 @@ export default class SimilarProductsByState extends LightningElement {
       const data = await response.json();
       return this.extractProductList(data);
     } catch (e) {
+      console.debug('fetchProductsByState failed', e);
       return [];
     }
   }
@@ -183,18 +185,19 @@ export default class SimilarProductsByState extends LightningElement {
 
   readStateFromStorage() {
     try {
-      return (window.localStorage.getItem(STATE_STORAGE_KEY) || '').trim();
+      return (globalThis.localStorage.getItem(STATE_STORAGE_KEY) || '').trim();
     } catch (e) {
+      console.debug('readStateFromStorage failed', e);
       return '';
     }
   }
 
   getStateFromPath() {
-    if (typeof window === 'undefined' || !window.location || !window.location.pathname) {
+    if (typeof globalThis === 'undefined' || !globalThis.location?.pathname) {
       return '';
     }
 
-    const path = window.location.pathname;
+    const path = globalThis.location.pathname;
     const marker = '/global-search/';
     const markerIndex = path.indexOf(marker);
 
@@ -212,28 +215,29 @@ export default class SimilarProductsByState extends LightningElement {
     try {
       return decodeURIComponent(firstSegment).trim();
     } catch (e) {
+      console.debug('decodeURIComponent failed', e);
       return firstSegment.trim();
     }
   }
 
   getCurrentProductId() {
-    if (typeof window === 'undefined' || !window.location || !window.location.href) {
+    if (typeof globalThis === 'undefined' || !globalThis.location?.href) {
       return '';
     }
 
-    const fromQuery = new URLSearchParams(window.location.search || '').get('pid');
+    const fromQuery = new URLSearchParams(globalThis.location.search || '').get('pid');
     if (fromQuery) {
       return fromQuery;
     }
 
-    const fullUrl = window.location.href;
-    const sfProductId = fullUrl.match(PRODUCT_ID_PATTERN);
-    if (sfProductId && sfProductId[0]) {
+    const fullUrl = globalThis.location.href;
+    const sfProductId = PRODUCT_ID_PATTERN.exec(fullUrl);
+    if (sfProductId?.[0]) {
       return sfProductId[0];
     }
 
-    const parts = (window.location.pathname || '').split('/').filter((segment) => Boolean(segment));
-    const lastSegment = parts.length ? decodeURIComponent(parts[parts.length - 1]) : '';
+    const parts = (globalThis.location.pathname || '').split('/').filter(Boolean);
+    const lastSegment = parts.length ? decodeURIComponent(parts.at(-1)) : '';
     return PRODUCT_ID_PATTERN.test(lastSegment) ? lastSegment : '';
   }
 
@@ -258,7 +262,7 @@ export default class SimilarProductsByState extends LightningElement {
 
   isCurrentProduct(product) {
     const currentId = String(this.currentProductId || '').trim().toLowerCase();
-    const productId = String(product && product.id ? product.id : '').trim().toLowerCase();
+    const productId = String(product?.id ?? '').trim().toLowerCase();
 
     if (!currentId || !productId) {
       return false;
@@ -268,9 +272,18 @@ export default class SimilarProductsByState extends LightningElement {
   }
 
   resolveProductImageUrl(item) {
+    const directUrl = this.findDirectImageUrl(item);
+    if (directUrl) {
+      return directUrl;
+    }
+
+    return this.findMediaGroupImageUrl(item);
+  }
+
+  findDirectImageUrl(item) {
     const directCandidates = [
-      item.defaultImage && item.defaultImage.url,
-      item.image && item.image.url,
+      item.defaultImage?.url,
+      item.image?.url,
       item.imageUrl
     ];
 
@@ -280,11 +293,15 @@ export default class SimilarProductsByState extends LightningElement {
       }
     }
 
+    return '';
+  }
+
+  findMediaGroupImageUrl(item) {
     const mediaGroups = Array.isArray(item.mediaGroups) ? item.mediaGroups : [];
     for (const group of mediaGroups) {
       const mediaItems = group && Array.isArray(group.mediaItems) ? group.mediaItems : [];
       for (const media of mediaItems) {
-        const url = media && (media.url || (media.image && media.image.url));
+        const url = media && (media.url || media.image?.url);
         if (typeof url === 'string' && url.trim()) {
           return url.trim();
         }
@@ -298,8 +315,8 @@ export default class SimilarProductsByState extends LightningElement {
     const nameSource = product.urlName || product.name || 'detail';
     const recordName = String(nameSource)
       .toLowerCase()
-      .replace(/[^a-z0-9]+/g, '-')
-      .replace(/^-+|-+$/g, '');
+      .replaceAll(/[^a-z0-9]+/g, '-')
+      .replaceAll(/^-+|-+$/g, '');
 
     return `/${this.storeName || DEFAULT_STORE_NAME}/product/${recordName || 'detail'}/${product.id}`;
   }
@@ -315,7 +332,7 @@ export default class SimilarProductsByState extends LightningElement {
       return;
     }
 
-    window.location.href = this.buildProductDetailPath(product);
+    globalThis.location.href = this.buildProductDetailPath(product);
   }
 
   handlePrev() {
@@ -338,7 +355,7 @@ export default class SimilarProductsByState extends LightningElement {
   }
 
   scrollToCurrentIndex(behavior = 'smooth') {
-    window.requestAnimationFrame(() => {
+    globalThis.requestAnimationFrame(() => {
       const viewport = this.template.querySelector('.products-viewport');
       const track = this.template.querySelector('.products-track');
       const firstCard = this.template.querySelector('.product-card');
@@ -347,7 +364,7 @@ export default class SimilarProductsByState extends LightningElement {
         return;
       }
 
-      const style = window.getComputedStyle(track);
+      const style = globalThis.getComputedStyle(track);
       const gapValue = style.columnGap || style.gap || '0';
       const gap = Number.parseFloat(gapValue) || 0;
       const cardWidth = firstCard.getBoundingClientRect().width;

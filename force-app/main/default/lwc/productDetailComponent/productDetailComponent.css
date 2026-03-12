@@ -59,7 +59,6 @@
 .title {
   margin: 0;
   color: #1f2937;
-  /* font-size: clamp(2rem, 2.8vw, 3rem); */
   font-size: 1.875rem;
   font-weight: 800;
   line-height: 1.08;

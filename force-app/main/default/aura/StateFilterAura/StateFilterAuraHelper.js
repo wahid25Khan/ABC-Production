@@ -10,54 +10,63 @@
     ],
 
     init: function (component) {
-        var self = this;
+        const current = new URL(globalThis.location.href);
 
-        var current = new URL(window.location.href);
+        const urlSelected = this.getSelectedFromUrl(component, current);
+        let stored = "";
+        try {
+            stored = globalThis.localStorage.getItem(component.get("v.storageKey")) || "";
+        } catch (err) {
+            console.debug("localStorage unavailable", err);
+        }
 
-        var urlSelected = self.getSelectedFromUrl(component, current);
-        var stored = "";
-        try { stored = window.localStorage.getItem(component.get("v.storageKey")) || ""; } catch (e) {}
-
-        var selected = urlSelected || stored || component.get("v.defaultState") || "";
+        const selected = urlSelected || stored || component.get("v.defaultState") || "";
         component.set("v.selectedValue", selected);
 
-        self.buildOptionList(component);
+        this.buildOptionList(component);
 
-        // ✅ CLEAN URL if query params exist (refinements/refinement/facets etc) but keep same path /global-search/State
-        self.cleanUrlIfNeeded(component, selected, current);
+        // Clean URL if query params exist (refinements/refinement/facets etc) but keep same path /global-search/State
+        this.cleanUrlIfNeeded(component, selected, current);
 
-        // ✅ Auto-apply default ONLY on results "all" page
-        if (self.isResultsAllPage(component, current) && !urlSelected && selected) {
-            self.applyToUrl(component, selected, "results");
+        // Auto-apply default ONLY on results "all" page
+        if (this.isResultsAllPage(component, current) && !urlSelected && selected) {
+            this.applyToUrl(component, selected, "results");
             // page will navigate; next load will clean URL
         }
 
         // Outside click close
-        var handlerKey = "abc_statefilter_" + component.getGlobalId();
+        const handlerKey = "abc_statefilter_" + component.getGlobalId();
         component.set("v.handlerKey", handlerKey);
 
-        window[handlerKey] = function (evt) {
+        globalThis[handlerKey] = function (evt) {
             try {
-                var root = component.getElement();
+                const root = component.getElement();
                 if (root && !root.contains(evt.target)) {
                     component.set("v.isOpen", false);
                 }
-            } catch (e) {}
+            } catch (err) {
+                console.debug("outside click handler error", err);
+            }
         };
-        document.addEventListener("click", window[handlerKey]);
+        document.addEventListener("click", globalThis[handlerKey]);
     },
 
     cleanup: function (component) {
-        var handlerKey = component.get("v.handlerKey");
-        if (handlerKey && window[handlerKey]) {
-            document.removeEventListener("click", window[handlerKey]);
-            try { delete window[handlerKey]; } catch (e) { window[handlerKey] = null; }
+        const handlerKey = component.get("v.handlerKey");
+        if (handlerKey && globalThis[handlerKey]) {
+            document.removeEventListener("click", globalThis[handlerKey]);
+            try {
+                delete globalThis[handlerKey];
+            } catch (deleteErr) {
+                console.debug("handler cleanup fallback", deleteErr);
+                globalThis[handlerKey] = null;
+            }
         }
     },
 
     buildOptionList: function (component) {
-        var selected = component.get("v.selectedValue");
-        var list = this.states.map(function (s) {
+        const selected = component.get("v.selectedValue");
+        const list = this.states.map(function (s) {
             return {
                 label: s,
                 value: s,
@@ -68,7 +77,7 @@
     },
 
     applySelection: function (component, val) {
-        var current = new URL(window.location.href);
+        const current = new URL(globalThis.location.href);
 
         // Home => optional URL update, but typically results won't run here
         if (this.isHomePage(component, current)) {
@@ -88,27 +97,27 @@
 
     // ---------- page detection ----------
     isHomePage: function (component, urlObj) {
-        var base = component.get("v.communityBase");
-        var p = urlObj.pathname;
+        const base = component.get("v.communityBase");
+        const p = urlObj.pathname;
         return p === base || p === (base + "/");
     },
 
-    // LWC me "/global-search/all" check tha. Yahan same:
     isResultsAllPage: function (component, urlObj) {
-        var base = component.get("v.resultsBasePath");
-        return urlObj.pathname.indexOf(base + "/all") !== -1;
+        const base = component.get("v.resultsBasePath");
+        return urlObj.pathname.includes(base + "/all");
     },
 
     // ---------- helpers ----------
     decodeDeep: function (str) {
         if (!str) return "";
-        var out = str;
-        for (var i = 0; i < 3; i++) {
+        let out = str;
+        for (let i = 0; i < 3; i++) {
             try {
-                var dec = decodeURIComponent(out);
+                const dec = decodeURIComponent(out);
                 if (dec === out) break;
                 out = dec;
-            } catch (e) {
+            } catch (decodeErr) {
+                console.debug("decodeDeep reached limit", decodeErr);
                 break;
             }
         }
@@ -117,16 +126,16 @@
 
     getSelectedFromUrl: function (component, urlObj) {
         try {
-            var refinementsParam = component.get("v.refinementsParam");
-            var refinementParam = component.get("v.refinementParam");
-            var refinementKey = component.get("v.refinementKey");
+            const refinementsParam = component.get("v.refinementsParam");
+            const refinementParam = component.get("v.refinementParam");
+            const refinementKey = component.get("v.refinementKey");
 
-            var refinementsRaw = urlObj.searchParams.get(refinementsParam);
+            const refinementsRaw = urlObj.searchParams.get(refinementsParam);
             if (refinementsRaw) {
-                var jsonStr = this.decodeDeep(refinementsRaw);
-                var list = JSON.parse(jsonStr);
+                const jsonStr = this.decodeDeep(refinementsRaw);
+                const list = JSON.parse(jsonStr);
 
-                var stateEntry = Array.isArray(list)
+                const stateEntry = Array.isArray(list)
                     ? list.find(function (r) { return r && r.nameOrId === refinementKey; })
                     : null;
 
@@ -135,27 +144,28 @@
                 }
             }
 
-            var singleRef = urlObj.searchParams.get(refinementParam);
+            const singleRef = urlObj.searchParams.get(refinementParam);
             if (singleRef) {
-                var decoded = this.decodeDeep(singleRef);
-                var prefix = refinementKey + ":";
+                const decoded = this.decodeDeep(singleRef);
+                const prefix = refinementKey + ":";
                 if (decoded.indexOf(prefix) === 0) return decoded.substring(prefix.length);
             }
-        } catch (e) {}
+        } catch (err) {
+            console.debug("getSelectedFromUrl parse error", err);
+        }
         return "";
     },
 
-    // ✅ This is the MAIN change for clean URL
     cleanUrlIfNeeded: function (component, stateVal, urlObj) {
         try {
             if (!stateVal) return;
 
-            var refinementParam = component.get("v.refinementParam");
-            var refinementsParam = component.get("v.refinementsParam");
-            var facetsParam = component.get("v.facetsParam");
-            var refinementKey = component.get("v.refinementKey");
+            const refinementParam = component.get("v.refinementParam");
+            const refinementsParam = component.get("v.refinementsParam");
+            const facetsParam = component.get("v.facetsParam");
+            const refinementKey = component.get("v.refinementKey");
 
-            var hasJunk =
+            const hasJunk =
                 urlObj.searchParams.has(refinementParam) ||
                 urlObj.searchParams.has(refinementsParam) ||
                 urlObj.searchParams.has(facetsParam) ||
@@ -168,27 +178,29 @@
 
             if (!hasJunk) return;
 
-            var base = component.get("v.resultsBasePath"); // /AmericanBookCompany/global-search
+            const base = component.get("v.resultsBasePath"); // /AmericanBookCompany/global-search
 
             // If already on /global-search/<something> keep it, just drop query
             // Otherwise set to /global-search/<state>
-            var desiredPath = base + "/" + encodeURIComponent(stateVal);
+            const desiredPath = base + "/" + encodeURIComponent(stateVal);
 
             // replaceState => no reload, just URL clean
-            window.history.replaceState({}, "", desiredPath);
-        } catch (e) {}
+            globalThis.history.replaceState({}, "", desiredPath);
+        } catch (err) {
+            console.debug("cleanUrlIfNeeded error", err);
+        }
     },
 
     // kind: 'home' | 'results'
     applyToUrl: function (component, stateVal, kind) {
-        var current = new URL(window.location.href);
-        var params = new URLSearchParams(current.search);
+        const current = new URL(globalThis.location.href);
+        const params = new URLSearchParams(current.search);
 
-        var refinementKey = component.get("v.refinementKey");
-        var refinementParam = component.get("v.refinementParam");
-        var refinementsParam = component.get("v.refinementsParam");
-        var facetsParam = component.get("v.facetsParam");
-        var urlMode = component.get("v.urlMode");
+        const refinementKey = component.get("v.refinementKey");
+        const refinementParam = component.get("v.refinementParam");
+        const refinementsParam = component.get("v.refinementsParam");
+        const facetsParam = component.get("v.facetsParam");
+        const urlMode = component.get("v.urlMode");
 
         // reset paging
         params.set("page", "1");
@@ -202,7 +214,7 @@
 
         // compat => refinements param (double encoding required by commerce)
         if (urlMode === "compat") {
-            var refinementsList = [{
+            const refinementsList = [{
                 nameOrId: refinementKey,
                 type: "DistinctValue",
                 attributeType: "Custom",
@@ -213,16 +225,16 @@
             params.delete(refinementsParam);
         }
 
-        var targetPath;
+        let targetPath;
         if (kind === "home") {
             targetPath = current.pathname;
         } else {
-            // ✅ IMPORTANT: results path now becomes /global-search/<State>
+            // results path now becomes /global-search/<State>
             // so user gets clean URL after we clean query on load
             targetPath = component.get("v.resultsBasePath") + "/" + encodeURIComponent(stateVal);
         }
 
-        var newUrl = targetPath + (params.toString() ? ("?" + params.toString()) : "");
-        window.location.assign(newUrl);
+        const newUrl = targetPath + (params.toString() ? ("?" + params.toString()) : "");
+        globalThis.location.assign(newUrl);
     }
 });
