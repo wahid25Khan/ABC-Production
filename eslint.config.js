@@ -21,6 +21,14 @@ module.exports = defineConfig([
         extends: [lwcConfig]
     },
 
+    // Allow async operations (setInterval, setTimeout, requestAnimationFrame) where explicitly needed
+    {
+        files: ['**/lwc/customResults/*.js'],
+        rules: {
+            '@lwc/lwc/no-async-operation': 'off'
+        }
+    },
+
     // LWC configuration with override for LWC test files
     {
         files: ['**/lwc/**/*.test.js'],

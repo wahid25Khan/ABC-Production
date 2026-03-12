@@ -30,10 +30,6 @@
           </div>
           <p class="results-summary">{resultsSummary}</p>
         </div>
-        <!-- <lightning-input class="search-control" type="search" variant="label-hidden" placeholder="Search..."
-          value={searchText} onkeydown={handleSearchKeydown} oninput={handleSearchInput} onchange={handleSearchInput}>
-        </lightning-input> -->
-
         <div style="display: block; width: 40%;">
           <lightning-combobox variant="label-hidden" value={selectedState} options={stateOptions}
             onchange={handleStateChange}>
@@ -42,8 +38,6 @@
         </div>
       </div>
 <!-- state-control -->
-      <!-- <p class="results-summary">{resultsSummary}</p> -->
-
       <div class="right-controls">
         <lightning-combobox class="sort-control" variant="label-hidden" value={sortValue} options={sortOptions}
           onchange={handleSortChange}>
@@ -53,16 +47,21 @@
           options={pageSizeOptionsList} onchange={handlePageSizeChange}>
         </lightning-combobox>
 
-        <div class="view-toggle" role="group" aria-label="View mode">
-          <button type="button" class="view-btn" data-mode="grid" aria-pressed={isGridView} onclick={handleViewMode}
-            title="Grid view">
-            ⊞
-          </button>
-          <button type="button" class="view-btn" data-mode="list" aria-pressed={isListView} onclick={handleViewMode}
-            title="List view">
-            ☰
-          </button>
-        </div>
+        <fieldset class="view-toggle">
+          <legend class="slds-assistive-text">View mode</legend>
+          <template if:true={isGridView}>
+            <button type="button" class="view-btn" data-mode="grid" aria-pressed="true" onclick={handleViewMode} title="Grid view">⊞</button>
+          </template>
+          <template if:false={isGridView}>
+            <button type="button" class="view-btn" data-mode="grid" aria-pressed="false" onclick={handleViewMode} title="Grid view">⊞</button>
+          </template>
+          <template if:true={isListView}>
+            <button type="button" class="view-btn" data-mode="list" aria-pressed="true" onclick={handleViewMode} title="List view">☰</button>
+          </template>
+          <template if:false={isListView}>
+            <button type="button" class="view-btn" data-mode="list" aria-pressed="false" onclick={handleViewMode} title="List view">☰</button>
+          </template>
+        </fieldset>
       </div>
     </div>
 
@@ -70,11 +69,20 @@
       <aside class="filters-column">
         <template for:each={filterGroups} for:item="group">
           <section key={group.key} class="filter-group">
-            <button type="button" class="filter-header" data-field={group.key} onclick={handleToggleGroup}
-              aria-expanded={group.expanded}>
-              <span>{group.label}</span>
-              <span class="toggle-symbol">{group.toggleSymbol}</span>
-            </button>
+            <template if:true={group.expanded}>
+              <button type="button" class="filter-header" data-field={group.key} onclick={handleToggleGroup}
+                aria-expanded="true">
+                <span>{group.label}</span>
+                <span class="toggle-symbol">{group.toggleSymbol}</span>
+              </button>
+            </template>
+            <template if:false={group.expanded}>
+              <button type="button" class="filter-header" data-field={group.key} onclick={handleToggleGroup}
+                aria-expanded="false">
+                <span>{group.label}</span>
+                <span class="toggle-symbol">{group.toggleSymbol}</span>
+              </button>
+            </template>
 
             <div if:false={group.collapsed} class="filter-options">
               <template if:true={group.showEmpty}>

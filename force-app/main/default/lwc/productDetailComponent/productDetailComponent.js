@@ -95,6 +95,14 @@ export default class ProductDetailComponent extends LightningElement {
     return this.selectedPlan === PLAN.BW;
   }
 
+  get ariaColorSelected() {
+    return this.isColorSelected ? 'true' : 'false';
+  }
+
+  get ariaBwSelected() {
+    return this.isBwSelected ? 'true' : 'false';
+  }
+
   get planClassColor() {
     return `plan-option ${this.isColorSelected ? 'active' : ''}`;
   }
@@ -167,7 +175,7 @@ export default class ProductDetailComponent extends LightningElement {
       const pricingMap = await this.fetchPricingForProducts([currentProductId]);
       this.product = this.applyPricing(baseProduct, pricingMap.get(currentProductId));
       this.quantity = this.minQty;
-    } catch (_error) {
+    } catch {
       this.product = null;
       this.errorMessage = 'Unable to load product details.';
     } finally {
@@ -181,11 +189,11 @@ export default class ProductDetailComponent extends LightningElement {
       return configured;
     }
 
-    if (typeof window === 'undefined' || !window.location) {
+    if (!globalThis.window?.location) {
       return '';
     }
 
-    const queryParams = new URLSearchParams(window.location.search || '');
+    const queryParams = new URLSearchParams(globalThis.window.location.search || '');
     const fromQuery =
       queryParams.get('pid') ||
       queryParams.get('productId') ||
@@ -195,14 +203,14 @@ export default class ProductDetailComponent extends LightningElement {
       return String(fromQuery).trim();
     }
 
-    const fullUrl = window.location.href || '';
-    const sfProductId = fullUrl.match(PRODUCT_ID_PATTERN);
-    if (sfProductId && sfProductId[0]) {
+    const fullUrl = globalThis.window.location.href || '';
+    const sfProductId = PRODUCT_ID_PATTERN.exec(fullUrl);
+    if (sfProductId?.[0]) {
       return sfProductId[0];
     }
 
-    const parts = (window.location.pathname || '').split('/').filter((segment) => Boolean(segment));
-    const lastSegment = parts.length ? decodeURIComponent(parts[parts.length - 1]) : '';
+    const parts = (globalThis.window.location.pathname || '').split('/').filter(Boolean);
+    const lastSegment = parts.length ? decodeURIComponent(parts.at(-1)) : '';
     return PRODUCT_ID_PATTERN.test(lastSegment) ? lastSegment : '';
   }
 
@@ -228,7 +236,7 @@ export default class ProductDetailComponent extends LightningElement {
         if (products.length) {
           return products[0];
         }
-      } catch (_error) {
+      } catch {
         // try the next supported query shape
       }
     }
@@ -294,7 +302,7 @@ export default class ProductDetailComponent extends LightningElement {
 
       const data = await response.json();
       return this.extractPricingMap(data);
-    } catch (_error) {
+    } catch {
       return new Map();
     }
   }
@@ -310,11 +318,14 @@ export default class ProductDetailComponent extends LightningElement {
 
   extractPricingMap(data) {
     const root = data && typeof data === 'object' ? data : {};
-    const rows = Array.isArray(root.pricingLineItemResults)
-      ? root.pricingLineItemResults
-      : Array.isArray(root.pricingResults)
-        ? root.pricingResults
-        : [];
+    let rows;
+    if (Array.isArray(root.pricingLineItemResults)) {
+      rows = root.pricingLineItemResults;
+    } else if (Array.isArray(root.pricingResults)) {
+      rows = root.pricingResults;
+    } else {
+      rows = [];
+    }
 
     const pricingByProductId = new Map();
 
@@ -395,7 +406,7 @@ export default class ProductDetailComponent extends LightningElement {
   }
 
   normalizeImageUrl(url) {
-    const value = String(url || '').trim().replace(/\s/g, '%20');
+    const value = String(url || '').trim().replaceAll(/\s/g, '%20');
     if (!value) {
       return '';
     }
@@ -408,12 +419,12 @@ export default class ProductDetailComponent extends LightningElement {
       return `https:${value}`;
     }
 
-    if (typeof window !== 'undefined' && window.location?.origin) {
+    if (globalThis.window?.location?.origin) {
       if (value.startsWith('/')) {
-        return `${window.location.origin}${value}`;
+        return `${globalThis.window.location.origin}${value}`;
       }
 
-      return `${window.location.origin}/${value.replace(/^\/+/, '')}`;
+      return `${globalThis.window.location.origin}/${value.replace(/^\/+/, '')}`;
     }
 
     return value;
@@ -513,7 +524,7 @@ export default class ProductDetailComponent extends LightningElement {
       });
 
       return response.ok;
-    } catch (_error) {
+    } catch {
       return false;
     }
   }
@@ -533,8 +544,8 @@ export default class ProductDetailComponent extends LightningElement {
       })
     );
 
-    if (this.trialUrl && typeof window !== 'undefined') {
-      window.location.href = this.trialUrl;
+    if (this.trialUrl && globalThis.window !== undefined) {
+      globalThis.window.location.href = this.trialUrl;
     }
   }
 
@@ -588,7 +599,7 @@ export default class ProductDetailComponent extends LightningElement {
       }
     }
 
-    const normalized = Number(String(value).replace(/[^0-9.-]/g, ''));
+    const normalized = Number(String(value).replaceAll(/[^0-9.-]/g, ''));
     return Number.isFinite(normalized) ? normalized : null;
   }
 

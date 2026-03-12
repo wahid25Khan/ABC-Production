@@ -6,6 +6,22 @@
     overflow-y: auto;
 }
 
+dialog {
+    border: none;
+    background: transparent;
+    padding: 0;
+    margin: 0;
+    max-inline-size: 100%;
+    max-block-size: 100%;
+}
+
+button.slds-backdrop {
+    appearance: none;
+    border: none;
+    padding: 0;
+    cursor: default;
+}
+
 .modal-container {
     max-width: 1240px;
     width: min(96vw, 1240px);
@@ -18,9 +34,7 @@
 .modal-header {
     display: flex;
     justify-content: flex-end;
-    /* align-items: flex-start; */
     padding: 18px 24px 12px;
-    /* border-bottom: 1px solid #e5e7eb; */
 }
 
 .header-text {
@@ -31,7 +45,6 @@
     margin: 0;
     line-height: 1.15;
     color: #111827;
-    /* font-size: clamp(2rem, 2.7vw, 3.2rem); */
     font-size: 1.83rem;
     font-weight: 400;
 }
@@ -235,11 +248,9 @@
     font-size: 14px;
     font-weight: 700;
     color: #111827;
-    /* margin-bottom: 8px; */
 }
 
 .qty-input {
-    /* --slds-c-input-radius-border: 999px; */
     border-radius: 999px;
     padding: 3px;
 }
@@ -249,12 +260,10 @@
     align-items: center;
     gap: 12px;
     flex-wrap: wrap;
-    /* justify-content: flex-end; */
 }
 
 .btn-add {
     min-width: 190px;
-    /* border-radius: 100%; */
     background-color: #007cba;
     border-radius: 3.40282e+38px;
     padding: .5em;
@@ -264,58 +273,11 @@
 
 .btn-trial {
     min-width: 230px;
-    /* border-radius: 100%; */
     color: #007cba;
-    border: 1px solid #007cba;
     border-radius: 3.40282e+38px;
     padding: .5em;
     border: none;
 }
-/* .btns {
-    display: flex;
-    align-items: flex-end;
-    gap: 12px;
-    width: 100%;
-}
-
-.btns > div {
-    min-width: 190px;
-}
-
-.qty-label {
-    font-size: 14px;
-    font-weight: 700;
-    color: #111827;
-    margin-bottom: 6px;
-}
-
-.qty-input {
-    --slds-c-input-radius-border: 999px;
-    
-}
-
-.btn-add {
-    min-width: 190px;
-    background-color: #007cba;
-    border-radius: 999px;
-    padding: .58em 1.1em;
-    border: none;
-    color: #fff;
-    font-size: 18px;
-    font-weight: 700;
-}
-
-.btn-trial {
-    min-width: 230px;
-    color: #007cba;
-    border: 1px solid #007cba;
-    border-radius: 999px;
-    padding: .55em 1.1em;
-    background: #fff;
-    font-size: 18px;
-    font-weight: 700;
-} */
-/* --slds-c-input-color-border: #d1d5db; */
 .heart-btn {
     margin-left: auto;
     border: none;

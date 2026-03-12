@@ -31,23 +31,27 @@
           <div class="divider"></div>
 
           <div class="plan-toggle" role="tablist" aria-label="Format options">
-            <button
-              class={planClassColor}
-              type="button"
-              onclick={selectColorPlan}
-              role="tab"
-              aria-selected={isColorSelected}>
-              Color Print + Digital
-            </button>
+            <template if:true={isColorSelected}>
+              <button class={planClassColor} type="button" onclick={selectColorPlan} role="tab" aria-selected="true">
+                Color Print + Digital
+              </button>
+            </template>
+            <template if:false={isColorSelected}>
+              <button class={planClassColor} type="button" onclick={selectColorPlan} role="tab" aria-selected="false">
+                Color Print + Digital
+              </button>
+            </template>
 
-            <button
-              class={planClassBw}
-              type="button"
-              onclick={selectBwPlan}
-              role="tab"
-              aria-selected={isBwSelected}>
-              B&amp;W Print + Digital
-            </button>
+            <template if:true={isBwSelected}>
+              <button class={planClassBw} type="button" onclick={selectBwPlan} role="tab" aria-selected="true">
+                B&amp;W Print + Digital
+              </button>
+            </template>
+            <template if:false={isBwSelected}>
+              <button class={planClassBw} type="button" onclick={selectBwPlan} role="tab" aria-selected="false">
+                B&amp;W Print + Digital
+              </button>
+            </template>
           </div>
 
           <div class="row-split">

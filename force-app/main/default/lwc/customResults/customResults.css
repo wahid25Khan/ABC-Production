@@ -43,12 +43,10 @@
 
 .left-controls{
   display: flex;
-  /* align-items: center; */
   flex-direction: column;
   gap: 0.75rem;
 }
 
-/* .left-controls, */
 .right-controls {
   display: flex;
   align-items: center;
@@ -78,6 +76,11 @@
   border-radius: 10px;
   overflow: hidden;
   background: #fff;
+}
+
+fieldset.view-toggle {
+  padding: 0;
+  margin: 0;
 }
 
 .view-btn {
@@ -310,7 +313,7 @@
 .overlay-btn--look {
   background: rgba(255, 255, 255, 0.88);
   border: 1px solid #d1d5db;
-  color: #9ca3af;
+  color: #6b7280;
   cursor: default;
 }
 
@@ -495,20 +498,6 @@ a.product-name:visited {
 
 
 
-/* Added by Taimoor */
-/* .search-wrapper {
-    width: 280px;
-}
-
-.search-input {
-    --slds-c-input-radius-border: 22px;
-    --slds-c-input-color-border: #cfcfcf;
-    --slds-c-input-color-background: #f7f7f7;
-    --slds-c-input-text-color: #666;
-    --slds-c-input-spacing-horizontal-start: 14px;
-    --slds-c-input-spacing-horizontal-end: 14px;
-} */
-
 .search-box {
       position: relative;
       width: 300px;
@@ -557,7 +546,7 @@ a.product-name:visited {
     --sds-c-input-radius-border: 999px !important;
     --slds-c-input-color-border: #cfcfcf !important;
     --slds-c-input-color-background: #f7f7f7 !important;
-    --slds-c-input-text-color: #666 !important;;
+    --slds-c-input-text-color: #666 !important;
 }
 
 

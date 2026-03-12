@@ -1,5 +1,4 @@
 import { LightningElement, api } from 'lwc';
-// import abc_image from '@salesforce/resourceUrl/abc_image';
 
 const PLAN = {
     COLOR: "COLOR",
@@ -78,6 +77,14 @@ export default class QuickShopModal extends LightningElement {
         return this.selectedPlan === PLAN.BW;
     }
 
+    get ariaColorSelected() {
+        return this.isColorSelected ? 'true' : 'false';
+    }
+
+    get ariaBwSelected() {
+        return this.isBwSelected ? 'true' : 'false';
+    }
+
     get planClassColor() {
         return `plan-option ${this.isColorSelected ? "active" : ""}`;
     }
@@ -148,7 +155,7 @@ export default class QuickShopModal extends LightningElement {
 
     // ---------- qty ----------
     handleQtyChange(e) {
-        let val = parseInt(e.target.value, 10);
+        let val = Number.parseInt(e.target.value, 10);
         if (Number.isNaN(val)) val = this.minQty;
 
         const min = this.minQty;
@@ -210,11 +217,11 @@ export default class QuickShopModal extends LightningElement {
         this._handleKeydown = (evt) => {
             if (this.isOpen && evt.key === "Escape") this.close();
         };
-        window.addEventListener("keydown", this._handleKeydown);
+        globalThis.window.addEventListener("keydown", this._handleKeydown);
     }
 
     disconnectedCallback() {
-        window.removeEventListener("keydown", this._handleKeydown);
+        globalThis.window.removeEventListener("keydown", this._handleKeydown);
     }
 
     toNumber(value) {
@@ -236,7 +243,7 @@ export default class QuickShopModal extends LightningElement {
             }
         }
 
-        const normalized = Number(String(value).replace(/[^0-9.-]/g, ''));
+        const normalized = Number(String(value).replaceAll(/[^0-9.-]/g, ''));
         return Number.isFinite(normalized) ? normalized : null;
     }
 

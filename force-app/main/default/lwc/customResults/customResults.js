@@ -267,6 +267,14 @@ export default class CustomResults extends LightningElement {
     return this.viewMode === 'list';
   }
 
+  get ariaGridPressed() {
+    return this.isGridView ? 'true' : 'false';
+  }
+
+  get ariaListPressed() {
+    return this.isListView ? 'true' : 'false';
+  }
+
   get sortOptions() {
     return [
       { label: 'Relevance', value: 'relevance' },
@@ -371,7 +379,7 @@ export default class CustomResults extends LightningElement {
       this.filterValueCatalog = this.buildStaticFilterCatalog(initialResponse.facets);
       this.rebuildFilterGroups();
       this.applyLocalFiltersAndPagination();
-    } catch (_error) {
+    } catch {
       this.resetResults();
     } finally {
       this.loading = false;
@@ -514,13 +522,13 @@ export default class CustomResults extends LightningElement {
       }
 
       return await response.json();
-    } catch (_error) {
+    } catch {
       return {};
     }
   }
 
   async enrichProductsWithPricing(products) {
-    const productIds = products.map((item) => item.id).filter((id) => Boolean(id));
+    const productIds = products.map((item) => item.id).filter(Boolean);
     if (!productIds.length) {
       return products;
     }
@@ -582,7 +590,7 @@ export default class CustomResults extends LightningElement {
 
       const data = await response.json();
       return this.extractPricingMap(data);
-    } catch (_error) {
+    } catch {
       return new Map();
     }
   }
@@ -676,7 +684,7 @@ export default class CustomResults extends LightningElement {
           this.productDetailIdParamName = idParamName;
           return map;
         }
-      } catch (_error) {
+      } catch {
         // try the next supported query shape
       }
     }
@@ -765,11 +773,11 @@ export default class CustomResults extends LightningElement {
   }
 
   getPathSearchToken() {
-    if (typeof window === 'undefined' || !window.location?.pathname) {
+    if (!globalThis.window?.location?.pathname) {
       return '';
     }
 
-    const path = window.location.pathname;
+    const path = globalThis.window.location.pathname;
     const markerIndex = path.indexOf(SEARCH_MARKER);
     if (markerIndex < 0) {
       return '';
@@ -785,7 +793,7 @@ export default class CustomResults extends LightningElement {
   }
 
   decodeSearchPathSegment(value) {
-    let decoded = String(value || '').replace(/\+/g, ' ').trim();
+    let decoded = String(value || '').replaceAll('+', ' ').trim();
     if (!decoded) {
       return '';
     }
@@ -797,8 +805,8 @@ export default class CustomResults extends LightningElement {
           break;
         }
 
-        decoded = nextValue.replace(/\+/g, ' ').trim();
-      } catch (_error) {
+        decoded = nextValue.replaceAll('+', ' ').trim();
+      } catch {
         break;
       }
     }
@@ -827,36 +835,36 @@ export default class CustomResults extends LightningElement {
   }
 
   getCurrentHref() {
-    return typeof window === 'undefined' || !window.location?.href ? '' : window.location.href;
+    return globalThis.window?.location?.href ?? '';
   }
 
   startUrlWatcher() {
-    if (typeof window === 'undefined' || this.urlWatchId) {
+    if (globalThis.window === undefined || this.urlWatchId) {
       return;
     }
 
     this.captureCurrentRouteState();
-    this.urlWatchId = window.setInterval(() => {
+    this.urlWatchId = globalThis.window.setInterval(() => {
       const href = this.getCurrentHref();
       if (!href || href === this.lastObservedHref) {
         return;
       }
 
       this.lastObservedHref = href;
-      window.clearTimeout(this.urlWatchDebounceId);
-      this.urlWatchDebounceId = window.setTimeout(() => {
+      globalThis.window.clearTimeout(this.urlWatchDebounceId);
+      this.urlWatchDebounceId = globalThis.window.setTimeout(() => {
         this.handleObservedUrlChange();
       }, URL_WATCH_DEBOUNCE_MS);
     }, URL_WATCH_INTERVAL_MS);
   }
 
   stopUrlWatcher() {
-    if (typeof window === 'undefined') {
+    if (globalThis.window === undefined) {
       return;
     }
 
-    window.clearInterval(this.urlWatchId);
-    window.clearTimeout(this.urlWatchDebounceId);
+    globalThis.window.clearInterval(this.urlWatchId);
+    globalThis.window.clearTimeout(this.urlWatchDebounceId);
     this.urlWatchId = null;
     this.urlWatchDebounceId = null;
   }
@@ -1070,8 +1078,7 @@ export default class CustomResults extends LightningElement {
       if (value === 'math') {
         parts.push('mathematics');
       } else if (value === 'english') {
-        parts.push('english language arts');
-        parts.push('ela');
+        parts.push('english language arts', 'ela');
       }
     });
 
@@ -1112,7 +1119,7 @@ export default class CustomResults extends LightningElement {
   normalizeSearchText(value) {
     return String(value || '')
       .toLowerCase()
-      .replace(/[^a-z0-9]+/g, ' ')
+      .replaceAll(/[^a-z0-9]+/g, ' ')
       .trim();
   }
 
@@ -1132,11 +1139,13 @@ export default class CustomResults extends LightningElement {
         checked: selected.has(entry.value)
       }));
 
+      const isExpanded = !this.collapsedByField[definition.key];
       return {
         key: definition.key,
         label: definition.label,
         collapsed: Boolean(this.collapsedByField[definition.key]),
-        expanded: !this.collapsedByField[definition.key],
+        expanded: isExpanded,
+        ariaExpanded: isExpanded ? 'true' : 'false',
         toggleSymbol: this.collapsedByField[definition.key] ? '+' : '−',
         options,
         showEmpty: !options.length
@@ -1390,7 +1399,7 @@ export default class CustomResults extends LightningElement {
       this.filterValueCatalog = this.buildStaticFilterCatalog(response.facets);
       this.rebuildFilterGroups();
       this.applyLocalFiltersAndPagination();
-    } catch (_error) {
+    } catch {
       this.resetResults();
     } finally {
       this.loading = false;
@@ -1547,7 +1556,7 @@ export default class CustomResults extends LightningElement {
     this.modalProduct = product;
     this.isModalOpen = true;
 
-    window.requestAnimationFrame(() => {
+    globalThis.window.requestAnimationFrame(() => {
       const modal = this.template.querySelector('c-quick-shop-modal');
       if (modal && typeof modal.open === 'function') {
         modal.open();
@@ -1565,7 +1574,7 @@ export default class CustomResults extends LightningElement {
       return;
     }
 
-    window.location.href = this.buildProductDetailPath(this.modalProduct);
+    globalThis.window.location.href = this.buildProductDetailPath(this.modalProduct);
   }
 
   async handleAddToCart(event) {
@@ -1601,7 +1610,7 @@ export default class CustomResults extends LightningElement {
       });
 
       return response.ok;
-    } catch (_error) {
+    } catch {
       return false;
     }
   }
@@ -1634,7 +1643,7 @@ export default class CustomResults extends LightningElement {
   }
 
   normalizeImageUrl(url) {
-    const value = String(url || '').trim().replace(/\s/g, '%20');
+    const value = String(url || '').trim().replaceAll(/\s/g, '%20');
     if (!value) {
       return '';
     }
@@ -1647,12 +1656,12 @@ export default class CustomResults extends LightningElement {
       return `https:${value}`;
     }
 
-    if (typeof window !== 'undefined' && window.location?.origin) {
+    if (globalThis.window?.location?.origin) {
       if (value.startsWith('/')) {
-        return `${window.location.origin}${value}`;
+        return `${globalThis.window.location.origin}${value}`;
       }
 
-      return `${window.location.origin}/${value.replace(/^\/+/, '')}`;
+      return `${globalThis.window.location.origin}/${value.replace(/^\/+/, '')}`;
     }
 
     return value;
@@ -1660,41 +1669,41 @@ export default class CustomResults extends LightningElement {
 
   readStateFromStorage() {
     try {
-      const value = String(window.localStorage.getItem(this.stateStorageKey || DEFAULT_STATE_STORAGE_KEY) || '').trim();
+      const value = String(globalThis.window.localStorage.getItem(this.stateStorageKey || DEFAULT_STATE_STORAGE_KEY) || '').trim();
       return US_STATES.includes(value) ? value : '';
-    } catch (_error) {
+    } catch {
       return '';
     }
   }
 
   writeStateToStorage(value) {
     try {
-      window.localStorage.setItem(this.stateStorageKey || DEFAULT_STATE_STORAGE_KEY, value || '');
-    } catch (_error) {
+      globalThis.window.localStorage.setItem(this.stateStorageKey || DEFAULT_STATE_STORAGE_KEY, value || '');
+    } catch {
       // no-op
     }
   }
 
   updateResultsUrlForState(stateValue) {
-    if (typeof window === 'undefined' || !window.history) {
+    if (!globalThis.window?.history) {
       return;
     }
 
     const nextToken = String(stateValue || '').trim() || 'all';
-    const currentPath = window.location?.pathname || '';
+    const currentPath = globalThis.window.location?.pathname || '';
     const markerIndex = currentPath.indexOf(SEARCH_MARKER);
     const basePath = markerIndex >= 0
       ? currentPath.slice(0, markerIndex + SEARCH_MARKER.length)
       : `/${this.storeName || DEFAULT_STORE_NAME}${SEARCH_MARKER}`;
     const nextPath = `${basePath}${encodeURIComponent(nextToken)}`;
 
-    if (currentPath === nextPath && !window.location?.search && !window.location?.hash) {
+    if (currentPath === nextPath && !globalThis.window.location?.search && !globalThis.window.location?.hash) {
       this.currentPathSearchToken = nextToken === 'all' ? '' : nextToken;
       this.lastObservedHref = this.getCurrentHref();
       return;
     }
 
-    window.history.pushState({}, '', nextPath);
+    globalThis.window.history.pushState({}, '', nextPath);
     this.currentPathSearchToken = nextToken === 'all' ? '' : nextToken;
     this.lastObservedHref = this.getCurrentHref();
   }
@@ -1703,8 +1712,8 @@ export default class CustomResults extends LightningElement {
     const source = product?.urlName || product?.name || 'detail';
     const slug = String(source)
       .toLowerCase()
-      .replace(/[^a-z0-9]+/g, '-')
-      .replace(/^-+|-+$/g, '');
+      .replaceAll(/[^a-z0-9]+/g, '-')
+      .replaceAll(/^-+|-+$/g, '');
 
     return `/${this.storeName || DEFAULT_STORE_NAME}/product/${slug || 'detail'}/${product.id}`;
   }
@@ -1721,7 +1730,7 @@ export default class CustomResults extends LightningElement {
         minimumFractionDigits: 2,
         maximumFractionDigits: 2
       }).format(amount);
-    } catch (_error) {
+    } catch {
       return `$${amount.toFixed(2)}`;
     }
   }
@@ -1766,16 +1775,19 @@ export default class CustomResults extends LightningElement {
     return String(value || '')
       .trim()
       .toLowerCase()
-      .replace(/[^a-z0-9]/g, '');
+      .replaceAll(/[^a-z0-9]/g, '');
   }
 
   extractPricingMap(data) {
     const root = data && typeof data === 'object' ? data : {};
-    const rows = Array.isArray(root.pricingLineItemResults)
-      ? root.pricingLineItemResults
-      : Array.isArray(root.pricingResults)
-        ? root.pricingResults
-        : [];
+    let rows;
+    if (Array.isArray(root.pricingLineItemResults)) {
+      rows = root.pricingLineItemResults;
+    } else if (Array.isArray(root.pricingResults)) {
+      rows = root.pricingResults;
+    } else {
+      rows = [];
+    }
 
     const pricingByProductId = new Map();
 
@@ -1849,7 +1861,7 @@ export default class CustomResults extends LightningElement {
       }
     }
 
-    const parsed = Number(String(value).replace(/[^0-9.-]/g, ''));
+    const parsed = Number(String(value).replaceAll(/[^0-9.-]/g, ''));
     return Number.isFinite(parsed) ? parsed : null;
   }
 
