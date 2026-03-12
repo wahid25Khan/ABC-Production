@@ -1,6 +1,9 @@
 import { LightningElement, track } from 'lwc';
 import repsAssets from '@salesforce/resourceUrl/abc_reps';
 
+import phoneIcon from '@salesforce/resourceUrl/phoneIcon';
+import mailIcon from '@salesforce/resourceUrl/mailIcon';
+
 const STORAGE_KEY = 'abc_selected_state';
 const ZIP_ROOT_FOLDER = 'abc_reps';
 const RESULTS_SEG = '/global-search';
@@ -133,6 +136,9 @@ function buildUrl({ folder, base, ext, forceShared }) {
 }
 
 export default class StateReps extends LightningElement {
+
+  phoneIcon = phoneIcon;
+  mailIcon = mailIcon;
   @track selectedState = '';
   @track reps = [];
 

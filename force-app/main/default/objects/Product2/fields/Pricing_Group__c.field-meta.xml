@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Pricing_Group__c</fullName>
+    <label>Pricing Group</label>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>BW K-8</fullName>
+                <default>false</default>
+                <label>BW K-8</label>
+            </value>
+            <value>
+                <fullName>BW 9-12</fullName>
+                <default>false</default>
+                <label>BW 9-12</label>
+            </value>
+            <value>
+                <fullName>COLOR K-8</fullName>
+                <default>false</default>
+                <label>COLOR K-8</label>
+            </value>
+            <value>
+                <fullName>COLOR 9-12</fullName>
+                <default>false</default>
+                <label>COLOR 9-12</label>
+            </value>
+            <value>
+                <fullName>COURSEWAVE K-8</fullName>
+                <default>false</default>
+                <label>COURSEWAVE K-8</label>
+            </value>
+            <value>
+                <fullName>COURSEWAVE 9-12</fullName>
+                <default>false</default>
+                <label>COURSEWAVE 9-12</label>
+            </value>
+            <value>
+                <fullName>PARENTBD</fullName>
+                <default>false</default>
+                <label>PARENTBD</label>
+            </value>
+            <value>
+                <fullName>PARENTBO</fullName>
+                <default>false</default>
+                <label>PARENTBO</label>
+            </value>
+            <value>
+                <fullName>TEACHERGUIDE</fullName>
+                <default>false</default>
+                <label>TEACHERGUIDE</label>
+            </value>
+            <value>
+                <fullName>KYBW K8</fullName>
+                <default>false</default>
+                <label>KYBW K8</label>
+            </value>
+            <value>
+                <fullName>KYBW 9-12</fullName>
+                <default>false</default>
+                <label>KYBW 9-12</label>
+            </value>
+            <value>
+                <fullName>KYCOLOR K-8</fullName>
+                <default>false</default>
+                <label>KYCOLOR K-8</label>
+            </value>
+            <value>
+                <fullName>KYCOLOR 9-12</fullName>
+                <default>false</default>
+                <label>KYCOLOR 9-12</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

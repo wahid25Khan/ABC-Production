@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Type__c</fullName>
+    <label>Type</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <type>Picklist</type>
+    <valueSet>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Mailed Preview Workbook (7-10 business days)</fullName>
+                <default>false</default>
+                <label>Mailed Preview Workbook (7-10 business days)</label>
+            </value>
+            <value>
+                <fullName>eBook Trial (1 business day)</fullName>
+                <default>false</default>
+                <label>eBook Trial (1 business day)</label>
+            </value>
+            <value>
+                <fullName>Both!</fullName>
+                <default>false</default>
+                <label>Both!</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

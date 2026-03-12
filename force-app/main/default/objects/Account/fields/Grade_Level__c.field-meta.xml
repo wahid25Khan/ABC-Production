@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Grade_Level__c</fullName>
+    <label>Grade Level</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <type>MultiselectPicklist</type>
+    <valueSet>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Kindergarten</fullName>
+                <default>false</default>
+                <label>Kindergarten</label>
+            </value>
+            <value>
+                <fullName>1st Grade</fullName>
+                <default>false</default>
+                <label>1st Grade</label>
+            </value>
+            <value>
+                <fullName>2nd Grade</fullName>
+                <default>false</default>
+                <label>2nd Grade</label>
+            </value>
+            <value>
+                <fullName>3rd Grade</fullName>
+                <default>false</default>
+                <label>3rd Grade</label>
+            </value>
+            <value>
+                <fullName>4th Grade</fullName>
+                <default>false</default>
+                <label>4th Grade</label>
+            </value>
+            <value>
+                <fullName>5th Grade</fullName>
+                <default>false</default>
+                <label>5th Grade</label>
+            </value>
+            <value>
+                <fullName>6th Grade</fullName>
+                <default>false</default>
+                <label>6th Grade</label>
+            </value>
+            <value>
+                <fullName>7th Grade</fullName>
+                <default>false</default>
+                <label>7th Grade</label>
+            </value>
+            <value>
+                <fullName>8th Grade</fullName>
+                <default>false</default>
+                <label>8th Grade</label>
+            </value>
+            <value>
+                <fullName>High School</fullName>
+                <default>false</default>
+                <label>High School</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+    <visibleLines>4</visibleLines>
+</CustomField>

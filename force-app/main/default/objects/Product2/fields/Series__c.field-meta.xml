@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Series__c</fullName>
+    <label>Series</label>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>ACAP Success</fullName>
+                <default>false</default>
+                <label>ACAP Success</label>
+            </value>
+            <value>
+                <fullName>ACT</fullName>
+                <default>false</default>
+                <label>ACT</label>
+            </value>
+            <value>
+                <fullName>ACT Achievement</fullName>
+                <default>false</default>
+                <label>ACT Achievement</label>
+            </value>
+            <value>
+                <fullName>Adult Basic Curriculum</fullName>
+                <default>false</default>
+                <label>Adult Basic Curriculum</label>
+            </value>
+            <value>
+                <fullName>Basics Made Easy</fullName>
+                <default>false</default>
+                <label>Basics Made Easy</label>
+            </value>
+            <value>
+                <fullName>CCGPS</fullName>
+                <default>false</default>
+                <label>CCGPS</label>
+            </value>
+            <value>
+                <fullName>CCRA Success</fullName>
+                <default>false</default>
+                <label>CCRA Success</label>
+            </value>
+            <value>
+                <fullName>Common Core</fullName>
+                <default>false</default>
+                <label>Common Core</label>
+            </value>
+            <value>
+                <fullName>EXPLORE</fullName>
+                <default>false</default>
+                <label>EXPLORE</label>
+            </value>
+            <value>
+                <fullName>Foundations</fullName>
+                <default>false</default>
+                <label>Foundations</label>
+            </value>
+            <value>
+                <fullName>GSE Success</fullName>
+                <default>false</default>
+                <label>GSE Success</label>
+            </value>
+            <value>
+                <fullName>Gearing Up</fullName>
+                <default>false</default>
+                <label>Gearing Up</label>
+            </value>
+            <value>
+                <fullName>ILeap/Leap</fullName>
+                <default>false</default>
+                <label>ILeap/Leap</label>
+            </value>
+            <value>
+                <fullName>K-PREP</fullName>
+                <default>false</default>
+                <label>K-PREP</label>
+            </value>
+            <value>
+                <fullName>K-PREP/QualityCore</fullName>
+                <default>false</default>
+                <label>K-PREP/QualityCore</label>
+            </value>
+            <value>
+                <fullName>KSA Success</fullName>
+                <default>false</default>
+                <label>KSA Success</label>
+            </value>
+            <value>
+                <fullName>LEAP 2025</fullName>
+                <default>false</default>
+                <label>LEAP 2025</label>
+            </value>
+            <value>
+                <fullName>LEAP Success</fullName>
+                <default>false</default>
+                <label>LEAP Success</label>
+            </value>
+            <value>
+                <fullName>Milestones</fullName>
+                <default>false</default>
+                <label>Milestones</label>
+            </value>
+            <value>
+                <fullName>OCCT/EOI</fullName>
+                <default>false</default>
+                <label>OCCT/EOI</label>
+            </value>
+            <value>
+                <fullName>OSTP Success</fullName>
+                <default>false</default>
+                <label>OSTP Success</label>
+            </value>
+            <value>
+                <fullName>PARCC</fullName>
+                <default>false</default>
+                <label>PARCC</label>
+            </value>
+            <value>
+                <fullName>PLAN</fullName>
+                <default>false</default>
+                <label>PLAN</label>
+            </value>
+            <value>
+                <fullName>SCPASS</fullName>
+                <default>false</default>
+                <label>SCPASS</label>
+            </value>
+            <value>
+                <fullName>Smarter Balanced</fullName>
+                <default>false</default>
+                <label>Smarter Balanced</label>
+            </value>
+            <value>
+                <fullName>TAS Success</fullName>
+                <default>false</default>
+                <label>TAS Success</label>
+            </value>
+            <value>
+                <fullName>TCAP Success</fullName>
+                <default>false</default>
+                <label>TCAP Success</label>
+            </value>
+            <value>
+                <fullName>EOC</fullName>
+                <default>false</default>
+                <label>EOC</label>
+            </value>
+            <value>
+                <fullName>MCA</fullName>
+                <default>false</default>
+                <label>MCA</label>
+            </value>
+            <value>
+                <fullName>EOG</fullName>
+                <default>false</default>
+                <label>EOG</label>
+            </value>
+            <value>
+                <fullName>EOCEP</fullName>
+                <default>false</default>
+                <label>EOCEP</label>
+            </value>
+            <value>
+                <fullName>Get READY</fullName>
+                <default>false</default>
+                <label>Get READY</label>
+            </value>
+            <value>
+                <fullName>New Mexico Success</fullName>
+                <default>false</default>
+                <label>New Mexico Success</label>
+            </value>
+            <value>
+                <fullName>K-12 Standards Success</fullName>
+                <default>false</default>
+                <label>K-12 Standards Success</label>
+            </value>
+            <value>
+                <fullName>ATLAS Success</fullName>
+                <default>false</default>
+                <label>ATLAS Success</label>
+            </value>
+            <value>
+                <fullName>EOC Success</fullName>
+                <default>false</default>
+                <label>EOC Success</label>
+            </value>
+            <value>
+                <fullName>SCCCRS Success</fullName>
+                <default>false</default>
+                <label>SCCCRS Success</label>
+            </value>
+            <value>
+                <fullName>SOL</fullName>
+                <default>false</default>
+                <label>SOL</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

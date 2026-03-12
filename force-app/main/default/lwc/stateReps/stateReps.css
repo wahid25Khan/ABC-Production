@@ -26,8 +26,8 @@
 }
 
 .avatar {
-  width: 92px;
-  height: 92px;
+  width: 120px;
+  height: 140px;
   border-radius: 999px;
   object-fit: cover;
   display: block;
@@ -76,4 +76,10 @@
   color: #5f6368;
   font-size: 14px;
   text-align: center;
+}
+
+.phone-icon,
+.mail-icon{
+  width: 20px;
+  height: 20px;
 }

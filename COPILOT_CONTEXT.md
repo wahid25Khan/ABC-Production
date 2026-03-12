@@ -299,6 +299,137 @@ Storefront testimonial/media carousel entries. Auto-number name field.
 ### `In_App_Checklist_Settings__c`
 Custom settings object for in-app onboarding checklist feature.
 
+### `AuthorizeNet_Config__mdt` (Custom Metadata)
+API credentials for Authorize.Net payment gateway. Protected fields.
+| Field | Type | Purpose |
+|---|---|---|
+| `APILoginId__c` | Text(255) | Authorize.Net API login ID (protected) |
+| `TransactionKey__c` | Text(255) | Authorize.Net transaction key (protected) |
+| `UseSandbox__c` | Checkbox | Toggle between sandbox/production endpoints |
+
+### Order Custom Fields
+| API Name | Type | Purpose |
+|---|---|---|
+| `Acc_Name__c` | Formula (Text) | `Account.Name` — denormalized account name |
+| `Grand_Total__c` | Formula (Currency) | `(Subtotal + Tax + Shipping) × (1 - Discount)` |
+| `Discount__c` | Percent(5,2) | Manual discount percentage |
+| `Tax__c` | Currency(18,2) | Manual tax amount |
+| `Subtotal__c` | Roll-Up Summary | Sum of OrderItem.Total_Price__c |
+| `Shipping_and_Handling__c` | Currency(18,2) | Manual shipping/handling cost |
+| `Preview_Copy_Details__c` | Text Area | Notes on preview/sample copies |
+| `Tracking_Number__c` | Text(50) | Shipment tracking number |
+
+---
+
+## Retrieved Objects — 347 Folders (Categorized)
+
+### B2B Commerce / Storefront (35 objects)
+WebStore, WebStoreBuyerGroup, WebStoreCatalog, WebStoreNetwork, WebStorePricebook, WebStoreInventorySource, WebStoreSearchProdSettings, WebStoreMessageContent, WebCart, WebCartAdjustmentBasis, WebCartAdjustmentGroup, WebCartCredit, CartItem, CartCheckoutSession, CartDeliveryGroup, CartDeliveryGroupMethod, CartDeliveryGroupMethodAdj, CartItemPriceAdjustment, CartRelatedItem, CartTax, CartValidationOutput, BuyerGroup, BuyerGroupMember, BuyerGroupPricebook, BuyerGroupBuyerCriteria, BuyerGroupRelatedObject, BuyerAccount, BuyerCriteria, GuestBuyerProfile, SalesStore, SalesStoreCatalog, SalesChannel, CommerceConfigRelatedRecord, CommerceEntitlementBuyerGroup, CommerceEntitlementPolicy, CommerceEntitlementProduct
+
+### Product & Catalog (21 objects)
+Product2, ProductAttribute, ProductAttributeSetProduct, ProductCatalog, ProductCategory, ProductCategoryMedia, ProductCategoryProduct, ProductFeaturedProduct, ProductMedia, ProductQuantityRule, ProductRelatedComponent, ProductRelationshipType, ProductSellingModel, Pricebook2, PricebookEntry, PriceAdjustmentSchedule, PriceAdjustmentTier, PurchaseQuantityRule, ElectronicMediaGroup, ElectronicMediaUse, Image
+
+### Order Management (26 objects)
+Order, OrderItem, OrderAdjustmentGroup, OrderDeliveryGroup, OrderDeliveryMethod, OrderItemAdjustmentLineItem, OrderItemRelationship, OrderItemTaxLineItem, OrderSummary, OrderItemSummary, OrderItemSummaryChange, OrderItemSummaryRelationship, OrderPaymentSummary, OrderPaymentSummaryReference, OrderSummaryRelationship, OrderSummaryRoutingSchedule, OrderSummaryAdditionalInfo, OrderAdjustmentGroupSummary, OrderDeliveryGroupSummary, OrderItemAdjustmentLineSummary, OrderItemTaxLineItemSummary, OrderChgReasonCategMap, FulfillmentOrder, FulfillmentOrderLineItem, FulfillmentOrderItemAdjustment, FulfillmentOrderItemTax
+
+### Payment (20 objects)
+Payment, PaymentAuthorization, PaymentAuthAdjustment, PaymentCredit, PaymentCreditLinePayment, PaymentCreditTransaction, PaymentGateway, PaymentGroup, PaymentInitiationSource, PaymentIntent, PaymentLineInvoice, PaymentLink, PaymentMethod, AlternativePaymentMethod, CardPaymentMethod, DigitalWallet, MerchAccPaymentMethodSet, MerchAccPaymentMethodType, MerchantAccount, SavedPaymentMethod
+
+### Return / Refund / Invoice (12 objects)
+ReturnOrder, ReturnOrderLineItem, ReturnOrderItemAdjustment, ReturnOrderItemTax, Refund, RefundLinePayment, CreditMemo, CreditMemoLine, CreditMemoInvApplication, Invoice, InvoiceLine, ProcessException
+
+### Shipping (10 objects)
+Shipment, ShipmentItem, ShippingCarrier, ShippingCarrierMethod, ShippingConfigSetProduct, ShippingConfigurationSet, ShippingRateArea, ShippingRateGroup, StandardShippingRate, DeliveryEstimationSetup
+
+### Promotions & Coupons (11 objects)
+Promotion, PromotionLineItemRule, PromotionMarketSegment, PromotionQualifier, PromotionSegment, PromotionSegmentBuyerGroup, PromotionSegmentSalesStore, PromotionTarget, PromotionTier, Coupon, CouponCodeRedemption
+
+### Standard CRM / Sales (18 objects)
+Account, AccountBrand, AccountContactRelation, AccountContactRole, Contact, ContactPointAddress, ContactRequest, Lead, Opportunity, OpportunityCompetitor, OpportunityContactRole, OpportunityLineItem, Case, CaseContactRole, Campaign, CampaignMember, Contract, ContractContactRole
+
+### Quote / CPQ (3 objects)
+Quote, QuoteLineItem, SalesTransactionShape, SalesTransactionItemShape
+
+### Wishlist (2 objects)
+Wishlist, WishlistItem
+
+### Inventory (2 objects)
+InventoryReservation, InventoryItemReservation
+
+### Tax (5 objects)
+TaxEngine, TaxGeoConfig, TaxPolicy, TaxRate, TaxTreatment, TaxTreatmentItem
+
+### Scoring / Forecasting / Goals (10 objects)
+Scorecard, ScorecardAssociation, ScorecardMetric, ForecastingAdjustment, ForecastingCategoryMapping, ForecastingCustomData, ForecastingOwnerAdjustment, ForecastingQuota, ForecastingTypeToCategory, GoalAssignment, GoalAssignmentRecommendation, GoalDefinition
+
+### AI / Data Cloud / Analytics (25+ objects)
+AiGroundingFileRef, AiGroundingSourceStage, AiGroundingWebRef, AiJobRun, CalculatedInsightRangeBound, DataAction, DataActionJobSummary, DataActionTarget, DataCommCapActvTarget, DataGraph, DataKitDeploymentLog, DataKnowledgeSpace, DataKnowledgeSrcFileRef, DataLakeObjectInstance, DataLineageDefSyncLog, DataLineageNodeDefSyncLog, DataModelRelationConstraint, DataPackageKit, DataQueryWorkspace, DataQueryWorkspaceTab, DataQuickAttribute, DataSourceBundle, DataStream, IdentityResolution, MarketSegment, MarketSegmentActivation, MarketSegmentField, MktCalculatedInsight, MktDataTransform, MktMLModel, MktMLModelPartitionRun, MktMLPredictionJob, MLModel, MLModelFactor, MLModelFactorComponent, PersonalizationRecommender
+
+### Pardot / Account Engagement (1 custom object)
+pi__AsyncRequest__c
+
+### Org-Created Custom Objects (4 objects)
+AuthorizeNet_Transaction__c, AuthorizeNet_Config__mdt, Carousel_Content__c, In_App_Checklist_Settings__c
+
+### Other Notable Objects
+Site, User, Task, Event, EmailMessage, ContentDocument, ContentVersion, Asset, Location, NetworkMember, Recommendation, WorkOrder, Territory2, etc.
+
+---
+
+## Payment Integration — End-to-End Flow
+
+```
+[Customer clicks Checkout]
+    → authorizeNetCheckoutButton LWC
+    → Fetches cart via Commerce API (/carts/{cartId})
+    → Creates checkout session (Commerce API)
+    → Calls AuthorizeNetAcceptHostedTokenService.getHostedPaymentToken()
+        → Reads AuthorizeNet_Config__mdt.getInstance('Default')
+        → Selects Named Credential (Sandbox or Prod based on UseSandbox__c)
+        → HTTP POST to callout:AuthorizeNet_*/xml/v1/request.api
+        → Returns token
+    → Redirects to Authorize.Net hosted payment form
+    
+[After payment completes]
+    → Authorize.Net sends webhook POST
+    → Hits REST endpoint: /services/rest/authorizenet/webhook/*
+    → AuthorizeNetWebhookRest.receive() creates AuthorizeNet_Transaction__c record
+```
+
+**Named Credential:** AuthorizeNet_Sandbox
+**Remote Site Settings:** Adyen, PayPal, Stripe endpoints are configured (for future use) but AuthorizeNet is the active gateway.
+
+---
+
+## Component Dependency Map
+
+```
+Page: Search / Listing
+├── customResults (main search/filter)
+│   ├── stateFilterLwc (state dropdown → localStorage)
+│   ├── quickShopModal (add-to-cart popup)
+│   └── Uses: Commerce Products Search API, State__c/Series__c/Grade_Level__c filters
+│
+Page: Product Detail
+├── productDetailComponent (PDP)
+│   ├── Uses: Commerce Products API, purchaseQuantityRule
+│   ├── Pricing: $41 × (qty / increment)
+│   └── Format tabs: Color Print + Digital / B&W Print + Digital
+├── similarProductsByState (related by state)
+├── similarProductsBySubject (related by subject)
+└── productRecommendation (AI recommendations via ProductRecommendationsController)
+│
+Page: Home / Landing
+├── featuredStateBooks → quickShopModal
+├── stateTestimonials → TestimonialCarouselController → Carousel_Content__c
+├── catalogDownloader (PDF catalogs by state)
+├── soleSourceLetters (sole source letter PDFs)
+└── stateReps (sales rep directory by state)
+│
+Checkout
+└── authorizeNetCheckoutButton → AuthorizeNetAcceptHostedTokenService
+```
+
 ---
 
 ## Flows Inventory (Active Only)
@@ -383,3 +514,82 @@ Custom settings object for in-app onboarding checklist feature.
 | `testimonialsLogo` | PNG | Logo displayed in testimonials section |
 | `SNA_V88li_sf_default_cdn_American_Book_Company1` | ZIP | Experience Site CDN assets (main site) |
 | `SNA_fM1FJ_sf_default_cdn_sfpwebhook1` | ZIP | Experience Site CDN assets (webhook handler) |
+
+---
+
+## Networks (Experience Sites)
+
+| Network | Purpose |
+|---|---|
+| `American Book Company` | Main B2B Commerce storefront (Experience Cloud site) |
+| `sfpwebhook` | Webhook handler site for external integrations |
+
+---
+
+## Named Credentials
+
+| Name | Purpose |
+|---|---|
+| `AuthorizeNet_Sandbox` | Authorize.Net sandbox API (callout endpoint for payment token generation) |
+
+---
+
+## Remote Site Settings
+
+| Name | Purpose |
+|---|---|
+| `AdyenAccountManagementLiveAPI` / `TestAPI` | Adyen payment gateway (configured, not active) |
+| `AdyenCheckoutTestAPI` | Adyen checkout (configured, not active) |
+| `AdyenOAuthLiveAPI` / `TestAPI` | Adyen OAuth (configured, not active) |
+| `CMSContentTypeManager` | CMS Content Type Manager package endpoint |
+| `CQuotient` | Einstein Commerce Insights / personalization |
+| `PaypalProductionAPI` / `SandboxAPI` | PayPal (configured, not active) |
+| `StripeAPI` / `StripeConnectAPI` | Stripe (configured, not active) |
+
+> **Note:** AuthorizeNet is the ONLY active payment gateway. Adyen, PayPal, and Stripe are configured as remote sites but not currently in use.
+
+---
+
+## Auth Providers
+
+| Provider | Purpose |
+|---|---|
+| `Google_Login` | Google SSO for Experience Cloud login |
+| `Sandbox_Asset_Flow_Auth` | Sandbox asset flow authentication |
+| `FacebookSegmentIntelligence` | Facebook/Meta segment targeting (Data Cloud) |
+| `GoogleSegmentIntelligence` / `GoogleWebDataConnector` | Google Ads targeting + data connector |
+| `LinkedInEmiLinkedInAds` / `LinkedInWebDataConnector` | LinkedIn Ads integration |
+| `MicrosoftEmiBingAds` | Bing Ads integration |
+| `SalesforceEmiTikTokAds` | TikTok Ads integration |
+| `TwitterEmiXAds` | X (Twitter) Ads integration |
+| `Confluence3LOConfluence3LO` | Confluence integration (internal docs) |
+
+---
+
+## Aura Components (Legacy)
+
+| Component | Purpose |
+|---|---|
+| `StateFilterAura` | Legacy state filter (superseded by `stateFilterLwc`) |
+| `Test` | Test/sandbox Aura component |
+
+---
+
+## Project History (Completed Work)
+
+| Session | Date | Work Done | Commit |
+|---|---|---|---|
+| 1 | Previous | Fixed 169 VS Code lint/XML errors across flows and LWCs. All deployed and verified 0 errors. | (committed) |
+| 2 | Previous | Created `ProductQuantityRuleController.cls` — PMD-clean, WITH USER_MODE, ApexDoc. Deployed and tested (34 tests passing). | `a345926` |
+| 3 | Previous | Full org schema discovery — 502 products, 34 states, 31 Apex classes, 37 flows, 28 permission sets, 8 installed packages. Updated COPILOT_CONTEXT.md with comprehensive architecture docs (+215 lines). | `684d295` |
+| 4 | Current | Verified org connection (not expired). Updated package.xml to 17 non-empty metadata types. Retrieved all 347 object folders + all other metadata from org. Reviewed and categorized all retrieved metadata. Created persistent memory documentation for agent education. | (pending commit) |
+
+---
+
+## Known Remaining Issues / Next Steps
+
+1. **Flow fault path** — `Create_Pricebook_Entry` has no fault connector; duplicate PricebookEntry on existing products causes unhandled error. Add a `Get Records` check or fault path.
+2. **StateTestimonialsController stub** — Only AL and GA are mapped in the hard-coded content collection lookup. Other states return empty results. May need to populate more Carousel_Content__c records or complete the CMS integration.
+3. **PriceAdjustmentSchedule coverage** — Volume pricing schedule exists (10–24=$41, 25+=$25.25) but only 33 of 502 products are linked via `PricebookEntryAdjustment`. Consider extending to all products.
+4. **Git workflow** — Repo is `wahid25Khan/ABC-Production` (private). Always commit + push after deploying changes.
+5. **Multiple payment gateways configured** — Remote Site Settings exist for Adyen, PayPal, and Stripe but only AuthorizeNet is active. Clean up unused settings or implement additional gateways as needed.
