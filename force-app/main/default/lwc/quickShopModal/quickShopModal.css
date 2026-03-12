@@ -311,6 +311,35 @@ button.slds-backdrop {
     margin: 0;
 }
 
+.unit-price-display {
+    display: flex;
+    align-items: baseline;
+    gap: 0;
+    padding: 10px 14px;
+}
+
+.unit-price-label {
+    font-size: 16px;
+    font-weight: 600;
+    color: #111827;
+}
+
+.unit-price-value {
+    font-size: 16px;
+    font-weight: 700;
+    color: #111827;
+}
+
+.order-total-line {
+    margin-top: 8px;
+    font-size: 15px;
+    color: #111827;
+}
+
+.btn-offset {
+    padding-top: 12px;
+}
+
 .btns {
     display: flex;
     align-items: center;

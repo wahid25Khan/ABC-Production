@@ -118,6 +118,31 @@
   background: #fff;
 }
 
+.unit-price-display {
+  display: flex;
+  align-items: baseline;
+  gap: 0;
+  padding: 10px 14px;
+}
+
+.unit-price-label {
+  font-size: 16px;
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.unit-price-value {
+  font-size: 16px;
+  font-weight: 700;
+  color: #1f2937;
+}
+
+.order-total-line {
+  margin-top: 8px;
+  font-size: 15px;
+  color: #111827;
+}
+
 .price-table-head,
 .price-row {
   display: grid;

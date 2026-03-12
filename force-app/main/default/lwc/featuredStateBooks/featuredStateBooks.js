@@ -93,6 +93,27 @@ export default class FeaturedStateBooks extends LightningElement {
     return this.modalProduct ? this.modalProduct.currencyIsoCode || 'USD' : 'USD';
   }
 
+  get modalMinimumQuantity() {
+    const rule = this.modalProduct?.purchaseQuantityRule;
+    const ruleMin = rule?.minimum ?? rule?.Minimum ?? null;
+    if (Number.isFinite(ruleMin) && ruleMin > 0) return ruleMin;
+    return 10;
+  }
+
+  get modalMaximumQuantity() {
+    const rule = this.modalProduct?.purchaseQuantityRule;
+    const ruleMax = rule?.maximum ?? rule?.Maximum ?? null;
+    if (Number.isFinite(ruleMax) && ruleMax > 0 && ruleMax <= 9999) return ruleMax;
+    return 50;
+  }
+
+  get modalIncrementQuantity() {
+    const rule = this.modalProduct?.purchaseQuantityRule;
+    const ruleInc = rule?.increment ?? rule?.Increment ?? null;
+    if (Number.isFinite(ruleInc) && ruleInc > 0) return ruleInc;
+    return 1;
+  }
+
   // ─── Initialise ───────────────────────────────────────────────────────────
 
   async initialize() {

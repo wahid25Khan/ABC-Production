@@ -12,7 +12,7 @@ export default class QuickShopModal extends LightningElement {
     // bookImageUrl = abc_image;
 
     // pass from parent if you want
-    @api title = "Georgia K-12 Standards Success Grade 2 ELA";
+    @api title = '';
     @api isbn = "";
     @api bookImageUrl;
     @api colorPrice;
