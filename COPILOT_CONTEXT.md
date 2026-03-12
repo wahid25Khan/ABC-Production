@@ -168,3 +168,218 @@ sf org open --path "/lightning/setup/Flows/home" --target-org ABC-Production
 2. **More demo products** — To add more products to a quantity rule, create `ProductQuantityRule` junction records (see command above).
 3. **PriceAdjustmentSchedule** — Volume pricing schedule exists (10–24=$41, 25+=$25.25) but only 33 products are linked via `PricebookEntryAdjustment`. Can be extended.
 4. **Git workflow** — Repo is `wahid25Khan/ABC-Production` (private). Always commit + push after deploying changes.
+
+---
+
+## Product Catalog & Taxonomy
+
+| Detail | Value |
+|---|---|
+| Product Catalog Name | `American Book Company Catalog` |
+| Product Catalog ID | `0ZSam000000jfLZGAY` |
+| Total Active Products | **502** |
+| Total Active PricebookEntries | **499** (main pricebook) |
+| Unit Price | **$41.00 flat** (all products) |
+| SKU Format | `ISBN: XXXXXXXXX` (9-digit, stored in `StockKeepingUnit`) |
+| ProductCode Format | `XXXXX-XXX-X` (hyphenated ISBN variant) |
+| Name Pattern | `[State] [Standard/Test Name] Grade [N] [Subject]` |
+
+### Product2 Standard Fields Used as Taxonomy
+- `Family` — US State name (e.g. `Georgia`, `Louisiana`). **34 US states** represented. Used as primary state-filter dimension in `customResults.js`.
+- `StockKeepingUnit` — ISBN-format SKU (`ISBN: 123456789`)
+- `ProductCode` — Alternate hyphenated ISBN code
+
+### Product2 Custom Fields
+| API Name | Label | Type | Notes |
+|---|---|---|---|
+| `Series__c` | Series | Picklist | Series filter in `customResults.js` (e.g. "K-12 Standards Success") |
+| `Grade_Level__c` | Grade Level | Picklist (Multi-Select) | Grade level filter |
+| `State__c` | State | Picklist (Multi-Select) | State filter (multi-select; separate from `Family` single-state field) |
+| `Category__c` | Category | Picklist | Product category |
+| `Pricing_Group__c` | Pricing Group | Picklist | Groups products for potential differential pricing |
+| `Coursewave_Code__c` | Coursewave Code | Text(10) | Integration code for Coursewave digital platform |
+
+### Product Family Breakdown (Top States by Count)
+Georgia(46), Louisiana(36), Tennessee(35), South Carolina(30), Kentucky(28), Arkansas(24), North Carolina(20), Alabama(20), Oklahoma(16), Minnesota(15), New Mexico(12), Wyoming(6), Virginia(5), Texas(4) + ~20 more states with 1–3 products.
+
+---
+
+## All 13 LWC Components
+
+| Component | Purpose | Key Dependencies |
+|---|---|---|
+| `customResults` | Main search/filter results listing | Commerce Products API, `quickShopModal`, `stateFilterLwc`, filters: Series__c, Grade_Level__c, State__c |
+| `productDetailComponent` | Full product detail page (PDP) | Commerce Products API, `purchaseQuantityRule`, AuthorizeNet token service |
+| `quickShopModal` | Quick-add to cart modal from listing | Prop-driven (no Apex/wire); receives qty rule values from `customResults` |
+| `stateFilterLwc` | State selector / persistent state choice | localStorage key: `abc_selected_state`; fires `statechange` custom event |
+| `featuredStateBooks` | Featured books section for selected state | Commerce API, `abc_selected_state` from localStorage |
+| `productGrid` | Grid layout wrapper (display only) | Pure presentational wrapper |
+| `productRecommendation` | AI-powered product recommendations | `ProductRecommendationsController.getRecs()` → B2B AI Recommendations API |
+| `similarProductsByState` | Related products filtered by state | Commerce API, reads `abc_selected_state` |
+| `similarProductsBySubject` | Related products filtered by same subject | Commerce API, reads `abc_selected_state` |
+| `catalogDownloader` | PDF catalog download by state | `@track selectedStateData`; no visible Apex wires |
+| `soleSourceLetters` | Sole source letter downloads | Static resources: `pdf_icon`, `doc_icon` |
+| `stateReps` | State sales representatives info | Static resource: `abc_reps` (ZIP), reads `abc_selected_state` |
+| `stateTestimonials` | Testimonial carousel per state | `TestimonialCarouselController.getCarouselData(stateCode)`, SwiperJS, `testimonialsLogo` |
+
+### localStorage Pattern
+All commerce components share a single key for the buyer's selected US state:
+```
+Key: abc_selected_state
+Written by: stateFilterLwc
+Read by: customResults, featuredStateBooks, similarProductsByState, similarProductsBySubject, catalogDownloader, stateReps, stateTestimonials
+```
+
+---
+
+## All Apex Classes (31 Custom)
+
+### Payment — AuthorizeNet Integration
+| Class | API | Purpose |
+|---|---|---|
+| `AuthorizeNetAcceptHostedTokenService` | 65 | Returns Accept Hosted iframe token for embedded payment. Method: `getHostedPaymentToken(TokenRequest)` → `TokenResponse`. DTOs: `TokenRequest` (amount, currency, returnUrl, cancelUrl, transactionType, referenceId), `TokenResponse` (success, token, resultCode, message, rawResponse) |
+| `AuthorizeNetAcceptHostedTokenServiceTest` | 65 | Test class |
+| `AuthorizeNetWebhookRest` | 59 | REST endpoint (`@RestResource`) receiving AuthorizeNet webhook events. Writes to `AuthorizeNet_Transaction__c`. Validates signature. |
+| `AuthorizeNetWebhookRestTest` | 59 | Test class |
+
+### B2B Commerce Controllers
+| Class | API | Purpose |
+|---|---|---|
+| `ProductQuantityRuleController` | 66 | `getQuantityRule(productId)` → `QuantityRuleResult` (min, max, increment). Queries `ProductQuantityRule` → `PurchaseQuantityRule`. Fallback: min=10, max=50, inc=1. WITH USER_MODE. |
+| `ProductRecommendationsController` | 65 | `getRecs(recommender, anchorValues, cookie)` → JSON string. Calls B2B AI Recommendations REST API at `/commerce/webstores/0ZEam000004dJDNGA2/ai/recommendations`. |
+| `StateTestimonialsController` | 59 | `getStateTestimonials(state, siteId)` → `List<Card>`. Queries Salesforce CMS content items by state. Inner class `Card` with id, type, title, mediaUrl, thumbUrl, state, sortOrder. |
+| `TestimonialCarouselController` | 59 | `getCarouselData(stateCode)` → `List<Carousel_Content__c>`. Queries `Carousel_Content__c WHERE State__c = :stateCode AND Active__c = true`. |
+
+### Community / Experience Cloud (Boilerplate — Do Not Modify)
+ChangePasswordController, CommunitiesLandingController, CommunitiesLoginController, CommunitiesSelfRegController, CommunitiesSelfRegConfirmController, ForgotPasswordController, MicrobatchSelfRegController, MyProfilePageController, SiteLoginController, SiteRegisterController (all + Test classes)
+
+### SSO / Auth
+`AutocreatedRegHandler1772220667704` — Auto-generated registration handler (SSO or Social Auth login)
+
+---
+
+## Custom Objects Schema
+
+### `AuthorizeNet_Transaction__c`
+Payment gateway transaction/webhook record. Auto-number name field.
+| Field | Type | Purpose |
+|---|---|---|
+| `AuthAmount__c` | Currency(14,2) | Authorized amount |
+| `AuthCode__c` | Text(10) | Authorization code |
+| `AvsResponse__c` | Text(5) | AVS verification response |
+| `EntityName__c` | Text(40) | Salesforce entity name |
+| `EventDate__c` | Date/Time | When webhook event fired |
+| `EventType__c` | Text(100) | Webhook event type (e.g. `net.authorize.payment.authcapture.created`) |
+| `InvoiceNumber__c` | Text(30) | Invoice/order number |
+| `NotificationId__c` | Text(36) | Unique webhook notification ID (External ID, unique) |
+| `Payload__c` | Long Text(32768) | Full raw webhook payload JSON |
+| `Processed__c` | Checkbox | Whether record has been processed |
+| `ProcessingError__c` | Long Text(32768) | Error details if processing failed |
+| `ResponseCode__c` | Number(3,0) | Transaction response code |
+| `SignatureValid__c` | Checkbox | Whether webhook HMAC signature passed validation |
+| `SourceIp__c` | Text(45) | Originating IP address |
+| `TransactionId__c` | Text(30) | AuthorizeNet transaction ID |
+| `WebhookId__c` | Text(36) | Webhook subscription ID |
+
+### `Carousel_Content__c`
+Storefront testimonial/media carousel entries. Auto-number name field.
+| Field | Type | Purpose |
+|---|---|---|
+| `Media_Type__c` | Picklist | `Image` or `Video` |
+| `Video_URL__c` | URL(255) | For video entries |
+| `Testimonial_Text__c` | Long Text(32768) | Quote text |
+| `Author_Name__c` | Text(255) | Author of testimonial |
+| `Designation__c` | Text(255) | Author's title/role |
+| `School_Name__c` | Text(255) | Author's school/district |
+| `Red_Display_Text__c` | Text(255) | Highlighted callout text (red in UI) |
+| `State__c` | Picklist | US state — used as filter by `TestimonialCarouselController` |
+| `Sort_Order__c` | Number(18,0) | Display ordering |
+| `Active__c` | Checkbox | Filter: only active records are returned |
+
+### `In_App_Checklist_Settings__c`
+Custom settings object for in-app onboarding checklist feature.
+
+---
+
+## Flows Inventory (Active Only)
+
+| Flow Label | Type | Category | Notes |
+|---|---|---|---|
+| `Create Pricebook Entry` | AutoLaunchedFlow | Custom | Trigger: Product2 AfterSave. Creates PricebookEntry at $41 in all active pricebooks. Has no fault path — duplicate on existing products causes unhandled error. |
+| `Submit a PO` | Flow (Screen) | Custom | B2B Purchase Order checkout flow. Multiple obsolete versions; current Active version is the most recent. |
+| `SendOrderConfirmationFlow_AmericanBookCompany` | Journey | Custom | Marketing Cloud order confirmation journey. Status: Draft. |
+| `Cancel All Eligible Items` | Flow | OOB Commerce | Cancel order items in bulk |
+| `Cancel Item` | Flow | OOB Commerce | Cancel single order item |
+| `Return Item` | Flow | OOB Commerce | Initiate item return (RMA) |
+| `RMA Create Credit Memo and Ensure Refunds` | AutoLaunchedFlow | OOB Commerce | Credit memo + refund processing |
+| `RMA Return Items` | Flow | OOB Commerce | Process return merchandise authorization |
+| `Create Process Exception` | AutoLaunchedFlow | OOB Commerce | Error/exception handling for commerce processes |
+| `Ensure Refunds for Excess Funds` | AutoLaunchedFlow | OOB Commerce | Excess payment refund automation |
+| `Opportunity to Quote` | AutoLaunchedFlow | OOB CPQ | Converts Opportunity to Quote (Salesforce CPQ) |
+| `Quote To Order` | AutoLaunchedFlow | OOB CPQ | Converts approved Quote to Order (Salesforce CPQ) |
+| `Account Engagement Bulk Asset Copy Flow` | Flow | Pardot | Copies Pardot assets to production |
+| `Account Engagement Sandbox-Prod Bulk Asset Copy` | Flow | Pardot | Pardot sandbox → prod asset sync |
+
+---
+
+## Installed Packages
+
+| Package Name | Namespace | Version | Purpose |
+|---|---|---|---|
+| Pardot | `pi` | 5.9 | Marketing automation / Account Engagement |
+| b2bmaIntegration | `b2bma` | 1.7 | B2B Marketing integration (connects Commerce to Account Engagement) |
+| CDPAdvertising | `cdpactvstrgptnr` | 3.21 | Data Cloud Activation Partners (ad platform targeting) |
+| CMS Content Type Manager | `sflabs_cms_ct` | 1.5 | CMS content type management |
+| Sales Insights | `OIQ` | 1.0 | Sales activity intelligence |
+| Salesforce Standard Data Model | `ssot` | 1.130 | SSOT / Data Cloud data model |
+| Salesforce.com CRM Dashboards | _(none)_ | 1.0 | Standard CRM dashboards |
+| GS Sales Reports Dashboards | _(none)_ | 1.0 | Additional sales reporting |
+
+---
+
+## Custom Permission Sets (Org-Created)
+
+| Permission Set | Purpose |
+|---|---|
+| `Commerce_Buyer` | B2B buyer access |
+| `Commerce_Shopper` | B2C/shopper access |
+| `CommerceUsers` | General commerce user access |
+| `GeneralUsers` | General internal user baseline |
+| `SalesUsers` / `Sales_User` / `Sales_Edge` | Sales team variations |
+| `MarketingUsers` | Marketing team |
+| `ServiceUsers` | Service team |
+| `Pardot` / `Pardot_Connector_User` / `Pardot_Integration_User` | Pardot / Account Engagement integration |
+| `Waive2MFA` | Waives 2FA requirement for specific users |
+| `UnifiedMarketingUserPermSet` | Cross-channel marketing (Data Cloud + Pardot) |
+| `sfdc_ccordermanagement` | Order management platform |
+| `sfdc_unified_commerce_ai` | AI-powered commerce features |
+| `sfdc_a360` / `sfdc_a360_sfcrm_data_extract` | Data Cloud / Customer 360 |
+| `CopilotSalesforceAdminPSG` / `CopilotSalesforceUserPSG` | Einstein Copilot (admin / user) |
+| `CMS_Content_Types` | CMS content type management |
+| `SalesWorkspacePSG` | Sales Workspace AI |
+| `AgentforceServiceAgentUserPsg` | Agentforce Service Agent (AI chatbot) |
+| `ScaleCenterUsers` | Scale Center monitoring |
+
+---
+
+## Static Resources
+
+| Name | Type | Purpose |
+|---|---|---|
+| `abc_reps` | ZIP | State sales representative data/images. Used by `stateReps` LWC. |
+| `SwiperJS` | ZIP | Swiper carousel JS library. Used by `stateTestimonials` LWC. |
+| `SiteSamples` | ZIP | Sample product files |
+| `ABCHeader` | PNG | Site header image |
+| `ABCLogo` | PNG | American Book Company logo |
+| `MyFavicon` | PNG | Site favicon |
+| `AboutABC` | JPEG | Marketing image for "About" section |
+| `DigitalCoursebooks` | PNG | Product type icon |
+| `OnlineTesting` | PNG | Product type icon |
+| `PrintedCoursebooks` | PNG | Product type icon |
+| `pdf_icon` | SVG | PDF file type icon. Used by `soleSourceLetters`. |
+| `doc_icon` | SVG | DOC file type icon. Used by `soleSourceLetters`. |
+| `mailIcon` | PNG | Email/contact icon |
+| `phoneIcon` | PNG | Phone/contact icon |
+| `testimonialsLogo` | PNG | Logo displayed in testimonials section |
+| `SNA_V88li_sf_default_cdn_American_Book_Company1` | ZIP | Experience Site CDN assets (main site) |
+| `SNA_fM1FJ_sf_default_cdn_sfpwebhook1` | ZIP | Experience Site CDN assets (webhook handler) |
