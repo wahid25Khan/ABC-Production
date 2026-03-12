@@ -154,6 +154,14 @@ export default class QuickShopModal extends LightningElement {
     }
 
     // ---------- qty ----------
+    get isMinQty() {
+        return this.quantity <= this.minQty;
+    }
+
+    get isMaxQty() {
+        return this.quantity >= this.maxQty;
+    }
+
     handleQtyChange(e) {
         let val = Number.parseInt(e.target.value, 10);
         if (Number.isNaN(val)) val = this.minQty;
@@ -174,6 +182,16 @@ export default class QuickShopModal extends LightningElement {
         }
 
         this.quantity = val;
+    }
+
+    handleQtyDecrement() {
+        const next = this.quantity - this.incrementQty;
+        this.quantity = Math.max(next, this.minQty);
+    }
+
+    handleQtyIncrement() {
+        const next = this.quantity + this.incrementQty;
+        this.quantity = Math.min(next, this.maxQty);
     }
 
     // ---------- actions ----------

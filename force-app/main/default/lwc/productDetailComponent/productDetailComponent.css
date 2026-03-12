@@ -206,21 +206,55 @@
   margin-bottom: 6px;
 }
 
-.qty-input {
-  width: 100%;
+.qty-stepper {
+  display: flex;
+  align-items: center;
+  gap: 0;
   border: 1px solid #d1d5db;
   border-radius: 999px;
-  padding: 10px 18px;
+  overflow: hidden;
+  background: #fff;
+}
+
+.qty-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  border: none;
+  background: #f3f4f6;
+  color: #111827;
+  font-size: 20px;
+  font-weight: 700;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background 0.12s ease;
+  line-height: 1;
+}
+
+.qty-btn:hover:not(:disabled) {
+  background: #e5e7eb;
+}
+
+.qty-btn:disabled {
+  color: #9ca3af;
+  cursor: not-allowed;
+}
+
+.qty-input {
+  flex: 1;
+  border: none;
+  padding: 10px 4px;
+  text-align: center;
   background: #fff;
   color: #111827;
   font-size: 16px;
+  font-weight: 600;
   line-height: 1.2;
   outline: none;
   appearance: textfield;
-}
-
-.qty-input:focus {
-  border-color: #0b74b8;
+  min-width: 0;
 }
 
 .qty-input::-webkit-outer-spin-button,

@@ -455,6 +455,14 @@ export default class ProductDetailComponent extends LightningElement {
     this.dispatchEvent(new CustomEvent('planchange', { detail: { plan } }));
   }
 
+  get isMinQty() {
+    return this.quantity <= this.minQty;
+  }
+
+  get isMaxQty() {
+    return this.quantity >= this.maxQty;
+  }
+
   handleQtyChange(event) {
     let value = Number.parseInt(event?.target?.value, 10);
     if (!Number.isFinite(value)) value = this.minQty;
@@ -475,6 +483,16 @@ export default class ProductDetailComponent extends LightningElement {
     }
 
     this.quantity = value;
+  }
+
+  handleQtyDecrement() {
+    const next = this.quantity - this.incrementQty;
+    this.quantity = Math.max(next, this.minQty);
+  }
+
+  handleQtyIncrement() {
+    const next = this.quantity + this.incrementQty;
+    this.quantity = Math.min(next, this.maxQty);
   }
 
   async handleAddToCart() {

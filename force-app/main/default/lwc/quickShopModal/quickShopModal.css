@@ -244,15 +244,71 @@ button.slds-backdrop {
     width: 240px;
 }
 
+.qty-wrap {
+    width: 240px;
+}
+
 .qty-label {
     font-size: 14px;
     font-weight: 700;
     color: #111827;
+    margin-bottom: 6px;
+}
+
+.qty-stepper {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    border: 1px solid #d1d5db;
+    border-radius: 999px;
+    overflow: hidden;
+    background: #fff;
+}
+
+.qty-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 42px;
+    height: 42px;
+    border: none;
+    background: #f3f4f6;
+    color: #111827;
+    font-size: 20px;
+    font-weight: 700;
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: background 0.12s ease;
+    line-height: 1;
+}
+
+.qty-btn:hover:not(:disabled) {
+    background: #e5e7eb;
+}
+
+.qty-btn:disabled {
+    color: #9ca3af;
+    cursor: not-allowed;
 }
 
 .qty-input {
-    border-radius: 999px;
-    padding: 3px;
+    flex: 1;
+    border: none;
+    padding: 8px 4px;
+    text-align: center;
+    font-size: 16px;
+    font-weight: 600;
+    color: #111827;
+    background: #fff;
+    outline: none;
+    appearance: textfield;
+    min-width: 0;
+}
+
+.qty-input::-webkit-outer-spin-button,
+.qty-input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
 }
 
 .btns {

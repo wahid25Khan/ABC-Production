@@ -108,16 +108,20 @@
                             <!-- Action strip -->
                             <div class="action-strip">
                                 <div class="btns">
-                                  <div>
+                                  <div class="qty-wrap">
                                     <div class="qty-label">Qty (min {minQty}, max {maxQty})</div>
-                                    <input type="number"
-                                        value={quantity}
-                                        min={minQty}
-                                        max={maxQty}
-                                        step={incrementQty}
-                                        onchange={handleQtyChange}
-                                        class="qty-input"
-                                    ></input>
+                                    <div class="qty-stepper">
+                                        <button type="button" class="qty-btn" onclick={handleQtyDecrement} disabled={isMinQty} aria-label="Decrease quantity">&minus;</button>
+                                        <input type="number"
+                                            value={quantity}
+                                            min={minQty}
+                                            max={maxQty}
+                                            step={incrementQty}
+                                            oninput={handleQtyChange}
+                                            class="qty-input"
+                                        ></input>
+                                        <button type="button" class="qty-btn" onclick={handleQtyIncrement} disabled={isMaxQty} aria-label="Increase quantity">&plus;</button>
+                                    </div>
                                     <div class="order-total-line">Order Total: <strong>{totalPrice}</strong></div>
                                     </div>
                                     <div style="padding-top: 12px;">
