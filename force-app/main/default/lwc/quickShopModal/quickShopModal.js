@@ -27,10 +27,13 @@ export default class QuickShopModal extends LightningElement {
     // default tab
     selectedPlan = PLAN.COLOR;
     quantity = 10;
-    bulkThreshold = 25;
 
     isFavorite = false;
     isOpen = true;
+
+    get isLoading() {
+        return !this.title && !this.colorPrice && !this.bwPrice;
+    }
 
     // features layout as screenshot
     featuresLeft = ["Answer Key", "Posttest", "Pretest"];
@@ -51,33 +54,38 @@ export default class QuickShopModal extends LightningElement {
         return Number.isFinite(parsed) && parsed > 0 ? parsed : 1;
     }
 
-    get isLoading() {
-        return !this.title;
+    get formattedUnitPrice() {
+        return this.formatPrice(this.selectedUnitPrice);
     }
 
-    get standardQtyRange() {
-        if (!this.hasBulkPrice) return `${this.minQty}+`;
-        return `${this.minQty}-${this.bulkThreshold - 1}`;
-    }
-
-    get bulkQtyRange() {
-        return `${this.bulkThreshold}+`;
+    get selectedBulkPrice() {
+        const isBw = this.selectedPlan === PLAN.BW;
+        return isBw ? this.normalizedBwPriceBulk : this.normalizedColorPriceBulk;
     }
 
     get hasBulkPrice() {
-        const standard = this.selectedPlan === PLAN.BW ? this.normalizedBwPrice : this.normalizedColorPrice;
-        const bulk = this.selectedPlan === PLAN.BW ? this.normalizedBwPriceBulk : this.normalizedColorPriceBulk;
+        const bulk = this.selectedBulkPrice;
+        const standard = this.selectedUnitPrice;
         return bulk !== null && standard !== null && bulk !== standard;
     }
 
-    get formattedStandardPrice() {
-        const price = this.selectedPlan === PLAN.BW ? this.normalizedBwPrice : this.normalizedColorPrice;
-        return this.formatPrice(price);
+    get formattedBulkPrice() {
+        return this.formatPrice(this.selectedBulkPrice);
     }
 
-    get formattedBulkPrice() {
-        const price = this.selectedPlan === PLAN.BW ? this.normalizedBwPriceBulk : this.normalizedColorPriceBulk;
-        return this.formatPrice(price);
+    get bulkThreshold() {
+        return 25;
+    }
+
+    get standardQtyRange() {
+        const min = this.minQty;
+        const threshold = this.bulkThreshold;
+        if (!this.hasBulkPrice) return `${min}+`;
+        return `${min}-${threshold - 1}`;
+    }
+
+    get bulkQtyLabel() {
+        return `${this.bulkThreshold}+`;
     }
 
     get normalizedColorPrice() {
@@ -129,7 +137,15 @@ export default class QuickShopModal extends LightningElement {
         return primary ?? secondary;
     }
 
-
+    // Live order total: unitPrice × (qty / increment)
+    // e.g. $41 unit price, increment=10, qty=20 → 41 × (20/10) = $82
+    get totalPrice() {
+        const unit = this.selectedUnitPrice;
+        const qty = Number(this.quantity) || this.minQty;
+        const inc = this.incrementQty;
+        if (!unit || !inc) return '';
+        return this.formatPrice(unit * (qty / inc));
+    }
 
     // ---------- open/close ----------
 

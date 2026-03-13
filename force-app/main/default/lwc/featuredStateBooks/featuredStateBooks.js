@@ -234,20 +234,10 @@ export default class FeaturedStateBooks extends LightningElement {
         listPrice: priceInfo.listPrice ?? product.listPrice ?? basePrice ?? null,
         colorPrice: basePrice ?? product.colorPrice ?? product.listPrice ?? null,
         colorPriceBulk:
-          priceInfo.listPrice ??
-          basePrice ??
-          product.colorPriceBulk ??
-          product.colorPrice ??
-          product.listPrice ??
-          null,
+          product.colorPriceBulk ?? product.colorPrice ?? product.listPrice ?? null,
         bwPrice: basePrice ?? product.bwPrice ?? product.listPrice ?? null,
         bwPriceBulk:
-          priceInfo.listPrice ??
-          basePrice ??
-          product.bwPriceBulk ??
-          product.bwPrice ??
-          product.listPrice ??
-          null
+          product.bwPriceBulk ?? product.bwPrice ?? product.listPrice ?? null
       };
     });
   }

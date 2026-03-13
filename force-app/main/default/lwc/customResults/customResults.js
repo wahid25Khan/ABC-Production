@@ -559,20 +559,10 @@ export default class CustomResults extends LightningElement {
         startingPrice: basePrice ?? product.startingPrice ?? null,
         colorPrice: basePrice ?? product.colorPrice ?? product.listPrice ?? null,
         colorPriceBulk:
-          priceInfo.listPrice ??
-          basePrice ??
-          product.colorPriceBulk ??
-          product.colorPrice ??
-          product.listPrice ??
-          null,
+          product.colorPriceBulk ?? product.colorPrice ?? product.listPrice ?? null,
         bwPrice: basePrice ?? product.bwPrice ?? product.listPrice ?? null,
         bwPriceBulk:
-          priceInfo.listPrice ??
-          basePrice ??
-          product.bwPriceBulk ??
-          product.bwPrice ??
-          product.listPrice ??
-          null
+          product.bwPriceBulk ?? product.bwPrice ?? product.listPrice ?? null
       };
     });
   }
@@ -957,6 +947,28 @@ export default class CustomResults extends LightningElement {
       'prices.salesPrice'
     ]);
     const startingPrice = negotiatedPrice ?? salesPrice ?? listPrice ?? null;
+    const colorPrice = this.resolvePrice(item, [
+      'fields.Color_Price__c',
+      'fields.ColorPrice__c',
+      'fields.Color_Print_Digital_Price__c'
+    ]);
+    const colorPriceBulk = this.resolvePrice(item, [
+      'fields.Color_Price_25__c',
+      'fields.ColorPrice25__c',
+      'fields.Color_Print_Digital_Price_25__c'
+    ]);
+    const bwPrice = this.resolvePrice(item, [
+      'fields.BW_Price__c',
+      'fields.BwPrice__c',
+      'fields.Black_White_Price__c',
+      'fields.BW_Print_Digital_Price__c'
+    ]);
+    const bwPriceBulk = this.resolvePrice(item, [
+      'fields.BW_Price_25__c',
+      'fields.BwPrice25__c',
+      'fields.Black_White_Price_25__c',
+      'fields.BW_Print_Digital_Price_25__c'
+    ]);
     const filterValues = this.buildProductFilterValues(item);
     const searchTerms = this.buildProductSearchTerms(item, {
       sku,
@@ -974,10 +986,10 @@ export default class CustomResults extends LightningElement {
       currencyIsoCode,
       listPrice,
       startingPrice,
-      colorPrice: startingPrice,
-      colorPriceBulk: listPrice ?? startingPrice,
-      bwPrice: startingPrice,
-      bwPriceBulk: listPrice ?? startingPrice,
+      colorPrice: colorPrice ?? startingPrice,
+      colorPriceBulk: colorPriceBulk ?? colorPrice ?? listPrice ?? startingPrice,
+      bwPrice: bwPrice ?? startingPrice,
+      bwPriceBulk: bwPriceBulk ?? bwPrice ?? listPrice ?? startingPrice,
       filterValues,
       searchTerms
     };

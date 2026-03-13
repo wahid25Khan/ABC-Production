@@ -16,11 +16,10 @@
                 <!-- Body -->
                 <div class="modal-body">
                     <template if:true={isLoading}>
-                        <div class="loader-container">
-                            <lightning-spinner alternative-text="Loading product details" size="medium"></lightning-spinner>
+                        <div class="loader-overlay">
+                            <lightning-spinner alternative-text="Loading" size="medium"></lightning-spinner>
                         </div>
                     </template>
-                    <template if:false={isLoading}>
                     <div class="content-grid">
                         <!-- Left: Cover -->
                         <div class="left-col">
@@ -81,11 +80,11 @@
                                     </div>
                                     <div class="price-row">
                                         <div class="td">{standardQtyRange}</div>
-                                        <div class="td price">{formattedStandardPrice}</div>
+                                        <div class="td price">{formattedUnitPrice}</div>
                                     </div>
                                     <template if:true={hasBulkPrice}>
                                         <div class="price-row">
-                                            <div class="td">{bulkQtyRange}</div>
+                                            <div class="td">{bulkQtyLabel}</div>
                                             <div class="td price price-red">{formattedBulkPrice}</div>
                                         </div>
                                     </template>
@@ -173,7 +172,6 @@
                             See Full Product Details
                         </button>
                     </div>
-                    </template>
                 </div>
             </div>
         </dialog>
