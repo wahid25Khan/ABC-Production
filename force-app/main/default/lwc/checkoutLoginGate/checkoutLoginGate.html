@@ -1,0 +1,85 @@
+<template>
+    <div class="gate-shell">
+        <!-- Return to cart -->
+        <div class="back-row">
+            <a href={cartUrl} class="back-link">
+                <lightning-icon icon-name="utility:chevronleft" size="xx-small"></lightning-icon>
+                <span>Return to cart</span>
+            </a>
+        </div>
+
+        <template if:true={isAuthenticated}>
+            <div class="auth-message">
+                <p>You are signed in. Redirecting to checkout&hellip;</p>
+                <lightning-spinner alternative-text="Redirecting" size="medium"></lightning-spinner>
+            </div>
+        </template>
+
+        <template if:false={isAuthenticated}>
+            <div class="gate-grid">
+                <!-- Left: New Customers -->
+                <div class="gate-card">
+                    <h2 class="card-heading">New Customers</h2>
+                    <p class="card-desc">Create an account to build and share your wishlist, access free trials, and save your order history.</p>
+
+                    <div class="card-actions">
+                        <a href={createAccountUrl} class="btn-outline">Create an Account</a>
+                        <button type="button" class="btn-outline" onclick={handleGuestCheckout}>Continue as Guest</button>
+                    </div>
+                </div>
+
+                <!-- Right: Returning Customers -->
+                <div class="gate-card">
+                    <h2 class="card-heading">Returning Customers</h2>
+                    <p class="card-desc">Sign in to speed up the checkout process.</p>
+
+                    <template if:true={loginError}>
+                        <div class="error-banner" role="alert">{loginError}</div>
+                    </template>
+
+                    <div class="form-group">
+                        <label for="login-email" class="form-label">Email Address:</label>
+                        <input
+                            id="login-email"
+                            type="email"
+                            class="form-input"
+                            value={email}
+                            oninput={handleEmailChange}
+                            autocomplete="email"
+                        />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="login-password" class="form-label">Password:</label>
+                        <input
+                            id="login-password"
+                            type="password"
+                            class="form-input"
+                            value={password}
+                            oninput={handlePasswordChange}
+                            autocomplete="current-password"
+                            onkeydown={handlePasswordKeydown}
+                        />
+                    </div>
+
+                    <div class="remember-row">
+                        <label class="remember-label">
+                            <input type="checkbox" checked={rememberMe} onchange={handleRememberChange} />
+                            <span>Remember Me</span>
+                        </label>
+                        <a href={forgotPasswordUrl} class="forgot-link">Forgot Password?</a>
+                    </div>
+
+                    <button type="button" class="btn-primary" onclick={handleSignIn} disabled={isLoggingIn}>
+                        <template if:true={isLoggingIn}>
+                            <lightning-spinner alternative-text="Signing in" size="small" variant="inverse"></lightning-spinner>
+                        </template>
+                        <template if:false={isLoggingIn}>
+                            Sign In
+                        </template>
+                    </button>
+                </div>
+            </div>
+        </template>
+    </div>
+</template>

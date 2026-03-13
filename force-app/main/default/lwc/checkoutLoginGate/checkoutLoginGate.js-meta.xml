@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>62.0</apiVersion>
+    <isExposed>true</isExposed>
+    <masterLabel>Checkout Login Gate</masterLabel>
+    <description>Shows login/signup options before checkout, matching the live site checkout flow.</description>
+    <targets>
+        <target>lightningCommunity__Page</target>
+        <target>lightningCommunity__Default</target>
+    </targets>
+    <targetConfigs>
+        <targetConfig targets="lightningCommunity__Default">
+            <property name="cartUrl" type="String" default="/cart" label="Cart Page URL" />
+            <property name="checkoutUrl" type="String" default="/checkout" label="Checkout Page URL" />
+            <property name="createAccountUrl" type="String" default="/SelfRegister" label="Create Account URL" />
+            <property name="forgotPasswordUrl" type="String" default="/ForgotPassword" label="Forgot Password URL" />
+        </targetConfig>
+    </targetConfigs>
+</LightningComponentBundle>

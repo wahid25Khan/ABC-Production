@@ -4,7 +4,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 0.5rem;
+    padding: 0;
     overflow-y: auto;
     z-index: 9001;
 }
@@ -14,13 +14,8 @@ dialog {
     background: transparent;
     padding: 0;
     margin: 0;
-    max-inline-size: 100%;
-    max-block-size: 100%;
-    width: 100%;
-    height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    max-inline-size: none;
+    max-block-size: none;
 }
 
 dialog::backdrop {
