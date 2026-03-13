@@ -1,151 +1,150 @@
-import { LightningElement, api, track } from 'lwc';
+import { LightningElement, api, track } from "lwc";
+import getVariationPricing from "@salesforce/apex/ProductVariationController.getVariationPricing";
 
-const DEFAULT_STORE_NAME = 'AmericanBookCompany';
-const DEFAULT_WEBSTORE_ID = '0ZEam000004dJDNGA2';
-const DEFAULT_STATE_STORAGE_KEY = 'abc_selected_state';
+const DEFAULT_STORE_NAME = "AmericanBookCompany";
+const DEFAULT_WEBSTORE_ID = "0ZEam000004dJDNGA2";
+const DEFAULT_STATE_STORAGE_KEY = "abc_selected_state";
 const DEFAULT_PAGE_SIZE = 20;
-const SEARCH_MARKER = '/global-search/';
+const SEARCH_MARKER = "/global-search/";
 const URL_WATCH_INTERVAL_MS = 250;
 const URL_WATCH_DEBOUNCE_MS = 120;
 
-const SEARCH_FIELDS = [
-  'StockKeepingUnit'
-];
+const SEARCH_FIELDS = ["StockKeepingUnit"];
 
 const PRODUCT_DETAIL_FIELDS = [
-  'StockKeepingUnit',
-  'Grade_Level__c',
-  'Category__c',
-  'Series__c',
-  'State__c',
-  'purchaseQuantityRule'
+  "StockKeepingUnit",
+  "Grade_Level__c",
+  "Category__c",
+  "Series__c",
+  "State__c",
+  "purchaseQuantityRule"
 ];
 
 const PRODUCT_DETAIL_BATCH_SIZE = 20;
 
 const GRADE_FILTER_VALUES = [
-  'Kindergarten',
-  'Grade 1',
-  'Grade 2',
-  'Grade 3',
-  'Grade 4',
-  'Grade 5',
-  'Grade 6',
-  'Grade 7',
-  'Grade 8',
-  'Grade 9',
-  'Grade 10',
-  'Grade 11',
-  'Grade 12'
+  "Kindergarten",
+  "Grade 1",
+  "Grade 2",
+  "Grade 3",
+  "Grade 4",
+  "Grade 5",
+  "Grade 6",
+  "Grade 7",
+  "Grade 8",
+  "Grade 9",
+  "Grade 10",
+  "Grade 11",
+  "Grade 12"
 ];
 
 const CATEGORY_FILTER_VALUES = [
-  'English',
-  'Math',
-  'Reading',
-  'Social Studies',
-  'Science',
-  'Writing'
+  "English",
+  "Math",
+  "Reading",
+  "Social Studies",
+  "Science",
+  "Writing"
 ];
 
 const SERIES_FILTER_VALUES = [
-  'ACAP Success',
-  'ACT',
-  'ACT Achievement',
-  'Adult Basic Curriculum',
-  'Basics Made Easy',
-  'CCGPS',
-  'CCRA Success',
-  'Common Core',
-  'EXPLORE',
-  'Foundations',
-  'GSE Success',
-  'Gearing Up',
-  'ILeap/Leap',
-  'K-PREP',
-  'K-PREP/QualityCore',
-  'KSA Success',
-  'LEAP 2025',
-  'LEAP Success',
-  'Milestones',
-  'OCCT/EOI',
-  'OSTP Success',
-  'PARCC',
-  'PLAN',
-  'SCPASS',
-  'Smarter Balanced',
-  'TAS Success',
-  'TCAP Success',
-  'EOC',
-  'MCA',
-  'EOG',
-  'EOCEP',
-  'Get READY',
-  'New Mexico Success',
-  'K-12 Standards Success',
-  'ATLAS Success',
-  'EOC Success',
-  'SCCCRS Success',
-  'SOL'
+  "ACAP Success",
+  "ACT",
+  "ACT Achievement",
+  "Adult Basic Curriculum",
+  "Basics Made Easy",
+  "CCGPS",
+  "CCRA Success",
+  "Common Core",
+  "EXPLORE",
+  "Foundations",
+  "GSE Success",
+  "Gearing Up",
+  "ILeap/Leap",
+  "K-PREP",
+  "K-PREP/QualityCore",
+  "KSA Success",
+  "LEAP 2025",
+  "LEAP Success",
+  "Milestones",
+  "OCCT/EOI",
+  "OSTP Success",
+  "PARCC",
+  "PLAN",
+  "SCPASS",
+  "Smarter Balanced",
+  "TAS Success",
+  "TCAP Success",
+  "EOC",
+  "MCA",
+  "EOG",
+  "EOCEP",
+  "Get READY",
+  "New Mexico Success",
+  "K-12 Standards Success",
+  "ATLAS Success",
+  "EOC Success",
+  "SCCCRS Success",
+  "SOL"
 ];
 
 const US_STATES = [
-  'Alabama',
-  'Alaska',
-  'Arizona',
-  'Arkansas',
-  'California',
-  'Colorado',
-  'Connecticut',
-  'Delaware',
-  'District of Columbia',
-  'Florida',
-  'Georgia',
-  'Hawaii',
-  'Idaho',
-  'Illinois',
-  'Indiana',
-  'Iowa',
-  'Kansas',
-  'Kentucky',
-  'Louisiana',
-  'Maine',
-  'Maryland',
-  'Massachusetts',
-  'Michigan',
-  'Minnesota',
-  'Mississippi',
-  'Missouri',
-  'Montana',
-  'Nebraska',
-  'Nevada',
-  'New Hampshire',
-  'New Jersey',
-  'New Mexico',
-  'New York',
-  'North Carolina',
-  'North Dakota',
-  'Ohio',
-  'Oklahoma',
-  'Oregon',
-  'Pennsylvania',
-  'Rhode Island',
-  'South Carolina',
-  'South Dakota',
-  'Tennessee',
-  'Texas',
-  'Utah',
-  'Vermont',
-  'Virginia',
-  'Washington',
-  'West Virginia',
-  'Wisconsin',
-  'Wyoming'
+  "Alabama",
+  "Alaska",
+  "Arizona",
+  "Arkansas",
+  "California",
+  "Colorado",
+  "Connecticut",
+  "Delaware",
+  "District of Columbia",
+  "Florida",
+  "Georgia",
+  "Hawaii",
+  "Idaho",
+  "Illinois",
+  "Indiana",
+  "Iowa",
+  "Kansas",
+  "Kentucky",
+  "Louisiana",
+  "Maine",
+  "Maryland",
+  "Massachusetts",
+  "Michigan",
+  "Minnesota",
+  "Mississippi",
+  "Missouri",
+  "Montana",
+  "Nebraska",
+  "Nevada",
+  "New Hampshire",
+  "New Jersey",
+  "New Mexico",
+  "New York",
+  "North Carolina",
+  "North Dakota",
+  "Ohio",
+  "Oklahoma",
+  "Oregon",
+  "Pennsylvania",
+  "Rhode Island",
+  "South Carolina",
+  "South Dakota",
+  "Tennessee",
+  "Texas",
+  "Utah",
+  "Vermont",
+  "Virginia",
+  "Washington",
+  "West Virginia",
+  "Wisconsin",
+  "Wyoming"
 ];
 
 function parseCsv(value) {
-  return String(value || '')
-    .split(',')
+  return String(value || "")
+    .split(",")
     .map((item) => item.trim())
     .filter(Boolean);
 }
@@ -157,7 +156,10 @@ function toArray(value) {
 
 function chunkArray(values, chunkSize) {
   const normalizedSize = Number.parseInt(chunkSize, 10);
-  const size = Number.isFinite(normalizedSize) && normalizedSize > 0 ? normalizedSize : values.length || 1;
+  const size =
+    Number.isFinite(normalizedSize) && normalizedSize > 0
+      ? normalizedSize
+      : values.length || 1;
   const chunks = [];
 
   for (let index = 0; index < values.length; index += size) {
@@ -170,19 +172,19 @@ function chunkArray(values, chunkSize) {
 export default class CustomResults extends LightningElement {
   @api storeName = DEFAULT_STORE_NAME;
   @api webStoreId = DEFAULT_WEBSTORE_ID;
-  @api defaultSearchTerm = 'all';
+  @api defaultSearchTerm = "all";
   @api stateStorageKey = DEFAULT_STATE_STORAGE_KEY;
 
-  @api stateFieldApiName = 'State__c';
-  @api filterFieldApiNames = 'Grade_Level__c,Category__c,Series__c';
-  @api filterFieldLabels = 'Grade Level,Subject,Series';
-  @api searchFieldApiNames = SEARCH_FIELDS.join(',');
+  @api stateFieldApiName = "State__c";
+  @api filterFieldApiNames = "Grade_Level__c,Category__c,Series__c";
+  @api filterFieldLabels = "Grade Level,Subject,Series";
+  @api searchFieldApiNames = SEARCH_FIELDS.join(",");
 
-  @api pageSizeOptions = '20,40,60';
+  @api pageSizeOptions = "20,40,60";
   @api defaultPageSize = DEFAULT_PAGE_SIZE;
   @api fetchPageSize = 120;
   @api maxFetchPages = 8;
-  @api cartStateOrId = 'current';
+  @api cartStateOrId = "current";
 
   @track loading = false;
   @track products = [];
@@ -190,19 +192,20 @@ export default class CustomResults extends LightningElement {
   @track filterGroups = [];
   @track stateOptions = [];
 
-  @track selectedState = '';
-  @track searchText = '';
-  @track sortValue = 'relevance';
+  @track selectedState = "";
+  @track searchText = "";
+  @track sortValue = "relevance";
   @track pageSizeValue = DEFAULT_PAGE_SIZE;
   @track currentPage = 1;
   @track totalResults = 0;
   @track totalPages = 1;
   @track showingStart = 0;
   @track showingEnd = 0;
-  @track viewMode = 'grid';
+  @track viewMode = "grid";
 
   @track isModalOpen = false;
   @track modalProduct = null;
+  @track modalVariationPricing = null;
 
   stateProducts = [];
   selectedFiltersByField = {};
@@ -212,8 +215,8 @@ export default class CustomResults extends LightningElement {
   productById = new Map();
   filterIndexByField = {};
   productDetailIdParamName = null;
-  currentPathSearchToken = '';
-  lastObservedHref = '';
+  currentPathSearchToken = "";
+  lastObservedHref = "";
   urlWatchId = null;
   urlWatchDebounceId = null;
 
@@ -249,37 +252,39 @@ export default class CustomResults extends LightningElement {
 
   get resultsSummary() {
     if (!this.totalResults) {
-      return 'Showing 0 results';
+      return "Showing 0 results";
     }
 
     return `Showing ${this.showingStart} to ${this.showingEnd} of ${this.totalResults} — Page ${this.currentPage} of ${this.totalPages}`;
   }
 
   get productsClass() {
-    return this.viewMode === 'list' ? 'products products-list' : 'products products-grid';
+    return this.viewMode === "list"
+      ? "products products-list"
+      : "products products-grid";
   }
 
   get isGridView() {
-    return this.viewMode === 'grid';
+    return this.viewMode === "grid";
   }
 
   get isListView() {
-    return this.viewMode === 'list';
+    return this.viewMode === "list";
   }
 
   get ariaGridPressed() {
-    return this.isGridView ? 'true' : 'false';
+    return this.isGridView ? "true" : "false";
   }
 
   get ariaListPressed() {
-    return this.isListView ? 'true' : 'false';
+    return this.isListView ? "true" : "false";
   }
 
   get sortOptions() {
     return [
-      { label: 'Relevance', value: 'relevance' },
-      { label: 'Name (A-Z)', value: 'name-asc' },
-      { label: 'Name (Z-A)', value: 'name-desc' }
+      { label: "Relevance", value: "relevance" },
+      { label: "Name (A-Z)", value: "name-asc" },
+      { label: "Name (Z-A)", value: "name-desc" }
     ];
   }
 
@@ -295,51 +300,29 @@ export default class CustomResults extends LightningElement {
   }
 
   get modalTitle() {
-    return this.modalProduct ? this.modalProduct.name : '';
+    return this.modalProduct ? this.modalProduct.name : "";
   }
 
   get modalIsbn() {
     if (!this.modalProduct) {
-      return '';
+      return "";
     }
 
     return this.firstString([
       this.modalProduct.sku,
       this.modalProduct.isbn,
-      this.resolveByPath(this.modalProduct, 'fields.StockKeepingUnit')
+      this.resolveByPath(this.modalProduct, "fields.StockKeepingUnit")
     ]);
   }
 
   get modalImageUrl() {
-    return this.modalProduct ? this.modalProduct.imageUrl : '';
-  }
-
-  get modalColorPrice() {
-    return this.modalProduct ? this.modalProduct.colorPrice : null;
-  }
-
-  get modalColorPriceBulk() {
-    return this.modalProduct ? this.modalProduct.colorPriceBulk : null;
-  }
-
-  get modalBwPrice() {
-    return this.modalProduct ? this.modalProduct.bwPrice : null;
-  }
-
-  get modalBwPriceBulk() {
-    return this.modalProduct ? this.modalProduct.bwPriceBulk : null;
-  }
-
-  get modalDigitalPrice() {
-    return this.modalProduct ? this.modalProduct.digitalPrice : null;
-  }
-
-  get modalDigitalPriceBulk() {
-    return this.modalProduct ? this.modalProduct.digitalPriceBulk : null;
+    return this.modalProduct ? this.modalProduct.imageUrl : "";
   }
 
   get modalCurrencyIsoCode() {
-    return this.modalProduct ? this.modalProduct.currencyIsoCode || 'USD' : 'USD';
+    return this.modalProduct
+      ? this.modalProduct.currencyIsoCode || "USD"
+      : "USD";
   }
 
   // Read quantity rules from OOB purchaseQuantityRule returned by the Commerce Products API.
@@ -355,7 +338,8 @@ export default class CustomResults extends LightningElement {
     const rule = this.modalProduct?.purchaseQuantityRule;
     const ruleMax = rule?.maximum ?? rule?.Maximum ?? null;
     // Ignore values > 9999 which indicate "no maximum" in Salesforce (stored as e.g. 100,000,000)
-    if (Number.isFinite(ruleMax) && ruleMax > 0 && ruleMax <= 9999) return ruleMax;
+    if (Number.isFinite(ruleMax) && ruleMax > 0 && ruleMax <= 9999)
+      return ruleMax;
     return 50;
   }
 
@@ -367,8 +351,8 @@ export default class CustomResults extends LightningElement {
   }
 
   get normalizedBaseSearchTerm() {
-    const value = String(this.defaultSearchTerm || '').trim();
-    return !value || value.toLowerCase() === 'all' ? '*' : value;
+    const value = String(this.defaultSearchTerm || "").trim();
+    return !value || value.toLowerCase() === "all" ? "*" : value;
   }
 
   async initialize() {
@@ -377,14 +361,19 @@ export default class CustomResults extends LightningElement {
     try {
       this.filterDefinitions = this.buildFilterDefinitions();
       this.pageSizeValue = this.resolveInitialPageSize();
-      this.stateOptions = [{ label: 'All States', value: '' }, ...US_STATES.map((value) => ({ label: value, value }))];
+      this.stateOptions = [
+        { label: "All States", value: "" },
+        ...US_STATES.map((value) => ({ label: value, value }))
+      ];
       this.selectedState = this.readStateFromStorage();
 
       const initialResponse = await this.loadStateProducts();
       this.stateProducts = initialResponse.products;
       this.rebuildProductIndexes();
 
-      this.filterValueCatalog = this.buildStaticFilterCatalog(initialResponse.facets);
+      this.filterValueCatalog = this.buildStaticFilterCatalog(
+        initialResponse.facets
+      );
       this.rebuildFilterGroups();
       this.applyLocalFiltersAndPagination();
     } catch {
@@ -423,15 +412,15 @@ export default class CustomResults extends LightningElement {
   getHardcodedFilterValues(fieldApiName) {
     const normalized = this.normalizeFieldName(fieldApiName);
 
-    if (normalized === this.normalizeFieldName('Grade_Level__c')) {
+    if (normalized === this.normalizeFieldName("Grade_Level__c")) {
       return GRADE_FILTER_VALUES;
     }
 
-    if (normalized === this.normalizeFieldName('Category__c')) {
+    if (normalized === this.normalizeFieldName("Category__c")) {
       return CATEGORY_FILTER_VALUES;
     }
 
-    if (normalized === this.normalizeFieldName('Series__c')) {
+    if (normalized === this.normalizeFieldName("Series__c")) {
       return SERIES_FILTER_VALUES;
     }
 
@@ -444,7 +433,7 @@ export default class CustomResults extends LightningElement {
     const counts = new Map();
 
     facetList.forEach((facet) => {
-      const facetKey = this.normalizeFieldName(facet?.nameOrId || '');
+      const facetKey = this.normalizeFieldName(facet?.nameOrId || "");
       if (facetKey !== fieldKey) {
         return;
       }
@@ -472,6 +461,7 @@ export default class CustomResults extends LightningElement {
     let facets = [];
 
     for (let page = 0; page < maxPages; page += 1) {
+      // eslint-disable-next-line no-await-in-loop
       const data = await this.fetchSearchResponse(criteria, page, pageSize);
       const pageProducts = this.extractProductList(data);
 
@@ -484,7 +474,7 @@ export default class CustomResults extends LightningElement {
       }
 
       pageProducts.forEach((row) => {
-        const id = String(row?.id || '').trim();
+        const id = String(row?.id || "").trim();
         if (!id || seenIds.has(id)) {
           return;
         }
@@ -507,9 +497,15 @@ export default class CustomResults extends LightningElement {
   }
 
   async loadStateProducts() {
-    const response = await this.fetchAllProducts(this.buildStateSearchCriteria());
-    const hydratedProducts = await this.hydrateProductsWithFields(response.products);
-    const baseProducts = hydratedProducts.map((item) => this.normalizeProduct(item)).filter(Boolean);
+    const response = await this.fetchAllProducts(
+      this.buildStateSearchCriteria()
+    );
+    const hydratedProducts = await this.hydrateProductsWithFields(
+      response.products
+    );
+    const baseProducts = hydratedProducts
+      .map((item) => this.normalizeProduct(item))
+      .filter(Boolean);
     const products = await this.enrichProductsWithPricing(baseProducts);
 
     return {
@@ -520,10 +516,13 @@ export default class CustomResults extends LightningElement {
 
   async fetchSearchResponse(criteria, page, pageSize) {
     try {
-      const response = await fetch(this.buildSearchEndpoint(criteria, page, pageSize), {
-        method: 'GET',
-        credentials: 'include'
-      });
+      const response = await fetch(
+        this.buildSearchEndpoint(criteria, page, pageSize),
+        {
+          method: "GET",
+          credentials: "include"
+        }
+      );
 
       if (!response.ok) {
         return {};
@@ -562,18 +561,11 @@ export default class CustomResults extends LightningElement {
 
       return {
         ...product,
-        currencyIsoCode: priceInfo.currencyIsoCode || product.currencyIsoCode || 'USD',
-        listPrice: priceInfo.listPrice ?? product.listPrice ?? basePrice ?? null,
-        startingPrice: basePrice ?? product.startingPrice ?? null,
-        colorPrice: basePrice ?? product.colorPrice ?? product.listPrice ?? null,
-        colorPriceBulk:
-          product.colorPriceBulk ?? product.colorPrice ?? product.listPrice ?? null,
-        bwPrice: basePrice ?? product.bwPrice ?? product.listPrice ?? null,
-        bwPriceBulk:
-          product.bwPriceBulk ?? product.bwPrice ?? product.listPrice ?? null,
-        digitalPrice: product.digitalPrice ?? basePrice ?? product.listPrice ?? null,
-        digitalPriceBulk:
-          product.digitalPriceBulk ?? product.digitalPrice ?? product.listPrice ?? null
+        currencyIsoCode:
+          priceInfo.currencyIsoCode || product.currencyIsoCode || "USD",
+        listPrice:
+          priceInfo.listPrice ?? product.listPrice ?? basePrice ?? null,
+        startingPrice: basePrice ?? product.startingPrice ?? null
       };
     });
   }
@@ -581,8 +573,8 @@ export default class CustomResults extends LightningElement {
   async fetchPricingForProducts(productIds) {
     try {
       const response = await fetch(this.buildPricingEndpoint(productIds), {
-        method: 'GET',
-        credentials: 'include'
+        method: "GET",
+        credentials: "include"
       });
 
       if (!response.ok) {
@@ -599,7 +591,7 @@ export default class CustomResults extends LightningElement {
   buildPricingEndpoint(productIds) {
     const base = `/${this.storeName || DEFAULT_STORE_NAME}/webruntime/api/services/data/v66.0/commerce/webstores/${this.webStoreId || DEFAULT_WEBSTORE_ID}/pricing/products`;
     const params = new URLSearchParams({
-      productIds: productIds.join(',')
+      productIds: productIds.join(",")
     });
 
     return `${base}?${params.toString()}`;
@@ -607,7 +599,7 @@ export default class CustomResults extends LightningElement {
 
   async hydrateProductsWithFields(products) {
     const ids = toArray(products)
-      .map((item) => String(item?.id || '').trim())
+      .map((item) => String(item?.id || "").trim())
       .filter(Boolean);
 
     if (!ids.length) {
@@ -620,7 +612,7 @@ export default class CustomResults extends LightningElement {
     }
 
     return toArray(products).map((item) => {
-      const hydrated = hydratedMap.get(String(item?.id || '').trim());
+      const hydrated = hydratedMap.get(String(item?.id || "").trim());
       if (!hydrated) {
         return item;
       }
@@ -628,15 +620,22 @@ export default class CustomResults extends LightningElement {
       return {
         ...item,
         ...hydrated,
-        fields: hydrated.fields && Object.keys(hydrated.fields).length
-          ? hydrated.fields
-          : item.fields
+        fields:
+          hydrated.fields && Object.keys(hydrated.fields).length
+            ? hydrated.fields
+            : item.fields
       };
     });
   }
 
   async fetchProductFieldMap(productIds) {
-    const ids = [...new Set(toArray(productIds).map((item) => String(item || '').trim()).filter(Boolean))];
+    const ids = [
+      ...new Set(
+        toArray(productIds)
+          .map((item) => String(item || "").trim())
+          .filter(Boolean)
+      )
+    ];
     if (!ids.length) {
       return new Map();
     }
@@ -645,6 +644,7 @@ export default class CustomResults extends LightningElement {
     const batches = chunkArray(ids, PRODUCT_DETAIL_BATCH_SIZE);
 
     for (const batch of batches) {
+      // eslint-disable-next-line no-await-in-loop
       const batchMap = await this.fetchProductFieldBatch(batch);
       batchMap.forEach((value, key) => {
         merged.set(key, value);
@@ -657,25 +657,30 @@ export default class CustomResults extends LightningElement {
   async fetchProductFieldBatch(productIds) {
     const idParamNames = this.productDetailIdParamName
       ? [this.productDetailIdParamName]
-      : ['ids', 'productIds'];
+      : ["ids", "productIds"];
 
     for (const idParamName of idParamNames) {
       try {
-        const response = await fetch(this.buildProductsEndpoint(productIds, idParamName), {
-          method: 'GET',
-          credentials: 'include'
-        });
+        // eslint-disable-next-line no-await-in-loop
+        const response = await fetch(
+          this.buildProductsEndpoint(productIds, idParamName),
+          {
+            method: "GET",
+            credentials: "include"
+          }
+        );
 
         if (!response.ok) {
           continue;
         }
 
+        // eslint-disable-next-line no-await-in-loop
         const data = await response.json();
         const rows = this.extractProductCollection(data);
         const map = new Map();
 
         rows.forEach((item) => {
-          const id = String(item?.id || '').trim();
+          const id = String(item?.id || "").trim();
           if (id) {
             map.set(id, item);
           }
@@ -696,10 +701,10 @@ export default class CustomResults extends LightningElement {
   buildProductsEndpoint(productIds, idParamName) {
     const base = `/${this.storeName || DEFAULT_STORE_NAME}/webruntime/api/services/data/v66.0/commerce/webstores/${this.webStoreId || DEFAULT_WEBSTORE_ID}/products`;
     const params = new URLSearchParams({
-      [idParamName]: productIds.join(',')
+      [idParamName]: productIds.join(",")
     });
 
-    params.set('fields', PRODUCT_DETAIL_FIELDS.join(','));
+    params.set("fields", PRODUCT_DETAIL_FIELDS.join(","));
 
     return `${base}?${params.toString()}`;
   }
@@ -708,8 +713,8 @@ export default class CustomResults extends LightningElement {
     const base = `/${this.storeName || DEFAULT_STORE_NAME}/webruntime/api/services/data/v66.0/commerce/webstores/${this.webStoreId || DEFAULT_WEBSTORE_ID}/search/products`;
 
     const params = new URLSearchParams({
-      language: 'en-US',
-      asGuest: 'true',
+      language: "en-US",
+      asGuest: "true",
       searchTerm: criteria.searchTerm,
       page: String(page),
       pageSize: String(pageSize)
@@ -719,7 +724,7 @@ export default class CustomResults extends LightningElement {
 
     const fieldList = this.getSearchFields();
     if (fieldList.length) {
-      params.set('fields', fieldList.join(','));
+      params.set("fields", fieldList.join(","));
     }
 
     return `${base}?${params.toString()}`;
@@ -740,25 +745,25 @@ export default class CustomResults extends LightningElement {
   composeRemoteStateSearchTerm() {
     const terms = [];
 
-    if (this.normalizedBaseSearchTerm !== '*') {
+    if (this.normalizedBaseSearchTerm !== "*") {
       terms.push(this.normalizedBaseSearchTerm);
     }
 
     if (this.selectedState) {
       terms.push(this.selectedState);
-    } else if (this.normalizedBaseSearchTerm === '*') {
-      terms.push('all');
+    } else if (this.normalizedBaseSearchTerm === "*") {
+      terms.push("all");
     }
 
     if (!terms.length) {
-      terms.push('all');
+      terms.push("all");
     }
 
     const deduped = [];
     const seen = new Set();
 
     terms.forEach((term) => {
-      const normalized = String(term || '').trim();
+      const normalized = String(term || "").trim();
       if (!normalized) {
         return;
       }
@@ -770,33 +775,35 @@ export default class CustomResults extends LightningElement {
       }
     });
 
-    return deduped.length ? deduped.join(' ') : '*';
+    return deduped.length ? deduped.join(" ") : "*";
   }
 
   getPathSearchToken() {
     if (!globalThis.window?.location?.pathname) {
-      return '';
+      return "";
     }
 
     const path = globalThis.window.location.pathname;
     const markerIndex = path.indexOf(SEARCH_MARKER);
     if (markerIndex < 0) {
-      return '';
+      return "";
     }
 
     const after = path.slice(markerIndex + SEARCH_MARKER.length);
-    const token = (after.split('/')[0] || '').trim();
-    if (!token || token.toLowerCase() === 'all') {
-      return '';
+    const token = (after.split("/")[0] || "").trim();
+    if (!token || token.toLowerCase() === "all") {
+      return "";
     }
 
     return this.decodeSearchPathSegment(token);
   }
 
   decodeSearchPathSegment(value) {
-    let decoded = String(value || '').replaceAll('+', ' ').trim();
+    let decoded = String(value || "")
+      .replaceAll("+", " ")
+      .trim();
     if (!decoded) {
-      return '';
+      return "";
     }
 
     for (let attempt = 0; attempt < 3; attempt += 1) {
@@ -806,7 +813,7 @@ export default class CustomResults extends LightningElement {
           break;
         }
 
-        decoded = nextValue.replaceAll('+', ' ').trim();
+        decoded = nextValue.replaceAll("+", " ").trim();
       } catch {
         break;
       }
@@ -822,7 +829,8 @@ export default class CustomResults extends LightningElement {
 
   getCombinedSearchTokens() {
     const tokens = [];
-    const routeSearchText = this.currentPathSearchToken || this.getPathSearchToken();
+    const routeSearchText =
+      this.currentPathSearchToken || this.getPathSearchToken();
 
     if (routeSearchText) {
       tokens.push(...this.tokenizeSearchText(routeSearchText));
@@ -836,7 +844,7 @@ export default class CustomResults extends LightningElement {
   }
 
   getCurrentHref() {
-    return globalThis.window?.location?.href ?? '';
+    return globalThis.window?.location?.href ?? "";
   }
 
   startUrlWatcher() {
@@ -893,13 +901,19 @@ export default class CustomResults extends LightningElement {
 
   applyRefinementsToParams(params, refinementMap) {
     Object.entries(refinementMap || {}).forEach(([field, values]) => {
-      const uniqueValues = [...new Set(toArray(values).map((item) => String(item).trim()).filter(Boolean))];
+      const uniqueValues = [
+        ...new Set(
+          toArray(values)
+            .map((item) => String(item).trim())
+            .filter(Boolean)
+        )
+      ];
       if (!field || !uniqueValues.length) {
         return;
       }
 
       uniqueValues.forEach((value) => {
-        params.append('refinement', `${field}:${value}`);
+        params.append("refinement", `${field}:${value}`);
       });
     });
   }
@@ -930,66 +944,34 @@ export default class CustomResults extends LightningElement {
   }
 
   normalizeProduct(item) {
-    const id = String(item?.id || '').trim();
+    const id = String(item?.id || "").trim();
     if (!id) {
       return null;
     }
 
-    const name = String(item?.name || '').trim() || 'Untitled';
+    const name = String(item?.name || "").trim() || "Untitled";
     const imageUrl = this.resolveProductImageUrl(item);
     const sku = this.resolveStockKeepingUnit(item);
     const currencyIsoCode = this.resolveCurrencyIsoCode(item);
 
     const listPrice = this.resolvePrice(item, [
-      'prices.listPrice',
-      'prices.pricebookPrice',
-      'fields.Price__c',
-      'price'
+      "prices.listPrice",
+      "prices.pricebookPrice",
+      "fields.Price__c",
+      "price"
     ]);
     const salesPrice = this.resolvePrice(item, [
-      'prices.salesPrice',
-      'prices.unitPrice',
-      'prices.unitAdjustedPrice',
-      'price'
+      "prices.salesPrice",
+      "prices.unitPrice",
+      "prices.unitAdjustedPrice",
+      "price"
     ]);
     const negotiatedPrice = this.resolvePrice(item, [
-      'prices.negotiatedPrice',
-      'prices.unitPrice',
-      'prices.salesPrice'
+      "prices.negotiatedPrice",
+      "prices.unitPrice",
+      "prices.salesPrice"
     ]);
     const startingPrice = negotiatedPrice ?? salesPrice ?? listPrice ?? null;
-    const colorPrice = this.resolvePrice(item, [
-      'fields.Color_Price__c',
-      'fields.ColorPrice__c',
-      'fields.Color_Print_Digital_Price__c'
-    ]);
-    const colorPriceBulk = this.resolvePrice(item, [
-      'fields.Color_Price_25__c',
-      'fields.ColorPrice25__c',
-      'fields.Color_Print_Digital_Price_25__c'
-    ]);
-    const bwPrice = this.resolvePrice(item, [
-      'fields.BW_Price__c',
-      'fields.BwPrice__c',
-      'fields.Black_White_Price__c',
-      'fields.BW_Print_Digital_Price__c'
-    ]);
-    const bwPriceBulk = this.resolvePrice(item, [
-      'fields.BW_Price_25__c',
-      'fields.BwPrice25__c',
-      'fields.Black_White_Price_25__c',
-      'fields.BW_Print_Digital_Price_25__c'
-    ]);
-    const digitalPrice = this.resolvePrice(item, [
-      'fields.Digital_Price__c',
-      'fields.DigitalPrice__c',
-      'fields.Digital_Only_Price__c'
-    ]);
-    const digitalPriceBulk = this.resolvePrice(item, [
-      'fields.Digital_Price_25__c',
-      'fields.DigitalPrice25__c',
-      'fields.Digital_Only_Price_25__c'
-    ]);
     const filterValues = this.buildProductFilterValues(item);
     const searchTerms = this.buildProductSearchTerms(item, {
       sku,
@@ -1002,17 +984,11 @@ export default class CustomResults extends LightningElement {
       name,
       sku,
       isbn: sku,
-      urlName: String(item?.urlName || item?.slug || '').trim(),
+      urlName: String(item?.urlName || item?.slug || "").trim(),
       imageUrl,
       currencyIsoCode,
       listPrice,
       startingPrice,
-      colorPrice: colorPrice ?? startingPrice,
-      colorPriceBulk: colorPriceBulk ?? colorPrice ?? listPrice ?? startingPrice,
-      bwPrice: bwPrice ?? startingPrice,
-      bwPriceBulk: bwPriceBulk ?? bwPrice ?? listPrice ?? startingPrice,
-      digitalPrice: digitalPrice ?? startingPrice,
-      digitalPriceBulk: digitalPriceBulk ?? digitalPrice ?? listPrice ?? startingPrice,
       filterValues,
       searchTerms
     };
@@ -1020,13 +996,13 @@ export default class CustomResults extends LightningElement {
 
   buildProductFilterValues(item) {
     const gradeValues = this.resolveProductTextValues(item, [
-      'fields.Grade_Level__c'
+      "fields.Grade_Level__c"
     ]);
     const categoryValues = this.resolveProductTextValues(item, [
-      'fields.Category__c'
+      "fields.Category__c"
     ]);
     const seriesValues = this.resolveProductTextValues(item, [
-      'fields.Series__c'
+      "fields.Series__c"
     ]);
 
     return {
@@ -1047,7 +1023,7 @@ export default class CustomResults extends LightningElement {
   }
 
   collectResolvedText(value, values) {
-    if (value === null || value === undefined || value === '') {
+    if (value === null || value === undefined || value === "") {
       return;
     }
 
@@ -1056,18 +1032,20 @@ export default class CustomResults extends LightningElement {
       return;
     }
 
-    if (typeof value === 'object') {
-      if (typeof value.displayValue === 'string' && value.displayValue.trim()) {
+    if (typeof value === "object") {
+      if (typeof value.displayValue === "string" && value.displayValue.trim()) {
         values.push(value.displayValue.trim().toLowerCase());
         return;
       }
 
-      if (typeof value.value === 'string' && value.value.trim()) {
+      if (typeof value.value === "string" && value.value.trim()) {
         values.push(value.value.trim().toLowerCase());
         return;
       }
 
-      Object.values(value).forEach((entry) => this.collectResolvedText(entry, values));
+      Object.values(value).forEach((entry) =>
+        this.collectResolvedText(entry, values)
+      );
       return;
     }
 
@@ -1079,19 +1057,19 @@ export default class CustomResults extends LightningElement {
 
   resolveCurrencyIsoCode(item) {
     const resolved = this.firstString([
-      this.resolveByPath(item, 'prices.currencyIsoCode'),
-      this.resolveByPath(item, 'fields.CurrencyIsoCode'),
+      this.resolveByPath(item, "prices.currencyIsoCode"),
+      this.resolveByPath(item, "fields.CurrencyIsoCode"),
       item?.currencyIsoCode
     ]);
 
-    return resolved || 'USD';
+    return resolved || "USD";
   }
 
   resolveStockKeepingUnit(item) {
     return this.firstString([
       item?.sku,
       item?.stockKeepingUnit,
-      this.resolveByPath(item, 'fields.StockKeepingUnit')
+      this.resolveByPath(item, "fields.StockKeepingUnit")
     ]);
   }
 
@@ -1103,25 +1081,25 @@ export default class CustomResults extends LightningElement {
     this.collectSearchText(item?.name, parts);
     this.collectSearchText(context?.sku, parts);
     this.collectSearchText(item?.urlName, parts);
-    this.collectSearchText(this.resolveByPath(item, 'fields.Name'), parts);
-    this.collectSearchText(this.resolveByPath(item, 'fields.State__c'), parts);
+    this.collectSearchText(this.resolveByPath(item, "fields.Name"), parts);
+    this.collectSearchText(this.resolveByPath(item, "fields.State__c"), parts);
     this.collectSearchText(filterValues.Grade_Level__c, parts);
     this.collectSearchText(categoryValues, parts);
     this.collectSearchText(filterValues.Series__c, parts);
 
     categoryValues.forEach((value) => {
-      if (value === 'math') {
-        parts.push('mathematics');
-      } else if (value === 'english') {
-        parts.push('english language arts', 'ela');
+      if (value === "math") {
+        parts.push("mathematics");
+      } else if (value === "english") {
+        parts.push("english language arts", "ela");
       }
     });
 
-    return this.tokenizeSearchText(parts.join(' '));
+    return this.tokenizeSearchText(parts.join(" "));
   }
 
   collectSearchText(value, parts) {
-    if (value === null || value === undefined || value === '') {
+    if (value === null || value === undefined || value === "") {
       return;
     }
 
@@ -1130,18 +1108,20 @@ export default class CustomResults extends LightningElement {
       return;
     }
 
-    if (typeof value === 'object') {
-      if (typeof value.displayValue === 'string' && value.displayValue.trim()) {
+    if (typeof value === "object") {
+      if (typeof value.displayValue === "string" && value.displayValue.trim()) {
         parts.push(value.displayValue.trim());
         return;
       }
 
-      if (typeof value.value === 'string' && value.value.trim()) {
+      if (typeof value.value === "string" && value.value.trim()) {
         parts.push(value.value.trim());
         return;
       }
 
-      Object.values(value).forEach((entry) => this.collectSearchText(entry, parts));
+      Object.values(value).forEach((entry) =>
+        this.collectSearchText(entry, parts)
+      );
       return;
     }
 
@@ -1152,9 +1132,9 @@ export default class CustomResults extends LightningElement {
   }
 
   normalizeSearchText(value) {
-    return String(value || '')
+    return String(value || "")
       .toLowerCase()
-      .replaceAll(/[^a-z0-9]+/g, ' ')
+      .replaceAll(/[^a-z0-9]+/g, " ")
       .trim();
   }
 
@@ -1165,14 +1145,18 @@ export default class CustomResults extends LightningElement {
 
   rebuildFilterGroups() {
     this.filterGroups = this.filterDefinitions.map((definition) => {
-      const selected = new Set(this.selectedFiltersByField[definition.key] || []);
-      const options = (this.filterValueCatalog[definition.key] || []).map((entry) => ({
-        key: `${definition.key}-${entry.value}`,
-        value: entry.value,
-        label: entry.value,
-        count: entry.count,
-        checked: selected.has(entry.value)
-      }));
+      const selected = new Set(
+        this.selectedFiltersByField[definition.key] || []
+      );
+      const options = (this.filterValueCatalog[definition.key] || []).map(
+        (entry) => ({
+          key: `${definition.key}-${entry.value}`,
+          value: entry.value,
+          label: entry.value,
+          count: entry.count,
+          checked: selected.has(entry.value)
+        })
+      );
 
       const isExpanded = !this.collapsedByField[definition.key];
       return {
@@ -1180,8 +1164,8 @@ export default class CustomResults extends LightningElement {
         label: definition.label,
         collapsed: Boolean(this.collapsedByField[definition.key]),
         expanded: isExpanded,
-        ariaExpanded: isExpanded ? 'true' : 'false',
-        toggleSymbol: this.collapsedByField[definition.key] ? '+' : '−',
+        ariaExpanded: isExpanded ? "true" : "false",
+        toggleSymbol: this.collapsedByField[definition.key] ? "+" : "−",
         options,
         showEmpty: !options.length
       };
@@ -1197,7 +1181,7 @@ export default class CustomResults extends LightningElement {
     });
 
     this.stateProducts.forEach((product) => {
-      const productId = String(product?.id || '').trim();
+      const productId = String(product?.id || "").trim();
       if (!productId) {
         return;
       }
@@ -1206,9 +1190,13 @@ export default class CustomResults extends LightningElement {
 
       this.filterDefinitions.forEach((definition) => {
         const fieldMap = this.filterIndexByField[definition.key];
-        const values = toArray(product?.filterValues?.[definition.key]).map((value) =>
-          String(value || '').trim().toLowerCase()
-        ).filter(Boolean);
+        const values = toArray(product?.filterValues?.[definition.key])
+          .map((value) =>
+            String(value || "")
+              .trim()
+              .toLowerCase()
+          )
+          .filter(Boolean);
 
         values.forEach((value) => {
           const existing = fieldMap.get(value) || new Set();
@@ -1230,7 +1218,11 @@ export default class CustomResults extends LightningElement {
 
     this.filterDefinitions.forEach((definition) => {
       const selectedValues = (this.selectedFiltersByField[definition.key] || [])
-        .map((value) => String(value || '').trim().toLowerCase())
+        .map((value) =>
+          String(value || "")
+            .trim()
+            .toLowerCase()
+        )
         .filter(Boolean);
 
       if (!selectedValues.length) {
@@ -1257,18 +1249,21 @@ export default class CustomResults extends LightningElement {
       candidateIds = this.intersectSets(candidateIds, fieldMatches);
     });
 
-    const products = candidateIds === null
-      ? [...this.stateProducts]
-      : Array.from(candidateIds)
-        .map((id) => this.productById.get(id))
-        .filter(Boolean);
+    const products =
+      candidateIds === null
+        ? [...this.stateProducts]
+        : Array.from(candidateIds)
+            .map((id) => this.productById.get(id))
+            .filter(Boolean);
 
     if (!searchTokens.length) {
       return products;
     }
 
     return products.filter((product) => {
-      return searchTokens.every((token) => this.productMatchesSearchToken(product, token));
+      return searchTokens.every((token) =>
+        this.productMatchesSearchToken(product, token)
+      );
     });
   }
 
@@ -1288,10 +1283,19 @@ export default class CustomResults extends LightningElement {
     }
 
     if (normalizedToken.length <= 2) {
-      return terms.some((term) => term === normalizedToken || term.startsWith(normalizedToken));
+      return terms.some(
+        (term) => term === normalizedToken || term.startsWith(normalizedToken)
+      );
     }
 
-    if (terms.some((term) => term === normalizedToken || term.startsWith(normalizedToken) || term.includes(normalizedToken))) {
+    if (
+      terms.some(
+        (term) =>
+          term === normalizedToken ||
+          term.startsWith(normalizedToken) ||
+          term.includes(normalizedToken)
+      )
+    ) {
       return true;
     }
 
@@ -1354,7 +1358,10 @@ export default class CustomResults extends LightningElement {
           left[row - 1] === right[col - 2] &&
           left[row - 2] === right[col - 1]
         ) {
-          matrix[row][col] = Math.min(matrix[row][col], matrix[row - 2][col - 2] + 1);
+          matrix[row][col] = Math.min(
+            matrix[row][col],
+            matrix[row - 2][col - 2] + 1
+          );
         }
       }
     }
@@ -1369,7 +1376,8 @@ export default class CustomResults extends LightningElement {
       return result;
     }
 
-    const [smaller, larger] = left.size <= right.size ? [left, right] : [right, left];
+    const [smaller, larger] =
+      left.size <= right.size ? [left, right] : [right, left];
     smaller.forEach((value) => {
       if (larger.has(value)) {
         result.add(value);
@@ -1388,7 +1396,10 @@ export default class CustomResults extends LightningElement {
       this.pageSizeValue = pageSizes[0] || DEFAULT_PAGE_SIZE;
     }
 
-    this.totalPages = Math.max(1, Math.ceil(this.totalResults / this.pageSizeValue));
+    this.totalPages = Math.max(
+      1,
+      Math.ceil(this.totalResults / this.pageSizeValue)
+    );
     this.currentPage = Math.min(Math.max(this.currentPage, 1), this.totalPages);
 
     if (!this.totalResults) {
@@ -1407,17 +1418,23 @@ export default class CustomResults extends LightningElement {
     this.visibleProducts = sorted.slice(start, end).map((product) => ({
       ...product,
       productUrl: this.buildProductDetailPath(product),
-      priceLabel: this.formatCurrency(product.startingPrice, product.currencyIsoCode),
-      cardClass: this.viewMode === 'list' ? 'product-card product-card-list' : 'product-card'
+      priceLabel: this.formatCurrency(
+        product.startingPrice,
+        product.currencyIsoCode
+      ),
+      cardClass:
+        this.viewMode === "list"
+          ? "product-card product-card-list"
+          : "product-card"
     }));
   }
 
   sortProducts(products) {
     const sorted = [...products];
 
-    if (this.sortValue === 'name-asc') {
+    if (this.sortValue === "name-asc") {
       sorted.sort((a, b) => a.name.localeCompare(b.name));
-    } else if (this.sortValue === 'name-desc') {
+    } else if (this.sortValue === "name-desc") {
       sorted.sort((a, b) => b.name.localeCompare(a.name));
     }
 
@@ -1460,7 +1477,7 @@ export default class CustomResults extends LightningElement {
   }
 
   handleSearchInput(event) {
-    const nextValue = event?.target?.value ?? event?.detail?.value ?? '';
+    const nextValue = event?.target?.value ?? event?.detail?.value ?? "";
     this.searchText = String(nextValue);
     if (this.tokenizeSearchText(this.searchText).length) {
       this.clearSelectedFilters();
@@ -1470,7 +1487,7 @@ export default class CustomResults extends LightningElement {
   }
 
   handleSearchKeydown(event) {
-    if (event?.key !== 'Enter') {
+    if (event?.key !== "Enter") {
       return;
     }
 
@@ -1479,7 +1496,7 @@ export default class CustomResults extends LightningElement {
   }
 
   async handleStateChange(event) {
-    this.selectedState = String(event?.detail?.value || '').trim();
+    this.selectedState = String(event?.detail?.value || "").trim();
     this.writeStateToStorage(this.selectedState);
     this.updateResultsUrlForState(this.selectedState);
     this.clearSelectedFilters();
@@ -1488,7 +1505,7 @@ export default class CustomResults extends LightningElement {
   }
 
   handleSortChange(event) {
-    this.sortValue = event?.detail?.value || 'relevance';
+    this.sortValue = event?.detail?.value || "relevance";
     this.currentPage = 1;
     this.applyPaginationAndSort();
   }
@@ -1505,7 +1522,7 @@ export default class CustomResults extends LightningElement {
 
   handleViewMode(event) {
     const mode = event?.currentTarget?.dataset?.mode;
-    if (!mode || (mode !== 'grid' && mode !== 'list')) {
+    if (!mode || (mode !== "grid" && mode !== "list")) {
       return;
     }
 
@@ -1575,7 +1592,11 @@ export default class CustomResults extends LightningElement {
       return null;
     }
 
-    return this.productById.get(productId) || this.products.find((item) => item.id === productId) || null;
+    return (
+      this.productById.get(productId) ||
+      this.products.find((item) => item.id === productId) ||
+      null
+    );
   }
 
   handleQuickShop(event) {
@@ -1589,19 +1610,35 @@ export default class CustomResults extends LightningElement {
     }
 
     this.modalProduct = product;
+    this.modalVariationPricing = null;
     this.isModalOpen = true;
 
     globalThis.window.requestAnimationFrame(() => {
-      const modal = this.template.querySelector('c-quick-shop-modal');
-      if (modal && typeof modal.open === 'function') {
+      const modal = this.template.querySelector("c-quick-shop-modal");
+      if (modal && typeof modal.open === "function") {
         modal.open();
       }
     });
+
+    this.loadVariationPricing(productId);
+  }
+
+  async loadVariationPricing(productId) {
+    try {
+      const result = await getVariationPricing({
+        productId,
+        webStoreId: this.webStoreId || DEFAULT_WEBSTORE_ID
+      });
+      this.modalVariationPricing = result;
+    } catch (error) {
+      console.warn("Failed to load variation pricing.", error);
+    }
   }
 
   handleModalClose() {
     this.isModalOpen = false;
     this.modalProduct = null;
+    this.modalVariationPricing = null;
   }
 
   handleViewDetails() {
@@ -1609,17 +1646,21 @@ export default class CustomResults extends LightningElement {
       return;
     }
 
-    globalThis.window.location.href = this.buildProductDetailPath(this.modalProduct);
+    globalThis.window.location.href = this.buildProductDetailPath(
+      this.modalProduct
+    );
   }
 
   async handleAddToCart(event) {
-    const productId = this.modalProduct?.id || '';
+    // Use the variation child product ID from the modal event if available
+    const productId = event?.detail?.productId || this.modalProduct?.id || "";
     if (!productId) {
       return;
     }
 
     const requestedQty = Number.parseInt(event?.detail?.quantity, 10);
-    const quantity = Number.isFinite(requestedQty) && requestedQty > 0 ? requestedQty : 1;
+    const quantity =
+      Number.isFinite(requestedQty) && requestedQty > 0 ? requestedQty : 1;
 
     const added = await this.addProductToCart(productId, quantity);
     if (added) {
@@ -1631,18 +1672,21 @@ export default class CustomResults extends LightningElement {
     const payload = {
       productId,
       quantity,
-      type: 'Product'
+      type: "Product"
     };
 
     try {
-      const response = await fetch(this.buildAddToCartEndpoint(this.cartStateOrId || 'current'), {
-        method: 'POST',
-        credentials: 'include',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(payload)
-      });
+      const response = await fetch(
+        this.buildAddToCartEndpoint(this.cartStateOrId || "current"),
+        {
+          method: "POST",
+          credentials: "include",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(payload)
+        }
+      );
 
       return response.ok;
     } catch {
@@ -1655,10 +1699,14 @@ export default class CustomResults extends LightningElement {
   }
 
   resolveProductImageUrl(item) {
-    const candidates = [item?.defaultImage?.url, item?.image?.url, item?.imageUrl];
+    const candidates = [
+      item?.defaultImage?.url,
+      item?.image?.url,
+      item?.imageUrl
+    ];
 
     for (const candidate of candidates) {
-      if (typeof candidate === 'string' && candidate.trim()) {
+      if (typeof candidate === "string" && candidate.trim()) {
         return this.normalizeImageUrl(candidate.trim());
       }
     }
@@ -1668,35 +1716,37 @@ export default class CustomResults extends LightningElement {
       const mediaItems = toArray(group?.mediaItems);
       for (const mediaItem of mediaItems) {
         const url = mediaItem?.url || mediaItem?.image?.url;
-        if (typeof url === 'string' && url.trim()) {
+        if (typeof url === "string" && url.trim()) {
           return this.normalizeImageUrl(url.trim());
         }
       }
     }
 
-    return '';
+    return "";
   }
 
   normalizeImageUrl(url) {
-    const value = String(url || '').trim().replaceAll(/\s/g, '%20');
+    const value = String(url || "")
+      .trim()
+      .replaceAll(/\s/g, "%20");
     if (!value) {
-      return '';
+      return "";
     }
 
     if (/^(https?:|data:)/i.test(value)) {
       return value;
     }
 
-    if (value.startsWith('//')) {
+    if (value.startsWith("//")) {
       return `https:${value}`;
     }
 
     if (globalThis.window?.location?.origin) {
-      if (value.startsWith('/')) {
+      if (value.startsWith("/")) {
         return `${globalThis.window.location.origin}${value}`;
       }
 
-      return `${globalThis.window.location.origin}/${value.replace(/^\/+/, '')}`;
+      return `${globalThis.window.location.origin}/${value.replace(/^\/+/, "")}`;
     }
 
     return value;
@@ -1704,16 +1754,23 @@ export default class CustomResults extends LightningElement {
 
   readStateFromStorage() {
     try {
-      const value = String(globalThis.window.localStorage.getItem(this.stateStorageKey || DEFAULT_STATE_STORAGE_KEY) || '').trim();
-      return US_STATES.includes(value) ? value : '';
+      const value = String(
+        globalThis.window.localStorage.getItem(
+          this.stateStorageKey || DEFAULT_STATE_STORAGE_KEY
+        ) || ""
+      ).trim();
+      return US_STATES.includes(value) ? value : "";
     } catch {
-      return '';
+      return "";
     }
   }
 
   writeStateToStorage(value) {
     try {
-      globalThis.window.localStorage.setItem(this.stateStorageKey || DEFAULT_STATE_STORAGE_KEY, value || '');
+      globalThis.window.localStorage.setItem(
+        this.stateStorageKey || DEFAULT_STATE_STORAGE_KEY,
+        value || ""
+      );
     } catch {
       // no-op
     }
@@ -1724,44 +1781,49 @@ export default class CustomResults extends LightningElement {
       return;
     }
 
-    const nextToken = String(stateValue || '').trim() || 'all';
-    const currentPath = globalThis.window.location?.pathname || '';
+    const nextToken = String(stateValue || "").trim() || "all";
+    const currentPath = globalThis.window.location?.pathname || "";
     const markerIndex = currentPath.indexOf(SEARCH_MARKER);
-    const basePath = markerIndex >= 0
-      ? currentPath.slice(0, markerIndex + SEARCH_MARKER.length)
-      : `/${this.storeName || DEFAULT_STORE_NAME}${SEARCH_MARKER}`;
+    const basePath =
+      markerIndex >= 0
+        ? currentPath.slice(0, markerIndex + SEARCH_MARKER.length)
+        : `/${this.storeName || DEFAULT_STORE_NAME}${SEARCH_MARKER}`;
     const nextPath = `${basePath}${encodeURIComponent(nextToken)}`;
 
-    if (currentPath === nextPath && !globalThis.window.location?.search && !globalThis.window.location?.hash) {
-      this.currentPathSearchToken = nextToken === 'all' ? '' : nextToken;
+    if (
+      currentPath === nextPath &&
+      !globalThis.window.location?.search &&
+      !globalThis.window.location?.hash
+    ) {
+      this.currentPathSearchToken = nextToken === "all" ? "" : nextToken;
       this.lastObservedHref = this.getCurrentHref();
       return;
     }
 
-    globalThis.window.history.pushState({}, '', nextPath);
-    this.currentPathSearchToken = nextToken === 'all' ? '' : nextToken;
+    globalThis.window.history.pushState({}, "", nextPath);
+    this.currentPathSearchToken = nextToken === "all" ? "" : nextToken;
     this.lastObservedHref = this.getCurrentHref();
   }
 
   buildProductDetailPath(product) {
-    const source = product?.urlName || product?.name || 'detail';
+    const source = product?.urlName || product?.name || "detail";
     const slug = String(source)
       .toLowerCase()
-      .replaceAll(/[^a-z0-9]+/g, '-')
-      .replaceAll(/^-+|-+$/g, '');
+      .replaceAll(/[^a-z0-9]+/g, "-")
+      .replaceAll(/^-+|-+$/g, "");
 
-    return `/${this.storeName || DEFAULT_STORE_NAME}/product/${slug || 'detail'}/${product.id}`;
+    return `/${this.storeName || DEFAULT_STORE_NAME}/product/${slug || "detail"}/${product.id}`;
   }
 
   formatCurrency(amount, currencyIsoCode) {
     if (!Number.isFinite(amount)) {
-      return '—';
+      return "—";
     }
 
     try {
-      return new Intl.NumberFormat('en-US', {
-        style: 'currency',
-        currency: currencyIsoCode || 'USD',
+      return new Intl.NumberFormat("en-US", {
+        style: "currency",
+        currency: currencyIsoCode || "USD",
         minimumFractionDigits: 2,
         maximumFractionDigits: 2
       }).format(amount);
@@ -1775,7 +1837,9 @@ export default class CustomResults extends LightningElement {
       .map((item) => Number.parseInt(item, 10))
       .filter((item) => Number.isFinite(item) && item > 0);
 
-    return values.length ? [...new Set(values)].sort((a, b) => a - b) : [20, 40, 60];
+    return values.length
+      ? [...new Set(values)].sort((a, b) => a - b)
+      : [20, 40, 60];
   }
 
   resolveInitialPageSize() {
@@ -1798,23 +1862,25 @@ export default class CustomResults extends LightningElement {
   }
 
   humanizeApiName(value) {
-    const normalized = String(value || '').replace(/__c$/, '');
-    return normalized
-      .split('_')
-      .filter(Boolean)
-      .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
-      .join(' ') || 'Filter';
+    const normalized = String(value || "").replace(/__c$/, "");
+    return (
+      normalized
+        .split("_")
+        .filter(Boolean)
+        .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+        .join(" ") || "Filter"
+    );
   }
 
   normalizeFieldName(value) {
-    return String(value || '')
+    return String(value || "")
       .trim()
       .toLowerCase()
-      .replaceAll(/[^a-z0-9]/g, '');
+      .replaceAll(/[^a-z0-9]/g, "");
   }
 
   extractPricingMap(data) {
-    const root = data && typeof data === 'object' ? data : {};
+    const root = data && typeof data === "object" ? data : {};
     let rows;
     if (Array.isArray(root.pricingLineItemResults)) {
       rows = root.pricingLineItemResults;
@@ -1832,7 +1898,7 @@ export default class CustomResults extends LightningElement {
           row?.pricingLineItem?.productId ||
           row?.product?.id ||
           row?.product?.productId ||
-          ''
+          ""
       ).trim();
 
       if (!productId) {
@@ -1840,11 +1906,27 @@ export default class CustomResults extends LightningElement {
       }
 
       pricingByProductId.set(productId, {
-        currencyIsoCode: this.firstString([row?.currencyIsoCode, root?.currencyIsoCode]) || 'USD',
-        listPrice: this.resolvePrice(row, ['listPrice', 'pricebookPrice', 'listUnitPrice']),
-        salesPrice: this.resolvePrice(row, ['salesPrice', 'unitPrice', 'unitAdjustedPrice', 'price']),
-        negotiatedPrice: this.resolvePrice(row, ['negotiatedPrice']),
-        unitPrice: this.resolvePrice(row, ['unitPrice', 'salesPrice', 'unitAdjustedPrice', 'price'])
+        currencyIsoCode:
+          this.firstString([row?.currencyIsoCode, root?.currencyIsoCode]) ||
+          "USD",
+        listPrice: this.resolvePrice(row, [
+          "listPrice",
+          "pricebookPrice",
+          "listUnitPrice"
+        ]),
+        salesPrice: this.resolvePrice(row, [
+          "salesPrice",
+          "unitPrice",
+          "unitAdjustedPrice",
+          "price"
+        ]),
+        negotiatedPrice: this.resolvePrice(row, ["negotiatedPrice"]),
+        unitPrice: this.resolvePrice(row, [
+          "unitPrice",
+          "salesPrice",
+          "unitAdjustedPrice",
+          "price"
+        ])
       });
     }
 
@@ -1868,8 +1950,8 @@ export default class CustomResults extends LightningElement {
       return undefined;
     }
 
-    return path.split('.').reduce((acc, key) => {
-      if (acc && typeof acc === 'object' && key in acc) {
+    return path.split(".").reduce((acc, key) => {
+      if (acc && typeof acc === "object" && key in acc) {
         return acc[key];
       }
 
@@ -1878,45 +1960,48 @@ export default class CustomResults extends LightningElement {
   }
 
   toNumber(value) {
-    if (value === null || value === undefined || value === '') {
+    if (value === null || value === undefined || value === "") {
       return null;
     }
 
-    if (typeof value === 'number') {
+    if (typeof value === "number") {
       return Number.isFinite(value) ? value : null;
     }
 
-    if (typeof value === 'object') {
-      if (typeof value.amount === 'number' && Number.isFinite(value.amount)) {
+    if (typeof value === "object") {
+      if (typeof value.amount === "number" && Number.isFinite(value.amount)) {
         return value.amount;
       }
 
-      if (typeof value.value === 'number' && Number.isFinite(value.value)) {
+      if (typeof value.value === "number" && Number.isFinite(value.value)) {
         return value.value;
       }
     }
 
-    const parsed = Number(String(value).replaceAll(/[^0-9.-]/g, ''));
+    const parsed = Number(String(value).replaceAll(/[^0-9.-]/g, ""));
     return Number.isFinite(parsed) ? parsed : null;
   }
 
   firstString(values) {
     for (const value of values || []) {
-      if (typeof value === 'string' && value.trim()) {
+      if (typeof value === "string" && value.trim()) {
         return value.trim();
       }
 
-      if (value && typeof value === 'object') {
-        if (typeof value.value === 'string' && value.value.trim()) {
+      if (value && typeof value === "object") {
+        if (typeof value.value === "string" && value.value.trim()) {
           return value.value.trim();
         }
 
-        if (typeof value.displayValue === 'string' && value.displayValue.trim()) {
+        if (
+          typeof value.displayValue === "string" &&
+          value.displayValue.trim()
+        ) {
           return value.displayValue.trim();
         }
       }
     }
 
-    return '';
+    return "";
   }
 }

@@ -3,63 +3,128 @@
     <template if:true={loading}>
       <div class="loading-overlay" aria-live="polite" aria-busy="true">
         <div class="loading-panel">
-          <lightning-spinner alternative-text="Loading products" size="medium"></lightning-spinner>
+          <lightning-spinner
+            alternative-text="Loading products"
+            size="medium"
+          ></lightning-spinner>
         </div>
       </div>
     </template>
 
-    <div style="width: 100%;display: flex; flex-direction: column; margin-bottom: 8em;">
-      <h1 style="font-weight: 700;font-size: 2.25rem;">Shop All</h1>
-      <div style="text-align: center;font-size: 1.875rem;">Need to download a quote? Add items to your cart to begin.
+    <div
+      style="
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        margin-bottom: 8em;
+      "
+    >
+      <h1 style="font-weight: 700; font-size: 2.25rem">Shop All</h1>
+      <div style="text-align: center; font-size: 1.875rem">
+        Need to download a quote? Add items to your cart to begin.
       </div>
     </div>
 
     <div class="top-controls">
       <div class="left-controls">
-        <div style="display: flex; flex-direction: row;gap:8em">
+        <div style="display: flex; flex-direction: row; gap: 8em">
           <div class="search-box">
-            <input type="search" placeholder="Search..." value={searchText} onkeydown={handleSearchKeydown}
-              oninput={handleSearchInput} onchange={handleSearchInput} />
+            <input
+              type="search"
+              placeholder="Search..."
+              value={searchText}
+              onkeydown={handleSearchKeydown}
+              oninput={handleSearchInput}
+              onchange={handleSearchInput}
+            />
             <span class="search-icon">
               <svg viewBox="0 0 24 24" aria-hidden="true">
                 <circle cx="11" cy="11" r="7"></circle>
                 <line x1="16.65" y1="16.65" x2="21" y2="21"></line>
               </svg>
             </span>
-
           </div>
           <p class="results-summary">{resultsSummary}</p>
         </div>
-        <div style="display: block; width: 40%;">
-          <lightning-combobox variant="label-hidden" value={selectedState} options={stateOptions}
-            onchange={handleStateChange}>
+        <div style="display: block; width: 40%">
+          <lightning-combobox
+            variant="label-hidden"
+            value={selectedState}
+            options={stateOptions}
+            onchange={handleStateChange}
+          >
           </lightning-combobox>
-          
         </div>
       </div>
-<!-- state-control -->
+      <!-- state-control -->
       <div class="right-controls">
-        <lightning-combobox class="sort-control" variant="label-hidden" value={sortValue} options={sortOptions}
-          onchange={handleSortChange}>
+        <lightning-combobox
+          class="sort-control"
+          variant="label-hidden"
+          value={sortValue}
+          options={sortOptions}
+          onchange={handleSortChange}
+        >
         </lightning-combobox>
 
-        <lightning-combobox class="page-size-control" variant="label-hidden" value={pageSizeValueString}
-          options={pageSizeOptionsList} onchange={handlePageSizeChange}>
+        <lightning-combobox
+          class="page-size-control"
+          variant="label-hidden"
+          value={pageSizeValueString}
+          options={pageSizeOptionsList}
+          onchange={handlePageSizeChange}
+        >
         </lightning-combobox>
 
         <fieldset class="view-toggle">
           <legend class="slds-assistive-text">View mode</legend>
           <template if:true={isGridView}>
-            <button type="button" class="view-btn" data-mode="grid" aria-pressed="true" onclick={handleViewMode} title="Grid view">⊞</button>
+            <button
+              type="button"
+              class="view-btn"
+              data-mode="grid"
+              aria-pressed="true"
+              onclick={handleViewMode}
+              title="Grid view"
+            >
+              ⊞
+            </button>
           </template>
           <template if:false={isGridView}>
-            <button type="button" class="view-btn" data-mode="grid" aria-pressed="false" onclick={handleViewMode} title="Grid view">⊞</button>
+            <button
+              type="button"
+              class="view-btn"
+              data-mode="grid"
+              aria-pressed="false"
+              onclick={handleViewMode}
+              title="Grid view"
+            >
+              ⊞
+            </button>
           </template>
           <template if:true={isListView}>
-            <button type="button" class="view-btn" data-mode="list" aria-pressed="true" onclick={handleViewMode} title="List view">☰</button>
+            <button
+              type="button"
+              class="view-btn"
+              data-mode="list"
+              aria-pressed="true"
+              onclick={handleViewMode}
+              title="List view"
+            >
+              ☰
+            </button>
           </template>
           <template if:false={isListView}>
-            <button type="button" class="view-btn" data-mode="list" aria-pressed="false" onclick={handleViewMode} title="List view">☰</button>
+            <button
+              type="button"
+              class="view-btn"
+              data-mode="list"
+              aria-pressed="false"
+              onclick={handleViewMode}
+              title="List view"
+            >
+              ☰
+            </button>
           </template>
         </fieldset>
       </div>
@@ -70,15 +135,25 @@
         <template for:each={filterGroups} for:item="group">
           <section key={group.key} class="filter-group">
             <template if:true={group.expanded}>
-              <button type="button" class="filter-header" data-field={group.key} onclick={handleToggleGroup}
-                aria-expanded="true">
+              <button
+                type="button"
+                class="filter-header"
+                data-field={group.key}
+                onclick={handleToggleGroup}
+                aria-expanded="true"
+              >
                 <span>{group.label}</span>
                 <span class="toggle-symbol">{group.toggleSymbol}</span>
               </button>
             </template>
             <template if:false={group.expanded}>
-              <button type="button" class="filter-header" data-field={group.key} onclick={handleToggleGroup}
-                aria-expanded="false">
+              <button
+                type="button"
+                class="filter-header"
+                data-field={group.key}
+                onclick={handleToggleGroup}
+                aria-expanded="false"
+              >
                 <span>{group.label}</span>
                 <span class="toggle-symbol">{group.toggleSymbol}</span>
               </button>
@@ -91,8 +166,13 @@
 
               <template for:each={group.options} for:item="option">
                 <label key={option.key} class="filter-option-row">
-                  <input type="checkbox" checked={option.checked} data-field={group.key} data-value={option.value}
-                    onchange={handleFilterChange} />
+                  <input
+                    type="checkbox"
+                    checked={option.checked}
+                    data-field={group.key}
+                    data-value={option.value}
+                    onchange={handleFilterChange}
+                  />
                   <span class="option-label">{option.label}</span>
                   <span class="option-count">({option.count})</span>
                 </label>
@@ -110,7 +190,12 @@
                 <div class="product-image-wrap">
                   <a href={product.productUrl} class="image-link">
                     <template if:true={product.imageUrl}>
-                      <img class="product-image" src={product.imageUrl} alt={product.name} loading="lazy" />
+                      <img
+                        class="product-image"
+                        src={product.imageUrl}
+                        alt={product.name}
+                        loading="lazy"
+                      />
                     </template>
                     <template if:false={product.imageUrl}>
                       <div class="img-placeholder">No image</div>
@@ -118,18 +203,30 @@
                   </a>
 
                   <div class="card-overlay" aria-hidden="true">
-                    <button class="overlay-btn overlay-btn--look" type="button" disabled tabindex="-1">
+                    <button
+                      class="overlay-btn overlay-btn--look"
+                      type="button"
+                      disabled
+                      tabindex="-1"
+                    >
                       Look Inside
                     </button>
-                    <button class="overlay-btn overlay-btn--shop" type="button" data-pid={product.id}
-                      onclick={handleQuickShop} tabindex="-1">
+                    <button
+                      class="overlay-btn overlay-btn--shop"
+                      type="button"
+                      data-pid={product.id}
+                      onclick={handleQuickShop}
+                      tabindex="-1"
+                    >
                       Quick Shop
                     </button>
                   </div>
                 </div>
 
                 <div class="product-meta">
-                  <a href={product.productUrl} class="product-name">{product.name}</a>
+                  <a href={product.productUrl} class="product-name"
+                    >{product.name}</a
+                  >
                   <p class="starting-label">Starting at</p>
                   <p class="price-label">{product.priceLabel}</p>
                 </div>
@@ -138,25 +235,48 @@
           </div>
 
           <div if:true={showPagination} class="pagination-row">
-            <button type="button" class="page-btn" onclick={handlePrevPage} disabled={disablePrev}>‹</button>
+            <button
+              type="button"
+              class="page-btn"
+              onclick={handlePrevPage}
+              disabled={disablePrev}
+            >
+              ‹
+            </button>
             <span class="page-text">Page {currentPage} of {totalPages}</span>
-            <button type="button" class="page-btn" onclick={handleNextPage} disabled={disableNext}>›</button>
+            <button
+              type="button"
+              class="page-btn"
+              onclick={handleNextPage}
+              disabled={disableNext}
+            >
+              ›
+            </button>
           </div>
         </template>
 
         <template if:true={showEmptyState}>
-          <p class="empty-results">No products found for the selected filters.</p>
+          <p class="empty-results">
+            No products found for the selected filters.
+          </p>
         </template>
       </div>
     </div>
 
     <template if:true={isModalOpen}>
-      <c-quick-shop-modal title={modalTitle} isbn={modalIsbn} book-image-url={modalImageUrl}
-        color-price={modalColorPrice} color-price-bulk={modalColorPriceBulk} bw-price={modalBwPrice}
-        bw-price-bulk={modalBwPriceBulk} digital-price={modalDigitalPrice} digital-price-bulk={modalDigitalPriceBulk}
+      <c-quick-shop-modal
+        title={modalTitle}
+        isbn={modalIsbn}
+        book-image-url={modalImageUrl}
+        variation-pricing={modalVariationPricing}
         currency-iso-code={modalCurrencyIsoCode}
-        minimum-quantity={modalMinimumQuantity} maximum-quantity={modalMaximumQuantity} increment-quantity={modalIncrementQuantity}
-        onaddtocart={handleAddToCart} onviewdetails={handleViewDetails} onclose={handleModalClose}>
+        minimum-quantity={modalMinimumQuantity}
+        maximum-quantity={modalMaximumQuantity}
+        increment-quantity={modalIncrementQuantity}
+        onaddtocart={handleAddToCart}
+        onviewdetails={handleViewDetails}
+        onclose={handleModalClose}
+      >
       </c-quick-shop-modal>
     </template>
   </section>

@@ -1,12 +1,10 @@
 <template>
   <section class="featured-state-books" aria-live="polite">
-
     <template if:true={loading}>
       <p class="loading-msg">Loading books...</p>
     </template>
 
     <template if:true={showProducts}>
-
       <!-- ── Heading ────────────────────────────────────────────── -->
       <div class="heading-row">
         <div class="heading-line" aria-hidden="true"></div>
@@ -20,14 +18,14 @@
           href={resolvedShopAllUrl}
           class="shop-all-btn"
           onclick={handleShopAll}
-          aria-label="Shop all books">
+          aria-label="Shop all books"
+        >
           Shop All Books
         </a>
       </div>
 
       <!-- ── Main content: featured + grid ────────────────────── -->
       <div class="content-layout">
-
         <!-- Featured product (left) -->
         <template if:true={featuredProduct}>
           <div class="featured-col">
@@ -39,13 +37,15 @@
                   type="button"
                   class="featured-image-frame clickable-frame"
                   data-pid={featuredProduct.id}
-                  onclick={handleClickProduct}>
+                  onclick={handleClickProduct}
+                >
                   <template if:true={featuredProduct.imageUrl}>
                     <img
                       class="featured-image"
                       src={featuredProduct.imageUrl}
                       alt={featuredProduct.name}
-                      loading="lazy" />
+                      loading="lazy"
+                    />
                   </template>
                   <template if:false={featuredProduct.imageUrl}>
                     <div class="image-placeholder">No image</div>
@@ -58,7 +58,8 @@
                     class="overlay-btn overlay-btn--look"
                     type="button"
                     disabled
-                    tabindex="-1">
+                    tabindex="-1"
+                  >
                     Look Inside
                   </button>
                   <button
@@ -66,7 +67,8 @@
                     type="button"
                     data-pid={featuredProduct.id}
                     onclick={handleQuickShop}
-                    tabindex="-1">
+                    tabindex="-1"
+                  >
                     Quick Shop
                   </button>
                 </div>
@@ -76,7 +78,8 @@
                 class="featured-name-button"
                 type="button"
                 data-pid={featuredProduct.id}
-                onclick={handleClickProduct}>
+                onclick={handleClickProduct}
+              >
                 {featuredProduct.name}
               </button>
             </article>
@@ -87,19 +90,20 @@
         <div class={gridClass}>
           <template for:each={gridProducts} for:item="product">
             <article key={product.id} class="grid-card">
-
               <div class="grid-image-wrap">
                 <button
                   type="button"
                   class="image-frame clickable-frame"
                   data-pid={product.id}
-                  onclick={handleClickProduct}>
+                  onclick={handleClickProduct}
+                >
                   <template if:true={product.imageUrl}>
                     <img
                       class="product-image"
                       src={product.imageUrl}
                       alt={product.name}
-                      loading="lazy" />
+                      loading="lazy"
+                    />
                   </template>
                   <template if:false={product.imageUrl}>
                     <div class="image-placeholder">No image</div>
@@ -112,7 +116,8 @@
                     class="overlay-btn overlay-btn--look"
                     type="button"
                     disabled
-                    tabindex="-1">
+                    tabindex="-1"
+                  >
                     Look Inside
                   </button>
                   <button
@@ -120,7 +125,8 @@
                     type="button"
                     data-pid={product.id}
                     onclick={handleQuickShop}
-                    tabindex="-1">
+                    tabindex="-1"
+                  >
                     Quick Shop
                   </button>
                 </div>
@@ -130,17 +136,16 @@
                 class="name-button"
                 type="button"
                 data-pid={product.id}
-                onclick={handleClickProduct}>
+                onclick={handleClickProduct}
+              >
                 {product.name}
               </button>
-
             </article>
           </template>
         </div>
-
-      </div><!-- /content-layout -->
-
-    </template><!-- /showProducts -->
+      </div>
+      <!-- /content-layout --> </template
+    ><!-- /showProducts -->
 
     <!-- ── Quick Shop Modal ─────────────────────────────────────── -->
     <template if:true={isModalOpen}>
@@ -148,21 +153,16 @@
         title={modalTitle}
         isbn={modalIsbn}
         book-image-url={modalImageUrl}
-        color-price={modalColorPrice}
-        color-price-bulk={modalColorPriceBulk}
-        bw-price={modalBwPrice}
-        bw-price-bulk={modalBwPriceBulk}
-        digital-price={modalDigitalPrice}
-        digital-price-bulk={modalDigitalPriceBulk}
+        variation-pricing={modalVariationPricing}
         currency-iso-code={modalCurrencyIsoCode}
         minimum-quantity={modalMinimumQuantity}
         maximum-quantity={modalMaximumQuantity}
         increment-quantity={modalIncrementQuantity}
         onaddtocart={handleAddToCart}
         onviewdetails={handleViewDetails}
-        onclose={handleModalClose}>
+        onclose={handleModalClose}
+      >
       </c-quick-shop-modal>
     </template>
-
   </section>
 </template>

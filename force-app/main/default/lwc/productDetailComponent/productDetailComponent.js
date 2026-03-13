@@ -1,36 +1,32 @@
-import { LightningElement, api, track } from 'lwc';
+import { LightningElement, api, track } from "lwc";
+import getVariationPricing from "@salesforce/apex/ProductVariationController.getVariationPricing";
 
-const DEFAULT_STORE_NAME = 'AmericanBookCompany';
-const DEFAULT_WEBSTORE_ID = '0ZEam000004dJDNGA2';
-const DEFAULT_CURRENCY = 'USD';
+const DEFAULT_STORE_NAME = "AmericanBookCompany";
+const DEFAULT_WEBSTORE_ID = "0ZEam000004dJDNGA2";
+const DEFAULT_CURRENCY = "USD";
 const PRODUCT_ID_PATTERN = /01t[a-zA-Z0-9]{12,15}/;
-const PRODUCT_DETAIL_FIELDS = ['StockKeepingUnit', 'Name'];
-
-const PLAN = {
-  COLOR: 'COLOR',
-  BW: 'BW',
-  DIGITAL: 'DIGITAL'
-};
+const PRODUCT_DETAIL_FIELDS = ["StockKeepingUnit", "Name"];
 
 export default class ProductDetailComponent extends LightningElement {
   @api storeName = DEFAULT_STORE_NAME;
   @api webStoreId = DEFAULT_WEBSTORE_ID;
-  @api productId = '';
-  @api cartStateOrId = 'current';
+  @api productId = "";
+  @api cartStateOrId = "current";
   @api minimumQuantity = 10;
-  @api trialUrl = '';
+  @api trialUrl = "";
   @api showTrialButton;
 
   @track loading = true;
   @track product = null;
-  @track errorMessage = '';
+  @track variationPricing = null;
+  @track errorMessage = "";
 
   quantity = 10;
-  selectedPlan = PLAN.COLOR;
+  selectedVariationIndex = 0;
   isFavorite = false;
 
-  featuresLeft = ['Answer Key', 'Posttest', 'Pretest'];
-  featuresRight = ['eBook'];
+  featuresLeft = ["Answer Key", "Posttest", "Pretest"];
+  featuresRight = ["eBook"];
 
   connectedCallback() {
     this.quantity = this.minQty;
@@ -46,15 +42,15 @@ export default class ProductDetailComponent extends LightningElement {
   }
 
   get title() {
-    return this.product?.name || '';
+    return this.product?.name || "";
   }
 
   get isbn() {
-    return this.product?.sku || '';
+    return this.product?.sku || "";
   }
 
   get bookImageUrl() {
-    return this.product?.imageUrl || '';
+    return this.product?.imageUrl || "";
   }
 
   get currencyIsoCode() {
@@ -62,7 +58,62 @@ export default class ProductDetailComponent extends LightningElement {
   }
 
   get displayTrialButton() {
-    return this.showTrialButton !== false && this.showTrialButton !== 'false';
+    return this.showTrialButton !== false && this.showTrialButton !== "false";
+  }
+
+  // ─── Variation getters ──────────────────────────────────────────────────
+
+  get variationsList() {
+    return this.variationPricing?.variations ?? [];
+  }
+
+  get hasMultipleVariations() {
+    return this.variationsList.length > 1;
+  }
+
+  get variations() {
+    return this.variationsList.map((v, i) => ({
+      ...v,
+      index: i,
+      label: v.format || "Standard",
+      tabClass: `plan-option ${this.selectedVariationIndex === i ? "active" : ""}`,
+      ariaSelected: this.selectedVariationIndex === i ? "true" : "false"
+    }));
+  }
+
+  get selectedVariation() {
+    const list = this.variationsList;
+    if (!list.length) return null;
+    const idx =
+      this.selectedVariationIndex < list.length
+        ? this.selectedVariationIndex
+        : 0;
+    return list[idx];
+  }
+
+  get selectedUnitPrice() {
+    return this.selectedVariation?.unitPrice ?? null;
+  }
+
+  get selectedProductId() {
+    return this.selectedVariation?.productId ?? this.product?.id ?? "";
+  }
+
+  get displayTiers() {
+    const tiers = this.selectedVariation?.tiers;
+    if (!tiers?.length) return [];
+    return tiers.map((tier, index) => ({
+      key: `tier-${index}`,
+      qtyLabel: tier.upperBound
+        ? `${tier.lowerBound}-${tier.upperBound}`
+        : `${tier.lowerBound}+`,
+      formattedPrice: this.formatPrice(tier.price),
+      priceClass: `td price${index > 0 ? " price-red" : ""}`
+    }));
+  }
+
+  get hasTiers() {
+    return this.displayTiers.length > 0;
   }
 
   get minQty() {
@@ -77,7 +128,8 @@ export default class ProductDetailComponent extends LightningElement {
   get maxQty() {
     const rule = this.product?.purchaseQuantityRule;
     const ruleMax = rule?.maximum ?? rule?.Maximum ?? null;
-    if (Number.isFinite(ruleMax) && ruleMax > 0 && ruleMax <= 9999) return ruleMax;
+    if (Number.isFinite(ruleMax) && ruleMax > 0 && ruleMax <= 9999)
+      return ruleMax;
     return 50;
   }
 
@@ -88,78 +140,8 @@ export default class ProductDetailComponent extends LightningElement {
     return 1;
   }
 
-  get isColorSelected() {
-    return this.selectedPlan === PLAN.COLOR;
-  }
-
-  get isBwSelected() {
-    return this.selectedPlan === PLAN.BW;
-  }
-
-  get isDigitalSelected() {
-    return this.selectedPlan === PLAN.DIGITAL;
-  }
-
-  get ariaColorSelected() {
-    return this.isColorSelected ? 'true' : 'false';
-  }
-
-  get ariaBwSelected() {
-    return this.isBwSelected ? 'true' : 'false';
-  }
-
-  get ariaDigitalSelected() {
-    return this.isDigitalSelected ? 'true' : 'false';
-  }
-
-  get planClassColor() {
-    return `plan-option ${this.isColorSelected ? 'active' : ''}`;
-  }
-
-  get planClassBw() {
-    return `plan-option ${this.isBwSelected ? 'active' : ''}`;
-  }
-
-  get planClassDigital() {
-    return `plan-option ${this.isDigitalSelected ? 'active' : ''}`;
-  }
-
   get heartIcon() {
-    return this.isFavorite ? 'utility:favorite' : 'utility:favorite_alt';
-  }
-
-  get normalizedColorPrice() {
-    return this.toNumber(this.product?.colorPrice) ?? this.toNumber(this.product?.bwPrice);
-  }
-
-  get normalizedColorPriceBulk() {
-    return this.toNumber(this.product?.colorPriceBulk) ?? this.normalizedColorPrice;
-  }
-
-  get normalizedBwPrice() {
-    return this.toNumber(this.product?.bwPrice) ?? this.normalizedColorPrice;
-  }
-
-  get normalizedBwPriceBulk() {
-    return this.toNumber(this.product?.bwPriceBulk) ?? this.normalizedBwPrice;
-  }
-
-  get normalizedDigitalPrice() {
-    return this.toNumber(this.product?.digitalPrice) ?? this.normalizedColorPrice;
-  }
-
-  get normalizedDigitalPriceBulk() {
-    return this.toNumber(this.product?.digitalPriceBulk) ?? this.normalizedDigitalPrice;
-  }
-
-  get selectedUnitPrice() {
-    if (this.selectedPlan === PLAN.DIGITAL) {
-      return this.normalizedDigitalPrice ?? this.normalizedDigitalPriceBulk;
-    }
-    if (this.selectedPlan === PLAN.BW) {
-      return this.normalizedBwPrice ?? this.normalizedBwPriceBulk;
-    }
-    return this.normalizedColorPrice ?? this.normalizedColorPriceBulk;
+    return this.isFavorite ? "utility:favorite" : "utility:favorite_alt";
   }
 
   get formattedUnitPrice() {
@@ -167,94 +149,112 @@ export default class ProductDetailComponent extends LightningElement {
   }
 
   // Live order total: unitPrice × (qty / increment)
-  // e.g. $41 unit price, increment=10, qty=20 → 41 × (20/10) = $82
   get totalPrice() {
     const unit = this.selectedUnitPrice;
     const qty = Number(this.quantity) || this.minQty;
     const inc = this.incrementQty;
-    if (!unit || !inc) return '';
+    if (!unit || !inc) return "";
     return this.formatPrice(unit * (qty / inc));
   }
 
   async initialize() {
     this.loading = true;
-    this.errorMessage = '';
+    this.errorMessage = "";
 
     try {
       const currentProductId = this.resolveCurrentProductId();
       if (!currentProductId) {
         this.product = null;
-        this.errorMessage = 'Unable to determine the current product.';
+        this.errorMessage = "Unable to determine the current product.";
         return;
       }
 
       const rawProduct = await this.fetchProductDetails(currentProductId);
       if (!rawProduct) {
         this.product = null;
-        this.errorMessage = 'Unable to load product details.';
+        this.errorMessage = "Unable to load product details.";
         return;
       }
 
       const baseProduct = this.normalizeProduct(rawProduct);
       const pricingMap = await this.fetchPricingForProducts([currentProductId]);
-      this.product = this.applyPricing(baseProduct, pricingMap.get(currentProductId));
+      this.product = this.applyPricing(
+        baseProduct,
+        pricingMap.get(currentProductId)
+      );
       this.quantity = this.minQty;
+
+      // Load variation + tier pricing from Apex
+      try {
+        this.variationPricing = await getVariationPricing({
+          productId: currentProductId,
+          webStoreId: this.webStoreId || DEFAULT_WEBSTORE_ID
+        });
+      } catch (apexError) {
+        console.warn("Failed to load variation pricing.", apexError);
+      }
     } catch {
       this.product = null;
-      this.errorMessage = 'Unable to load product details.';
+      this.errorMessage = "Unable to load product details.";
     } finally {
       this.loading = false;
     }
   }
 
   resolveCurrentProductId() {
-    const configured = String(this.productId || '').trim();
+    const configured = String(this.productId || "").trim();
     if (configured) {
       return configured;
     }
 
     if (!globalThis.window?.location) {
-      return '';
+      return "";
     }
 
-    const queryParams = new URLSearchParams(globalThis.window.location.search || '');
+    const queryParams = new URLSearchParams(
+      globalThis.window.location.search || ""
+    );
     const fromQuery =
-      queryParams.get('pid') ||
-      queryParams.get('productId') ||
-      queryParams.get('product_id');
+      queryParams.get("pid") ||
+      queryParams.get("productId") ||
+      queryParams.get("product_id");
 
     if (fromQuery) {
       return String(fromQuery).trim();
     }
 
-    const fullUrl = globalThis.window.location.href || '';
+    const fullUrl = globalThis.window.location.href || "";
     const sfProductId = PRODUCT_ID_PATTERN.exec(fullUrl);
     if (sfProductId?.[0]) {
       return sfProductId[0];
     }
 
-    const parts = (globalThis.window.location.pathname || '').split('/').filter(Boolean);
-    const lastSegment = parts.length ? decodeURIComponent(parts.at(-1)) : '';
-    return PRODUCT_ID_PATTERN.test(lastSegment) ? lastSegment : '';
+    const parts = (globalThis.window.location.pathname || "")
+      .split("/")
+      .filter(Boolean);
+    const lastSegment = parts.length ? decodeURIComponent(parts.at(-1)) : "";
+    return PRODUCT_ID_PATTERN.test(lastSegment) ? lastSegment : "";
   }
 
   async fetchProductDetails(productId) {
     const endpoints = [
-      this.buildProductsEndpoint([productId], 'ids'),
-      this.buildProductsEndpoint([productId], 'productIds')
+      this.buildProductsEndpoint([productId], "ids"),
+      this.buildProductsEndpoint([productId], "productIds")
     ];
 
     for (const endpoint of endpoints) {
       try {
+        // eslint-disable-next-line no-await-in-loop
         const response = await fetch(endpoint, {
-          method: 'GET',
-          credentials: 'include'
+          method: "GET",
+          credentials: "include"
         });
 
         if (!response.ok) {
           continue;
         }
 
+        // eslint-disable-next-line no-await-in-loop
         const data = await response.json();
         const products = this.extractProductCollection(data);
         if (products.length) {
@@ -271,10 +271,10 @@ export default class ProductDetailComponent extends LightningElement {
   buildProductsEndpoint(productIds, idParamName) {
     const base = `/${this.storeName || DEFAULT_STORE_NAME}/webruntime/api/services/data/v66.0/commerce/webstores/${this.webStoreId || DEFAULT_WEBSTORE_ID}/products`;
     const params = new URLSearchParams({
-      [idParamName]: productIds.join(',')
+      [idParamName]: productIds.join(",")
     });
 
-    params.set('fields', PRODUCT_DETAIL_FIELDS.join(','));
+    params.set("fields", PRODUCT_DETAIL_FIELDS.join(","));
 
     return `${base}?${params.toString()}`;
   }
@@ -290,12 +290,12 @@ export default class ProductDetailComponent extends LightningElement {
   }
 
   normalizeProduct(item) {
-    const id = String(item?.id || '').trim();
+    const id = String(item?.id || "").trim();
     if (!id) {
       return null;
     }
 
-    const name = String(item?.name || '').trim() || 'Untitled';
+    const name = String(item?.name || "").trim() || "Untitled";
 
     return {
       ...item,
@@ -305,19 +305,15 @@ export default class ProductDetailComponent extends LightningElement {
       sku: this.resolveStockKeepingUnit(item),
       currencyIsoCode: DEFAULT_CURRENCY,
       listPrice: null,
-      startingPrice: null,
-      colorPrice: null,
-      colorPriceBulk: null,
-      bwPrice: null,
-      bwPriceBulk: null
+      startingPrice: null
     };
   }
 
   async fetchPricingForProducts(productIds) {
     try {
       const response = await fetch(this.buildPricingEndpoint(productIds), {
-        method: 'GET',
-        credentials: 'include'
+        method: "GET",
+        credentials: "include"
       });
 
       if (!response.ok) {
@@ -334,14 +330,14 @@ export default class ProductDetailComponent extends LightningElement {
   buildPricingEndpoint(productIds) {
     const base = `/${this.storeName || DEFAULT_STORE_NAME}/webruntime/api/services/data/v66.0/commerce/webstores/${this.webStoreId || DEFAULT_WEBSTORE_ID}/pricing/products`;
     const params = new URLSearchParams({
-      productIds: productIds.join(',')
+      productIds: productIds.join(",")
     });
 
     return `${base}?${params.toString()}`;
   }
 
   extractPricingMap(data) {
-    const root = data && typeof data === 'object' ? data : {};
+    const root = data && typeof data === "object" ? data : {};
     let rows;
     if (Array.isArray(root.pricingLineItemResults)) {
       rows = root.pricingLineItemResults;
@@ -359,7 +355,7 @@ export default class ProductDetailComponent extends LightningElement {
           row?.pricingLineItem?.productId ||
           row?.product?.id ||
           row?.product?.productId ||
-          ''
+          ""
       ).trim();
 
       if (!productId) {
@@ -367,11 +363,27 @@ export default class ProductDetailComponent extends LightningElement {
       }
 
       pricingByProductId.set(productId, {
-        currencyIsoCode: this.firstString([row?.currencyIsoCode, root?.currencyIsoCode]) || DEFAULT_CURRENCY,
-        listPrice: this.resolvePrice(row, ['listPrice', 'pricebookPrice', 'listUnitPrice']),
-        salesPrice: this.resolvePrice(row, ['salesPrice', 'unitPrice', 'unitAdjustedPrice', 'price']),
-        negotiatedPrice: this.resolvePrice(row, ['negotiatedPrice']),
-        unitPrice: this.resolvePrice(row, ['unitPrice', 'salesPrice', 'unitAdjustedPrice', 'price'])
+        currencyIsoCode:
+          this.firstString([row?.currencyIsoCode, root?.currencyIsoCode]) ||
+          DEFAULT_CURRENCY,
+        listPrice: this.resolvePrice(row, [
+          "listPrice",
+          "pricebookPrice",
+          "listUnitPrice"
+        ]),
+        salesPrice: this.resolvePrice(row, [
+          "salesPrice",
+          "unitPrice",
+          "unitAdjustedPrice",
+          "price"
+        ]),
+        negotiatedPrice: this.resolvePrice(row, ["negotiatedPrice"]),
+        unitPrice: this.resolvePrice(row, [
+          "unitPrice",
+          "salesPrice",
+          "unitAdjustedPrice",
+          "price"
+        ])
       });
     }
 
@@ -392,15 +404,12 @@ export default class ProductDetailComponent extends LightningElement {
 
     return {
       ...product,
-      currencyIsoCode: priceInfo.currencyIsoCode || product.currencyIsoCode || DEFAULT_CURRENCY,
+      currencyIsoCode:
+        priceInfo.currencyIsoCode ||
+        product.currencyIsoCode ||
+        DEFAULT_CURRENCY,
       listPrice: priceInfo.listPrice ?? basePrice ?? null,
-      startingPrice: basePrice ?? null,
-      colorPrice: basePrice ?? null,
-      colorPriceBulk: priceInfo.listPrice ?? basePrice ?? null,
-      bwPrice: basePrice ?? null,
-      bwPriceBulk: priceInfo.listPrice ?? basePrice ?? null,
-      digitalPrice: basePrice ?? null,
-      digitalPriceBulk: priceInfo.listPrice ?? basePrice ?? null
+      startingPrice: basePrice ?? null
     };
   }
 
@@ -412,45 +421,51 @@ export default class ProductDetailComponent extends LightningElement {
     ];
 
     for (const value of directCandidates) {
-      if (typeof value === 'string' && value.trim()) {
+      if (typeof value === "string" && value.trim()) {
         return this.normalizeImageUrl(value.trim());
       }
     }
 
-    const mediaGroups = Array.isArray(item?.mediaGroups) ? item.mediaGroups : [];
+    const mediaGroups = Array.isArray(item?.mediaGroups)
+      ? item.mediaGroups
+      : [];
     for (const group of mediaGroups) {
-      const mediaItems = Array.isArray(group?.mediaItems) ? group.mediaItems : [];
+      const mediaItems = Array.isArray(group?.mediaItems)
+        ? group.mediaItems
+        : [];
       for (const media of mediaItems) {
         const url = media?.url || media?.image?.url;
-        if (typeof url === 'string' && url.trim()) {
+        if (typeof url === "string" && url.trim()) {
           return this.normalizeImageUrl(url.trim());
         }
       }
     }
 
-    return '';
+    return "";
   }
 
   normalizeImageUrl(url) {
-    const value = String(url || '').trim().replaceAll(/\s/g, '%20');
+    const value = String(url || "")
+      .trim()
+      .replaceAll(/\s/g, "%20");
     if (!value) {
-      return '';
+      return "";
     }
 
     if (/^(https?:|data:)/i.test(value)) {
       return value;
     }
 
-    if (value.startsWith('//')) {
+    if (value.startsWith("//")) {
       return `https:${value}`;
     }
 
     if (globalThis.window?.location?.origin) {
-      if (value.startsWith('/')) {
+      if (value.startsWith("/")) {
         return `${globalThis.window.location.origin}${value}`;
       }
 
-      return `${globalThis.window.location.origin}/${value.replace(/^\/+/, '')}`;
+      return `${globalThis.window.location.origin}/${value.replace(/^\/+/, "")}`;
     }
 
     return value;
@@ -460,29 +475,19 @@ export default class ProductDetailComponent extends LightningElement {
     return this.firstString([
       item?.sku,
       item?.stockKeepingUnit,
-      this.resolveByPath(item, 'fields.StockKeepingUnit')
+      this.resolveByPath(item, "fields.StockKeepingUnit")
     ]);
   }
 
-  selectColorPlan() {
-    this.applyPlan(PLAN.COLOR);
-  }
-
-  selectBwPlan() {
-    this.applyPlan(PLAN.BW);
-  }
-
-  selectDigitalPlan() {
-    this.applyPlan(PLAN.DIGITAL);
-  }
-
-  applyPlan(plan) {
-    this.selectedPlan = plan;
-    if (!Number.isFinite(Number.parseInt(this.quantity, 10)) || Number.parseInt(this.quantity, 10) < this.minQty) {
-      this.quantity = this.minQty;
+  handleTabClick(event) {
+    const index = Number.parseInt(event.currentTarget.dataset.index, 10);
+    if (
+      Number.isFinite(index) &&
+      index >= 0 &&
+      index < this.variationsList.length
+    ) {
+      this.selectedVariationIndex = index;
     }
-
-    this.dispatchEvent(new CustomEvent('planchange', { detail: { plan } }));
   }
 
   get isMinQty() {
@@ -507,8 +512,8 @@ export default class ProductDetailComponent extends LightningElement {
     // Snap to nearest valid increment step
     if (inc > 1) {
       const steps = Math.round((value - min) / inc);
-      value = min + (steps * inc);
-      if (value > max) value = min + (Math.floor((max - min) / inc) * inc);
+      value = min + steps * inc;
+      if (value > max) value = min + Math.floor((max - min) / inc) * inc;
       if (value < min) value = min;
     }
 
@@ -532,19 +537,20 @@ export default class ProductDetailComponent extends LightningElement {
     if (qty > this.maxQty) qty = this.maxQty;
     this.quantity = qty;
 
-    const productId = this.product?.id || '';
+    // Use the selected variation's product ID for the cart
+    const productId = this.selectedProductId || this.product?.id || "";
     if (!productId) {
       return;
     }
 
     const added = await this.addProductToCart(productId, this.quantity);
     this.dispatchEvent(
-      new CustomEvent('addtocart', {
+      new CustomEvent("addtocart", {
         detail: {
           added,
           productId,
           quantity: this.quantity,
-          plan: this.selectedPlan,
+          format: this.selectedVariation?.format,
           isbn: this.isbn,
           title: this.title,
           unitPrice: this.selectedUnitPrice,
@@ -558,18 +564,21 @@ export default class ProductDetailComponent extends LightningElement {
     const payload = {
       productId,
       quantity,
-      type: 'Product'
+      type: "Product"
     };
 
     try {
-      const response = await fetch(this.buildAddToCartEndpoint(this.cartStateOrId || 'current'), {
-        method: 'POST',
-        credentials: 'include',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(payload)
-      });
+      const response = await fetch(
+        this.buildAddToCartEndpoint(this.cartStateOrId || "current"),
+        {
+          method: "POST",
+          credentials: "include",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(payload)
+        }
+      );
 
       return response.ok;
     } catch {
@@ -583,7 +592,7 @@ export default class ProductDetailComponent extends LightningElement {
 
   handleTrial() {
     this.dispatchEvent(
-      new CustomEvent('trial', {
+      new CustomEvent("trial", {
         detail: {
           plan: this.selectedPlan,
           isbn: this.isbn,
@@ -599,7 +608,11 @@ export default class ProductDetailComponent extends LightningElement {
 
   toggleFavorite() {
     this.isFavorite = !this.isFavorite;
-    this.dispatchEvent(new CustomEvent('favoritechange', { detail: { favorite: this.isFavorite } }));
+    this.dispatchEvent(
+      new CustomEvent("favoritechange", {
+        detail: { favorite: this.isFavorite }
+      })
+    );
   }
 
   resolvePrice(source, paths) {
@@ -619,8 +632,8 @@ export default class ProductDetailComponent extends LightningElement {
       return undefined;
     }
 
-    return path.split('.').reduce((acc, key) => {
-      if (acc && typeof acc === 'object' && key in acc) {
+    return path.split(".").reduce((acc, key) => {
+      if (acc && typeof acc === "object" && key in acc) {
         return acc[key];
       }
 
@@ -629,36 +642,36 @@ export default class ProductDetailComponent extends LightningElement {
   }
 
   toNumber(value) {
-    if (value === null || value === undefined || value === '') {
+    if (value === null || value === undefined || value === "") {
       return null;
     }
 
-    if (typeof value === 'number') {
+    if (typeof value === "number") {
       return Number.isFinite(value) ? value : null;
     }
 
-    if (typeof value === 'object') {
-      if (typeof value.amount === 'number' && Number.isFinite(value.amount)) {
+    if (typeof value === "object") {
+      if (typeof value.amount === "number" && Number.isFinite(value.amount)) {
         return value.amount;
       }
 
-      if (typeof value.value === 'number' && Number.isFinite(value.value)) {
+      if (typeof value.value === "number" && Number.isFinite(value.value)) {
         return value.value;
       }
     }
 
-    const normalized = Number(String(value).replaceAll(/[^0-9.-]/g, ''));
+    const normalized = Number(String(value).replaceAll(/[^0-9.-]/g, ""));
     return Number.isFinite(normalized) ? normalized : null;
   }
 
   formatPrice(value) {
     const normalized = this.toNumber(value);
     if (normalized === null) {
-      return '—';
+      return "—";
     }
 
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
+    return new Intl.NumberFormat("en-US", {
+      style: "currency",
       currency: this.currencyIsoCode || DEFAULT_CURRENCY,
       minimumFractionDigits: 2,
       maximumFractionDigits: 2
@@ -667,21 +680,24 @@ export default class ProductDetailComponent extends LightningElement {
 
   firstString(values) {
     for (const value of values || []) {
-      if (typeof value === 'string' && value.trim()) {
+      if (typeof value === "string" && value.trim()) {
         return value.trim();
       }
 
-      if (value && typeof value === 'object') {
-        if (typeof value.value === 'string' && value.value.trim()) {
+      if (value && typeof value === "object") {
+        if (typeof value.value === "string" && value.value.trim()) {
           return value.value.trim();
         }
 
-        if (typeof value.displayValue === 'string' && value.displayValue.trim()) {
+        if (
+          typeof value.displayValue === "string" &&
+          value.displayValue.trim()
+        ) {
           return value.displayValue.trim();
         }
       }
     }
 
-    return '';
+    return "";
   }
 }

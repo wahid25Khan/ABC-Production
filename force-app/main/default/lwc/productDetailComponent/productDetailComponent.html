@@ -2,7 +2,10 @@
   <section class="inline-shell">
     <template if:true={loading}>
       <div class="loading-wrap">
-        <lightning-spinner alternative-text="Loading product quick shop" size="medium"></lightning-spinner>
+        <lightning-spinner
+          alternative-text="Loading product quick shop"
+          size="medium"
+        ></lightning-spinner>
       </div>
     </template>
 
@@ -15,7 +18,10 @@
             </template>
             <template if:false={bookImageUrl}>
               <div class="cover-placeholder">
-                <lightning-icon icon-name="utility:image" size="large"></lightning-icon>
+                <lightning-icon
+                  icon-name="utility:image"
+                  size="large"
+                ></lightning-icon>
                 <div class="ph-text">Book Cover</div>
               </div>
             </template>
@@ -30,47 +36,44 @@
 
           <div class="divider"></div>
 
-          <div class="plan-toggle" role="tablist" aria-label="Format options">
-            <template if:true={isColorSelected}>
-              <button class={planClassColor} type="button" onclick={selectColorPlan} role="tab" aria-selected="true">
-                Color Print + Digital
-              </button>
-            </template>
-            <template if:false={isColorSelected}>
-              <button class={planClassColor} type="button" onclick={selectColorPlan} role="tab" aria-selected="false">
-                Color Print + Digital
-              </button>
-            </template>
-
-            <template if:true={isBwSelected}>
-              <button class={planClassBw} type="button" onclick={selectBwPlan} role="tab" aria-selected="true">
-                B&amp;W Print + Digital
-              </button>
-            </template>
-            <template if:false={isBwSelected}>
-              <button class={planClassBw} type="button" onclick={selectBwPlan} role="tab" aria-selected="false">
-                B&amp;W Print + Digital
-              </button>
-            </template>
-
-            <template if:true={isDigitalSelected}>
-              <button class={planClassDigital} type="button" onclick={selectDigitalPlan} role="tab" aria-selected="true">
-                Digital Only
-              </button>
-            </template>
-            <template if:false={isDigitalSelected}>
-              <button class={planClassDigital} type="button" onclick={selectDigitalPlan} role="tab" aria-selected="false">
-                Digital Only
-              </button>
-            </template>
-          </div>
+          <template if:true={hasMultipleVariations}>
+            <div class="plan-toggle" role="tablist" aria-label="Format options">
+              <template for:each={variations} for:item="v">
+                <button
+                  key={v.productId}
+                  class={v.tabClass}
+                  type="button"
+                  onclick={handleTabClick}
+                  data-index={v.index}
+                  role="tab"
+                  aria-selected={v.ariaSelected}
+                >
+                  {v.label}
+                </button>
+              </template>
+            </div>
+          </template>
 
           <div class="row-split">
             <div class="price-card">
-              <div class="unit-price-display">
-                <span class="unit-price-label">Unit Price</span>
-                <span class="unit-price-value">{formattedUnitPrice}</span>
-              </div>
+              <template if:true={hasTiers}>
+                <div class="price-table-head">
+                  <div class="th">Quantity</div>
+                  <div class="th">Price</div>
+                </div>
+                <template for:each={displayTiers} for:item="tier">
+                  <div key={tier.key} class="price-row">
+                    <div class="td">{tier.qtyLabel}</div>
+                    <div class={tier.priceClass}>{tier.formattedPrice}</div>
+                  </div>
+                </template>
+              </template>
+              <template if:false={hasTiers}>
+                <div class="unit-price-display">
+                  <span class="unit-price-label">Unit Price</span>
+                  <span class="unit-price-value">{formattedUnitPrice}</span>
+                </div>
+              </template>
             </div>
 
             <div class="feature-cols">
@@ -80,7 +83,8 @@
                     <lightning-icon
                       icon-name="utility:check"
                       size="x-small"
-                      class="check-icn">
+                      class="check-icn"
+                    >
                     </lightning-icon>
                     <span>{feature}</span>
                   </div>
@@ -93,7 +97,8 @@
                     <lightning-icon
                       icon-name="utility:check"
                       size="x-small"
-                      class="check-icn">
+                      class="check-icn"
+                    >
                     </lightning-icon>
                     <span>{feature}</span>
                   </div>
@@ -107,7 +112,15 @@
               <div class="qty-wrap">
                 <div class="qty-label">Qty (min {minQty}, max {maxQty})</div>
                 <div class="qty-stepper">
-                  <button type="button" class="qty-btn" onclick={handleQtyDecrement} disabled={isMinQty} aria-label="Decrease quantity">&minus;</button>
+                  <button
+                    type="button"
+                    class="qty-btn"
+                    onclick={handleQtyDecrement}
+                    disabled={isMinQty}
+                    aria-label="Decrease quantity"
+                  >
+                    &minus;
+                  </button>
                   <input
                     type="number"
                     value={quantity}
@@ -115,10 +128,21 @@
                     max={maxQty}
                     step={incrementQty}
                     oninput={handleQtyChange}
-                    class="qty-input" />
-                  <button type="button" class="qty-btn" onclick={handleQtyIncrement} disabled={isMaxQty} aria-label="Increase quantity">&plus;</button>
+                    class="qty-input"
+                  />
+                  <button
+                    type="button"
+                    class="qty-btn"
+                    onclick={handleQtyIncrement}
+                    disabled={isMaxQty}
+                    aria-label="Increase quantity"
+                  >
+                    &plus;
+                  </button>
                 </div>
-                <div class="order-total-line">Order Total: <strong>{totalPrice}</strong></div>
+                <div class="order-total-line">
+                  Order Total: <strong>{totalPrice}</strong>
+                </div>
               </div>
 
               <div class="btn-offset">
@@ -140,8 +164,12 @@
                 type="button"
                 title="Save to favorites"
                 aria-label="Save to favorites"
-                onclick={toggleFavorite}>
-                <lightning-icon icon-name={heartIcon} size="small"></lightning-icon>
+                onclick={toggleFavorite}
+              >
+                <lightning-icon
+                  icon-name={heartIcon}
+                  size="small"
+                ></lightning-icon>
               </button>
             </div>
           </div>
