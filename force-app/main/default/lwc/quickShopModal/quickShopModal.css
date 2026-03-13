@@ -1,10 +1,12 @@
 .slds-modal {
+    position: fixed;
+    inset: 0;
     display: flex;
     align-items: center;
     justify-content: center;
     padding: 1.25rem;
     overflow-y: auto;
-    min-height: 100vh;
+    z-index: 9001;
 }
 
 dialog {
@@ -14,6 +16,15 @@ dialog {
     margin: 0;
     max-inline-size: 100%;
     max-block-size: 100%;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+dialog::backdrop {
+    display: none;
 }
 
 button.slds-backdrop {
@@ -21,16 +32,21 @@ button.slds-backdrop {
     border: none;
     padding: 0;
     cursor: default;
+    position: fixed;
+    inset: 0;
+    z-index: 9000;
 }
 
 .modal-container {
     max-width: 880px;
     width: min(94vw, 880px);
-    margin: 0 auto;
+    margin: 0;
     border-radius: 14px;
     overflow: hidden;
     background: #fff;
     box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
+    position: relative;
+    z-index: 9002;
 }
 
 .modal-header {
