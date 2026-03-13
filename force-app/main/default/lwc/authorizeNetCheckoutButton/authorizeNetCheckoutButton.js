@@ -112,8 +112,8 @@ export default class AuthorizeNetCheckoutButton extends LightningElement {
 
             try {
                 parsed = checkoutData ? JSON.parse(checkoutData) : {};
-            } catch (e) {
-                console.warn('Failed to parse active checkout response.');
+            } catch (parseError) {
+                console.warn('Failed to parse active checkout response.', parseError);
                 return null;
             }
 
@@ -149,7 +149,8 @@ export default class AuthorizeNetCheckoutButton extends LightningElement {
 
         try {
             parsed = rawText ? JSON.parse(rawText) : {};
-        } catch (e) {
+        } catch (parseError) {
+            console.warn(defaultMessage, parseError);
             throw new Error(defaultMessage);
         }
 
@@ -225,8 +226,8 @@ export default class AuthorizeNetCheckoutButton extends LightningElement {
     }
 
     getSiteHomeUrl() {
-        const origin = window.location.origin;
-        const pathParts = window.location.pathname.split('/').filter((part) => !!part);
+        const origin = globalThis.location.origin;
+        const pathParts = globalThis.location.pathname.split('/').filter((part) => !!part);
         if (pathParts.length === 0) {
             return `${origin}/`;
         }

@@ -330,6 +330,14 @@ export default class CustomResults extends LightningElement {
     return this.modalProduct ? this.modalProduct.bwPriceBulk : null;
   }
 
+  get modalDigitalPrice() {
+    return this.modalProduct ? this.modalProduct.digitalPrice : null;
+  }
+
+  get modalDigitalPriceBulk() {
+    return this.modalProduct ? this.modalProduct.digitalPriceBulk : null;
+  }
+
   get modalCurrencyIsoCode() {
     return this.modalProduct ? this.modalProduct.currencyIsoCode || 'USD' : 'USD';
   }
@@ -562,7 +570,10 @@ export default class CustomResults extends LightningElement {
           product.colorPriceBulk ?? product.colorPrice ?? product.listPrice ?? null,
         bwPrice: basePrice ?? product.bwPrice ?? product.listPrice ?? null,
         bwPriceBulk:
-          product.bwPriceBulk ?? product.bwPrice ?? product.listPrice ?? null
+          product.bwPriceBulk ?? product.bwPrice ?? product.listPrice ?? null,
+        digitalPrice: product.digitalPrice ?? basePrice ?? product.listPrice ?? null,
+        digitalPriceBulk:
+          product.digitalPriceBulk ?? product.digitalPrice ?? product.listPrice ?? null
       };
     });
   }
@@ -969,6 +980,16 @@ export default class CustomResults extends LightningElement {
       'fields.Black_White_Price_25__c',
       'fields.BW_Print_Digital_Price_25__c'
     ]);
+    const digitalPrice = this.resolvePrice(item, [
+      'fields.Digital_Price__c',
+      'fields.DigitalPrice__c',
+      'fields.Digital_Only_Price__c'
+    ]);
+    const digitalPriceBulk = this.resolvePrice(item, [
+      'fields.Digital_Price_25__c',
+      'fields.DigitalPrice25__c',
+      'fields.Digital_Only_Price_25__c'
+    ]);
     const filterValues = this.buildProductFilterValues(item);
     const searchTerms = this.buildProductSearchTerms(item, {
       sku,
@@ -990,6 +1011,8 @@ export default class CustomResults extends LightningElement {
       colorPriceBulk: colorPriceBulk ?? colorPrice ?? listPrice ?? startingPrice,
       bwPrice: bwPrice ?? startingPrice,
       bwPriceBulk: bwPriceBulk ?? bwPrice ?? listPrice ?? startingPrice,
+      digitalPrice: digitalPrice ?? startingPrice,
+      digitalPriceBulk: digitalPriceBulk ?? digitalPrice ?? listPrice ?? startingPrice,
       filterValues,
       searchTerms
     };

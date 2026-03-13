@@ -66,6 +66,17 @@
                                         B&amp;W Print + Digital
                                     </button>
                                 </template>
+
+                                <template if:true={isDigitalSelected}>
+                                    <button class={planClassDigital} type="button" onclick={selectDigitalPlan} role="tab" aria-selected="true">
+                                        Digital Only
+                                    </button>
+                                </template>
+                                <template if:false={isDigitalSelected}>
+                                    <button class={planClassDigital} type="button" onclick={selectDigitalPlan} role="tab" aria-selected="false">
+                                        Digital Only
+                                    </button>
+                                </template>
                             </div>
 
                             

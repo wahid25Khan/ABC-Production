@@ -89,6 +89,14 @@ export default class FeaturedStateBooks extends LightningElement {
     return this.modalProduct ? this.modalProduct.bwPriceBulk : null;
   }
 
+  get modalDigitalPrice() {
+    return this.modalProduct ? this.modalProduct.digitalPrice : null;
+  }
+
+  get modalDigitalPriceBulk() {
+    return this.modalProduct ? this.modalProduct.digitalPriceBulk : null;
+  }
+
   get modalCurrencyIsoCode() {
     return this.modalProduct ? this.modalProduct.currencyIsoCode || 'USD' : 'USD';
   }
@@ -136,7 +144,8 @@ export default class FeaturedStateBooks extends LightningElement {
       this.products = await this.enrichProductsWithPricing(baseProducts);
 
       this.showProducts = this.products.length > 0;
-    } catch (_e) {
+    } catch (error) {
+      console.warn('Failed to load featured products.', error);
       this.resetProducts();
     } finally {
       this.loading = false;
@@ -159,18 +168,19 @@ export default class FeaturedStateBooks extends LightningElement {
 
   readStateFromStorage() {
     try {
-      return (window.localStorage.getItem(STATE_STORAGE_KEY) || '').trim();
-    } catch (_e) {
+      return (globalThis.localStorage.getItem(STATE_STORAGE_KEY) || '').trim();
+    } catch (error) {
+      console.debug('localStorage unavailable.', error);
       return '';
     }
   }
 
   getStateFromPath() {
-    if (typeof window === 'undefined' || !window.location?.pathname) {
+    if (globalThis.window === undefined || !globalThis.location?.pathname) {
       return '';
     }
 
-    const path = window.location.pathname;
+    const path = globalThis.location.pathname;
     const marker = '/global-search/';
     const markerIndex = path.indexOf(marker);
     if (markerIndex === -1) return '';
@@ -181,7 +191,8 @@ export default class FeaturedStateBooks extends LightningElement {
 
     try {
       return decodeURIComponent(firstSegment).trim();
-    } catch (_e) {
+    } catch (error) {
+      console.debug('Failed to decode path segment.', error);
       return firstSegment.trim();
     }
   }
@@ -199,13 +210,14 @@ export default class FeaturedStateBooks extends LightningElement {
 
       const data = await response.json();
       return this.extractProductList(data);
-    } catch (_e) {
+    } catch (error) {
+      console.debug('Failed to fetch products by state.', error);
       return [];
     }
   }
 
   async enrichProductsWithPricing(products) {
-    const productIds = products.map((item) => item.id).filter((id) => Boolean(id));
+    const productIds = products.map((item) => item.id).filter(Boolean);
     if (!productIds.length) {
       return products;
     }
@@ -237,7 +249,10 @@ export default class FeaturedStateBooks extends LightningElement {
           product.colorPriceBulk ?? product.colorPrice ?? product.listPrice ?? null,
         bwPrice: basePrice ?? product.bwPrice ?? product.listPrice ?? null,
         bwPriceBulk:
-          product.bwPriceBulk ?? product.bwPrice ?? product.listPrice ?? null
+          product.bwPriceBulk ?? product.bwPrice ?? product.listPrice ?? null,
+        digitalPrice: product.digitalPrice ?? basePrice ?? product.listPrice ?? null,
+        digitalPriceBulk:
+          product.digitalPriceBulk ?? product.digitalPrice ?? product.listPrice ?? null
       };
     });
   }
@@ -255,7 +270,8 @@ export default class FeaturedStateBooks extends LightningElement {
 
       const data = await response.json();
       return this.extractPricingMap(data);
-    } catch (_e) {
+    } catch (error) {
+      console.debug('Failed to fetch pricing.', error);
       return new Map();
     }
   }
@@ -273,11 +289,13 @@ export default class FeaturedStateBooks extends LightningElement {
 
   extractPricingMap(data) {
     const root = data && typeof data === 'object' ? data : {};
-    const rows = Array.isArray(root.pricingLineItemResults)
-      ? root.pricingLineItemResults
-      : Array.isArray(root.pricingResults)
-        ? root.pricingResults
-        : [];
+
+    let rows = [];
+    if (Array.isArray(root.pricingLineItemResults)) {
+      rows = root.pricingLineItemResults;
+    } else if (Array.isArray(root.pricingResults)) {
+      rows = root.pricingResults;
+    }
 
     const pricingByProductId = new Map();
 
@@ -402,6 +420,16 @@ export default class FeaturedStateBooks extends LightningElement {
       'fields.BW_Print_Digital_Price_25__c',
       'fields.priceBw25'
     ]);
+    const digitalPrice = this.resolvePrice(item, [
+      'fields.Digital_Price__c',
+      'fields.DigitalPrice__c',
+      'fields.Digital_Only_Price__c'
+    ]);
+    const digitalPriceBulk = this.resolvePrice(item, [
+      'fields.Digital_Price_25__c',
+      'fields.DigitalPrice25__c',
+      'fields.Digital_Only_Price_25__c'
+    ]);
 
     return {
       ...item,
@@ -415,7 +443,9 @@ export default class FeaturedStateBooks extends LightningElement {
       colorPrice: colorPrice ?? listPrice,
       colorPriceBulk: colorPriceBulk ?? colorPrice ?? listPrice,
       bwPrice: bwPrice ?? listPrice,
-      bwPriceBulk: bwPriceBulk ?? bwPrice ?? listPrice
+      bwPriceBulk: bwPriceBulk ?? bwPrice ?? listPrice,
+      digitalPrice: digitalPrice ?? listPrice,
+      digitalPriceBulk: digitalPriceBulk ?? digitalPrice ?? listPrice
     };
   }
 
@@ -484,7 +514,7 @@ export default class FeaturedStateBooks extends LightningElement {
       }
     }
 
-    const normalized = Number(String(value).replace(/[^0-9.-]/g, ''));
+    const normalized = Number(String(value).replaceAll(/[^0-9.-]/g, ''));
     return Number.isFinite(normalized) ? normalized : null;
   }
 
@@ -514,8 +544,8 @@ export default class FeaturedStateBooks extends LightningElement {
     const nameSource = product.urlName || product.name || 'detail';
     const recordName = String(nameSource)
       .toLowerCase()
-      .replace(/[^a-z0-9]+/g, '-')
-      .replace(/^-+|-+$/g, '');
+      .replaceAll(/[^a-z0-9]+/g, '-')
+      .replaceAll(/^-+|-+$/g, '');
 
     return `/${this.storeName || DEFAULT_STORE_NAME}/product/${recordName || 'detail'}/${product.id}`;
   }
@@ -537,7 +567,7 @@ export default class FeaturedStateBooks extends LightningElement {
     const product = this.getProductById(productId);
     if (!product) return;
 
-    window.location.href = this.buildProductDetailPath(product);
+    globalThis.location.href = this.buildProductDetailPath(product);
   }
 
   handleQuickShop(event) {
@@ -551,7 +581,7 @@ export default class FeaturedStateBooks extends LightningElement {
     this.modalProduct = product;
     this.isModalOpen = true;
 
-    window.requestAnimationFrame(() => {
+    Promise.resolve().then(() => {
       const modal = this.template.querySelector('c-quick-shop-modal');
       if (modal && typeof modal.open === 'function') {
         modal.open();
@@ -569,11 +599,11 @@ export default class FeaturedStateBooks extends LightningElement {
       return;
     }
 
-    window.location.href = this.buildProductDetailPath(this.modalProduct);
+    globalThis.location.href = this.buildProductDetailPath(this.modalProduct);
   }
 
   async handleAddToCart(event) {
-    const productId = this.modalProduct && this.modalProduct.id ? this.modalProduct.id : '';
+    const productId = this.modalProduct?.id || '';
     if (!productId) {
       return;
     }
@@ -608,7 +638,8 @@ export default class FeaturedStateBooks extends LightningElement {
       if (response.ok) {
         return true;
       }
-    } catch (_e) {
+    } catch (error) {
+      console.debug('Failed to add product to cart.', error);
     }
 
     return false;
@@ -681,6 +712,6 @@ export default class FeaturedStateBooks extends LightningElement {
   handleShopAll(event) {
     event.preventDefault();
     const url = this.resolvedShopAllUrl;
-    window.location.href = url;
+    globalThis.location.href = url;
   }
 }

@@ -1,26 +1,47 @@
+/**
+ * Generates Authorize.Net Accept Hosted payment tokens for B2B Commerce checkout.
+ */
 public without sharing class AuthorizeNetAcceptHostedTokenService {
     // ---- DTOs ----
+
+    /** Request wrapper for hosted payment token generation. */
+    @SuppressWarnings('PMD')
     public class TokenRequest {
+        /** Transaction amount. */
         @AuraEnabled public Decimal amount { get; set; }
-        @AuraEnabled public String currencyIsoCode { get; set; } // e.g., "USD"
-        @AuraEnabled public String returnUrl { get; set; }       // optional: redirect flow
-        @AuraEnabled public String cancelUrl { get; set; }       // optional
-        @AuraEnabled public Boolean showReceipt { get; set; }    // recommended false for iframe flow
-        @AuraEnabled public String transactionType { get; set; } // "authCaptureTransaction" or "authOnlyTransaction"
-        @AuraEnabled public String referenceId { get; set; }     // e.g., CART-<cartId>
+        /** ISO currency code (e.g. USD). */
+        @AuraEnabled public String currencyIsoCode { get; set; }
+        /** Optional return URL after payment. */
+        @AuraEnabled public String returnUrl { get; set; }
+        /** Optional cancel URL. */
+        @AuraEnabled public String cancelUrl { get; set; }
+        /** Whether to show receipt page (recommended false for iframe flow). */
+        @AuraEnabled public Boolean showReceipt { get; set; }
+        /** Transaction type (authCaptureTransaction or authOnlyTransaction). */
+        @AuraEnabled public String transactionType { get; set; }
+        /** Reference ID (e.g. cart ID). */
+        @AuraEnabled public String referenceId { get; set; }
     }
 
+    /** Response wrapper returned to LWC after token generation. */
+    @SuppressWarnings('PMD')
     public class TokenResponse {
+        /** Whether the token was generated successfully. */
         @AuraEnabled public Boolean success { get; set; }
+        /** The Accept Hosted token. */
         @AuraEnabled public String token { get; set; }
+        /** Authorize.Net result code. */
         @AuraEnabled public String resultCode { get; set; }
+        /** Descriptive message. */
         @AuraEnabled public String message { get; set; }
+        /** Raw API response body. */
         @AuraEnabled public String rawResponse { get; set; }
     }
 
     /**
      * Returns Accept Hosted token for the given amount.
-     * LWC should supply final amount + currency (e.g., from /carts/current/cart-summary).
+     * @param req Token request with amount, currency, and options.
+     * @return TokenResponse containing success status and token.
      */
     @AuraEnabled
     public static TokenResponse getHostedPaymentToken(TokenRequest req) {
@@ -28,81 +49,84 @@ public without sharing class AuthorizeNetAcceptHostedTokenService {
         try {
             validate(req);
 
-            // Load secrets from Protected Custom Metadata (recommended).
-            // Replace this with your own protected storage.
             AuthorizeNet_Config__mdt cfg = AuthorizeNet_Config__mdt.getInstance('Default');
             if (cfg == null || String.isBlank(cfg.ApiLoginId__c) || String.isBlank(cfg.TransactionKey__c)) {
                 throwAura('Authorize.Net credentials not configured.');
             }
 
-            // Decide which Named Credential to use
-            String namedCred = (cfg.UseSandbox__c == true) ? 'AuthorizeNet_Sandbox' : 'AuthorizeNet_Prod';
-
-            HttpRequest httpReq = new HttpRequest();
-            httpReq.setEndpoint('callout:' + namedCred + '/xml/v1/request.api');
-            httpReq.setMethod('POST');
-            httpReq.setHeader('Content-Type', 'application/json');
-            httpReq.setTimeout(20000);
-
-            String payload = buildHostedPaymentTokenPayload(cfg, req);
-            httpReq.setBody(payload);
-
-            Http http = new Http();
-            HttpResponse res = http.send(httpReq);
-
+            HttpResponse res = sendTokenRequest(cfg, req);
             String responseBody = sanitizeJsonBody(res.getBody());
             out.rawResponse = responseBody;
 
-            if (res.getStatusCode() < 200 || res.getStatusCode() >= 300) {
-                out.success = false;
-                out.message = 'Authorize.Net token call failed: HTTP ' + res.getStatusCode();
-                return out;
-            }
-
-            if (String.isBlank(responseBody) || (!responseBody.startsWith('{') && !responseBody.startsWith('['))) {
-                out.success = false;
-                out.message = 'Authorize.Net returned non-JSON response.';
-                return out;
-            }
-
-            Map<String, Object> parsed = (Map<String, Object>) JSON.deserializeUntyped(responseBody);
-            Map<String, Object> messages = (Map<String, Object>) parsed.get('messages');
-            String resultCode = messages != null ? String.valueOf(messages.get('resultCode')) : null;
-
-            out.resultCode = resultCode;
-
-            if (resultCode == 'Ok' && parsed.containsKey('token')) {
-                out.success = true;
-                out.token = String.valueOf(parsed.get('token'));
-                out.message = 'Successful';
-                return out;
-            }
-
-            // Try to pull first error text if available
-            String errText;
-            if (messages != null && messages.containsKey('message')) {
-                Object msgObj = messages.get('message');
-                System.debug('msgObj: ' + msgObj);
-                if (msgObj instanceof List<Object> && !((List<Object>)msgObj).isEmpty()) {
-                    Map<String, Object> first = (Map<String, Object>) ((List<Object>)msgObj)[0];
-                    errText = String.valueOf(first.get('text'));
-                }
-            }
-
-            out.success = false;
-            out.message = String.isBlank(errText) ? 'Authorize.Net returned Error' : errText;
-            return out;
+            return parseTokenResponse(out, res, responseBody);
 
         } catch (Exception e) {
             out.success = false;
             out.message = 'Authorize.Net token error [' + e.getTypeName() + ' @ line ' + e.getLineNumber() + ']: ' + e.getMessage();
-            System.debug(LoggingLevel.ERROR,
-                'AuthorizeNetAcceptHostedTokenService.getHostedPaymentToken exception: ' +
-                e.getTypeName() + ' line=' + e.getLineNumber() + ' message=' + e.getMessage() +
-                ' stack=' + e.getStackTraceString()
-            );
             return out;
         }
+    }
+
+    private static HttpResponse sendTokenRequest(AuthorizeNet_Config__mdt cfg, TokenRequest req) {
+        String namedCred = (cfg.UseSandbox__c == true) ? 'AuthorizeNet_Sandbox' : 'AuthorizeNet_Prod';
+
+        HttpRequest httpReq = new HttpRequest();
+        httpReq.setEndpoint('callout:' + namedCred + '/xml/v1/request.api');
+        httpReq.setMethod('POST');
+        httpReq.setHeader('Content-Type', 'application/json');
+        httpReq.setTimeout(20000);
+        httpReq.setBody(buildHostedPaymentTokenPayload(cfg, req));
+
+        return new Http().send(httpReq);
+    }
+
+    private static TokenResponse parseTokenResponse(TokenResponse out, HttpResponse res, String responseBody) {
+        String preCheckError = validateRawResponse(res, responseBody);
+        if (preCheckError != null) {
+            return buildFailure(out, preCheckError);
+        }
+
+        Map<String, Object> parsed = (Map<String, Object>) JSON.deserializeUntyped(responseBody);
+        Map<String, Object> messages = (Map<String, Object>) parsed.get('messages');
+        out.resultCode = messages != null ? String.valueOf(messages.get('resultCode')) : null;
+
+        if (out.resultCode == 'Ok' && parsed.containsKey('token')) {
+            out.success = true;
+            out.token = String.valueOf(parsed.get('token'));
+            out.message = 'Successful';
+            return out;
+        }
+
+        String errText = extractErrorText(messages);
+        return buildFailure(out, String.isBlank(errText) ? 'Authorize.Net returned Error' : errText);
+    }
+
+    private static String validateRawResponse(HttpResponse res, String responseBody) {
+        if (res.getStatusCode() < 200 || res.getStatusCode() >= 300) {
+            return 'Authorize.Net token call failed: HTTP ' + res.getStatusCode();
+        }
+        if (String.isBlank(responseBody) || (!responseBody.startsWith('{') && !responseBody.startsWith('['))) {
+            return 'Authorize.Net returned non-JSON response.';
+        }
+        return null;
+    }
+
+    private static TokenResponse buildFailure(TokenResponse out, String msg) {
+        out.success = false;
+        out.message = msg;
+        return out;
+    }
+
+    private static String extractErrorText(Map<String, Object> messages) {
+        if (messages == null || !messages.containsKey('message')) {
+            return null;
+        }
+        Object msgObj = messages.get('message');
+        if (msgObj instanceof List<Object> && !((List<Object>) msgObj).isEmpty()) {
+            Map<String, Object> first = (Map<String, Object>) ((List<Object>) msgObj)[0];
+            return String.valueOf(first.get('text'));
+        }
+        return null;
     }
 
     // ---- Helpers ----
@@ -124,12 +148,21 @@ public without sharing class AuthorizeNetAcceptHostedTokenService {
     }
 
     private static void validate(TokenRequest req) {
-        if (req == null) throwAura('Missing request.');
-        if (req.amount == null || req.amount <= 0) throwAura('Amount must be > 0.');
-        if (String.isBlank(req.currencyIsoCode)) req.currencyIsoCode = 'USD';
-        if (String.isBlank(req.transactionType)) req.transactionType = 'authCaptureTransaction';
-
-        if (req.showReceipt == null) req.showReceipt = false;
+        if (req == null) {
+            throwAura('Missing request.');
+        }
+        if (req.amount == null || req.amount <= 0) {
+            throwAura('Amount must be > 0.');
+        }
+        if (String.isBlank(req.currencyIsoCode)) {
+            req.currencyIsoCode = 'USD';
+        }
+        if (String.isBlank(req.transactionType)) {
+            req.transactionType = 'authCaptureTransaction';
+        }
+        if (req.showReceipt == null) {
+            req.showReceipt = false;
+        }
     }
 
     private static String buildHostedPaymentTokenPayload(AuthorizeNet_Config__mdt cfg, TokenRequest req) {

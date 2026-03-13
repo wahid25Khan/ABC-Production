@@ -153,7 +153,8 @@
     <template if:true={isModalOpen}>
       <c-quick-shop-modal title={modalTitle} isbn={modalIsbn} book-image-url={modalImageUrl}
         color-price={modalColorPrice} color-price-bulk={modalColorPriceBulk} bw-price={modalBwPrice}
-        bw-price-bulk={modalBwPriceBulk} currency-iso-code={modalCurrencyIsoCode}
+        bw-price-bulk={modalBwPriceBulk} digital-price={modalDigitalPrice} digital-price-bulk={modalDigitalPriceBulk}
+        currency-iso-code={modalCurrencyIsoCode}
         minimum-quantity={modalMinimumQuantity} maximum-quantity={modalMaximumQuantity} increment-quantity={modalIncrementQuantity}
         onaddtocart={handleAddToCart} onviewdetails={handleViewDetails} onclose={handleModalClose}>
       </c-quick-shop-modal>

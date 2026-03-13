@@ -8,7 +8,8 @@ const PRODUCT_DETAIL_FIELDS = ['StockKeepingUnit', 'Name'];
 
 const PLAN = {
   COLOR: 'COLOR',
-  BW: 'BW'
+  BW: 'BW',
+  DIGITAL: 'DIGITAL'
 };
 
 export default class ProductDetailComponent extends LightningElement {
@@ -95,6 +96,10 @@ export default class ProductDetailComponent extends LightningElement {
     return this.selectedPlan === PLAN.BW;
   }
 
+  get isDigitalSelected() {
+    return this.selectedPlan === PLAN.DIGITAL;
+  }
+
   get ariaColorSelected() {
     return this.isColorSelected ? 'true' : 'false';
   }
@@ -103,12 +108,20 @@ export default class ProductDetailComponent extends LightningElement {
     return this.isBwSelected ? 'true' : 'false';
   }
 
+  get ariaDigitalSelected() {
+    return this.isDigitalSelected ? 'true' : 'false';
+  }
+
   get planClassColor() {
     return `plan-option ${this.isColorSelected ? 'active' : ''}`;
   }
 
   get planClassBw() {
     return `plan-option ${this.isBwSelected ? 'active' : ''}`;
+  }
+
+  get planClassDigital() {
+    return `plan-option ${this.isDigitalSelected ? 'active' : ''}`;
   }
 
   get heartIcon() {
@@ -131,11 +144,22 @@ export default class ProductDetailComponent extends LightningElement {
     return this.toNumber(this.product?.bwPriceBulk) ?? this.normalizedBwPrice;
   }
 
+  get normalizedDigitalPrice() {
+    return this.toNumber(this.product?.digitalPrice) ?? this.normalizedColorPrice;
+  }
+
+  get normalizedDigitalPriceBulk() {
+    return this.toNumber(this.product?.digitalPriceBulk) ?? this.normalizedDigitalPrice;
+  }
+
   get selectedUnitPrice() {
-    const isBw = this.selectedPlan === PLAN.BW;
-    const primary = isBw ? this.normalizedBwPrice : this.normalizedColorPrice;
-    const secondary = isBw ? this.normalizedBwPriceBulk : this.normalizedColorPriceBulk;
-    return primary ?? secondary;
+    if (this.selectedPlan === PLAN.DIGITAL) {
+      return this.normalizedDigitalPrice ?? this.normalizedDigitalPriceBulk;
+    }
+    if (this.selectedPlan === PLAN.BW) {
+      return this.normalizedBwPrice ?? this.normalizedBwPriceBulk;
+    }
+    return this.normalizedColorPrice ?? this.normalizedColorPriceBulk;
   }
 
   get formattedUnitPrice() {
@@ -374,7 +398,9 @@ export default class ProductDetailComponent extends LightningElement {
       colorPrice: basePrice ?? null,
       colorPriceBulk: priceInfo.listPrice ?? basePrice ?? null,
       bwPrice: basePrice ?? null,
-      bwPriceBulk: priceInfo.listPrice ?? basePrice ?? null
+      bwPriceBulk: priceInfo.listPrice ?? basePrice ?? null,
+      digitalPrice: basePrice ?? null,
+      digitalPriceBulk: priceInfo.listPrice ?? basePrice ?? null
     };
   }
 
@@ -444,6 +470,10 @@ export default class ProductDetailComponent extends LightningElement {
 
   selectBwPlan() {
     this.applyPlan(PLAN.BW);
+  }
+
+  selectDigitalPlan() {
+    this.applyPlan(PLAN.DIGITAL);
   }
 
   applyPlan(plan) {

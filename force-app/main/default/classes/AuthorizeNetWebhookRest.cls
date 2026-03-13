@@ -1,6 +1,8 @@
+/** REST endpoint for Authorize.Net payment webhooks. */
 @RestResource(urlMapping='/authorizenet/webhook/*')
 global without sharing class AuthorizeNetWebhookRest {
     @HttpPost
+    /** Receives and persists Authorize.Net webhook payloads. */
     global static void receive() {
         RestRequest req = RestContext.request;
         RestResponse res = RestContext.response;
@@ -19,12 +21,11 @@ global without sharing class AuthorizeNetWebhookRest {
     private static void persistTransactionPayload(String rawBody) {
         Schema.SObjectType txnType = Schema.getGlobalDescribe().get('AuthorizeNet_Transaction__c');
         if (txnType == null) {
-            System.debug(LoggingLevel.ERROR, 'AuthorizeNet_Transaction__c not found; payload not persisted.');
             return;
         }
 
         SObject txn = txnType.newSObject();
         txn.put('Payload__c', rawBody);
-        insert txn;
+        insert as system txn;
     }
 }

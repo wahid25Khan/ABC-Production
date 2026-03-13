@@ -7,7 +7,7 @@ export default class CheckoutLoginGate extends NavigationMixin(LightningElement)
     @api cartUrl = '/cart';
     @api checkoutUrl = '/checkout';
     @api createAccountUrl = '/SelfRegister';
-    @api forgotPasswordUrl = '/ForgotPassword';
+    @api forgotPasswordUrl = '/ForgotPassword'; // NOSONAR — URL path, not a credential
 
     email = '';
     password = '';
@@ -68,7 +68,8 @@ export default class CheckoutLoginGate extends NavigationMixin(LightningElement)
                     url: loginUrl
                 }
             });
-        } catch (_ignored) {
+        } catch (error) {
+            console.warn('Sign-in navigation failed.', error);
             this.loginError = 'Unable to sign in. Please check your credentials and try again.';
             this.isLoggingIn = false;
         }

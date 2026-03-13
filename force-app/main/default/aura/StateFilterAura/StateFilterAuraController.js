@@ -14,7 +14,6 @@
 
     handleSelect: function (component, event, helper) {
         event.stopPropagation();
-        // eslint-disable-next-line no-unsafe-optional-chaining
         const target = event.currentTarget;
         const val = (target && target.dataset && target.dataset.value) || "";
         component.set("v.selectedValue", val);

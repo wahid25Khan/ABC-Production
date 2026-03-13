@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>BW_Price_25__c</fullName>
+    <label>B&amp;W Price 25+</label>
+    <type>Currency</type>
+    <precision>18</precision>
+    <scale>2</scale>
+    <required>false</required>
+    <description>Bulk unit price for B&amp;W Print + Digital format (25+ qty).</description>
+</CustomField>

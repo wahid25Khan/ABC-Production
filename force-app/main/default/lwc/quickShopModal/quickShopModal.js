@@ -2,7 +2,8 @@ import { LightningElement, api } from 'lwc';
 
 const PLAN = {
     COLOR: "COLOR",
-    BW: "BW"
+    BW: "BW",
+    DIGITAL: "DIGITAL"
 };
 
 export default class QuickShopModal extends LightningElement {
@@ -19,6 +20,8 @@ export default class QuickShopModal extends LightningElement {
     @api colorPriceBulk;
     @api bwPrice;
     @api bwPriceBulk;
+    @api digitalPrice;
+    @api digitalPriceBulk;
     @api currencyIsoCode = 'USD';
     @api minimumQuantity = 10;
     @api maximumQuantity = 50;
@@ -32,7 +35,7 @@ export default class QuickShopModal extends LightningElement {
     isOpen = true;
 
     get isLoading() {
-        return !this.title && !this.colorPrice && !this.bwPrice;
+        return !this.title && !this.colorPrice && !this.bwPrice && !this.digitalPrice;
     }
 
     // features layout as screenshot
@@ -59,8 +62,9 @@ export default class QuickShopModal extends LightningElement {
     }
 
     get selectedBulkPrice() {
-        const isBw = this.selectedPlan === PLAN.BW;
-        return isBw ? this.normalizedBwPriceBulk : this.normalizedColorPriceBulk;
+        if (this.selectedPlan === PLAN.DIGITAL) return this.normalizedDigitalPriceBulk;
+        if (this.selectedPlan === PLAN.BW) return this.normalizedBwPriceBulk;
+        return this.normalizedColorPriceBulk;
     }
 
     get hasBulkPrice() {
@@ -104,11 +108,22 @@ export default class QuickShopModal extends LightningElement {
         return this.toNumber(this.bwPriceBulk) ?? this.normalizedBwPrice;
     }
 
+    get normalizedDigitalPrice() {
+        return this.toNumber(this.digitalPrice) ?? this.normalizedColorPrice;
+    }
+
+    get normalizedDigitalPriceBulk() {
+        return this.toNumber(this.digitalPriceBulk) ?? this.normalizedDigitalPrice;
+    }
+
     get isColorSelected() {
         return this.selectedPlan === PLAN.COLOR;
     }
     get isBwSelected() {
         return this.selectedPlan === PLAN.BW;
+    }
+    get isDigitalSelected() {
+        return this.selectedPlan === PLAN.DIGITAL;
     }
 
     get ariaColorSelected() {
@@ -118,6 +133,9 @@ export default class QuickShopModal extends LightningElement {
     get ariaBwSelected() {
         return this.isBwSelected ? 'true' : 'false';
     }
+    get ariaDigitalSelected() {
+        return this.isDigitalSelected ? 'true' : 'false';
+    }
 
     get planClassColor() {
         return `plan-option ${this.isColorSelected ? "active" : ""}`;
@@ -125,16 +143,22 @@ export default class QuickShopModal extends LightningElement {
     get planClassBw() {
         return `plan-option ${this.isBwSelected ? "active" : ""}`;
     }
+    get planClassDigital() {
+        return `plan-option ${this.isDigitalSelected ? "active" : ""}`;
+    }
 
     get heartIcon() {
         return this.isFavorite ? "utility:favorite" : "utility:favorite_alt";
     }
 
     get selectedUnitPrice() {
-        const isBw = this.selectedPlan === PLAN.BW;
-        const primary = isBw ? this.normalizedBwPrice : this.normalizedColorPrice;
-        const secondary = isBw ? this.normalizedBwPriceBulk : this.normalizedColorPriceBulk;
-        return primary ?? secondary;
+        if (this.selectedPlan === PLAN.DIGITAL) {
+            return this.normalizedDigitalPrice ?? this.normalizedDigitalPriceBulk;
+        }
+        if (this.selectedPlan === PLAN.BW) {
+            return this.normalizedBwPrice ?? this.normalizedBwPriceBulk;
+        }
+        return this.normalizedColorPrice ?? this.normalizedColorPriceBulk;
     }
 
     // Live order total: unitPrice × (qty / increment)
@@ -172,6 +196,9 @@ export default class QuickShopModal extends LightningElement {
     }
     selectBwPlan() {
         this.applyPlan(PLAN.BW);
+    }
+    selectDigitalPlan() {
+        this.applyPlan(PLAN.DIGITAL);
     }
 
     applyPlan(plan) {
