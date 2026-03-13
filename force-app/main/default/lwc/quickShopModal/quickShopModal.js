@@ -27,6 +27,7 @@ export default class QuickShopModal extends LightningElement {
     // default tab
     selectedPlan = PLAN.COLOR;
     quantity = 10;
+    bulkThreshold = 25;
 
     isFavorite = false;
     isOpen = true;
@@ -50,8 +51,33 @@ export default class QuickShopModal extends LightningElement {
         return Number.isFinite(parsed) && parsed > 0 ? parsed : 1;
     }
 
-    get formattedUnitPrice() {
-        return this.formatPrice(this.selectedUnitPrice);
+    get isLoading() {
+        return !this.title;
+    }
+
+    get standardQtyRange() {
+        if (!this.hasBulkPrice) return `${this.minQty}+`;
+        return `${this.minQty}-${this.bulkThreshold - 1}`;
+    }
+
+    get bulkQtyRange() {
+        return `${this.bulkThreshold}+`;
+    }
+
+    get hasBulkPrice() {
+        const standard = this.selectedPlan === PLAN.BW ? this.normalizedBwPrice : this.normalizedColorPrice;
+        const bulk = this.selectedPlan === PLAN.BW ? this.normalizedBwPriceBulk : this.normalizedColorPriceBulk;
+        return bulk !== null && standard !== null && bulk !== standard;
+    }
+
+    get formattedStandardPrice() {
+        const price = this.selectedPlan === PLAN.BW ? this.normalizedBwPrice : this.normalizedColorPrice;
+        return this.formatPrice(price);
+    }
+
+    get formattedBulkPrice() {
+        const price = this.selectedPlan === PLAN.BW ? this.normalizedBwPriceBulk : this.normalizedColorPriceBulk;
+        return this.formatPrice(price);
     }
 
     get normalizedColorPrice() {
@@ -103,15 +129,7 @@ export default class QuickShopModal extends LightningElement {
         return primary ?? secondary;
     }
 
-    // Live order total: unitPrice × (qty / increment)
-    // e.g. $41 unit price, increment=10, qty=20 → 41 × (20/10) = $82
-    get totalPrice() {
-        const unit = this.selectedUnitPrice;
-        const qty = Number(this.quantity) || this.minQty;
-        const inc = this.incrementQty;
-        if (!unit || !inc) return '';
-        return this.formatPrice(unit * (qty / inc));
-    }
+
 
     // ---------- open/close ----------
 
