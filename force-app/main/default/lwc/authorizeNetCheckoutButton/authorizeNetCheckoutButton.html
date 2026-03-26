@@ -5,4 +5,7 @@
         onclick={handleCheckout}
         disabled={isLoading}>
     </lightning-button>
+    <template if:true={errorMessage}>
+        <p class="error-message" role="alert">{errorMessage}</p>
+    </template>
 </template>

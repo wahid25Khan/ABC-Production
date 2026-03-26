@@ -15,6 +15,7 @@ export default class AuthorizeNetCheckoutButton extends LightningElement {
     @api showReceipt = false;
 
     isLoading = false;
+    errorMessage = null;
     currentCartId;
     currentReferenceId;
 
@@ -24,6 +25,7 @@ export default class AuthorizeNetCheckoutButton extends LightningElement {
         }
 
         this.isLoading = true;
+        this.errorMessage = null;
 
         try {
             const webstoreId = this.webstoreId;
@@ -38,12 +40,9 @@ export default class AuthorizeNetCheckoutButton extends LightningElement {
                 throw new Error('Could not determine cart total amount from checkout API.');
             }
 
-            // Check if there's already an active checkout in progress
-            const activeCheckout = await this.getActiveCheckout(webstoreId);
-            if (activeCheckout && Object.keys(activeCheckout).length > 0) {
-                console.log('Active checkout already exists:', JSON.stringify(activeCheckout));
-                throw new Error('A checkout is already in progress. Please complete it or cancel it before starting a new one.');
-            }
+            // If an active checkout already exists for this cart, delete it before creating
+            // a new one. This prevents a stale checkout from permanently blocking the user.
+            await this.clearActiveCheckoutIfPresent(webstoreId);
 
             const tokenRequest = {
                 amount: Number(amount),
@@ -61,9 +60,11 @@ export default class AuthorizeNetCheckoutButton extends LightningElement {
                 throw new Error(tokenResponse?.message || 'Authorize.Net token generation failed.');
             }
 
-            console.log('Authorize.Net token:', tokenResponse.token);
+            // DO NOT log the token — it is a sensitive payment credential.
             const checkoutStartResponse = await this.startCheckout(webstoreId, this.currentCartId);
-            console.log('Checkout start response:', JSON.stringify(checkoutStartResponse));
+            if (!checkoutStartResponse) {
+                throw new Error('Failed to start checkout session.');
+            }
 
             this.redirectToHostedPaymentForm(tokenResponse.token);
         } catch (error) {
@@ -84,9 +85,37 @@ export default class AuthorizeNetCheckoutButton extends LightningElement {
             }
         );
 
-        const cartData = await this.parseResponse(response, 'Failed to fetch cart details.');
-        console.log('Commerce cart response:', JSON.stringify(cartData));
-        return cartData;
+        return this.parseResponse(response, 'Failed to fetch cart details.');
+    }
+
+    /**
+     * Clears a stale active checkout if one exists so a new checkout can be started.
+     * Silently swallows errors — a missing or already-cleared checkout is not a failure.
+     */
+    async clearActiveCheckoutIfPresent(webstoreId) {
+        try {
+            const response = await fetch(
+                `/AmericanBookCompany/webruntime/api/services/data/${API_VERSION}/commerce/webstores/${webstoreId}/checkouts/active`,
+                {
+                    method: 'GET',
+                    headers: { Accept: 'application/json' }
+                }
+            );
+            if (!response.ok) {
+                // No active checkout exists — nothing to clear.
+                return;
+            }
+            // An active checkout exists; delete it so we can create a fresh one.
+            await fetch(
+                `/AmericanBookCompany/webruntime/api/services/data/${API_VERSION}/commerce/webstores/${webstoreId}/checkouts/active`,
+                {
+                    method: 'DELETE',
+                    headers: { Accept: 'application/json' }
+                }
+            );
+        } catch {
+            // Non-fatal — proceed even if the pre-clear fails.
+        }
     }
 
     async getActiveCheckout(webstoreId) {
@@ -243,6 +272,7 @@ export default class AuthorizeNetCheckoutButton extends LightningElement {
 
     dispatchError(error) {
         const message = error?.body?.message || error?.message || 'Checkout initialization failed.';
+        this.errorMessage = message;
         this.dispatchEvent(
             new CustomEvent('checkouterror', {
                 detail: { message },

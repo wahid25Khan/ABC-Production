@@ -1,7 +1,7 @@
 /**
  * Generates Authorize.Net Accept Hosted payment tokens for B2B Commerce checkout.
  */
-public without sharing class AuthorizeNetAcceptHostedTokenService {
+public with sharing class AuthorizeNetAcceptHostedTokenService {
     // ---- DTOs ----
 
     /** Request wrapper for hosted payment token generation. */
@@ -32,10 +32,9 @@ public without sharing class AuthorizeNetAcceptHostedTokenService {
         @AuraEnabled public String token { get; set; }
         /** Authorize.Net result code. */
         @AuraEnabled public String resultCode { get; set; }
-        /** Descriptive message. */
+        /** Descriptive message (safe for display — no internal stack details). */
         @AuraEnabled public String message { get; set; }
-        /** Raw API response body. */
-        @AuraEnabled public String rawResponse { get; set; }
+        // rawResponse intentionally removed — never expose the raw API response to the browser.
     }
 
     /**
@@ -56,13 +55,19 @@ public without sharing class AuthorizeNetAcceptHostedTokenService {
 
             HttpResponse res = sendTokenRequest(cfg, req);
             String responseBody = sanitizeJsonBody(res.getBody());
-            out.rawResponse = responseBody;
+            // rawResponse is NOT stored on the DTO — never expose raw API responses to the browser.
 
             return parseTokenResponse(out, res, responseBody);
 
-        } catch (Exception e) {
+        } catch (AuraHandledException e) {
             out.success = false;
-            out.message = 'Authorize.Net token error [' + e.getTypeName() + ' @ line ' + e.getLineNumber() + ']: ' + e.getMessage();
+            out.message = e.getMessage(); // validation messages are safe to surface
+            return out;
+        } catch (Exception e) {
+            // Strip internal type/line details — never send stack information to the browser.
+            System.debug(LoggingLevel.ERROR, 'AuthorizeNetAcceptHostedTokenService error: ' + e.getTypeName() + ' @ line ' + e.getLineNumber() + ' — ' + e.getMessage());
+            out.success = false;
+            out.message = 'Payment token generation failed. Please try again.';
             return out;
         }
     }
@@ -163,14 +168,48 @@ public without sharing class AuthorizeNetAcceptHostedTokenService {
         if (req.showReceipt == null) {
             req.showReceipt = false;
         }
+        // Validate returnUrl/cancelUrl — must be blank or start with the site origin.
+        // This prevents an open-redirect attack where a malicious caller could redirect
+        // buyers to an arbitrary domain after payment.
+        if (String.isNotBlank(req.returnUrl) && !isSafeRedirectUrl(req.returnUrl)) {
+            throwAura('Invalid returnUrl: must be a relative path or an americanbookcompany.my.site.com URL.');
+        }
+        if (String.isNotBlank(req.cancelUrl) && !isSafeRedirectUrl(req.cancelUrl)) {
+            throwAura('Invalid cancelUrl: must be a relative path or an americanbookcompany.my.site.com URL.');
+        }
+    }
+
+    /**
+     * Returns true when the URL is safe to use as a redirect target.
+     * Accepts blank values (handled by caller), relative paths, and
+     * URLs on the known ABC storefront domain.
+     */
+    @TestVisible
+    private static Boolean isSafeRedirectUrl(String url) {
+        if (String.isBlank(url)) return true;
+        if (url.startsWith('/')) return true; // relative path
+        return url.startsWith('https://americanbookcompany.my.site.com/')
+            || url.startsWith('https://americanbookcompany.my.salesforce.com/');
     }
 
     private static String buildHostedPaymentTokenPayload(AuthorizeNet_Config__mdt cfg, TokenRequest req) {
-        String continueUrl = String.isBlank(req.returnUrl) ? 'https://www.google.com' : req.returnUrl;
+        if (String.isBlank(req.returnUrl)) {
+            // returnUrl is required — the validate() call should have caught a missing value,
+            // but as a safety net we throw here rather than silently redirecting to an
+            // unrelated site like google.com.
+            throwAura('returnUrl is required for hosted payment redirect.');
+        }
+        String continueUrl = req.returnUrl;
         String cancelUrl = String.isBlank(req.cancelUrl) ? continueUrl : req.cancelUrl;
 
+        // Authorize.Net Accept Hosted invoiceNumber has a 20-character maximum.
+        if (!String.isBlank(req.referenceId) && req.referenceId.length() > 20) {
+            req.referenceId = req.referenceId.left(20);
+        }
+
+        // Use req.showReceipt (set and validated in validate()) rather than a hardcoded true.
         Map<String, Object> returnOptions = new Map<String, Object>{
-            'showReceipt' => true,
+            'showReceipt' => req.showReceipt,
             'url' => continueUrl,
             'urlText' => 'Continue',
             'cancelUrl' => cancelUrl,

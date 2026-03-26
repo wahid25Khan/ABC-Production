@@ -75,8 +75,8 @@ private class AuthorizeNetAcceptHostedTokenServiceTest {
         r.currencyIsoCode = 'USD';
         r.transactionType = 'authCaptureTransaction';
         r.referenceId = 'CART-123';
-        r.returnUrl = 'https://example.com/return';
-        r.cancelUrl = 'https://example.com/cancel';
+        r.returnUrl = 'https://americanbookcompany.my.site.com/AmericanBookCompany/s/checkout';
+        r.cancelUrl = 'https://americanbookcompany.my.site.com/AmericanBookCompany/s/cart';
         r.showReceipt = false;
         return r;
     }
@@ -110,7 +110,7 @@ private class AuthorizeNetAcceptHostedTokenServiceTest {
         System.assertEquals('hostedToken123', tr.token, 'Token must match');
         System.assertEquals('Ok', tr.resultCode, 'Result code should be Ok');
         System.assertEquals('Successful', tr.message, 'Message should signal success');
-        System.assert(tr.rawResponse != null && tr.rawResponse.contains('"token"'), 'Raw response should echo API body');
+        // rawResponse intentionally removed from DTO — never expose raw API responses to the browser.
     }
 
     @IsTest
@@ -170,8 +170,9 @@ private class AuthorizeNetAcceptHostedTokenServiceTest {
         Test.setMock(HttpCalloutMock.class, new OkTokenMock());
         AuthorizeNetAcceptHostedTokenService.TokenRequest r2 = new AuthorizeNetAcceptHostedTokenService.TokenRequest();
         r2.amount = 25;
-        // leave currencyIsoCode blank
-        // leave transactionType blank
+        r2.returnUrl = 'https://americanbookcompany.my.site.com/AmericanBookCompany/s/checkout';
+        // leave currencyIsoCode blank → defaults to USD
+        // leave transactionType blank → defaults to authCaptureTransaction
         tr2 = AuthorizeNetAcceptHostedTokenService.getHostedPaymentToken(r2);
 
         Test.stopTest();
@@ -187,5 +188,114 @@ private class AuthorizeNetAcceptHostedTokenServiceTest {
         System.assertEquals(true, tr2.success, 'Should succeed with defaults applied');
         System.assertEquals('Ok', tr2.resultCode, 'Result code should be Ok');
         System.assertNotEquals(null, tr2.token, 'Token should be present');
+    }
+
+    // ─── New tests covering URL validation and invoice truncation ────────────────
+
+    @IsTest
+    static void test_unsafe_returnUrl_rejected() {
+        // External domains must be blocked (open-redirect guard)
+        AuthorizeNetAcceptHostedTokenService.TokenRequest r = new AuthorizeNetAcceptHostedTokenService.TokenRequest();
+        r.amount = 10;
+        r.returnUrl = 'https://evil.com/steal';
+
+        Test.startTest();
+        AuthorizeNetAcceptHostedTokenService.TokenResponse tr =
+            AuthorizeNetAcceptHostedTokenService.getHostedPaymentToken(r);
+        Test.stopTest();
+
+        System.assertEquals(false, tr.success, 'Unsafe returnUrl should fail');
+        System.assert(
+            tr.message != null && tr.message.contains('Invalid returnUrl'),
+            'Message should identify invalid returnUrl, got: ' + tr.message
+        );
+    }
+
+    @IsTest
+    static void test_unsafe_cancelUrl_rejected() {
+        AuthorizeNetAcceptHostedTokenService.TokenRequest r = new AuthorizeNetAcceptHostedTokenService.TokenRequest();
+        r.amount = 10;
+        r.returnUrl = 'https://americanbookcompany.my.site.com/AmericanBookCompany/s/checkout';
+        r.cancelUrl = 'https://evil.com/phish';
+
+        Test.startTest();
+        AuthorizeNetAcceptHostedTokenService.TokenResponse tr =
+            AuthorizeNetAcceptHostedTokenService.getHostedPaymentToken(r);
+        Test.stopTest();
+
+        System.assertEquals(false, tr.success, 'Unsafe cancelUrl should fail');
+        System.assert(
+            tr.message != null && tr.message.contains('Invalid cancelUrl'),
+            'Message should identify invalid cancelUrl, got: ' + tr.message
+        );
+    }
+
+    @IsTest
+    static void test_missing_returnUrl_rejected() {
+        // blank returnUrl must be caught in buildHostedPaymentTokenPayload
+        AuthorizeNetAcceptHostedTokenService.TokenRequest r = new AuthorizeNetAcceptHostedTokenService.TokenRequest();
+        r.amount = 10;
+        // returnUrl intentionally left blank
+
+        Test.startTest();
+        AuthorizeNetAcceptHostedTokenService.TokenResponse tr =
+            AuthorizeNetAcceptHostedTokenService.getHostedPaymentToken(r);
+        Test.stopTest();
+
+        System.assertEquals(false, tr.success, 'Missing returnUrl should fail');
+        System.assert(
+            tr.message != null && tr.message.contains('returnUrl is required'),
+            'Message should state returnUrl is required, got: ' + tr.message
+        );
+    }
+
+    @IsTest
+    static void test_safe_relative_returnUrl_accepted() {
+        Test.startTest();
+        Test.setMock(HttpCalloutMock.class, new OkTokenMock());
+        AuthorizeNetAcceptHostedTokenService.TokenRequest r = validReq();
+        r.returnUrl = '/AmericanBookCompany/s/checkout'; // relative path — safe
+        AuthorizeNetAcceptHostedTokenService.TokenResponse tr =
+            AuthorizeNetAcceptHostedTokenService.getHostedPaymentToken(r);
+        Test.stopTest();
+
+        System.assertEquals(true, tr.success, 'Relative returnUrl should be accepted');
+        System.assertEquals('hostedToken123', tr.token, 'Token must be returned');
+    }
+
+    @IsTest
+    static void test_invoiceNumber_truncated_to_20_chars() {
+        // referenceId longer than 20 chars must be silently truncated, not rejected
+        Test.startTest();
+        Test.setMock(HttpCalloutMock.class, new OkTokenMock());
+        AuthorizeNetAcceptHostedTokenService.TokenRequest r = validReq();
+        r.referenceId = '123456789012345678901234'; // 24 chars
+        AuthorizeNetAcceptHostedTokenService.TokenResponse tr =
+            AuthorizeNetAcceptHostedTokenService.getHostedPaymentToken(r);
+        Test.stopTest();
+
+        System.assertEquals(true, tr.success, 'Long referenceId should be truncated and request accepted');
+        System.assertEquals('hostedToken123', tr.token, 'Token must still be returned');
+    }
+
+    @IsTest
+    static void test_isSafeRedirectUrl() {
+        // Relative paths — always safe
+        System.assertEquals(true,  AuthorizeNetAcceptHostedTokenService.isSafeRedirectUrl('/'),
+            'Root relative path should be safe');
+        System.assertEquals(true,  AuthorizeNetAcceptHostedTokenService.isSafeRedirectUrl('/AmericanBookCompany/s/checkout'),
+            'Relative path should be safe');
+        // ABC storefront HTTPS origin — safe
+        System.assertEquals(true,  AuthorizeNetAcceptHostedTokenService.isSafeRedirectUrl('https://americanbookcompany.my.site.com/AmericanBookCompany/s/checkout'),
+            'ABC site HTTPS URL should be safe');
+        System.assertEquals(true,  AuthorizeNetAcceptHostedTokenService.isSafeRedirectUrl('https://americanbookcompany.my.salesforce.com/'),
+            'ABC Salesforce HTTPS URL should be safe');
+        // External domains — unsafe
+        System.assertEquals(false, AuthorizeNetAcceptHostedTokenService.isSafeRedirectUrl('https://evil.com/steal'),
+            'External domain should be unsafe');
+        System.assertEquals(false, AuthorizeNetAcceptHostedTokenService.isSafeRedirectUrl('http://americanbookcompany.my.site.com/steal'),
+            'HTTP (not HTTPS) should be unsafe');
+        System.assertEquals(false, AuthorizeNetAcceptHostedTokenService.isSafeRedirectUrl('https://americanbookcompany.my.site.com.evil.com/'),
+            'Domain-spoofing URL should be unsafe');
     }
 }
