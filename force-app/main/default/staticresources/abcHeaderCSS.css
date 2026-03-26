@@ -1,196 +1,177 @@
 /* ═══════════════════════════════════════════════════════════════════
-   ABC HEADER – responsive overrides
-   Loaded globally via loadStyle in stateFilterLwc
+   ABC HEADER – responsive overrides  v3
+   (Also injected inline by stateFilterLwc.js — keep in sync.)
+
+   Live DOM structure (ABC-Production, confirmed March 2026):
+     [data-layout-site-region="header"]
+       [data-component-id="columns-7cf9"]   ← Nav row
+         commerce_builder-drilldown-navigation
+       [data-component-id="columns-ce85"]   ← 4-col utility row
+         dxp_layout-column:nth-of-type(1)   ← Logo   (col-large-size_2-of-12)
+         dxp_layout-column:nth-of-type(2)   ← State  (col-large-size_2-of-12)
+         dxp_layout-column:nth-of-type(3)   ← Search (col-large-size_5-of-12)
+         dxp_layout-column:nth-of-type(4)   ← Cart   (col-large-size_3-of-12)
+
+   OOB col-large-size breakpoint = 64em (1024px):
+     ≥ 1024px → row layout handled by OOB styles, no overrides needed.
+     768–1023px → tablet block below forces row layout.
+     < 768px  → mobile block gives 2-row layout (Logo|State|Cart / Search).
    ═══════════════════════════════════════════════════════════════════ */
 
 /* ------------------------------------------------------------------
-   TABLET  (768px – 1024px)
-   Keep Logo / State / Nav+Search+Cart in a horizontal row
+   TABLET  (768px – 1023px)
+   Force the 4-column utility row into a single horizontal row.
    ------------------------------------------------------------------ */
-@media only screen and (min-width: 48em) and (max-width: 64em) {
+@media only screen and (min-width: 48em) and (max-width: 63.9375em) {
 
-  /* Force main header row to stay horizontal */
-  [data-component-id="columns-47c9"] .columns {
+  [data-layout-site-region="header"] {
+    padding: 4px 12px !important;
+  }
+
+  /* Force 4-col row to go horizontal */
+  [data-component-id="columns-ce85"] > .columns-content > .columns {
     flex-direction: row !important;
     flex-wrap: nowrap !important;
     align-items: center !important;
   }
 
-  /* Hide spacers on tablet to save space */
-  [data-component-id="columns-47c9"] dxp_layout-column-spacer {
+  [data-component-id="columns-ce85"] dxp_layout-column-spacer {
     display: none !important;
   }
 
-  /* Logo column: shrink to content */
-  [data-component-id="columns-47c9"] > .columns-content > .columns > dxp_layout-column:first-of-type {
+  /* Col 1 – Logo */
+  [data-component-id="columns-ce85"] > .columns-content > .columns > dxp_layout-column:nth-of-type(1) {
     flex: 0 0 auto !important;
     width: auto !important;
-    max-width: 100px !important;
-    padding: 0 8px !important;
+    max-width: 110px !important;
+    padding: 0 8px 0 0 !important;
   }
-  [data-component-id="columns-47c9"] > .columns-content > .columns > dxp_layout-column:first-of-type img {
-    max-height: 55px !important;
+  [data-component-id="columns-ce85"] > .columns-content > .columns > dxp_layout-column:nth-of-type(1) img {
+    max-height: 52px !important;
     width: auto !important;
   }
 
-  /* State filter column: shrink to content */
-  [data-component-id="columns-47c9"] > .columns-content > .columns > dxp_layout-column:nth-of-type(2) {
+  /* Col 2 – State filter */
+  [data-component-id="columns-ce85"] > .columns-content > .columns > dxp_layout-column:nth-of-type(2) {
     flex: 0 0 auto !important;
     width: auto !important;
-    max-width: 160px !important;
-    padding: 0 4px !important;
+    max-width: 155px !important;
+    padding: 0 8px !important;
   }
-  [data-component-id="columns-47c9"] c-state-filter-lwc .wrap {
+  [data-component-id="columns-ce85"] c-state-filter-lwc .wrap {
     max-width: 140px !important;
   }
 
-  /* Nav+Search+Cart column: fill remaining space */
-  [data-component-id="columns-47c9"] > .columns-content > .columns > dxp_layout-column:nth-of-type(3) {
+  /* Col 3 – Search (fills remaining space) */
+  [data-component-id="columns-ce85"] > .columns-content > .columns > dxp_layout-column:nth-of-type(3) {
     flex: 1 1 0% !important;
     width: auto !important;
     min-width: 0 !important;
-    padding: 0 !important;
+    padding: 0 8px !important;
   }
 
-  /* Nav list: horizontal scroll, no wrap */
-  [data-component-id="columns-47c9"] nav ul {
+  /* Col 4 – Cart */
+  [data-component-id="columns-ce85"] > .columns-content > .columns > dxp_layout-column:nth-of-type(4) {
+    flex: 0 0 auto !important;
+    width: auto !important;
+    max-width: 56px !important;
+    padding: 0 0 0 8px !important;
+  }
+
+  /* Nav: horizontally scrollable on tablet */
+  [data-component-id="columns-7cf9"] nav ul {
     flex-wrap: nowrap !important;
     overflow-x: auto !important;
     -webkit-overflow-scrolling: touch;
     scrollbar-width: none;
   }
-  [data-component-id="columns-47c9"] nav ul::-webkit-scrollbar {
+  [data-component-id="columns-7cf9"] nav ul::-webkit-scrollbar {
     display: none;
   }
-  /* Tighten nav spacing */
-  [data-component-id="columns-47c9"] nav ul li a,
-  [data-component-id="columns-47c9"] nav ul li button {
-    font-size: 11px !important;
+  [data-component-id="columns-7cf9"] nav ul li a,
+  [data-component-id="columns-7cf9"] nav ul li button {
+    font-size: 12px !important;
     padding: 6px 8px !important;
     white-space: nowrap !important;
-  }
-
-  /* Search+Cart inner row stays horizontal */
-  [data-component-id="columns-3835"] .columns {
-    flex-direction: row !important;
-    flex-wrap: nowrap !important;
-    align-items: center !important;
-  }
-  /* Search column fills available space */
-  [data-component-id="columns-3835"] > .columns-content > .columns > dxp_layout-column:first-of-type {
-    flex: 1 1 0% !important;
-    width: auto !important;
-    min-width: 0 !important;
-  }
-  /* Cart column: auto width */
-  [data-component-id="columns-3835"] > .columns-content > .columns > dxp_layout-column:last-of-type {
-    flex: 0 0 auto !important;
-    width: auto !important;
-    max-width: 50px !important;
-  }
-
-  /* Reduce overall header padding */
-  [data-layout-site-region="header"] {
-    padding: 4px 12px !important;
   }
 }
 
 
 /* ------------------------------------------------------------------
    MOBILE  (< 768px)
-   Row 1: Logo + State selector side by side
-   Row 2: Nav horizontally scrollable
-   Row 3: Search + Cart side by side
+   Row 1: Logo (left) | State (center) | Cart (right)
+   Row 2: Search bar (full width)
    ------------------------------------------------------------------ */
 @media only screen and (max-width: 47.9375em) {
 
-  /* Main header row: wrap so logo+state sit together, nav drops below */
-  [data-component-id="columns-47c9"] .columns {
+  [data-layout-site-region="header"] {
+    padding: 8px 12px 10px !important;
+    background: #fff !important;
+    border-bottom: 1px solid #e5e7eb !important;
+  }
+
+  /* Wrap items across 2 rows using flex order */
+  [data-component-id="columns-ce85"] > .columns-content > .columns {
     flex-direction: row !important;
     flex-wrap: wrap !important;
     align-items: center !important;
+    row-gap: 8px !important;
   }
 
-  /* Hide spacers on mobile */
-  [data-component-id="columns-47c9"] dxp_layout-column-spacer {
+  [data-component-id="columns-ce85"] dxp_layout-column-spacer {
     display: none !important;
   }
 
-  /* Logo column: auto width */
-  [data-component-id="columns-47c9"] > .columns-content > .columns > dxp_layout-column:first-of-type {
+  /* Col 1 – Logo (row 1, left) */
+  [data-component-id="columns-ce85"] > .columns-content > .columns > dxp_layout-column:nth-of-type(1) {
+    order: 1 !important;
     flex: 0 0 auto !important;
     width: auto !important;
     max-width: 80px !important;
-    padding: 4px 8px !important;
+    padding: 0 !important;
   }
-  [data-component-id="columns-47c9"] > .columns-content > .columns > dxp_layout-column:first-of-type img {
-    max-height: 45px !important;
+  [data-component-id="columns-ce85"] > .columns-content > .columns > dxp_layout-column:nth-of-type(1) img {
+    max-height: 44px !important;
     width: auto !important;
+    max-width: 76px !important;
   }
 
-  /* State filter column: takes remaining space on first row */
-  [data-component-id="columns-47c9"] > .columns-content > .columns > dxp_layout-column:nth-of-type(2) {
+  /* Col 2 – State (row 1, fills between logo and cart) */
+  [data-component-id="columns-ce85"] > .columns-content > .columns > dxp_layout-column:nth-of-type(2) {
+    order: 2 !important;
     flex: 1 1 0% !important;
     width: auto !important;
     max-width: 200px !important;
-    padding: 4px 4px !important;
+    padding: 0 8px !important;
   }
-  [data-component-id="columns-47c9"] c-state-filter-lwc .wrap {
-    max-width: 170px !important;
+  [data-component-id="columns-ce85"] c-state-filter-lwc .wrap {
+    max-width: 180px !important;
   }
 
-  /* Nav+Search+Cart column: force to new row, full width */
-  [data-component-id="columns-47c9"] > .columns-content > .columns > dxp_layout-column:nth-of-type(3) {
-    flex: 0 0 100% !important;
-    width: 100% !important;
+  /* Col 4 – Cart (row 1, far right) */
+  [data-component-id="columns-ce85"] > .columns-content > .columns > dxp_layout-column:nth-of-type(4) {
+    order: 3 !important;
+    flex: 0 0 auto !important;
+    width: auto !important;
+    max-width: 52px !important;
     padding: 0 !important;
   }
 
-  /* Nav list: scroll horizontally, hide scrollbar */
-  [data-component-id="columns-47c9"] nav ul {
-    flex-wrap: nowrap !important;
-    overflow-x: auto !important;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: none;
-    gap: 0 !important;
-    padding: 4px 0 !important;
+  /* Col 3 – Search (row 2, full width) */
+  [data-component-id="columns-ce85"] > .columns-content > .columns > dxp_layout-column:nth-of-type(3) {
+    order: 4 !important;
+    flex: 0 0 100% !important;
+    width: 100% !important;
+    padding: 4px 0 0 !important;
   }
-  [data-component-id="columns-47c9"] nav ul::-webkit-scrollbar {
-    display: none;
-  }
-  /* Tighten nav item spacing on mobile */
-  [data-component-id="columns-47c9"] nav ul li a,
-  [data-component-id="columns-47c9"] nav ul li button {
-    font-size: 11px !important;
-    padding: 4px 7px !important;
-    white-space: nowrap !important;
-  }
-
-  /* Search+Cart row stays horizontal */
-  [data-component-id="columns-3835"] .columns {
-    flex-direction: row !important;
-    flex-wrap: nowrap !important;
-    align-items: center !important;
-  }
-  /* Hide spacers in search/cart row */
-  [data-component-id="columns-3835"] dxp_layout-column-spacer {
-    display: none !important;
-  }
-  /* Search column fills space */
-  [data-component-id="columns-3835"] > .columns-content > .columns > dxp_layout-column:first-of-type {
-    flex: 1 1 0% !important;
-    width: auto !important;
-    min-width: 0 !important;
-  }
-  /* Cart column: auto width */
-  [data-component-id="columns-3835"] > .columns-content > .columns > dxp_layout-column:last-of-type {
-    flex: 0 0 auto !important;
-    width: auto !important;
-    max-width: 45px !important;
-  }
-
-  /* Reduce overall header padding on mobile */
-  [data-layout-site-region="header"] {
-    padding: 4px 8px !important;
+  [data-component-id="columns-ce85"] > .columns-content > .columns > dxp_layout-column:nth-of-type(3) input,
+  [data-component-id="columns-ce85"] > .columns-content > .columns > dxp_layout-column:nth-of-type(3) [type="search"] {
+    min-height: 44px !important;
+    border-radius: 999px !important;
+    border: 1px solid #d5dbe3 !important;
+    background: #fff !important;
+    padding-left: 18px !important;
+    padding-right: 48px !important;
+    font-size: 15px !important;
   }
 }

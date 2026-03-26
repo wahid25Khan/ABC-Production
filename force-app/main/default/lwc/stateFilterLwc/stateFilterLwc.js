@@ -58,22 +58,27 @@ const STATE_ABBREVIATIONS = {
 };
 
 const HEADER_CSS = `
-/* === ALL VIEWPORTS: Nav tabs on top row, State+Search+Cart on second row === */
-[data-component-id="columns-47c9"]>.columns-content>.columns>dxp_layout-column:nth-of-type(3)>.column-content{flex-direction:column!important}
-[data-component-id="columns-47c9"]>.columns-content>.columns{align-items:stretch!important}
-/* Push state dropdown to bottom of its column so it aligns with search row */
-[data-component-id="columns-47c9"]>.columns-content>.columns>dxp_layout-column:nth-of-type(2)>.column-content{display:flex!important;flex-direction:column!important;justify-content:flex-end!important;padding-bottom:0!important}
-/* Logo stays at top aligned with nav row */
-[data-component-id="columns-47c9"] dxp_content_layout-site-logo{margin-top:0!important}
-[data-component-id="columns-47c9"] c-state-filter-lwc{margin-top:0!important;padding-top:0!important}
-/* Align search+cart row items at bottom */
-[data-component-id="columns-3835"]>.columns-content>.columns{align-items:flex-end!important}
-[data-component-id="columns-3835"] dxp_layout-column .column-content{justify-content:flex-end!important}
-[data-component-id="columns-3835"] dxp_layout-column:first-of-type webruntime-component-container{display:flex!important;flex-direction:column!important;justify-content:flex-end!important}
-[data-component-id="columns-3835"] commerce_builder-search-input{margin-bottom:0!important}
-[data-component-id="columns-3835"]{padding-bottom:0!important}
+/* ═══════════════════════════════════════════════════════════════════
+   ABC HEADER – responsive overrides  v3
+   Injected by stateFilterLwc into document.head.
 
-/* === CART PAGE === */
+   Live DOM structure (columns-47c9 / columns-3835 no longer exist):
+     [data-layout-site-region="header"]
+       [data-component-id="columns-7cf9"]   ← Nav row
+         commerce_builder-drilldown-navigation
+       [data-component-id="columns-ce85"]   ← 4-col utility row
+         dxp_layout-column:nth-of-type(1)   ← Logo   (2/12)
+         dxp_layout-column:nth-of-type(2)   ← State  (2/12)
+         dxp_layout-column:nth-of-type(3)   ← Search (5/12)
+         dxp_layout-column:nth-of-type(4)   ← Cart   (3/12)
+
+   OOB col-large-size breakpoint = 64em (1024px):
+     ≥1024px → row layout (OOB handles, no overrides needed)
+     768–1023px → our tablet block forces row
+     <768px → our mobile block gives 2-row layout
+═══════════════════════════════════════════════════════════════════ */
+
+/* ─── CART PAGE ──────────────────────────────────────────────────── */
 commerce_builder-b2b-cart-contents{padding-left:60px!important}
 commerce_builder-cart-summary{padding-right:24px!important}
 commerce_cart-header h1{font-size:36px!important;font-weight:700!important;font-style:normal!important;margin-bottom:24px!important;line-height:1.4!important;color:#1e2a3a!important}
@@ -96,58 +101,51 @@ commerce_builder-cart-summary button,button.checkout-btn{border-radius:9999px!im
 commerce_builder-cart-summary a{font-size:14px!important;color:#2e609c!important}
 commerce_cart-managed-contents .item-unit-price .visually-hidden~span,commerce_cart-managed-contents .item-prices .visually-hidden~span{font-size:16px!important;font-weight:700!important}
 
-/* === TABLET (768px – 1024px) === */
-@media only screen and (min-width:48em) and (max-width:64em){
-[data-component-id="columns-47c9"] .columns{flex-direction:row!important;flex-wrap:nowrap!important}
-[data-component-id="columns-47c9"] dxp_layout-column-spacer{display:none!important}
-[data-component-id="columns-47c9"]>.columns-content>.columns>dxp_layout-column:first-of-type{flex:0 0 auto!important;width:auto!important;max-width:90px!important;padding:0 6px!important}
-[data-component-id="columns-47c9"]>.columns-content>.columns>dxp_layout-column:first-of-type img{max-height:50px!important;width:auto!important}
-[data-component-id="columns-47c9"]>.columns-content>.columns>dxp_layout-column:nth-of-type(2){flex:0 0 auto!important;width:auto!important;max-width:155px!important;padding:0 4px!important}
-[data-component-id="columns-47c9"] c-state-filter-lwc .wrap{max-width:140px!important}
-[data-component-id="columns-47c9"]>.columns-content>.columns>dxp_layout-column:nth-of-type(3){flex:1 1 0%!important;width:auto!important;min-width:0!important;padding:0!important}
-[data-component-id="columns-47c9"] nav ul{flex-wrap:nowrap!important;overflow-x:auto!important;-webkit-overflow-scrolling:touch;scrollbar-width:none}
-[data-component-id="columns-47c9"] nav ul::-webkit-scrollbar{display:none}
-[data-component-id="columns-47c9"] nav ul li a,[data-component-id="columns-47c9"] nav ul li button{font-size:11px!important;padding:6px 8px!important;white-space:nowrap!important}
-[data-component-id="columns-3835"] .columns{flex-direction:row!important;flex-wrap:nowrap!important;align-items:center!important}
-[data-component-id="columns-3835"] dxp_layout-column-spacer{display:none!important}
-[data-component-id="columns-3835"]>.columns-content>.columns>dxp_layout-column:first-of-type{flex:1 1 0%!important;width:auto!important;min-width:0!important}
-[data-component-id="columns-3835"]>.columns-content>.columns>dxp_layout-column:last-of-type{flex:0 0 auto!important;width:auto!important;max-width:50px!important}
+/* ─── TABLET (768px – 1023px) ───────────────────────────────────── */
+@media only screen and (min-width:48em) and (max-width:63.9375em){
 [data-layout-site-region="header"]{padding:4px 12px!important}
+/* Force the 4-col utility row to go horizontal */
+[data-component-id="columns-ce85"]>.columns-content>.columns{flex-direction:row!important;flex-wrap:nowrap!important;align-items:center!important}
+[data-component-id="columns-ce85"] dxp_layout-column-spacer{display:none!important}
+/* Col 1 – Logo */
+[data-component-id="columns-ce85"]>.columns-content>.columns>dxp_layout-column:nth-of-type(1){flex:0 0 auto!important;width:auto!important;max-width:110px!important;padding:0 8px 0 0!important}
+[data-component-id="columns-ce85"]>.columns-content>.columns>dxp_layout-column:nth-of-type(1) img{max-height:52px!important;width:auto!important}
+/* Col 2 – State filter */
+[data-component-id="columns-ce85"]>.columns-content>.columns>dxp_layout-column:nth-of-type(2){flex:0 0 auto!important;width:auto!important;max-width:155px!important;padding:0 8px!important}
+[data-component-id="columns-ce85"] c-state-filter-lwc .wrap{max-width:140px!important}
+/* Col 3 – Search (fills remaining space) */
+[data-component-id="columns-ce85"]>.columns-content>.columns>dxp_layout-column:nth-of-type(3){flex:1 1 0%!important;width:auto!important;min-width:0!important;padding:0 8px!important}
+/* Col 4 – Cart */
+[data-component-id="columns-ce85"]>.columns-content>.columns>dxp_layout-column:nth-of-type(4){flex:0 0 auto!important;width:auto!important;max-width:56px!important;padding:0 0 0 8px!important}
+/* Nav: scrollable on tablet */
+[data-component-id="columns-7cf9"] nav ul{flex-wrap:nowrap!important;overflow-x:auto!important;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+[data-component-id="columns-7cf9"] nav ul::-webkit-scrollbar{display:none}
+[data-component-id="columns-7cf9"] nav ul li a,[data-component-id="columns-7cf9"] nav ul li button{font-size:12px!important;padding:6px 8px!important;white-space:nowrap!important}
 }
 
-/* === MOBILE (< 768px) === */
+/* ─── MOBILE (< 768px) ──────────────────────────────────────────── */
 @media only screen and (max-width:47.9375em){
-[data-layout-site-region="header"]{padding:10px 16px 14px!important;background:#fff!important;border-bottom:1px solid #e5e7eb!important}
-[data-component-id="columns-47c9"]>.columns-content>.columns{display:grid!important;grid-template-columns:minmax(128px,1fr) minmax(110px,auto) minmax(92px,1fr)!important;align-items:center!important;column-gap:8px!important;row-gap:10px!important}
-[data-component-id="columns-47c9"] .columns{flex-direction:row!important;flex-wrap:nowrap!important}
-[data-component-id="columns-47c9"] dxp_layout-column-spacer{display:none!important}
-[data-component-id="columns-47c9"]>.columns-content>.columns>dxp_layout-column:first-of-type{grid-column:2!important;grid-row:1!important;justify-self:center!important;display:flex!important;justify-content:center!important;align-items:center!important;width:100%!important;max-width:none!important;padding:0!important}
-[data-component-id="columns-47c9"]>.columns-content>.columns>dxp_layout-column:first-of-type>.column-content{display:flex!important;justify-content:center!important;align-items:center!important;width:100%!important}
-[data-component-id="columns-47c9"]>.columns-content>.columns>dxp_layout-column:first-of-type img{max-height:56px!important;width:auto!important;max-width:96px!important}
-[data-component-id="columns-47c9"]>.columns-content>.columns>dxp_layout-column:nth-of-type(2){grid-column:1!important;grid-row:1!important;justify-self:start!important;display:flex!important;align-items:center!important;width:100%!important;max-width:none!important;padding:0!important}
-[data-component-id="columns-47c9"]>.columns-content>.columns>dxp_layout-column:nth-of-type(2)>.column-content{display:flex!important;justify-content:flex-start!important;align-items:center!important;gap:10px!important;width:100%!important;padding:0!important}
-[data-component-id="columns-47c9"]>.columns-content>.columns>dxp_layout-column:nth-of-type(2)>.column-content:before{content:"";display:block!important;flex:0 0 auto!important;width:24px!important;height:18px!important;border-top:2.5px solid #263143!important;border-bottom:2.5px solid #263143!important;background:linear-gradient(#263143,#263143) center/100% 2.5px no-repeat;border-radius:1px!important}
-[data-component-id="columns-47c9"] c-state-filter-lwc .wrap{max-width:84px!important}
-[data-component-id="columns-47c9"]>.columns-content>.columns>dxp_layout-column:nth-of-type(3){grid-column:3!important;grid-row:1 / span 2!important;justify-self:end!important;display:flex!important;align-items:center!important;width:100%!important;min-width:0!important;padding:0!important}
-[data-component-id="columns-47c9"]>.columns-content>.columns>dxp_layout-column:nth-of-type(3)>.column-content{display:flex!important;flex-direction:column!important;align-items:stretch!important;justify-content:flex-start!important;width:100%!important;gap:12px!important}
-[data-component-id="columns-47c9"] nav{display:none!important}
-[data-component-id="columns-47c9"] nav ul{flex-wrap:nowrap!important;overflow-x:auto!important;-webkit-overflow-scrolling:touch;scrollbar-width:none;gap:0!important;padding:2px 0!important}
-[data-component-id="columns-47c9"] nav ul::-webkit-scrollbar{display:none}
-[data-component-id="columns-47c9"] nav ul li a,[data-component-id="columns-47c9"] nav ul li button{font-size:10px!important;padding:3px 5px!important;white-space:nowrap!important}
-[data-component-id="columns-3835"]{width:100%!important}
-[data-component-id="columns-3835"]>.columns-content>.columns{display:grid!important;grid-template-columns:repeat(3,max-content)!important;grid-auto-flow:column!important;justify-content:end!important;align-items:center!important;column-gap:14px!important;row-gap:10px!important;width:100%!important}
-[data-component-id="columns-3835"] .columns{flex-direction:row!important;flex-wrap:nowrap!important;align-items:center!important}
-[data-component-id="columns-3835"] dxp_layout-column-spacer{display:none!important}
-[data-component-id="columns-3835"]>.columns-content>.columns>dxp_layout-column:first-of-type{grid-column:1 / -1!important;grid-row:2!important;order:3!important;flex:1 1 100%!important;width:100%!important;min-width:0!important;max-width:none!important}
-[data-component-id="columns-3835"]>.columns-content>.columns>dxp_layout-column:first-of-type>.column-content{width:100%!important}
-[data-component-id="columns-3835"]>.columns-content>.columns>dxp_layout-column:first-of-type commerce_builder-search-input{display:block!important;width:100%!important}
-[data-component-id="columns-3835"]>.columns-content>.columns>dxp_layout-column:first-of-type input,
-[data-component-id="columns-3835"]>.columns-content>.columns>dxp_layout-column:first-of-type lightning-input::part(input),
-[data-component-id="columns-3835"]>.columns-content>.columns>dxp_layout-column:first-of-type [type="search"]{min-height:52px!important;border-radius:999px!important;border:1px solid #d5dbe3!important;background:#fff!important;padding-left:20px!important;padding-right:52px!important;font-size:16px!important;box-shadow:0 1px 0 rgba(15,23,42,0.03)!important}
-[data-component-id="columns-3835"]>.columns-content>.columns>dxp_layout-column:nth-of-type(n+2){grid-row:1!important;flex:0 0 auto!important;width:auto!important;max-width:none!important}
-[data-component-id="columns-3835"]>.columns-content>.columns>dxp_layout-column:nth-of-type(n+2) .column-content{display:flex!important;align-items:center!important;justify-content:flex-end!important}
-[data-component-id="columns-3835"]>.columns-content>.columns>dxp_layout-column:nth-of-type(n+2) a,
-[data-component-id="columns-3835"]>.columns-content>.columns>dxp_layout-column:nth-of-type(n+2) button{transform:scale(1.08)!important;transform-origin:center!important}
+[data-layout-site-region="header"]{padding:8px 12px 10px!important;background:#fff!important;border-bottom:1px solid #e5e7eb!important}
+/* Row 1: Logo | State | Cart; Row 2: Search – achieved via order + flex-wrap */
+[data-component-id="columns-ce85"]>.columns-content>.columns{flex-direction:row!important;flex-wrap:wrap!important;align-items:center!important;row-gap:8px!important}
+[data-component-id="columns-ce85"] dxp_layout-column-spacer{display:none!important}
+/* Col 1 – Logo (left, row 1) */
+[data-component-id="columns-ce85"]>.columns-content>.columns>dxp_layout-column:nth-of-type(1){order:1!important;flex:0 0 auto!important;width:auto!important;max-width:80px!important;padding:0!important}
+[data-component-id="columns-ce85"]>.columns-content>.columns>dxp_layout-column:nth-of-type(1) img{max-height:44px!important;width:auto!important;max-width:76px!important}
+/* Col 2 – State (center, row 1, fills between logo and cart) */
+[data-component-id="columns-ce85"]>.columns-content>.columns>dxp_layout-column:nth-of-type(2){order:2!important;flex:1 1 0%!important;width:auto!important;max-width:200px!important;padding:0 8px!important}
+[data-component-id="columns-ce85"] c-state-filter-lwc .wrap{max-width:180px!important}
+/* Col 4 – Cart (far right, row 1) */
+[data-component-id="columns-ce85"]>.columns-content>.columns>dxp_layout-column:nth-of-type(4){order:3!important;flex:0 0 auto!important;width:auto!important;max-width:52px!important;padding:0!important}
+/* Col 3 – Search (full-width row 2) */
+[data-component-id="columns-ce85"]>.columns-content>.columns>dxp_layout-column:nth-of-type(3){order:4!important;flex:0 0 100%!important;width:100%!important;padding:4px 0 0!important}
+[data-component-id="columns-ce85"]>.columns-content>.columns>dxp_layout-column:nth-of-type(3) input,
+[data-component-id="columns-ce85"]>.columns-content>.columns>dxp_layout-column:nth-of-type(3) [type="search"]{min-height:44px!important;border-radius:999px!important;border:1px solid #d5dbe3!important;background:#fff!important;padding-left:18px!important;padding-right:48px!important;font-size:15px!important}
+/* Cart page – reduce padding on narrow screens */
+commerce_builder-b2b-cart-contents{padding-left:16px!important}
+commerce_builder-cart-summary{padding-right:0!important}
+commerce_cart-managed-contents .container.image{grid-template-columns:90px 1fr auto!important;column-gap:12px!important}
+commerce_cart-managed-contents figure img{max-width:80px!important}
 }
 `;
 
