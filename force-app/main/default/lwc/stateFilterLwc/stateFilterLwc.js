@@ -609,6 +609,15 @@ export default class StateFilterLwc extends LightningElement {
     return decodeURIComponent(seg);
   }
 
+  getStateFromResultsPath(urlObj) {
+    const kw = String(this.getResultsKeyword(urlObj) || "").trim();
+    if (!kw || kw.toLowerCase() === "all") {
+      return "";
+    }
+
+    return this.states.includes(kw) ? kw : "";
+  }
+
   getStateFromParams(urlObj) {
     try {
       const refinementsRaw = urlObj.searchParams.get(this.refinementsParam);
@@ -647,6 +656,17 @@ export default class StateFilterLwc extends LightningElement {
     if (fromParams && this.states.includes(fromParams)) {
       return fromParams;
     }
+
+    const fromPath = this.getStateFromResultsPath(urlObj);
+    if (fromPath) {
+      return fromPath;
+    }
+
+    const storedState = this.getStoredState();
+    if (storedState) {
+      return storedState;
+    }
+
     return "";
   }
 

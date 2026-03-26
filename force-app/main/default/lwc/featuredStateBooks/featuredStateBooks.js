@@ -601,7 +601,7 @@ export default class FeaturedStateBooks extends LightningElement {
   buildAddToCartEndpoint(cartStateOrId = "current") {
     const storeName = this.storeName || DEFAULT_STORE_NAME;
     const webStoreId = this.webStoreId || DEFAULT_WEBSTORE_ID;
-    return `/${storeName}/webruntime/api/services/data/v66.0/commerce/webstores/${webStoreId}/carts/${cartStateOrId}/cart-items`;
+    return `/${storeName}/webruntime/api/services/data/v66.0/commerce/webstores/${webStoreId}/carts/${cartStateOrId}/cart-items?language=en-US&asGuest=true&htmlEncode=false`;
   }
 
   firstString(values) {

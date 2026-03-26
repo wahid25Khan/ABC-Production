@@ -6,7 +6,7 @@ import CERT3 from "@salesforce/resourceUrl/CertificationImage3";
 import CERT4 from "@salesforce/resourceUrl/CertificationImage4";
 import CERT5 from "@salesforce/resourceUrl/CertificationImage5";
 
-export default class UpdatedComponent extends LightningElement {
+export default class Solosourceletter extends LightningElement {
   cert0 = CERT0;
   cert1 = CERT1;
   cert2 = CERT2;

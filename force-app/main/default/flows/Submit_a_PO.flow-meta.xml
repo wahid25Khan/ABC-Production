@@ -334,26 +334,12 @@
         <name>FullNameFormula</name>
         <dataType>String</dataType>
         <expression
-    >{!First_name} &amp; &quot; &quot; &amp; {!Last_Name}</expression>
+    >{!vFirstName} &amp; &quot; &quot; &amp; {!vLastName}</expression>
     </formulas>
     <interviewLabel>Submit a PO {!$Flow.CurrentDateTime}</interviewLabel>
     <isAdditionalPermissionRequiredToRun
   >true</isAdditionalPermissionRequiredToRun>
     <label>Submit a PO</label>
-    <loops>
-        <name>Loop_Through_Content</name>
-        <label>Loop Through Content</label>
-        <locationX>0</locationX>
-        <locationY>0</locationY>
-        <collectionReference>colContentDocIds</collectionReference>
-        <iterationOrder>Asc</iterationOrder>
-        <nextValueConnector>
-            <targetReference>Create_ContentDocumentLink</targetReference>
-        </nextValueConnector>
-        <noMoreValuesConnector>
-            <targetReference>message</targetReference>
-        </noMoreValuesConnector>
-    </loops>
     <processMetadataValues>
         <name>BuilderType</name>
         <value>
@@ -379,60 +365,60 @@
         <locationX>0</locationX>
         <locationY>0</locationY>
         <connector>
-            <targetReference>Loop_Through_Content</targetReference>
+            <targetReference>Create_ContentDocumentLink</targetReference>
         </connector>
         <inputAssignments>
             <field>City__c</field>
             <value>
-                <elementReference>City</elementReference>
+                <elementReference>vCity</elementReference>
             </value>
         </inputAssignments>
         <inputAssignments>
             <field>Comments</field>
             <value>
-                <elementReference>Comments</elementReference>
+                <elementReference>vComments</elementReference>
             </value>
         </inputAssignments>
         <inputAssignments>
             <field>Description</field>
             <value>
-                <elementReference>Notes</elementReference>
+                <elementReference>vNotes</elementReference>
             </value>
         </inputAssignments>
         <inputAssignments>
             <field>Purchase_Order_Number__c</field>
             <value>
-                <elementReference>Purchase_Order_Number</elementReference>
+                <elementReference>vPONumber</elementReference>
             </value>
         </inputAssignments>
         <inputAssignments>
             <field>Referral_Informaion__c</field>
             <value>
-                <elementReference>Referral_Information</elementReference>
+                <elementReference>vReferralInfo</elementReference>
             </value>
         </inputAssignments>
         <inputAssignments>
             <field>State__c</field>
             <value>
-                <elementReference>State</elementReference>
+                <elementReference>vState</elementReference>
             </value>
         </inputAssignments>
         <inputAssignments>
             <field>Street__c</field>
             <value>
-                <elementReference>Street</elementReference>
+                <elementReference>vStreet</elementReference>
             </value>
         </inputAssignments>
         <inputAssignments>
             <field>SuppliedCompany</field>
             <value>
-                <elementReference>Organization_name</elementReference>
+                <elementReference>vOrganizationName</elementReference>
             </value>
         </inputAssignments>
         <inputAssignments>
             <field>SuppliedEmail</field>
             <value>
-                <elementReference>Email.value</elementReference>
+                <elementReference>vEmail</elementReference>
             </value>
         </inputAssignments>
         <inputAssignments>
@@ -444,13 +430,13 @@
         <inputAssignments>
             <field>SuppliedPhone</field>
             <value>
-                <elementReference>Phone.value</elementReference>
+                <elementReference>vPhone</elementReference>
             </value>
         </inputAssignments>
         <inputAssignments>
             <field>Zip_Code__c</field>
             <value>
-                <elementReference>ZIP_Code</elementReference>
+                <elementReference>vZipCode</elementReference>
             </value>
         </inputAssignments>
         <object>Case</object>
@@ -461,13 +447,10 @@
         <label>Create ContentDocumentLink</label>
         <locationX>0</locationX>
         <locationY>0</locationY>
-        <connector>
-            <targetReference>Loop_Through_Content</targetReference>
-        </connector>
         <inputAssignments>
             <field>ContentDocumentId</field>
             <value>
-                <elementReference>Loop_Through_Content</elementReference>
+                <elementReference>vUploadedContentDocumentId</elementReference>
             </value>
         </inputAssignments>
         <inputAssignments>
@@ -491,609 +474,14 @@
         <object>ContentDocumentLink</object>
         <storeOutputAutomatically>true</storeOutputAutomatically>
     </recordCreates>
-    <screens>
-        <name>message</name>
-        <label>message</label>
-        <locationX>0</locationX>
-        <locationY>0</locationY>
-        <allowBack>true</allowBack>
-        <allowFinish>true</allowFinish>
-        <allowPause>true</allowPause>
-        <fields>
-            <name>DisplayText</name>
-            <fieldText
-      >&lt;p&gt;You File Has Been Successfully Uploaded&lt;/p&gt;</fieldText>
-            <fieldType>DisplayText</fieldType>
-            <styleProperties>
-                <verticalAlignment>
-                    <stringValue>top</stringValue>
-                </verticalAlignment>
-                <width>
-                    <stringValue>12</stringValue>
-                </width>
-            </styleProperties>
-        </fields>
-        <showFooter>true</showFooter>
-        <showHeader>true</showHeader>
-    </screens>
-    <screens>
-        <name>Upload_your_purchase_order_file</name>
-        <label>Upload your purchase order file</label>
-        <locationX>0</locationX>
-        <locationY>0</locationY>
-        <allowBack>false</allowBack>
-        <allowFinish>true</allowFinish>
-        <allowPause>false</allowPause>
-        <connector>
-            <targetReference>Create_Case</targetReference>
-        </connector>
-        <fields>
-            <name>DIsplay</name>
-            <fieldText
-      >&lt;p&gt;&lt;span style=&quot;color: oklch(0.278 0.033 256.848); font-family: sans-serif; font-size: 16px;&quot;&gt;Please upload your purchase order and fill out any required details.&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot;color: oklch(0.278 0.033 256.848); font-family: sans-serif; font-size: 16px;&quot;&gt; If you have any questions, please contact our Customer Service team at&amp;nbsp;&lt;/span&gt;&lt;a href=&quot;tel:18882645877&quot; rel=&quot;noopener noreferrer&quot; target=&quot;_blank&quot; style=&quot;color: rgb(46, 96, 156); font-family: sans-serif; font-size: 16px;&quot;&gt;(888) 264-5877&lt;/a&gt;&lt;span style=&quot;color: oklch(0.278 0.033 256.848); font-family: sans-serif; font-size: 16px;&quot;&gt;&amp;nbsp;.&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;h2&gt;&lt;br&gt;&lt;/h2&gt;&lt;h2&gt;&lt;strong style=&quot;font-size: 22px; font-family: sans-serif;&quot;&gt;Upload your purchase order file&lt;/strong&gt;&lt;/h2&gt;</fieldText>
-            <fieldType>DisplayText</fieldType>
-            <styleProperties>
-                <verticalAlignment>
-                    <stringValue>top</stringValue>
-                </verticalAlignment>
-                <width>
-                    <stringValue>12</stringValue>
-                </width>
-            </styleProperties>
-        </fields>
-        <fields>
-            <name>UploadFile</name>
-            <extensionName>forceContent:fileUploadEnhanced</extensionName>
-            <fieldType>ComponentInstance</fieldType>
-            <inputParameters>
-                <name>label</name>
-                <value>
-                    <stringValue
-          >PO file needs to be in PDF format.</stringValue>
-                </value>
-            </inputParameters>
-            <inputParameters>
-                <name>multiple</name>
-                <value>
-                    <booleanValue>false</booleanValue>
-                </value>
-            </inputParameters>
-            <inputsOnNextNavToAssocScrn
-      >UseStoredValues</inputsOnNextNavToAssocScrn>
-            <isRequired>true</isRequired>
-            <outputParameters>
-                <assignToReference>colContentDocIds</assignToReference>
-                <name>contentDocIds</name>
-            </outputParameters>
-            <outputParameters>
-                <assignToReference>colFileName</assignToReference>
-                <name>fileNames</name>
-            </outputParameters>
-            <styleProperties>
-                <verticalAlignment>
-                    <stringValue>top</stringValue>
-                </verticalAlignment>
-                <width>
-                    <stringValue>12</stringValue>
-                </width>
-            </styleProperties>
-        </fields>
-        <fields>
-            <name>FIleName</name>
-            <fieldText>&lt;p&gt;{!colFileName}&lt;/p&gt;</fieldText>
-            <fieldType>DisplayText</fieldType>
-            <styleProperties>
-                <verticalAlignment>
-                    <stringValue>top</stringValue>
-                </verticalAlignment>
-                <width>
-                    <stringValue>12</stringValue>
-                </width>
-            </styleProperties>
-        </fields>
-        <fields>
-            <name>Personaldetails</name>
-            <fieldText
-      >&lt;h2&gt;&lt;strong style=&quot;font-size: 22px; font-family: sans-serif;&quot;&gt;Personal details&lt;/strong&gt;&lt;/h2&gt;</fieldText>
-            <fieldType>DisplayText</fieldType>
-            <styleProperties>
-                <verticalAlignment>
-                    <stringValue>top</stringValue>
-                </verticalAlignment>
-                <width>
-                    <stringValue>12</stringValue>
-                </width>
-            </styleProperties>
-        </fields>
-        <fields>
-            <name>Upload_your_purchase_order_file_Section1</name>
-            <fieldType>RegionContainer</fieldType>
-            <fields>
-                <name>Upload_your_purchase_order_file_Section1_Column1</name>
-                <fieldType>Region</fieldType>
-                <fields>
-                    <name>First_name</name>
-                    <dataType>String</dataType>
-                    <fieldText>First name</fieldText>
-                    <fieldType>InputField</fieldType>
-                    <inputsOnNextNavToAssocScrn
-          >UseStoredValues</inputsOnNextNavToAssocScrn>
-                    <isRequired>true</isRequired>
-                    <styleProperties>
-                        <verticalAlignment>
-                            <stringValue>top</stringValue>
-                        </verticalAlignment>
-                        <width>
-                            <stringValue>12</stringValue>
-                        </width>
-                    </styleProperties>
-                </fields>
-                <fields>
-                    <name>Email</name>
-                    <extensionName>flowruntime:email</extensionName>
-                    <fieldType>ComponentInstance</fieldType>
-                    <inputParameters>
-                        <name>required</name>
-                        <value>
-                            <booleanValue>true</booleanValue>
-                        </value>
-                    </inputParameters>
-                    <inputParameters>
-                        <name>disabled</name>
-                        <value>
-                            <booleanValue>false</booleanValue>
-                        </value>
-                    </inputParameters>
-                    <inputsOnNextNavToAssocScrn
-          >UseStoredValues</inputsOnNextNavToAssocScrn>
-                    <isRequired>true</isRequired>
-                    <storeOutputAutomatically>true</storeOutputAutomatically>
-                    <styleProperties>
-                        <verticalAlignment>
-                            <stringValue>top</stringValue>
-                        </verticalAlignment>
-                        <width>
-                            <stringValue>12</stringValue>
-                        </width>
-                    </styleProperties>
-                </fields>
-                <inputParameters>
-                    <name>width</name>
-                    <value>
-                        <stringValue>6</stringValue>
-                    </value>
-                </inputParameters>
-                <isRequired>false</isRequired>
-            </fields>
-            <fields>
-                <name>Upload_your_purchase_order_file_Section1_Column2</name>
-                <fieldType>Region</fieldType>
-                <fields>
-                    <name>Last_Name</name>
-                    <dataType>String</dataType>
-                    <fieldText>Last Name</fieldText>
-                    <fieldType>InputField</fieldType>
-                    <inputsOnNextNavToAssocScrn
-          >UseStoredValues</inputsOnNextNavToAssocScrn>
-                    <isRequired>true</isRequired>
-                    <styleProperties>
-                        <verticalAlignment>
-                            <stringValue>top</stringValue>
-                        </verticalAlignment>
-                        <width>
-                            <stringValue>12</stringValue>
-                        </width>
-                    </styleProperties>
-                </fields>
-                <fields>
-                    <name>Phone</name>
-                    <extensionName>flowruntime:phone</extensionName>
-                    <fieldType>ComponentInstance</fieldType>
-                    <inputParameters>
-                        <name>required</name>
-                        <value>
-                            <booleanValue>true</booleanValue>
-                        </value>
-                    </inputParameters>
-                    <inputsOnNextNavToAssocScrn
-          >UseStoredValues</inputsOnNextNavToAssocScrn>
-                    <isRequired>true</isRequired>
-                    <storeOutputAutomatically>true</storeOutputAutomatically>
-                    <styleProperties>
-                        <verticalAlignment>
-                            <stringValue>top</stringValue>
-                        </verticalAlignment>
-                        <width>
-                            <stringValue>12</stringValue>
-                        </width>
-                    </styleProperties>
-                </fields>
-                <inputParameters>
-                    <name>width</name>
-                    <value>
-                        <stringValue>6</stringValue>
-                    </value>
-                </inputParameters>
-                <isRequired>false</isRequired>
-            </fields>
-            <isRequired>false</isRequired>
-            <regionContainerType>SectionWithoutHeader</regionContainerType>
-            <styleProperties>
-                <verticalAlignment>
-                    <stringValue>top</stringValue>
-                </verticalAlignment>
-                <width>
-                    <stringValue>12</stringValue>
-                </width>
-            </styleProperties>
-        </fields>
-        <fields>
-            <name>Upload_your_purchase_order_file_Section2</name>
-            <fieldType>RegionContainer</fieldType>
-            <fields>
-                <name>Upload_your_purchase_order_file_Section2_Column1</name>
-                <fieldType>Region</fieldType>
-                <fields>
-                    <name>Organizationdetails</name>
-                    <fieldText
-          >&lt;h2&gt;&lt;strong style=&quot;font-size: 22px; font-family: sans-serif;&quot;&gt;Organization details&lt;/strong&gt;&lt;/h2&gt;</fieldText>
-                    <fieldType>DisplayText</fieldType>
-                    <styleProperties>
-                        <verticalAlignment>
-                            <stringValue>top</stringValue>
-                        </verticalAlignment>
-                        <width>
-                            <stringValue>12</stringValue>
-                        </width>
-                    </styleProperties>
-                </fields>
-                <fields>
-                    <name>Organization_name</name>
-                    <dataType>String</dataType>
-                    <fieldText>Organization name</fieldText>
-                    <fieldType>InputField</fieldType>
-                    <inputsOnNextNavToAssocScrn
-          >UseStoredValues</inputsOnNextNavToAssocScrn>
-                    <isRequired>true</isRequired>
-                    <styleProperties>
-                        <verticalAlignment>
-                            <stringValue>top</stringValue>
-                        </verticalAlignment>
-                        <width>
-                            <stringValue>12</stringValue>
-                        </width>
-                    </styleProperties>
-                </fields>
-                <fields>
-                    <name>Street</name>
-                    <dataType>String</dataType>
-                    <fieldText>Street</fieldText>
-                    <fieldType>InputField</fieldType>
-                    <inputsOnNextNavToAssocScrn
-          >UseStoredValues</inputsOnNextNavToAssocScrn>
-                    <isRequired>true</isRequired>
-                    <styleProperties>
-                        <verticalAlignment>
-                            <stringValue>top</stringValue>
-                        </verticalAlignment>
-                        <width>
-                            <stringValue>12</stringValue>
-                        </width>
-                    </styleProperties>
-                </fields>
-                <inputParameters>
-                    <name>width</name>
-                    <value>
-                        <stringValue>12</stringValue>
-                    </value>
-                </inputParameters>
-                <isRequired>false</isRequired>
-            </fields>
-            <isRequired>false</isRequired>
-            <regionContainerType>SectionWithoutHeader</regionContainerType>
-            <styleProperties>
-                <verticalAlignment>
-                    <stringValue>top</stringValue>
-                </verticalAlignment>
-                <width>
-                    <stringValue>12</stringValue>
-                </width>
-            </styleProperties>
-        </fields>
-        <fields>
-            <name>Upload_your_purchase_order_file_Section3</name>
-            <fieldType>RegionContainer</fieldType>
-            <fields>
-                <name>Upload_your_purchase_order_file_Section3_Column1</name>
-                <fieldType>Region</fieldType>
-                <fields>
-                    <name>City</name>
-                    <dataType>String</dataType>
-                    <fieldText>City</fieldText>
-                    <fieldType>InputField</fieldType>
-                    <inputsOnNextNavToAssocScrn
-          >UseStoredValues</inputsOnNextNavToAssocScrn>
-                    <isRequired>true</isRequired>
-                    <styleProperties>
-                        <verticalAlignment>
-                            <stringValue>top</stringValue>
-                        </verticalAlignment>
-                        <width>
-                            <stringValue>12</stringValue>
-                        </width>
-                    </styleProperties>
-                </fields>
-                <inputParameters>
-                    <name>width</name>
-                    <value>
-                        <stringValue>4</stringValue>
-                    </value>
-                </inputParameters>
-                <isRequired>false</isRequired>
-            </fields>
-            <fields>
-                <name>Upload_your_purchase_order_file_Section3_Column2</name>
-                <fieldType>Region</fieldType>
-                <fields>
-                    <name>State</name>
-                    <choiceReferences>Alabama</choiceReferences>
-                    <choiceReferences>Alaska</choiceReferences>
-                    <choiceReferences>Arizona</choiceReferences>
-                    <choiceReferences>Arkansas</choiceReferences>
-                    <choiceReferences>California</choiceReferences>
-                    <choiceReferences>Colorado</choiceReferences>
-                    <choiceReferences>Connecticut</choiceReferences>
-                    <choiceReferences>DistrictofColumbia</choiceReferences>
-                    <choiceReferences>Delaware</choiceReferences>
-                    <choiceReferences>Florida</choiceReferences>
-                    <choiceReferences>Georgia</choiceReferences>
-                    <choiceReferences>Hawaii</choiceReferences>
-                    <choiceReferences>Idaho</choiceReferences>
-                    <choiceReferences>Illinois</choiceReferences>
-                    <choiceReferences>Indiana</choiceReferences>
-                    <choiceReferences>Iowa</choiceReferences>
-                    <choiceReferences>Kansas</choiceReferences>
-                    <choiceReferences>Kentucky</choiceReferences>
-                    <choiceReferences>Louisiana</choiceReferences>
-                    <choiceReferences>Maine</choiceReferences>
-                    <choiceReferences>Maryland</choiceReferences>
-                    <choiceReferences>Massachusetts</choiceReferences>
-                    <choiceReferences>Michigan</choiceReferences>
-                    <choiceReferences>Minnesota</choiceReferences>
-                    <choiceReferences>Mississippi</choiceReferences>
-                    <choiceReferences>Missouri</choiceReferences>
-                    <choiceReferences>Montana</choiceReferences>
-                    <choiceReferences>Nebraska</choiceReferences>
-                    <choiceReferences>Nevada</choiceReferences>
-                    <choiceReferences>NewHampshire</choiceReferences>
-                    <choiceReferences>NewJersey</choiceReferences>
-                    <choiceReferences>NewMexico</choiceReferences>
-                    <choiceReferences>NewYork</choiceReferences>
-                    <choiceReferences>NorthCarolina</choiceReferences>
-                    <choiceReferences>NorthDakota</choiceReferences>
-                    <choiceReferences>Ohio</choiceReferences>
-                    <choiceReferences>Oklahoma</choiceReferences>
-                    <choiceReferences>Oregon</choiceReferences>
-                    <choiceReferences>Pennsylvania</choiceReferences>
-                    <choiceReferences>RhodeIsland</choiceReferences>
-                    <dataType>String</dataType>
-                    <fieldText>State</fieldText>
-                    <fieldType>DropdownBox</fieldType>
-                    <inputsOnNextNavToAssocScrn
-          >UseStoredValues</inputsOnNextNavToAssocScrn>
-                    <isRequired>true</isRequired>
-                    <styleProperties>
-                        <verticalAlignment>
-                            <stringValue>top</stringValue>
-                        </verticalAlignment>
-                        <width>
-                            <stringValue>12</stringValue>
-                        </width>
-                    </styleProperties>
-                </fields>
-                <inputParameters>
-                    <name>width</name>
-                    <value>
-                        <stringValue>4</stringValue>
-                    </value>
-                </inputParameters>
-                <isRequired>false</isRequired>
-            </fields>
-            <fields>
-                <name>Upload_your_purchase_order_file_Section3_Column3</name>
-                <fieldType>Region</fieldType>
-                <fields>
-                    <name>ZIP_Code</name>
-                    <dataType>String</dataType>
-                    <fieldText>ZIP Code</fieldText>
-                    <fieldType>InputField</fieldType>
-                    <inputsOnNextNavToAssocScrn
-          >UseStoredValues</inputsOnNextNavToAssocScrn>
-                    <isRequired>true</isRequired>
-                    <styleProperties>
-                        <verticalAlignment>
-                            <stringValue>top</stringValue>
-                        </verticalAlignment>
-                        <width>
-                            <stringValue>12</stringValue>
-                        </width>
-                    </styleProperties>
-                </fields>
-                <inputParameters>
-                    <name>width</name>
-                    <value>
-                        <stringValue>4</stringValue>
-                    </value>
-                </inputParameters>
-                <isRequired>false</isRequired>
-            </fields>
-            <isRequired>false</isRequired>
-            <regionContainerType>SectionWithoutHeader</regionContainerType>
-            <styleProperties>
-                <verticalAlignment>
-                    <stringValue>top</stringValue>
-                </verticalAlignment>
-                <width>
-                    <stringValue>12</stringValue>
-                </width>
-            </styleProperties>
-        </fields>
-        <fields>
-            <name>Upload_your_purchase_order_file_Section4</name>
-            <fieldType>RegionContainer</fieldType>
-            <fields>
-                <name>Upload_your_purchase_order_file_Section4_Column1</name>
-                <fieldType>Region</fieldType>
-                <fields>
-                    <name>Purchaseorderdetails</name>
-                    <fieldText
-          >&lt;h2&gt;&lt;strong style=&quot;font-size: 22px; font-family: sans-serif;&quot;&gt;Purchase order details&lt;/strong&gt;&lt;/h2&gt;</fieldText>
-                    <fieldType>DisplayText</fieldType>
-                    <styleProperties>
-                        <verticalAlignment>
-                            <stringValue>top</stringValue>
-                        </verticalAlignment>
-                        <width>
-                            <stringValue>12</stringValue>
-                        </width>
-                    </styleProperties>
-                </fields>
-                <fields>
-                    <name>Purchase_Order_Number</name>
-                    <dataType>String</dataType>
-                    <fieldText>Purchase Order Number</fieldText>
-                    <fieldType>InputField</fieldType>
-                    <inputsOnNextNavToAssocScrn
-          >UseStoredValues</inputsOnNextNavToAssocScrn>
-                    <isRequired>true</isRequired>
-                    <styleProperties>
-                        <verticalAlignment>
-                            <stringValue>top</stringValue>
-                        </verticalAlignment>
-                        <width>
-                            <stringValue>12</stringValue>
-                        </width>
-                    </styleProperties>
-                </fields>
-                <fields>
-                    <name>Notes</name>
-                    <fieldText>Notes</fieldText>
-                    <fieldType>LargeTextArea</fieldType>
-                    <inputsOnNextNavToAssocScrn
-          >UseStoredValues</inputsOnNextNavToAssocScrn>
-                    <isRequired>false</isRequired>
-                    <styleProperties>
-                        <verticalAlignment>
-                            <stringValue>top</stringValue>
-                        </verticalAlignment>
-                        <width>
-                            <stringValue>12</stringValue>
-                        </width>
-                    </styleProperties>
-                </fields>
-                <inputParameters>
-                    <name>width</name>
-                    <value>
-                        <stringValue>12</stringValue>
-                    </value>
-                </inputParameters>
-                <isRequired>false</isRequired>
-            </fields>
-            <isRequired>false</isRequired>
-            <regionContainerType>SectionWithoutHeader</regionContainerType>
-            <styleProperties>
-                <verticalAlignment>
-                    <stringValue>top</stringValue>
-                </verticalAlignment>
-                <width>
-                    <stringValue>12</stringValue>
-                </width>
-            </styleProperties>
-        </fields>
-        <fields>
-            <name>Upload_your_purchase_order_file_Section5</name>
-            <fieldType>RegionContainer</fieldType>
-            <fields>
-                <name>Upload_your_purchase_order_file_Section5_Column1</name>
-                <fieldType>Region</fieldType>
-                <fields>
-                    <name>Referral</name>
-                    <fieldText
-          >&lt;h2&gt;&lt;strong style=&quot;font-size: 22px; font-family: sans-serif;&quot;&gt;Referral details&amp;nbsp;(optional)&lt;/strong&gt;&lt;/h2&gt;</fieldText>
-                    <fieldType>DisplayText</fieldType>
-                    <styleProperties>
-                        <verticalAlignment>
-                            <stringValue>top</stringValue>
-                        </verticalAlignment>
-                        <width>
-                            <stringValue>12</stringValue>
-                        </width>
-                    </styleProperties>
-                </fields>
-                <fields>
-                    <name>Referral_Information</name>
-                    <dataType>String</dataType>
-                    <fieldText>Referral Information</fieldText>
-                    <fieldType>InputField</fieldType>
-                    <inputsOnNextNavToAssocScrn
-          >UseStoredValues</inputsOnNextNavToAssocScrn>
-                    <isRequired>false</isRequired>
-                    <styleProperties>
-                        <verticalAlignment>
-                            <stringValue>top</stringValue>
-                        </verticalAlignment>
-                        <width>
-                            <stringValue>12</stringValue>
-                        </width>
-                    </styleProperties>
-                </fields>
-                <fields>
-                    <name>Comments</name>
-                    <fieldText>Comments</fieldText>
-                    <fieldType>LargeTextArea</fieldType>
-                    <inputsOnNextNavToAssocScrn
-          >UseStoredValues</inputsOnNextNavToAssocScrn>
-                    <isRequired>false</isRequired>
-                    <styleProperties>
-                        <verticalAlignment>
-                            <stringValue>top</stringValue>
-                        </verticalAlignment>
-                        <width>
-                            <stringValue>12</stringValue>
-                        </width>
-                    </styleProperties>
-                </fields>
-                <inputParameters>
-                    <name>width</name>
-                    <value>
-                        <stringValue>12</stringValue>
-                    </value>
-                </inputParameters>
-                <isRequired>false</isRequired>
-            </fields>
-            <isRequired>false</isRequired>
-            <regionContainerType>SectionWithoutHeader</regionContainerType>
-            <styleProperties>
-                <verticalAlignment>
-                    <stringValue>top</stringValue>
-                </verticalAlignment>
-                <width>
-                    <stringValue>12</stringValue>
-                </width>
-            </styleProperties>
-        </fields>
-        <nextOrFinishButtonLabel>Submit a PO</nextOrFinishButtonLabel>
-        <showFooter>true</showFooter>
-        <showHeader>true</showHeader>
-    </screens>
     <start>
         <locationX>0</locationX>
         <locationY>0</locationY>
         <connector>
-            <targetReference>Upload_your_purchase_order_file</targetReference>
+            <targetReference>Create_Case</targetReference>
         </connector>
     </start>
-    <status>Active</status>
+    <status>Draft</status>
     <variables>
         <name>CaseID</name>
         <dataType>String</dataType>
@@ -1117,6 +505,104 @@
     </variables>
     <variables>
         <name>recordId</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>true</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>vCity</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>true</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>vComments</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>true</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>vEmail</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>true</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>vFirstName</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>true</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>vLastName</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>true</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>vNotes</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>true</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>vOrganizationName</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>true</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>vPhone</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>true</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>vPONumber</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>true</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>vReferralInfo</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>true</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>vState</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>true</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>vStreet</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>true</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>vUploadedContentDocumentId</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>true</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>vZipCode</name>
         <dataType>String</dataType>
         <isCollection>false</isCollection>
         <isInput>true</isInput>

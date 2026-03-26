@@ -7,16 +7,26 @@
       </div>
     </header>
 
-    <section class="section-wrapper gap">
+    <section class="section-wrapper">
       <div class="accessibility-row">
         <div class="accessibility-title">
           <h2 class="sub-heading">Accessibility</h2>
         </div>
 
-        <a href={links.vpat} target="_blank" class="accessibility-card">
-          <img src={cert1} alt="VPAT" class="doc-thumbnail" />
-          <span class="file-label">VPAT</span>
-        </a>
+        <div class="accessibility-docs">
+          <a
+            href={links.vpat}
+            target="_blank"
+            class="grid-item accessibility-card"
+          >
+            <img
+              src={cert1}
+              alt="Accessibility Conformance Report"
+              class="doc-thumbnail"
+            />
+            <span class="file-label">Accessibility Conformance Report</span>
+          </a>
+        </div>
       </div>
     </section>
 
@@ -35,6 +45,7 @@
             >ABC Test Prep Programs Validation Study</span
           >
         </a>
+
         <a href={links.validationStudyDoc} target="_blank" class="grid-item">
           <img
             src={cert3}
@@ -45,9 +56,10 @@
             >ABC Test Prep Programs Validation Study</span
           >
         </a>
+
         <a href={links.instructureReport} target="_blank" class="grid-item">
-          <img src={cert4} alt="Instructure Report" class="doc-thumbnail" />
-          <span class="file-label">Instructure Report</span>
+          <img src={cert4} alt="ESSA Level IV Study" class="doc-thumbnail" />
+          <span class="file-label">ESSA Level IV Study</span>
         </a>
       </div>
     </section>
@@ -55,7 +67,7 @@
     <div class="divider"></div>
 
     <section class="section-wrapper">
-      <h2 class="sub-heading">CyberGlobal</h2>
+      <h2 class="sub-heading">CyberSecurity</h2>
       <div class="grid-container">
         <a href={links.certSecurity} target="_blank" class="grid-item">
           <img
@@ -65,6 +77,7 @@
           />
           <span class="file-label">Certificate of Security</span>
         </a>
+
         <a href={links.securityAssessment} target="_blank" class="grid-item">
           <img
             src={cert2}
