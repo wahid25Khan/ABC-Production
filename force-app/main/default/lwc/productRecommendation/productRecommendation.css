@@ -5,6 +5,7 @@
 .similar-products {
   width: 100%;
   padding: 0.5rem 0 1rem;
+  box-sizing: border-box;
 }
 
 .loading {
@@ -23,28 +24,28 @@
 .heading-line {
   flex: 1;
   height: 1px;
-  background:#000 ;
-  /* background: var(--lwc-colorBorder); */
+  background: #000;
 }
 
 .heading-text {
   font-size: 1.5rem;
-    font-weight: 600;
-    color: #111827;
-    white-space: nowrap;
-    text-align: center;
+  font-weight: 600;
+  color: #111827;
+  white-space: nowrap;
+  text-align: center;
+  margin: 0;
 }
 
 .carousel-row {
   display: grid;
   grid-template-columns: auto 1fr auto;
-  align-items: center;
+  align-items: start;
   column-gap: 1rem;
 }
 
 .nav-button {
-  width: 5rem;
-  height: 5rem;
+  width: 4rem;
+  height: 4rem;
   border-radius: 9999px;
   border: 1px solid var(--lwc-colorBorder);
   background: var(--lwc-colorBackgroundAlt);
@@ -53,6 +54,8 @@
   justify-content: center;
   padding: 0;
   cursor: pointer;
+  margin-top: 5.5rem;
+  flex-shrink: 0;
 }
 
 .nav-button lightning-icon {
@@ -127,6 +130,8 @@
   border: 1px solid var(--lwc-colorBorder);
   overflow: hidden;
   background: var(--lwc-colorBackgroundAlt);
+  max-width: 185px;
+  margin: 0 auto;
 }
 
 .product-image {
@@ -147,17 +152,21 @@
 }
 
 .name-button {
-  margin-top: 0.9rem;
+  margin-top: 0.75rem;
   width: 100%;
   background: transparent;
   border: 0;
   padding: 0;
   text-align: left;
-  font-size: 0.95rem;
+  font-size: 0.92rem;
   line-height: 1.35;
   cursor: pointer;
   color: var(--lwc-colorTextDefault);
   word-break: break-word;
+  max-width: 185px;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .name-button:hover,
@@ -165,26 +174,226 @@
   text-decoration: underline;
 }
 
+/* ── Large screens ───────────────────────────────────────────── */
+
 @media (max-width: 1500px) {
   .heading-text {
-    font-size: 1.7rem;
+    font-size: 1.45rem;
+  }
+
+  .nav-button {
+    width: 3.6rem;
+    height: 3.6rem;
+    margin-top: 5rem;
+  }
+
+  .image-frame {
+    max-width: 175px;
   }
 
   .name-button {
-    font-size: 0.9rem;
+    max-width: 175px;
+    font-size: 0.88rem;
   }
 }
 
+/* ── Laptop / Tablet ─────────────────────────────────────────── */
+
 @media (max-width: 1200px) {
-  .products-track {
-    grid-auto-columns: calc((100% - 2rem) / 3);
+  .heading-text {
+    font-size: 1.3rem;
   }
 
-  .heading-text {
-    font-size: 1.4rem;
+  .nav-button {
+    width: 3.2rem;
+    height: 3.2rem;
+    margin-top: 4.5rem;
+  }
+
+  .image-frame {
+    max-width: 165px;
   }
 
   .name-button {
-    font-size: 0.85rem;
+    max-width: 165px;
+    font-size: 0.84rem;
+  }
+
+  .products-track.columns-1,
+  .products-track.columns-2,
+  .products-track.columns-3,
+  .products-track.columns-4,
+  .products-track.columns-5,
+  .products-track.columns-6,
+  .products-track.columns-7,
+  .products-track.columns-8 {
+    grid-auto-columns: calc((100% - 2rem) / 3);
+  }
+}
+
+/* ── Tablet ──────────────────────────────────────────────────── */
+
+@media (max-width: 992px) {
+  .similar-products {
+    padding: 0.5rem 0.5rem 1rem;
+  }
+
+  .heading-row {
+    gap: 1rem;
+    margin-bottom: 1.4rem;
+  }
+
+  .heading-text {
+    font-size: 1.15rem;
+    white-space: normal;
+  }
+
+  .carousel-row {
+    column-gap: 0.75rem;
+  }
+
+  .nav-button {
+    width: 2.9rem;
+    height: 2.9rem;
+    margin-top: 4.1rem;
+  }
+
+  .image-frame {
+    max-width: 155px;
+  }
+
+  .name-button {
+    max-width: 155px;
+    font-size: 0.82rem;
+    line-height: 1.3;
+  }
+
+  .products-track.columns-1,
+  .products-track.columns-2,
+  .products-track.columns-3,
+  .products-track.columns-4,
+  .products-track.columns-5,
+  .products-track.columns-6,
+  .products-track.columns-7,
+  .products-track.columns-8 {
+    grid-auto-columns: calc((100% - 1rem) / 2);
+  }
+}
+
+/* ── Mobile ──────────────────────────────────────────────────── */
+
+@media (max-width: 768px) {
+  .similar-products {
+    padding: 0.5rem 0.75rem 1rem;
+  }
+
+  .heading-row {
+    gap: 0.75rem;
+    margin: 0 0 1.2rem;
+  }
+
+  .heading-text {
+    font-size: 1.05rem;
+    white-space: normal;
+    line-height: 1.3;
+  }
+
+  .carousel-row {
+    grid-template-columns: 2.5rem 1fr 2.5rem;
+    column-gap: 0.5rem;
+    align-items: center;
+  }
+
+  .nav-button {
+    width: 2.5rem;
+    height: 2.5rem;
+    margin-top: 0;
+    align-self: center;
+  }
+
+  .nav-button lightning-icon {
+    transform: scale(0.9);
+  }
+
+  .image-frame {
+    max-width: 150px;
+  }
+
+  .name-button {
+    max-width: 150px;
+    font-size: 0.82rem;
+    margin-top: 0.65rem;
+    text-align: left;
+  }
+
+  .products-track.columns-1,
+  .products-track.columns-2,
+  .products-track.columns-3,
+  .products-track.columns-4,
+  .products-track.columns-5,
+  .products-track.columns-6,
+  .products-track.columns-7,
+  .products-track.columns-8 {
+    grid-auto-columns: 100%;
+    column-gap: 0.75rem;
+  }
+}
+
+/* ── Small mobile ────────────────────────────────────────────── */
+
+@media (max-width: 480px) {
+  .similar-products {
+    padding: 0.4rem 0.5rem 0.9rem;
+  }
+
+  .heading-row {
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+  }
+
+  .heading-line {
+    width: 100%;
+  }
+
+  .heading-text {
+    font-size: 1rem;
+  }
+
+  .carousel-row {
+    grid-template-columns: 2.2rem 1fr 2.2rem;
+    column-gap: 0.35rem;
+  }
+
+  .nav-button {
+    width: 2.2rem;
+    height: 2.2rem;
+    margin-top: 0;
+  }
+
+  .nav-button lightning-icon {
+    transform: scale(0.8);
+  }
+
+  .image-frame {
+    max-width: 140px;
+  }
+
+  .name-button {
+    max-width: 140px;
+    font-size: 0.8rem;
+    line-height: 1.28;
+  }
+
+  .products-track.columns-1,
+  .products-track.columns-2,
+  .products-track.columns-3,
+  .products-track.columns-4,
+  .products-track.columns-5,
+  .products-track.columns-6,
+  .products-track.columns-7,
+  .products-track.columns-8 {
+    grid-auto-columns: 100%;
+    column-gap: 0.5rem;
   }
 }

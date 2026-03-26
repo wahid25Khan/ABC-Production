@@ -11,23 +11,16 @@
       </div>
     </template>
 
-    <div
-      style="
-        width: 100%;
-        display: flex;
-        flex-direction: column;
-        margin-bottom: 8em;
-      "
-    >
-      <h1 style="font-weight: 700; font-size: 2.25rem">Shop All</h1>
-      <div style="text-align: center; font-size: 1.875rem">
+    <div class="hero-block">
+      <h1 class="page-title">Shop All</h1>
+      <div class="page-subtitle">
         Need to download a quote? Add items to your cart to begin.
       </div>
     </div>
 
     <div class="top-controls">
       <div class="left-controls">
-        <div style="display: flex; flex-direction: row; gap: 8em">
+        <div class="left-controls-top">
           <div class="search-box">
             <input
               type="search"
@@ -44,88 +37,140 @@
               </svg>
             </span>
           </div>
+
           <p class="results-summary">{resultsSummary}</p>
         </div>
-        <div style="display: block; width: 40%">
-          <lightning-combobox
-            variant="label-hidden"
-            value={selectedState}
-            options={stateOptions}
-            onchange={handleStateChange}
-          >
-          </lightning-combobox>
+
+        <div class="state-dropdown-wrap">
+          <div class="custom-select" data-dropdown="state">
+            <button
+              type="button"
+              class="custom-select-trigger"
+              onclick={toggleStateDropdown}
+              aria-haspopup="listbox"
+              aria-expanded={isStateDropdownOpen}
+            >
+              <span class={stateDisplayClass}>{selectedStateLabel}</span>
+              <span class={stateChevronClass}></span>
+            </button>
+
+            <template if:true={isStateDropdownOpen}>
+              <div class="custom-select-menu" role="listbox">
+                <div
+                  class={allStatesOptionClass}
+                  data-value=""
+                  onclick={handleStateOptionClick}
+                  role="option"
+                >
+                  All States
+                </div>
+
+                <template for:each={stateOptionsForUi} for:item="opt">
+                  <div
+                    key={opt.value}
+                    class={opt.className}
+                    data-value={opt.value}
+                    onclick={handleStateOptionClick}
+                    role="option"
+                  >
+                    {opt.label}
+                  </div>
+                </template>
+              </div>
+            </template>
+          </div>
         </div>
       </div>
-      <!-- state-control -->
-      <div class="right-controls">
-        <lightning-combobox
-          class="sort-control"
-          variant="label-hidden"
-          value={sortValue}
-          options={sortOptions}
-          onchange={handleSortChange}
-        >
-        </lightning-combobox>
 
-        <lightning-combobox
-          class="page-size-control"
-          variant="label-hidden"
-          value={pageSizeValueString}
-          options={pageSizeOptionsList}
-          onchange={handlePageSizeChange}
-        >
-        </lightning-combobox>
+      <div class="right-controls">
+        <div class="custom-select custom-select-sm" data-dropdown="sort">
+          <button
+            type="button"
+            class="custom-select-trigger"
+            onclick={toggleSortDropdown}
+            aria-haspopup="listbox"
+            aria-expanded={isSortDropdownOpen}
+          >
+            <span>Sort</span>
+            <span class={sortChevronClass}></span>
+          </button>
+
+          <template if:true={isSortDropdownOpen}>
+            <div
+              class="custom-select-menu custom-select-menu-sm"
+              role="listbox"
+            >
+              <template for:each={sortOptionsForUi} for:item="opt">
+                <div
+                  key={opt.value}
+                  class={opt.className}
+                  data-value={opt.value}
+                  onclick={handleSortOptionClick}
+                  role="option"
+                >
+                  {opt.label}
+                </div>
+              </template>
+            </div>
+          </template>
+        </div>
+
+        <div class="custom-select custom-select-sm" data-dropdown="pageSize">
+          <button
+            type="button"
+            class="custom-select-trigger"
+            onclick={togglePageSizeDropdown}
+            aria-haspopup="listbox"
+            aria-expanded={isPageSizeDropdownOpen}
+          >
+            <span>{selectedPageSizeLabel}</span>
+            <span class={pageSizeChevronClass}></span>
+          </button>
+
+          <template if:true={isPageSizeDropdownOpen}>
+            <div
+              class="custom-select-menu custom-select-menu-sm"
+              role="listbox"
+            >
+              <template for:each={pageSizeOptionsForUi} for:item="opt">
+                <div
+                  key={opt.value}
+                  class={opt.className}
+                  data-value={opt.value}
+                  onclick={handlePageSizeOptionClick}
+                  role="option"
+                >
+                  {opt.label}
+                </div>
+              </template>
+            </div>
+          </template>
+        </div>
 
         <fieldset class="view-toggle">
           <legend class="slds-assistive-text">View mode</legend>
-          <template if:true={isGridView}>
-            <button
-              type="button"
-              class="view-btn"
-              data-mode="grid"
-              aria-pressed="true"
-              onclick={handleViewMode}
-              title="Grid view"
-            >
-              ⊞
-            </button>
-          </template>
-          <template if:false={isGridView}>
-            <button
-              type="button"
-              class="view-btn"
-              data-mode="grid"
-              aria-pressed="false"
-              onclick={handleViewMode}
-              title="Grid view"
-            >
-              ⊞
-            </button>
-          </template>
-          <template if:true={isListView}>
-            <button
-              type="button"
-              class="view-btn"
-              data-mode="list"
-              aria-pressed="true"
-              onclick={handleViewMode}
-              title="List view"
-            >
-              ☰
-            </button>
-          </template>
-          <template if:false={isListView}>
-            <button
-              type="button"
-              class="view-btn"
-              data-mode="list"
-              aria-pressed="false"
-              onclick={handleViewMode}
-              title="List view"
-            >
-              ☰
-            </button>
-          </template>
+
+          <button
+            type="button"
+            class="view-btn"
+            data-mode="grid"
+            aria-pressed={ariaGridPressed}
+            onclick={handleViewMode}
+            title="Grid view"
+          >
+            ⊞
+          </button>
+
+          <button
+            type="button"
+            class="view-btn"
+            data-mode="list"
+            aria-pressed={ariaListPressed}
+            onclick={handleViewMode}
+            title="List view"
+          >
+            ☰
+          </button>
         </fieldset>
       </div>
     </div>
@@ -146,6 +191,7 @@
                 <span class="toggle-symbol">{group.toggleSymbol}</span>
               </button>
             </template>
+
             <template if:false={group.expanded}>
               <button
                 type="button"

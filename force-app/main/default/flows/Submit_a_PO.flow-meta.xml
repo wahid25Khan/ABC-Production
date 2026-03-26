@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <Flow xmlns="http://soap.sforce.com/2006/04/metadata">
     <apiVersion>65.0</apiVersion>
     <areMetricsLoggedToDataCloud>false</areMetricsLoggedToDataCloud>
@@ -325,17 +325,20 @@
     <customProperties>
         <name>ScreenProgressIndicator</name>
         <value>
-            <stringValue>{&quot;location&quot;:&quot;top&quot;,&quot;type&quot;:&quot;simple&quot;}</stringValue>
+            <stringValue
+      >{&quot;location&quot;:&quot;top&quot;,&quot;type&quot;:&quot;simple&quot;}</stringValue>
         </value>
     </customProperties>
     <environments>Default</environments>
     <formulas>
         <name>FullNameFormula</name>
         <dataType>String</dataType>
-        <expression>{!First_name} &amp; &quot; &quot; &amp; {!Last_Name}</expression>
+        <expression
+    >{!First_name} &amp; &quot; &quot; &amp; {!Last_Name}</expression>
     </formulas>
     <interviewLabel>Submit a PO {!$Flow.CurrentDateTime}</interviewLabel>
-    <isAdditionalPermissionRequiredToRun>true</isAdditionalPermissionRequiredToRun>
+    <isAdditionalPermissionRequiredToRun
+  >true</isAdditionalPermissionRequiredToRun>
     <label>Submit a PO</label>
     <loops>
         <name>Loop_Through_Content</name>
@@ -498,7 +501,8 @@
         <allowPause>true</allowPause>
         <fields>
             <name>DisplayText</name>
-            <fieldText>&lt;p&gt;You File Has Been Successfully Uploaded&lt;/p&gt;</fieldText>
+            <fieldText
+      >&lt;p&gt;You File Has Been Successfully Uploaded&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
             <styleProperties>
                 <verticalAlignment>
@@ -525,7 +529,8 @@
         </connector>
         <fields>
             <name>DIsplay</name>
-            <fieldText>&lt;p&gt;&lt;span style=&quot;color: oklch(0.278 0.033 256.848); font-family: sans-serif; font-size: 16px;&quot;&gt;Please upload your purchase order and fill out any required details.&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot;color: oklch(0.278 0.033 256.848); font-family: sans-serif; font-size: 16px;&quot;&gt; If you have any questions, please contact our Customer Service team at&amp;nbsp;&lt;/span&gt;&lt;a href=&quot;tel:18882645877&quot; rel=&quot;noopener noreferrer&quot; target=&quot;_blank&quot; style=&quot;color: rgb(46, 96, 156); font-family: sans-serif; font-size: 16px;&quot;&gt;(888) 264-5877&lt;/a&gt;&lt;span style=&quot;color: oklch(0.278 0.033 256.848); font-family: sans-serif; font-size: 16px;&quot;&gt;&amp;nbsp;.&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;h2&gt;&lt;br&gt;&lt;/h2&gt;&lt;h2&gt;&lt;strong style=&quot;font-size: 22px; font-family: sans-serif;&quot;&gt;Upload your purchase order file&lt;/strong&gt;&lt;/h2&gt;</fieldText>
+            <fieldText
+      >&lt;p&gt;&lt;span style=&quot;color: oklch(0.278 0.033 256.848); font-family: sans-serif; font-size: 16px;&quot;&gt;Please upload your purchase order and fill out any required details.&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot;color: oklch(0.278 0.033 256.848); font-family: sans-serif; font-size: 16px;&quot;&gt; If you have any questions, please contact our Customer Service team at&amp;nbsp;&lt;/span&gt;&lt;a href=&quot;tel:18882645877&quot; rel=&quot;noopener noreferrer&quot; target=&quot;_blank&quot; style=&quot;color: rgb(46, 96, 156); font-family: sans-serif; font-size: 16px;&quot;&gt;(888) 264-5877&lt;/a&gt;&lt;span style=&quot;color: oklch(0.278 0.033 256.848); font-family: sans-serif; font-size: 16px;&quot;&gt;&amp;nbsp;.&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;h2&gt;&lt;br&gt;&lt;/h2&gt;&lt;h2&gt;&lt;strong style=&quot;font-size: 22px; font-family: sans-serif;&quot;&gt;Upload your purchase order file&lt;/strong&gt;&lt;/h2&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
             <styleProperties>
                 <verticalAlignment>
@@ -543,7 +548,8 @@
             <inputParameters>
                 <name>label</name>
                 <value>
-                    <stringValue>PO file needs to be in PDF format.</stringValue>
+                    <stringValue
+          >PO file needs to be in PDF format.</stringValue>
                 </value>
             </inputParameters>
             <inputParameters>
@@ -552,15 +558,17 @@
                     <booleanValue>false</booleanValue>
                 </value>
             </inputParameters>
-            <inputParameters>
-                <name>contentDocIds</name>
-                <value>
-                    <elementReference>colContentDocIds</elementReference>
-                </value>
-            </inputParameters>
-            <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
+            <inputsOnNextNavToAssocScrn
+      >UseStoredValues</inputsOnNextNavToAssocScrn>
             <isRequired>true</isRequired>
-            <storeOutputAutomatically>true</storeOutputAutomatically>
+            <outputParameters>
+                <assignToReference>colContentDocIds</assignToReference>
+                <name>contentDocIds</name>
+            </outputParameters>
+            <outputParameters>
+                <assignToReference>colFileName</assignToReference>
+                <name>fileNames</name>
+            </outputParameters>
             <styleProperties>
                 <verticalAlignment>
                     <stringValue>top</stringValue>
@@ -571,8 +579,8 @@
             </styleProperties>
         </fields>
         <fields>
-            <name>FileName</name>
-            <fieldText>&lt;p&gt;{!UploadFile.fileNames}&lt;/p&gt;</fieldText>
+            <name>FIleName</name>
+            <fieldText>&lt;p&gt;{!colFileName}&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
             <styleProperties>
                 <verticalAlignment>
@@ -585,7 +593,8 @@
         </fields>
         <fields>
             <name>Personaldetails</name>
-            <fieldText>&lt;h2&gt;&lt;strong style=&quot;font-size: 22px; font-family: sans-serif;&quot;&gt;Personal details&lt;/strong&gt;&lt;/h2&gt;</fieldText>
+            <fieldText
+      >&lt;h2&gt;&lt;strong style=&quot;font-size: 22px; font-family: sans-serif;&quot;&gt;Personal details&lt;/strong&gt;&lt;/h2&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
             <styleProperties>
                 <verticalAlignment>
@@ -607,7 +616,8 @@
                     <dataType>String</dataType>
                     <fieldText>First name</fieldText>
                     <fieldType>InputField</fieldType>
-                    <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
+                    <inputsOnNextNavToAssocScrn
+          >UseStoredValues</inputsOnNextNavToAssocScrn>
                     <isRequired>true</isRequired>
                     <styleProperties>
                         <verticalAlignment>
@@ -634,7 +644,8 @@
                             <booleanValue>false</booleanValue>
                         </value>
                     </inputParameters>
-                    <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
+                    <inputsOnNextNavToAssocScrn
+          >UseStoredValues</inputsOnNextNavToAssocScrn>
                     <isRequired>true</isRequired>
                     <storeOutputAutomatically>true</storeOutputAutomatically>
                     <styleProperties>
@@ -662,7 +673,8 @@
                     <dataType>String</dataType>
                     <fieldText>Last Name</fieldText>
                     <fieldType>InputField</fieldType>
-                    <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
+                    <inputsOnNextNavToAssocScrn
+          >UseStoredValues</inputsOnNextNavToAssocScrn>
                     <isRequired>true</isRequired>
                     <styleProperties>
                         <verticalAlignment>
@@ -683,7 +695,8 @@
                             <booleanValue>true</booleanValue>
                         </value>
                     </inputParameters>
-                    <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
+                    <inputsOnNextNavToAssocScrn
+          >UseStoredValues</inputsOnNextNavToAssocScrn>
                     <isRequired>true</isRequired>
                     <storeOutputAutomatically>true</storeOutputAutomatically>
                     <styleProperties>
@@ -722,7 +735,8 @@
                 <fieldType>Region</fieldType>
                 <fields>
                     <name>Organizationdetails</name>
-                    <fieldText>&lt;h2&gt;&lt;strong style=&quot;font-size: 22px; font-family: sans-serif;&quot;&gt;Organization details&lt;/strong&gt;&lt;/h2&gt;</fieldText>
+                    <fieldText
+          >&lt;h2&gt;&lt;strong style=&quot;font-size: 22px; font-family: sans-serif;&quot;&gt;Organization details&lt;/strong&gt;&lt;/h2&gt;</fieldText>
                     <fieldType>DisplayText</fieldType>
                     <styleProperties>
                         <verticalAlignment>
@@ -738,7 +752,8 @@
                     <dataType>String</dataType>
                     <fieldText>Organization name</fieldText>
                     <fieldType>InputField</fieldType>
-                    <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
+                    <inputsOnNextNavToAssocScrn
+          >UseStoredValues</inputsOnNextNavToAssocScrn>
                     <isRequired>true</isRequired>
                     <styleProperties>
                         <verticalAlignment>
@@ -754,7 +769,8 @@
                     <dataType>String</dataType>
                     <fieldText>Street</fieldText>
                     <fieldType>InputField</fieldType>
-                    <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
+                    <inputsOnNextNavToAssocScrn
+          >UseStoredValues</inputsOnNextNavToAssocScrn>
                     <isRequired>true</isRequired>
                     <styleProperties>
                         <verticalAlignment>
@@ -795,7 +811,8 @@
                     <dataType>String</dataType>
                     <fieldText>City</fieldText>
                     <fieldType>InputField</fieldType>
-                    <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
+                    <inputsOnNextNavToAssocScrn
+          >UseStoredValues</inputsOnNextNavToAssocScrn>
                     <isRequired>true</isRequired>
                     <styleProperties>
                         <verticalAlignment>
@@ -862,7 +879,8 @@
                     <dataType>String</dataType>
                     <fieldText>State</fieldText>
                     <fieldType>DropdownBox</fieldType>
-                    <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
+                    <inputsOnNextNavToAssocScrn
+          >UseStoredValues</inputsOnNextNavToAssocScrn>
                     <isRequired>true</isRequired>
                     <styleProperties>
                         <verticalAlignment>
@@ -889,7 +907,8 @@
                     <dataType>String</dataType>
                     <fieldText>ZIP Code</fieldText>
                     <fieldType>InputField</fieldType>
-                    <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
+                    <inputsOnNextNavToAssocScrn
+          >UseStoredValues</inputsOnNextNavToAssocScrn>
                     <isRequired>true</isRequired>
                     <styleProperties>
                         <verticalAlignment>
@@ -927,7 +946,8 @@
                 <fieldType>Region</fieldType>
                 <fields>
                     <name>Purchaseorderdetails</name>
-                    <fieldText>&lt;h2&gt;&lt;strong style=&quot;font-size: 22px; font-family: sans-serif;&quot;&gt;Purchase order details&lt;/strong&gt;&lt;/h2&gt;</fieldText>
+                    <fieldText
+          >&lt;h2&gt;&lt;strong style=&quot;font-size: 22px; font-family: sans-serif;&quot;&gt;Purchase order details&lt;/strong&gt;&lt;/h2&gt;</fieldText>
                     <fieldType>DisplayText</fieldType>
                     <styleProperties>
                         <verticalAlignment>
@@ -943,7 +963,8 @@
                     <dataType>String</dataType>
                     <fieldText>Purchase Order Number</fieldText>
                     <fieldType>InputField</fieldType>
-                    <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
+                    <inputsOnNextNavToAssocScrn
+          >UseStoredValues</inputsOnNextNavToAssocScrn>
                     <isRequired>true</isRequired>
                     <styleProperties>
                         <verticalAlignment>
@@ -958,7 +979,8 @@
                     <name>Notes</name>
                     <fieldText>Notes</fieldText>
                     <fieldType>LargeTextArea</fieldType>
-                    <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
+                    <inputsOnNextNavToAssocScrn
+          >UseStoredValues</inputsOnNextNavToAssocScrn>
                     <isRequired>false</isRequired>
                     <styleProperties>
                         <verticalAlignment>
@@ -996,7 +1018,8 @@
                 <fieldType>Region</fieldType>
                 <fields>
                     <name>Referral</name>
-                    <fieldText>&lt;h2&gt;&lt;strong style=&quot;font-size: 22px; font-family: sans-serif;&quot;&gt;Referral details&amp;nbsp;(optional)&lt;/strong&gt;&lt;/h2&gt;</fieldText>
+                    <fieldText
+          >&lt;h2&gt;&lt;strong style=&quot;font-size: 22px; font-family: sans-serif;&quot;&gt;Referral details&amp;nbsp;(optional)&lt;/strong&gt;&lt;/h2&gt;</fieldText>
                     <fieldType>DisplayText</fieldType>
                     <styleProperties>
                         <verticalAlignment>
@@ -1012,7 +1035,8 @@
                     <dataType>String</dataType>
                     <fieldText>Referral Information</fieldText>
                     <fieldType>InputField</fieldType>
-                    <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
+                    <inputsOnNextNavToAssocScrn
+          >UseStoredValues</inputsOnNextNavToAssocScrn>
                     <isRequired>false</isRequired>
                     <styleProperties>
                         <verticalAlignment>
@@ -1027,7 +1051,8 @@
                     <name>Comments</name>
                     <fieldText>Comments</fieldText>
                     <fieldType>LargeTextArea</fieldType>
-                    <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
+                    <inputsOnNextNavToAssocScrn
+          >UseStoredValues</inputsOnNextNavToAssocScrn>
                     <isRequired>false</isRequired>
                     <styleProperties>
                         <verticalAlignment>
@@ -1078,6 +1103,13 @@
     </variables>
     <variables>
         <name>colContentDocIds</name>
+        <dataType>String</dataType>
+        <isCollection>true</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>colFileName</name>
         <dataType>String</dataType>
         <isCollection>true</isCollection>
         <isInput>false</isInput>

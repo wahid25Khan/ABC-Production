@@ -150,8 +150,7 @@ function parseCsv(value) {
 }
 
 function toArray(value) {
-  if (Array.isArray(value)) return value;
-  return [];
+  return Array.isArray(value) ? value : [];
 }
 
 function chunkArray(values, chunkSize) {
@@ -172,12 +171,12 @@ function chunkArray(values, chunkSize) {
 export default class CustomResults extends LightningElement {
   @api storeName = DEFAULT_STORE_NAME;
   @api webStoreId = DEFAULT_WEBSTORE_ID;
-  @api defaultSearchTerm = "all";
+  @api defaultSearchTerm = "";
   @api stateStorageKey = DEFAULT_STATE_STORAGE_KEY;
 
   @api stateFieldApiName = "State__c";
   @api filterFieldApiNames = "Grade_Level__c,Category__c,Series__c";
-  @api filterFieldLabels = "Grade Level,Subject,Series";
+  @api filterFieldLabels = "Grade Level,Subject";
   @api searchFieldApiNames = SEARCH_FIELDS.join(",");
 
   @api pageSizeOptions = "20,40,60";
@@ -207,6 +206,10 @@ export default class CustomResults extends LightningElement {
   @track modalProduct = null;
   @track modalVariationPricing = null;
 
+  @track isStateDropdownOpen = false;
+  @track isSortDropdownOpen = false;
+  @track isPageSizeDropdownOpen = false;
+
   stateProducts = [];
   selectedFiltersByField = {};
   collapsedByField = {};
@@ -219,15 +222,27 @@ export default class CustomResults extends LightningElement {
   lastObservedHref = "";
   urlWatchId = null;
   urlWatchDebounceId = null;
+  docClickHandler = null;
 
   connectedCallback() {
     this.captureCurrentRouteState();
     this.initialize();
     this.startUrlWatcher();
+
+    this.docClickHandler = (event) => {
+      if (!this.template.contains(event.target)) {
+        this.closeAllDropdowns();
+      }
+    };
+    document.addEventListener("click", this.docClickHandler);
   }
 
   disconnectedCallback() {
     this.stopUrlWatcher();
+    if (this.docClickHandler) {
+      document.removeEventListener("click", this.docClickHandler);
+      this.docClickHandler = null;
+    }
   }
 
   get hasResults() {
@@ -254,7 +269,6 @@ export default class CustomResults extends LightningElement {
     if (!this.totalResults) {
       return "Showing 0 results";
     }
-
     return `Showing ${this.showingStart} to ${this.showingEnd} of ${this.totalResults} — Page ${this.currentPage} of ${this.totalPages}`;
   }
 
@@ -282,9 +296,9 @@ export default class CustomResults extends LightningElement {
 
   get sortOptions() {
     return [
-      { label: "Relevance", value: "relevance" },
-      { label: "Name (A-Z)", value: "name-asc" },
-      { label: "Name (Z-A)", value: "name-desc" }
+      { label: "Most Relevant", value: "relevance" },
+      { label: "A - Z", value: "name-asc" },
+      { label: "Z - A", value: "name-desc" }
     ];
   }
 
@@ -304,10 +318,7 @@ export default class CustomResults extends LightningElement {
   }
 
   get modalIsbn() {
-    if (!this.modalProduct) {
-      return "";
-    }
-
+    if (!this.modalProduct) return "";
     return this.firstString([
       this.modalProduct.sku,
       this.modalProduct.isbn,
@@ -325,8 +336,6 @@ export default class CustomResults extends LightningElement {
       : "USD";
   }
 
-  // Read quantity rules from OOB purchaseQuantityRule returned by the Commerce Products API.
-  // Falls back to sensible defaults when no ProductQuantityRule is assigned to the product.
   get modalMinimumQuantity() {
     const rule = this.modalProduct?.purchaseQuantityRule;
     const ruleMin = rule?.minimum ?? rule?.Minimum ?? null;
@@ -337,7 +346,6 @@ export default class CustomResults extends LightningElement {
   get modalMaximumQuantity() {
     const rule = this.modalProduct?.purchaseQuantityRule;
     const ruleMax = rule?.maximum ?? rule?.Maximum ?? null;
-    // Ignore values > 9999 which indicate "no maximum" in Salesforce (stored as e.g. 100,000,000)
     if (Number.isFinite(ruleMax) && ruleMax > 0 && ruleMax <= 9999)
       return ruleMax;
     return 50;
@@ -350,14 +358,75 @@ export default class CustomResults extends LightningElement {
     return 1;
   }
 
-  get normalizedBaseSearchTerm() {
-    const value = String(this.defaultSearchTerm || "").trim();
-    return !value || value.toLowerCase() === "all" ? "*" : value;
+  get selectedStateLabel() {
+    return this.selectedState || "All States";
+  }
+
+  get selectedPageSizeLabel() {
+    return `View ${this.pageSizeValue} per page`;
+  }
+
+  get stateDisplayClass() {
+    return this.selectedState ? "" : "placeholder";
+  }
+
+  get stateChevronClass() {
+    return this.isStateDropdownOpen
+      ? "custom-select-chevron open"
+      : "custom-select-chevron";
+  }
+
+  get sortChevronClass() {
+    return this.isSortDropdownOpen
+      ? "custom-select-chevron open"
+      : "custom-select-chevron";
+  }
+
+  get pageSizeChevronClass() {
+    return this.isPageSizeDropdownOpen
+      ? "custom-select-chevron open"
+      : "custom-select-chevron";
+  }
+
+  get allStatesOptionClass() {
+    return this.selectedState
+      ? "custom-select-option"
+      : "custom-select-option selected";
+  }
+
+  get stateOptionsForUi() {
+    return US_STATES.map((value) => ({
+      label: value,
+      value,
+      className:
+        value === this.selectedState
+          ? "custom-select-option selected"
+          : "custom-select-option"
+    }));
+  }
+
+  get sortOptionsForUi() {
+    return this.sortOptions.map((item) => ({
+      ...item,
+      className:
+        item.value === this.sortValue
+          ? "custom-select-option selected"
+          : "custom-select-option"
+    }));
+  }
+
+  get pageSizeOptionsForUi() {
+    return this.pageSizeOptionsList.map((item) => ({
+      ...item,
+      className:
+        item.value === String(this.pageSizeValue)
+          ? "custom-select-option selected"
+          : "custom-select-option"
+    }));
   }
 
   async initialize() {
     this.loading = true;
-
     try {
       this.filterDefinitions = this.buildFilterDefinitions();
       this.pageSizeValue = this.resolveInitialPageSize();
@@ -370,7 +439,6 @@ export default class CustomResults extends LightningElement {
       const initialResponse = await this.loadStateProducts();
       this.stateProducts = initialResponse.products;
       this.rebuildProductIndexes();
-
       this.filterValueCatalog = this.buildStaticFilterCatalog(
         initialResponse.facets
       );
@@ -395,7 +463,6 @@ export default class CustomResults extends LightningElement {
 
   buildStaticFilterCatalog(facets) {
     const catalog = {};
-
     this.filterDefinitions.forEach((definition) => {
       const values = this.getHardcodedFilterValues(definition.key);
       const countsByValue = this.getFacetCountMap(facets, definition.key);
@@ -405,25 +472,17 @@ export default class CustomResults extends LightningElement {
         count: countsByValue.get(value) || 0
       }));
     });
-
     return catalog;
   }
 
   getHardcodedFilterValues(fieldApiName) {
     const normalized = this.normalizeFieldName(fieldApiName);
-
-    if (normalized === this.normalizeFieldName("Grade_Level__c")) {
+    if (normalized === this.normalizeFieldName("Grade_Level__c"))
       return GRADE_FILTER_VALUES;
-    }
-
-    if (normalized === this.normalizeFieldName("Category__c")) {
+    if (normalized === this.normalizeFieldName("Category__c"))
       return CATEGORY_FILTER_VALUES;
-    }
-
-    if (normalized === this.normalizeFieldName("Series__c")) {
+    if (normalized === this.normalizeFieldName("Series__c"))
       return SERIES_FILTER_VALUES;
-    }
-
     return [];
   }
 
@@ -434,17 +493,12 @@ export default class CustomResults extends LightningElement {
 
     facetList.forEach((facet) => {
       const facetKey = this.normalizeFieldName(facet?.nameOrId || "");
-      if (facetKey !== fieldKey) {
-        return;
-      }
+      if (facetKey !== fieldKey) return;
 
       toArray(facet?.values).forEach((entry) => {
         const value = this.firstString([entry?.displayName, entry?.nameOrId]);
         const count = Number.parseInt(entry?.productCount, 10);
-        if (!value) {
-          return;
-        }
-
+        if (!value) return;
         counts.set(value, Number.isFinite(count) && count > 0 ? count : 0);
       });
     });
@@ -465,32 +519,19 @@ export default class CustomResults extends LightningElement {
       const data = await this.fetchSearchResponse(criteria, page, pageSize);
       const pageProducts = this.extractProductList(data);
 
-      if (page === 0) {
-        facets = this.extractFacetList(data);
-      }
-
-      if (!pageProducts.length) {
-        break;
-      }
+      if (page === 0) facets = this.extractFacetList(data);
+      if (!pageProducts.length) break;
 
       pageProducts.forEach((row) => {
         const id = String(row?.id || "").trim();
-        if (!id || seenIds.has(id)) {
-          return;
-        }
-
+        if (!id || seenIds.has(id)) return;
         seenIds.add(id);
         allProducts.push(row);
       });
 
       const total = Number.parseInt(data?.productsPage?.total, 10);
-      if (Number.isFinite(total) && allProducts.length >= total) {
-        break;
-      }
-
-      if (pageProducts.length < pageSize) {
-        break;
-      }
+      if (Number.isFinite(total) && allProducts.length >= total) break;
+      if (pageProducts.length < pageSize) break;
     }
 
     return { products: allProducts, facets };
@@ -524,10 +565,7 @@ export default class CustomResults extends LightningElement {
         }
       );
 
-      if (!response.ok) {
-        return {};
-      }
-
+      if (!response.ok) return {};
       return await response.json();
     } catch {
       return {};
@@ -536,20 +574,14 @@ export default class CustomResults extends LightningElement {
 
   async enrichProductsWithPricing(products) {
     const productIds = products.map((item) => item.id).filter(Boolean);
-    if (!productIds.length) {
-      return products;
-    }
+    if (!productIds.length) return products;
 
     const pricingMap = await this.fetchPricingForProducts(productIds);
-    if (!pricingMap.size) {
-      return products;
-    }
+    if (!pricingMap.size) return products;
 
     return products.map((product) => {
       const priceInfo = pricingMap.get(product.id);
-      if (!priceInfo) {
-        return product;
-      }
+      if (!priceInfo) return product;
 
       const basePrice =
         priceInfo.unitPrice ??
@@ -577,10 +609,7 @@ export default class CustomResults extends LightningElement {
         credentials: "include"
       });
 
-      if (!response.ok) {
-        return new Map();
-      }
-
+      if (!response.ok) return new Map();
       const data = await response.json();
       return this.extractPricingMap(data);
     } catch {
@@ -590,10 +619,7 @@ export default class CustomResults extends LightningElement {
 
   buildPricingEndpoint(productIds) {
     const base = `/${this.storeName || DEFAULT_STORE_NAME}/webruntime/api/services/data/v66.0/commerce/webstores/${this.webStoreId || DEFAULT_WEBSTORE_ID}/pricing/products`;
-    const params = new URLSearchParams({
-      productIds: productIds.join(",")
-    });
-
+    const params = new URLSearchParams({ productIds: productIds.join(",") });
     return `${base}?${params.toString()}`;
   }
 
@@ -602,20 +628,14 @@ export default class CustomResults extends LightningElement {
       .map((item) => String(item?.id || "").trim())
       .filter(Boolean);
 
-    if (!ids.length) {
-      return toArray(products);
-    }
+    if (!ids.length) return toArray(products);
 
     const hydratedMap = await this.fetchProductFieldMap(ids);
-    if (!hydratedMap.size) {
-      return toArray(products);
-    }
+    if (!hydratedMap.size) return toArray(products);
 
     return toArray(products).map((item) => {
       const hydrated = hydratedMap.get(String(item?.id || "").trim());
-      if (!hydrated) {
-        return item;
-      }
+      if (!hydrated) return item;
 
       return {
         ...item,
@@ -636,9 +656,7 @@ export default class CustomResults extends LightningElement {
           .filter(Boolean)
       )
     ];
-    if (!ids.length) {
-      return new Map();
-    }
+    if (!ids.length) return new Map();
 
     const merged = new Map();
     const batches = chunkArray(ids, PRODUCT_DETAIL_BATCH_SIZE);
@@ -646,9 +664,7 @@ export default class CustomResults extends LightningElement {
     for (const batch of batches) {
       // eslint-disable-next-line no-await-in-loop
       const batchMap = await this.fetchProductFieldBatch(batch);
-      batchMap.forEach((value, key) => {
-        merged.set(key, value);
-      });
+      batchMap.forEach((value, key) => merged.set(key, value));
     }
 
     return merged;
@@ -670,9 +686,7 @@ export default class CustomResults extends LightningElement {
           }
         );
 
-        if (!response.ok) {
-          continue;
-        }
+        if (!response.ok) continue;
 
         // eslint-disable-next-line no-await-in-loop
         const data = await response.json();
@@ -681,9 +695,7 @@ export default class CustomResults extends LightningElement {
 
         rows.forEach((item) => {
           const id = String(item?.id || "").trim();
-          if (id) {
-            map.set(id, item);
-          }
+          if (id) map.set(id, item);
         });
 
         if (map.size) {
@@ -691,7 +703,7 @@ export default class CustomResults extends LightningElement {
           return map;
         }
       } catch {
-        // try the next supported query shape
+        // ignore
       }
     }
 
@@ -705,7 +717,6 @@ export default class CustomResults extends LightningElement {
     });
 
     params.set("fields", PRODUCT_DETAIL_FIELDS.join(","));
-
     return `${base}?${params.toString()}`;
   }
 
@@ -723,9 +734,7 @@ export default class CustomResults extends LightningElement {
     this.applyRefinementsToParams(params, criteria.refinements);
 
     const fieldList = this.getSearchFields();
-    if (fieldList.length) {
-      params.set("fields", fieldList.join(","));
-    }
+    if (fieldList.length) params.set("fields", fieldList.join(","));
 
     return `${base}?${params.toString()}`;
   }
@@ -745,18 +754,13 @@ export default class CustomResults extends LightningElement {
   composeRemoteStateSearchTerm() {
     const terms = [];
 
-    if (this.normalizedBaseSearchTerm !== "*") {
-      terms.push(this.normalizedBaseSearchTerm);
+    const configuredTerm = String(this.defaultSearchTerm || "").trim();
+    if (configuredTerm && configuredTerm.toLowerCase() !== "all") {
+      terms.push(configuredTerm);
     }
 
     if (this.selectedState) {
       terms.push(this.selectedState);
-    } else if (this.normalizedBaseSearchTerm === "*") {
-      terms.push("all");
-    }
-
-    if (!terms.length) {
-      terms.push("all");
     }
 
     const deduped = [];
@@ -764,9 +768,7 @@ export default class CustomResults extends LightningElement {
 
     terms.forEach((term) => {
       const normalized = String(term || "").trim();
-      if (!normalized) {
-        return;
-      }
+      if (!normalized) return;
 
       const key = normalized.toLowerCase();
       if (!seen.has(key)) {
@@ -779,21 +781,15 @@ export default class CustomResults extends LightningElement {
   }
 
   getPathSearchToken() {
-    if (!globalThis.window?.location?.pathname) {
-      return "";
-    }
+    if (!globalThis.window?.location?.pathname) return "";
 
     const path = globalThis.window.location.pathname;
     const markerIndex = path.indexOf(SEARCH_MARKER);
-    if (markerIndex < 0) {
-      return "";
-    }
+    if (markerIndex < 0) return "";
 
     const after = path.slice(markerIndex + SEARCH_MARKER.length);
     const token = (after.split("/")[0] || "").trim();
-    if (!token || token.toLowerCase() === "all") {
-      return "";
-    }
+    if (!token || token.toLowerCase() === "all") return "";
 
     return this.decodeSearchPathSegment(token);
   }
@@ -802,17 +798,12 @@ export default class CustomResults extends LightningElement {
     let decoded = String(value || "")
       .replaceAll("+", " ")
       .trim();
-    if (!decoded) {
-      return "";
-    }
+    if (!decoded) return "";
 
     for (let attempt = 0; attempt < 3; attempt += 1) {
       try {
         const nextValue = decodeURIComponent(decoded);
-        if (nextValue === decoded) {
-          break;
-        }
-
+        if (nextValue === decoded) break;
         decoded = nextValue.replaceAll("+", " ").trim();
       } catch {
         break;
@@ -832,13 +823,10 @@ export default class CustomResults extends LightningElement {
     const routeSearchText =
       this.currentPathSearchToken || this.getPathSearchToken();
 
-    if (routeSearchText) {
+    if (routeSearchText)
       tokens.push(...this.tokenizeSearchText(routeSearchText));
-    }
-
-    if (this.searchText) {
+    if (this.searchText)
       tokens.push(...this.tokenizeSearchText(this.searchText));
-    }
 
     return [...new Set(tokens)];
   }
@@ -848,16 +836,12 @@ export default class CustomResults extends LightningElement {
   }
 
   startUrlWatcher() {
-    if (globalThis.window === undefined || this.urlWatchId) {
-      return;
-    }
+    if (globalThis.window === undefined || this.urlWatchId) return;
 
     this.captureCurrentRouteState();
     this.urlWatchId = globalThis.window.setInterval(() => {
       const href = this.getCurrentHref();
-      if (!href || href === this.lastObservedHref) {
-        return;
-      }
+      if (!href || href === this.lastObservedHref) return;
 
       this.lastObservedHref = href;
       globalThis.window.clearTimeout(this.urlWatchDebounceId);
@@ -868,9 +852,7 @@ export default class CustomResults extends LightningElement {
   }
 
   stopUrlWatcher() {
-    if (globalThis.window === undefined) {
-      return;
-    }
+    if (globalThis.window === undefined) return;
 
     globalThis.window.clearInterval(this.urlWatchId);
     globalThis.window.clearTimeout(this.urlWatchDebounceId);
@@ -880,9 +862,7 @@ export default class CustomResults extends LightningElement {
 
   async handleObservedUrlChange() {
     const nextPathSearchToken = this.getPathSearchToken();
-    if (nextPathSearchToken === this.currentPathSearchToken) {
-      return;
-    }
+    if (nextPathSearchToken === this.currentPathSearchToken) return;
 
     this.currentPathSearchToken = nextPathSearchToken;
     this.currentPage = 1;
@@ -891,11 +871,8 @@ export default class CustomResults extends LightningElement {
 
   buildStateRefinements() {
     const result = {};
-
-    if (this.selectedState) {
+    if (this.selectedState)
       result[this.stateFieldApiName] = [this.selectedState];
-    }
-
     return result;
   }
 
@@ -908,9 +885,7 @@ export default class CustomResults extends LightningElement {
             .filter(Boolean)
         )
       ];
-      if (!field || !uniqueValues.length) {
-        return;
-      }
+      if (!field || !uniqueValues.length) return;
 
       uniqueValues.forEach((value) => {
         params.append("refinement", `${field}:${value}`);
@@ -945,9 +920,7 @@ export default class CustomResults extends LightningElement {
 
   normalizeProduct(item) {
     const id = String(item?.id || "").trim();
-    if (!id) {
-      return null;
-    }
+    if (!id) return null;
 
     const name = String(item?.name || "").trim() || "Untitled";
     const imageUrl = this.resolveProductImageUrl(item);
@@ -995,37 +968,25 @@ export default class CustomResults extends LightningElement {
   }
 
   buildProductFilterValues(item) {
-    const gradeValues = this.resolveProductTextValues(item, [
-      "fields.Grade_Level__c"
-    ]);
-    const categoryValues = this.resolveProductTextValues(item, [
-      "fields.Category__c"
-    ]);
-    const seriesValues = this.resolveProductTextValues(item, [
-      "fields.Series__c"
-    ]);
-
     return {
-      Grade_Level__c: gradeValues,
-      Category__c: categoryValues,
-      Series__c: seriesValues
+      Grade_Level__c: this.resolveProductTextValues(item, [
+        "fields.Grade_Level__c"
+      ]),
+      Category__c: this.resolveProductTextValues(item, ["fields.Category__c"]),
+      Series__c: this.resolveProductTextValues(item, ["fields.Series__c"])
     };
   }
 
   resolveProductTextValues(item, paths) {
     const values = [];
-
-    paths.forEach((path) => {
-      this.collectResolvedText(this.resolveByPath(item, path), values);
-    });
-
+    paths.forEach((path) =>
+      this.collectResolvedText(this.resolveByPath(item, path), values)
+    );
     return [...new Set(values)];
   }
 
   collectResolvedText(value, values) {
-    if (value === null || value === undefined || value === "") {
-      return;
-    }
+    if (value === null || value === undefined || value === "") return;
 
     if (Array.isArray(value)) {
       value.forEach((entry) => this.collectResolvedText(entry, values));
@@ -1050,9 +1011,7 @@ export default class CustomResults extends LightningElement {
     }
 
     const normalized = String(value).trim().toLowerCase();
-    if (normalized) {
-      values.push(normalized);
-    }
+    if (normalized) values.push(normalized);
   }
 
   resolveCurrencyIsoCode(item) {
@@ -1099,9 +1058,7 @@ export default class CustomResults extends LightningElement {
   }
 
   collectSearchText(value, parts) {
-    if (value === null || value === undefined || value === "") {
-      return;
-    }
+    if (value === null || value === undefined || value === "") return;
 
     if (Array.isArray(value)) {
       value.forEach((entry) => this.collectSearchText(entry, parts));
@@ -1126,9 +1083,7 @@ export default class CustomResults extends LightningElement {
     }
 
     const normalized = String(value).trim();
-    if (normalized) {
-      parts.push(normalized);
-    }
+    if (normalized) parts.push(normalized);
   }
 
   normalizeSearchText(value) {
@@ -1164,7 +1119,6 @@ export default class CustomResults extends LightningElement {
         label: definition.label,
         collapsed: Boolean(this.collapsedByField[definition.key]),
         expanded: isExpanded,
-        ariaExpanded: isExpanded ? "true" : "false",
         toggleSymbol: this.collapsedByField[definition.key] ? "+" : "−",
         options,
         showEmpty: !options.length
@@ -1182,9 +1136,7 @@ export default class CustomResults extends LightningElement {
 
     this.stateProducts.forEach((product) => {
       const productId = String(product?.id || "").trim();
-      if (!productId) {
-        return;
-      }
+      if (!productId) return;
 
       this.productById.set(productId, product);
 
@@ -1225,28 +1177,22 @@ export default class CustomResults extends LightningElement {
         )
         .filter(Boolean);
 
-      if (!selectedValues.length) {
-        return;
-      }
+      if (!selectedValues.length) return;
 
       const fieldMap = this.filterIndexByField[definition.key] || new Map();
       const fieldMatches = new Set();
 
       selectedValues.forEach((value) => {
         const ids = fieldMap.get(value);
-        if (!ids) {
-          return;
-        }
-
+        if (!ids) return;
         ids.forEach((id) => fieldMatches.add(id));
       });
 
       if (candidateIds === null) {
         candidateIds = fieldMatches;
-        return;
+      } else {
+        candidateIds = this.intersectSets(candidateIds, fieldMatches);
       }
-
-      candidateIds = this.intersectSets(candidateIds, fieldMatches);
     });
 
     const products =
@@ -1256,9 +1202,7 @@ export default class CustomResults extends LightningElement {
             .map((id) => this.productById.get(id))
             .filter(Boolean);
 
-    if (!searchTokens.length) {
-      return products;
-    }
+    if (!searchTokens.length) return products;
 
     return products.filter((product) => {
       return searchTokens.every((token) =>
@@ -1269,18 +1213,13 @@ export default class CustomResults extends LightningElement {
 
   productMatchesSearchToken(product, token) {
     const normalizedToken = this.normalizeSearchText(token);
-    if (!normalizedToken) {
-      return true;
-    }
+    if (!normalizedToken) return true;
 
     const terms = toArray(product?.searchTerms);
-    if (!terms.length) {
-      return false;
-    }
+    if (!terms.length) return false;
 
-    if (/^\d{1,2}$/.test(normalizedToken)) {
+    if (/^\d{1,2}$/.test(normalizedToken))
       return terms.includes(normalizedToken);
-    }
 
     if (normalizedToken.length <= 2) {
       return terms.some(
@@ -1306,23 +1245,14 @@ export default class CustomResults extends LightningElement {
     const left = this.normalizeSearchText(queryToken);
     const right = this.normalizeSearchText(candidateToken);
 
-    if (!left || !right) {
-      return false;
-    }
-
-    if (left === right) {
-      return true;
-    }
+    if (!left || !right) return false;
+    if (left === right) return true;
 
     const lengthGap = Math.abs(left.length - right.length);
-    if (lengthGap > 2) {
-      return false;
-    }
+    if (lengthGap > 2) return false;
 
     const minLength = Math.min(left.length, right.length);
-    if (minLength < 3) {
-      return false;
-    }
+    if (minLength < 3) return false;
 
     const distance = this.getDamerauLevenshteinDistance(left, right);
     const allowedDistance = minLength >= 8 ? 2 : 1;
@@ -1334,13 +1264,8 @@ export default class CustomResults extends LightningElement {
     const cols = right.length + 1;
     const matrix = Array.from({ length: rows }, () => new Array(cols).fill(0));
 
-    for (let row = 0; row < rows; row += 1) {
-      matrix[row][0] = row;
-    }
-
-    for (let col = 0; col < cols; col += 1) {
-      matrix[0][col] = col;
-    }
+    for (let row = 0; row < rows; row += 1) matrix[row][0] = row;
+    for (let col = 0; col < cols; col += 1) matrix[0][col] = col;
 
     for (let row = 1; row < rows; row += 1) {
       for (let col = 1; col < cols; col += 1) {
@@ -1371,20 +1296,68 @@ export default class CustomResults extends LightningElement {
 
   intersectSets(left, right) {
     const result = new Set();
-
-    if (!left || !right || !left.size || !right.size) {
-      return result;
-    }
+    if (!left || !right || !left.size || !right.size) return result;
 
     const [smaller, larger] =
       left.size <= right.size ? [left, right] : [right, left];
     smaller.forEach((value) => {
-      if (larger.has(value)) {
-        result.add(value);
-      }
+      if (larger.has(value)) result.add(value);
     });
 
     return result;
+  }
+
+  getRelevanceScore(product) {
+    let score = 0;
+
+    const state = String(this.selectedState || "")
+      .trim()
+      .toLowerCase();
+    const searchTokens = this.getCombinedSearchTokens();
+    const terms = Array.isArray(product?.searchTerms)
+      ? product.searchTerms
+      : [];
+    const filterValues = product?.filterValues || {};
+
+    if (state) {
+      const stateValues = Array.isArray(
+        this.resolveProductTextValues(product, ["fields.State__c"])
+      )
+        ? this.resolveProductTextValues(product, ["fields.State__c"])
+        : [];
+
+      if (stateValues.includes(state)) {
+        score += 100;
+      }
+
+      if (terms.includes(state)) {
+        score += 40;
+      }
+    }
+
+    searchTokens.forEach((token) => {
+      if (terms.includes(token)) {
+        score += 20;
+      } else if (terms.some((term) => term.startsWith(token))) {
+        score += 10;
+      }
+    });
+
+    const gradeValues = Array.isArray(filterValues.Grade_Level__c)
+      ? filterValues.Grade_Level__c
+      : [];
+    const categoryValues = Array.isArray(filterValues.Category__c)
+      ? filterValues.Category__c
+      : [];
+    const seriesValues = Array.isArray(filterValues.Series__c)
+      ? filterValues.Series__c
+      : [];
+
+    score += gradeValues.length ? 2 : 0;
+    score += categoryValues.length ? 2 : 0;
+    score += seriesValues.length ? 1 : 0;
+
+    return score;
   }
 
   applyPaginationAndSort() {
@@ -1432,7 +1405,18 @@ export default class CustomResults extends LightningElement {
   sortProducts(products) {
     const sorted = [...products];
 
-    if (this.sortValue === "name-asc") {
+    if (this.sortValue === "relevance") {
+      sorted.sort((a, b) => {
+        const scoreA = this.getRelevanceScore(a);
+        const scoreB = this.getRelevanceScore(b);
+
+        if (scoreB !== scoreA) {
+          return scoreB - scoreA;
+        }
+
+        return a.name.localeCompare(b.name);
+      });
+    } else if (this.sortValue === "name-asc") {
       sorted.sort((a, b) => a.name.localeCompare(b.name));
     } else if (this.sortValue === "name-desc") {
       sorted.sort((a, b) => b.name.localeCompare(a.name));
@@ -1443,7 +1427,6 @@ export default class CustomResults extends LightningElement {
 
   async reloadProducts() {
     this.loading = true;
-
     try {
       const response = await this.loadStateProducts();
       this.stateProducts = response.products;
@@ -1487,10 +1470,7 @@ export default class CustomResults extends LightningElement {
   }
 
   handleSearchKeydown(event) {
-    if (event?.key !== "Enter") {
-      return;
-    }
-
+    if (event?.key !== "Enter") return;
     event.preventDefault();
     this.handleSearchInput(event);
   }
@@ -1515,16 +1495,13 @@ export default class CustomResults extends LightningElement {
     if (Number.isFinite(next) && next > 0) {
       this.pageSizeValue = next;
     }
-
     this.currentPage = 1;
     this.applyPaginationAndSort();
   }
 
   handleViewMode(event) {
     const mode = event?.currentTarget?.dataset?.mode;
-    if (!mode || (mode !== "grid" && mode !== "list")) {
-      return;
-    }
+    if (!mode || (mode !== "grid" && mode !== "list")) return;
 
     this.viewMode = mode;
     this.applyPaginationAndSort();
@@ -1532,9 +1509,7 @@ export default class CustomResults extends LightningElement {
 
   handleToggleGroup(event) {
     const fieldApiName = event?.currentTarget?.dataset?.field;
-    if (!fieldApiName) {
-      return;
-    }
+    if (!fieldApiName) return;
 
     this.collapsedByField = {
       ...this.collapsedByField,
@@ -1549,9 +1524,7 @@ export default class CustomResults extends LightningElement {
     const value = event?.target?.dataset?.value;
     const checked = Boolean(event?.target?.checked);
 
-    if (!field || !value) {
-      return;
-    }
+    if (!field || !value) return;
 
     const existing = new Set(this.selectedFiltersByField[field] || []);
     if (checked) {
@@ -1588,10 +1561,7 @@ export default class CustomResults extends LightningElement {
   }
 
   getProductById(productId) {
-    if (!productId) {
-      return null;
-    }
-
+    if (!productId) return null;
     return (
       this.productById.get(productId) ||
       this.products.find((item) => item.id === productId) ||
@@ -1605,9 +1575,7 @@ export default class CustomResults extends LightningElement {
 
     const productId = event?.currentTarget?.dataset?.pid;
     const product = this.getProductById(productId);
-    if (!product) {
-      return;
-    }
+    if (!product) return;
 
     this.modalProduct = product;
     this.modalVariationPricing = null;
@@ -1625,11 +1593,10 @@ export default class CustomResults extends LightningElement {
 
   async loadVariationPricing(productId) {
     try {
-      const result = await getVariationPricing({
+      this.modalVariationPricing = await getVariationPricing({
         productId,
         webStoreId: this.webStoreId || DEFAULT_WEBSTORE_ID
       });
-      this.modalVariationPricing = result;
     } catch (error) {
       console.warn("Failed to load variation pricing.", error);
     }
@@ -1642,21 +1609,15 @@ export default class CustomResults extends LightningElement {
   }
 
   handleViewDetails() {
-    if (!this.modalProduct) {
-      return;
-    }
-
+    if (!this.modalProduct) return;
     globalThis.window.location.href = this.buildProductDetailPath(
       this.modalProduct
     );
   }
 
   async handleAddToCart(event) {
-    // Use the variation child product ID from the modal event if available
     const productId = event?.detail?.productId || this.modalProduct?.id || "";
-    if (!productId) {
-      return;
-    }
+    if (!productId) return;
 
     const requestedQty = Number.parseInt(event?.detail?.quantity, 10);
     const quantity =
@@ -1665,15 +1626,12 @@ export default class CustomResults extends LightningElement {
     const added = await this.addProductToCart(productId, quantity);
     if (added) {
       this.handleModalClose();
+      globalThis.window.location.href = `/${this.storeName || DEFAULT_STORE_NAME}/cart`;
     }
   }
 
   async addProductToCart(productId, quantity) {
-    const payload = {
-      productId,
-      quantity,
-      type: "Product"
-    };
+    const payload = { productId, quantity, type: "Product" };
 
     try {
       const response = await fetch(
@@ -1681,9 +1639,7 @@ export default class CustomResults extends LightningElement {
         {
           method: "POST",
           credentials: "include",
-          headers: {
-            "Content-Type": "application/json"
-          },
+          headers: { "Content-Type": "application/json" },
           body: JSON.stringify(payload)
         }
       );
@@ -1729,23 +1685,15 @@ export default class CustomResults extends LightningElement {
     const value = String(url || "")
       .trim()
       .replaceAll(/\s/g, "%20");
-    if (!value) {
-      return "";
-    }
+    if (!value) return "";
 
-    if (/^(https?:|data:)/i.test(value)) {
-      return value;
-    }
-
-    if (value.startsWith("//")) {
-      return `https:${value}`;
-    }
+    if (/^(https?:|data:)/i.test(value)) return value;
+    if (value.startsWith("//")) return `https:${value}`;
 
     if (globalThis.window?.location?.origin) {
       if (value.startsWith("/")) {
         return `${globalThis.window.location.origin}${value}`;
       }
-
       return `${globalThis.window.location.origin}/${value.replace(/^\/+/, "")}`;
     }
 
@@ -1772,14 +1720,12 @@ export default class CustomResults extends LightningElement {
         value || ""
       );
     } catch {
-      // no-op
+      // ignore
     }
   }
 
   updateResultsUrlForState(stateValue) {
-    if (!globalThis.window?.history) {
-      return;
-    }
+    if (!globalThis.window?.history) return;
 
     const nextToken = String(stateValue || "").trim() || "all";
     const currentPath = globalThis.window.location?.pathname || "";
@@ -1806,19 +1752,18 @@ export default class CustomResults extends LightningElement {
   }
 
   buildProductDetailPath(product) {
+    const productIdForUrl = product?.id;
     const source = product?.urlName || product?.name || "detail";
     const slug = String(source)
       .toLowerCase()
       .replaceAll(/[^a-z0-9]+/g, "-")
       .replaceAll(/^-+|-+$/g, "");
 
-    return `/${this.storeName || DEFAULT_STORE_NAME}/product/${slug || "detail"}/${product.id}`;
+    return `/${this.storeName || DEFAULT_STORE_NAME}/product/${slug || "detail"}/${productIdForUrl}`;
   }
 
   formatCurrency(amount, currencyIsoCode) {
-    if (!Number.isFinite(amount)) {
-      return "—";
-    }
+    if (!Number.isFinite(amount)) return "—";
 
     try {
       return new Intl.NumberFormat("en-US", {
@@ -1845,19 +1790,13 @@ export default class CustomResults extends LightningElement {
   resolveInitialPageSize() {
     const allowed = this.getPageSizeValues();
     const parsed = Number.parseInt(this.defaultPageSize, 10);
-    if (Number.isFinite(parsed) && allowed.includes(parsed)) {
-      return parsed;
-    }
-
+    if (Number.isFinite(parsed) && allowed.includes(parsed)) return parsed;
     return allowed[0] || DEFAULT_PAGE_SIZE;
   }
 
   normalizePositiveInt(value, fallback, max) {
     const parsed = Number.parseInt(value, 10);
-    if (!Number.isFinite(parsed) || parsed <= 0) {
-      return fallback;
-    }
-
+    if (!Number.isFinite(parsed) || parsed <= 0) return fallback;
     return Number.isFinite(max) ? Math.min(parsed, max) : parsed;
   }
 
@@ -1881,14 +1820,11 @@ export default class CustomResults extends LightningElement {
 
   extractPricingMap(data) {
     const root = data && typeof data === "object" ? data : {};
-    let rows;
-    if (Array.isArray(root.pricingLineItemResults)) {
-      rows = root.pricingLineItemResults;
-    } else if (Array.isArray(root.pricingResults)) {
-      rows = root.pricingResults;
-    } else {
-      rows = [];
-    }
+    const rows = Array.isArray(root.pricingLineItemResults)
+      ? root.pricingLineItemResults
+      : Array.isArray(root.pricingResults)
+        ? root.pricingResults
+        : [];
 
     const pricingByProductId = new Map();
 
@@ -1901,9 +1837,7 @@ export default class CustomResults extends LightningElement {
           ""
       ).trim();
 
-      if (!productId) {
-        continue;
-      }
+      if (!productId) continue;
 
       pricingByProductId.set(productId, {
         currencyIsoCode:
@@ -1937,45 +1871,32 @@ export default class CustomResults extends LightningElement {
     for (const path of paths) {
       const value = this.resolveByPath(source, path);
       const normalized = this.toNumber(value);
-      if (normalized !== null) {
-        return normalized;
-      }
+      if (normalized !== null) return normalized;
     }
-
     return null;
   }
 
   resolveByPath(source, path) {
-    if (!source || !path) {
-      return undefined;
-    }
+    if (!source || !path) return undefined;
 
     return path.split(".").reduce((acc, key) => {
-      if (acc && typeof acc === "object" && key in acc) {
-        return acc[key];
-      }
-
+      if (acc && typeof acc === "object" && key in acc) return acc[key];
       return undefined;
     }, source);
   }
 
   toNumber(value) {
-    if (value === null || value === undefined || value === "") {
-      return null;
-    }
+    if (value === null || value === undefined || value === "") return null;
 
     if (typeof value === "number") {
       return Number.isFinite(value) ? value : null;
     }
 
     if (typeof value === "object") {
-      if (typeof value.amount === "number" && Number.isFinite(value.amount)) {
+      if (typeof value.amount === "number" && Number.isFinite(value.amount))
         return value.amount;
-      }
-
-      if (typeof value.value === "number" && Number.isFinite(value.value)) {
+      if (typeof value.value === "number" && Number.isFinite(value.value))
         return value.value;
-      }
     }
 
     const parsed = Number(String(value).replaceAll(/[^0-9.-]/g, ""));
@@ -1984,24 +1905,66 @@ export default class CustomResults extends LightningElement {
 
   firstString(values) {
     for (const value of values || []) {
-      if (typeof value === "string" && value.trim()) {
-        return value.trim();
-      }
+      if (typeof value === "string" && value.trim()) return value.trim();
 
       if (value && typeof value === "object") {
-        if (typeof value.value === "string" && value.value.trim()) {
+        if (typeof value.value === "string" && value.value.trim())
           return value.value.trim();
-        }
-
-        if (
-          typeof value.displayValue === "string" &&
-          value.displayValue.trim()
-        ) {
+        if (typeof value.displayValue === "string" && value.displayValue.trim())
           return value.displayValue.trim();
-        }
       }
     }
 
     return "";
+  }
+
+  closeAllDropdowns() {
+    this.isStateDropdownOpen = false;
+    this.isSortDropdownOpen = false;
+    this.isPageSizeDropdownOpen = false;
+  }
+
+  toggleStateDropdown(event) {
+    event.stopPropagation();
+    const next = !this.isStateDropdownOpen;
+    this.closeAllDropdowns();
+    this.isStateDropdownOpen = next;
+  }
+
+  toggleSortDropdown(event) {
+    event.stopPropagation();
+    const next = !this.isSortDropdownOpen;
+    this.closeAllDropdowns();
+    this.isSortDropdownOpen = next;
+  }
+
+  togglePageSizeDropdown(event) {
+    event.stopPropagation();
+    const next = !this.isPageSizeDropdownOpen;
+    this.closeAllDropdowns();
+    this.isPageSizeDropdownOpen = next;
+  }
+
+  async handleStateOptionClick(event) {
+    event.stopPropagation();
+    const value = String(event.currentTarget.dataset.value || "").trim();
+    this.closeAllDropdowns();
+    await this.handleStateChange({ detail: { value } });
+  }
+
+  handleSortOptionClick(event) {
+    event.stopPropagation();
+    const value = String(event.currentTarget.dataset.value || "relevance");
+    this.closeAllDropdowns();
+    this.handleSortChange({ detail: { value } });
+  }
+
+  handlePageSizeOptionClick(event) {
+    event.stopPropagation();
+    const value = String(
+      event.currentTarget.dataset.value || this.pageSizeValueString
+    );
+    this.closeAllDropdowns();
+    this.handlePageSizeChange({ detail: { value } });
   }
 }

@@ -6,5 +6,6 @@
     "**/.sfdx": true
   },
   "xml.preferences.showSchemaDocumentationType": "none",
-  "xml.validation.schema.enabled": "never"
+  "xml.validation.schema.enabled": "never",
+  "python-envs.defaultEnvManager": "ms-python.python:system"
 }

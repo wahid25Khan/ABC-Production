@@ -56,7 +56,7 @@ export default class QuickShopModal extends LightningElement {
   }
 
   get selectedUnitPrice() {
-    return this.selectedVariation?.unitPrice ?? null;
+    return this.resolveUnitPriceForQuantity(this.quantity);
   }
 
   get displayTiers() {
@@ -81,18 +81,47 @@ export default class QuickShopModal extends LightningElement {
   }
 
   get minQty() {
-    const parsed = Number.parseInt(this.minimumQuantity, 10);
-    return Number.isFinite(parsed) && parsed > 0 ? parsed : 10;
+    const variationMin = this.parsePositiveInteger(
+      this.selectedVariation?.minimumQuantity
+    );
+    if (variationMin !== null) {
+      return variationMin;
+    }
+
+    const parsed = this.parsePositiveInteger(this.minimumQuantity);
+    if (parsed === null) {
+      return 10;
+    }
+
+    return parsed;
   }
 
   get maxQty() {
-    const parsed = Number.parseInt(this.maximumQuantity, 10);
-    return Number.isFinite(parsed) && parsed > 0 ? parsed : 50;
+    const variationMax = this.parsePositiveInteger(
+      this.selectedVariation?.maximumQuantity
+    );
+    if (variationMax !== null && variationMax <= 9999) {
+      return variationMax;
+    }
+
+    const parsed = this.parsePositiveInteger(this.maximumQuantity);
+    return parsed !== null && parsed <= 9999 ? parsed : 50;
   }
 
   get incrementQty() {
-    const parsed = Number.parseInt(this.incrementQuantity, 10);
-    return Number.isFinite(parsed) && parsed > 0 ? parsed : 1;
+    const variationIncrement = this.parsePositiveInteger(
+      this.selectedVariation?.incrementQuantity
+    );
+    if (variationIncrement !== null) {
+      return variationIncrement;
+    }
+
+    const parsed = this.parsePositiveInteger(this.incrementQuantity);
+    if (parsed === null) {
+      return 1;
+    }
+
+    return parsed;
   }
 
   get formattedUnitPrice() {
@@ -168,6 +197,7 @@ export default class QuickShopModal extends LightningElement {
       index < this.variationsList.length
     ) {
       this.selectedVariationIndex = index;
+      this.quantity = this.minQty;
       const variation = this.variationsList[index];
       this.dispatchEvent(
         new CustomEvent("planchange", {
@@ -298,6 +328,41 @@ export default class QuickShopModal extends LightningElement {
 
     const normalized = Number(String(value).replaceAll(/[^0-9.-]/g, ""));
     return Number.isFinite(normalized) ? normalized : null;
+  }
+
+  parsePositiveInteger(value) {
+    const parsed = Number.parseInt(value, 10);
+    return Number.isFinite(parsed) && parsed > 0 ? parsed : null;
+  }
+
+  resolveUnitPriceForQuantity(quantity) {
+    const variation = this.selectedVariation;
+    if (!variation) {
+      return null;
+    }
+
+    const tiers = variation.tiers;
+    const fallbackPrice = this.toNumber(variation.unitPrice);
+    if (!tiers?.length) {
+      return fallbackPrice;
+    }
+
+    const qty = this.parsePositiveInteger(quantity) ?? this.minQty;
+    for (const tier of tiers) {
+      const lower = this.toNumber(tier?.lowerBound);
+      const upper = this.toNumber(tier?.upperBound);
+      const price = this.toNumber(tier?.price);
+
+      if (price === null || lower === null) {
+        continue;
+      }
+
+      if (qty >= lower && (upper === null || qty <= upper)) {
+        return price;
+      }
+    }
+
+    return fallbackPrice;
   }
 
   formatPrice(value) {

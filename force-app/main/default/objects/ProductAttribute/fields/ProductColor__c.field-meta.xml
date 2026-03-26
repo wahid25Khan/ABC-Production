@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>ProductColor__c</fullName>
     <label>Product Color</label>
@@ -17,6 +17,11 @@
                 <fullName>Blue</fullName>
                 <default>false</default>
                 <label>Blue</label>
+            </value>
+            <value>
+                <fullName>Digital</fullName>
+                <default>false</default>
+                <label>Digital</label>
             </value>
         </valueSetDefinition>
     </valueSet>

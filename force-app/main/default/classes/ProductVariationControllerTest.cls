@@ -1,26 +1,22 @@
 @IsTest
 private class ProductVariationControllerTest {
-  /**
-   * Uses SeeAllData=true because the org has a "Create Pricebook Entry" flow
-   * that fires on Product2 insert and prevents test data creation.
-   * Tests use existing org products, pricebook entries, and adjustment tiers.
-   */
-
   @IsTest(SeeAllData=true)
-  static void testSimpleProductPricing() {
-    Product2 p = [SELECT Id FROM Product2 WHERE IsActive = TRUE LIMIT 1];
-    Pricebook2 pb = [
-      SELECT Id
-      FROM Pricebook2
-      WHERE Name = 'American Book Company Price Book'
+  static void testProductWithFormatPricing() {
+    // Find a Georgia product that has ProductFormatPricing__c records
+    List<ProductFormatPricing__c> pfps = [
+      SELECT Product__c, Product__r.Name
+      FROM ProductFormatPricing__c
+      WHERE Is_Active__c = TRUE
       LIMIT 1
     ];
 
-    ProductVariationController.testPricebookId = pb.Id;
+    if (pfps.isEmpty()) {
+      return; // No format pricing records exist yet
+    }
 
     Test.startTest();
     ProductVariationController.VariationResult result = ProductVariationController.getVariationPricing(
-      p.Id,
+      pfps[0].Product__c,
       null
     );
     Test.stopTest();
@@ -28,63 +24,136 @@ private class ProductVariationControllerTest {
     System.assertNotEquals(null, result, 'Result should not be null');
     System.assert(
       !result.variations.isEmpty(),
-      'Should return at least 1 pricing entry'
+      'Should return at least 1 format tab'
     );
   }
 
   @IsTest(SeeAllData=true)
-  static void testProductWithTierPricing() {
-    // Query a product that has a PricebookEntryAdjustment (tier pricing exists in the org)
-    PricebookEntryAdjustment adj = [
-      SELECT PricebookEntry.Product2Id, PricebookEntry.Pricebook2Id
-      FROM PricebookEntryAdjustment
+  static void testMultiFormatTabs() {
+    // Find a product with multiple format pricings
+    List<AggregateResult> multi = [
+      SELECT Product__c pid, COUNT(Id) cnt
+      FROM ProductFormatPricing__c
+      WHERE Is_Active__c = TRUE
+      GROUP BY Product__c
+      HAVING COUNT(Id) > 1
       LIMIT 1
     ];
 
-    ProductVariationController.testPricebookId = adj.PricebookEntry.Pricebook2Id;
+    if (multi.isEmpty()) {
+      return;
+    }
+
+    Id productId = (Id) multi[0].get('pid');
 
     Test.startTest();
     ProductVariationController.VariationResult result = ProductVariationController.getVariationPricing(
-      adj.PricebookEntry.Product2Id,
+      productId,
       null
     );
     Test.stopTest();
 
     System.assertNotEquals(null, result);
+    System.assertEquals(
+      true,
+      result.hasVariations,
+      'Should have multiple format tabs'
+    );
     System.assert(
-      !result.variations.isEmpty(),
-      'Should have at least 1 variation'
+      result.variations.size() > 1,
+      'Should return more than 1 variation'
     );
 
-    ProductVariationController.VariationPricing vp = result.variations[0];
-    System.assert(
-      !vp.tiers.isEmpty(),
-      'Product with adjustment should have tiers'
-    );
+    for (ProductVariationController.VariationPricing vp : result.variations) {
+      System.assertEquals(
+        productId,
+        vp.productId,
+        'All tabs should use the same product ID'
+      );
+      System.assertNotEquals(null, vp.format, 'Format name should not be null');
+      System.assertNotEquals(
+        null,
+        vp.unitPrice,
+        'Unit price should not be null'
+      );
+    }
   }
 
   @IsTest(SeeAllData=true)
-  static void testWebStoreResolution() {
-    Product2 p = [SELECT Id FROM Product2 WHERE IsActive = TRUE LIMIT 1];
-    WebStore ws = [
-      SELECT Id
-      FROM WebStore
-      WHERE Name = 'American Book Company'
+  static void testTierPricingFromBulkFields() {
+    // Find a format pricing with bulk price/threshold
+    List<ProductFormatPricing__c> pfps = [
+      SELECT Product__c
+      FROM ProductFormatPricing__c
+      WHERE
+        Is_Active__c = TRUE
+        AND Bulk_Price__c != NULL
+        AND Bulk_Threshold__c != NULL
       LIMIT 1
     ];
 
+    if (pfps.isEmpty()) {
+      return;
+    }
+
     Test.startTest();
     ProductVariationController.VariationResult result = ProductVariationController.getVariationPricing(
-      p.Id,
-      ws.Id
+      pfps[0].Product__c,
+      null
     );
     Test.stopTest();
 
     System.assertNotEquals(null, result);
+    Boolean foundTiers = false;
+    for (ProductVariationController.VariationPricing vp : result.variations) {
+      if (!vp.tiers.isEmpty()) {
+        foundTiers = true;
+        System.assertEquals(
+          2,
+          vp.tiers.size(),
+          'Should have 2 tiers (unit + bulk)'
+        );
+        System.assert(
+          vp.tiers[1].price < vp.tiers[0].price,
+          'Bulk tier price should be less than unit tier price'
+        );
+      }
+    }
     System.assert(
-      !result.variations.isEmpty(),
-      'Should return pricing via webstore pricebook'
+      foundTiers,
+      'Should have found at least one format with tiers'
     );
+  }
+
+  @IsTest(SeeAllData=true)
+  static void testQuantityRulesFromFormat() {
+    List<ProductFormatPricing__c> pfps = [
+      SELECT Product__c
+      FROM ProductFormatPricing__c
+      WHERE Is_Active__c = TRUE AND Min_Quantity__c != NULL
+      LIMIT 1
+    ];
+
+    if (pfps.isEmpty()) {
+      return;
+    }
+
+    Test.startTest();
+    ProductVariationController.VariationResult result = ProductVariationController.getVariationPricing(
+      pfps[0].Product__c,
+      null
+    );
+    Test.stopTest();
+
+    System.assertNotEquals(null, result);
+    if (!result.variations.isEmpty()) {
+      ProductVariationController.VariationPricing vp = result.variations[0];
+      System.assertNotEquals(
+        null,
+        vp.minimumQuantity,
+        'Should have min quantity'
+      );
+    }
   }
 
   @IsTest
@@ -102,9 +171,6 @@ private class ProductVariationControllerTest {
 
   @IsTest
   static void testNonExistentProduct() {
-    // Use a fake but valid-format Product2 ID
-    ProductVariationController.testPricebookId = Test.getStandardPricebookId();
-
     Test.startTest();
     ProductVariationController.VariationResult result = ProductVariationController.getVariationPricing(
       '01tAA0000000001MAA',
@@ -113,9 +179,69 @@ private class ProductVariationControllerTest {
     Test.stopTest();
 
     System.assertEquals(false, result.hasVariations);
-    System.assert(
-      result.variations.isEmpty() || result.variations.size() == 1,
-      'Non-existent product should return empty or single null-price entry'
+    System.assertEquals(0, result.variations.size());
+  }
+
+  @IsTest(SeeAllData=true)
+  static void testWebStoreIdPassedButIgnored() {
+    // webStoreId is accepted but no longer used — verify it doesn't break
+    List<ProductFormatPricing__c> pfps = [
+      SELECT Product__c
+      FROM ProductFormatPricing__c
+      WHERE Is_Active__c = TRUE
+      LIMIT 1
+    ];
+
+    if (pfps.isEmpty()) {
+      return;
+    }
+
+    WebStore ws = [
+      SELECT Id
+      FROM WebStore
+      WHERE Name = 'American Book Company'
+      LIMIT 1
+    ];
+
+    Test.startTest();
+    ProductVariationController.VariationResult result = ProductVariationController.getVariationPricing(
+      pfps[0].Product__c,
+      ws.Id
     );
+    Test.stopTest();
+
+    System.assertNotEquals(null, result);
+    System.assert(!result.variations.isEmpty(), 'Should return format tabs');
+  }
+
+  @IsTest(SeeAllData=true)
+  static void testNoFormatPricingReturnsEmpty() {
+    // Find a product that does NOT have any ProductFormatPricing__c records
+    List<Product2> prods = [
+      SELECT Id
+      FROM Product2
+      WHERE
+        IsActive = TRUE
+        AND Id NOT IN (
+          SELECT Product__c
+          FROM ProductFormatPricing__c
+          WHERE Is_Active__c = TRUE
+        )
+      LIMIT 1
+    ];
+
+    if (prods.isEmpty()) {
+      return;
+    }
+
+    Test.startTest();
+    ProductVariationController.VariationResult result = ProductVariationController.getVariationPricing(
+      prods[0].Id,
+      null
+    );
+    Test.stopTest();
+
+    System.assertEquals(false, result.hasVariations);
+    System.assertEquals(0, result.variations.size());
   }
 }

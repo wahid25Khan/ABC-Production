@@ -1,0 +1,133 @@
+<template>
+  <template if:true={isCompact}>
+    <article class={cardClass}>
+      <button
+        if:true={isExpandable}
+        type="button"
+        class="card-hit-area"
+        onclick={openModal}
+        aria-label={expandButtonLabel}
+        title={expandButtonLabel}
+      >
+        <span class="assistive-text">{expandButtonLabel}</span>
+      </button>
+
+      <div class="map-card__media">
+        <template if:true={errorMessage}>
+          <div class="error error--card">{errorMessage}</div>
+        </template>
+
+        <div
+          class="map map--card"
+          data-map-role="preview"
+          lwc:dom="manual"
+        ></div>
+      </div>
+
+      <div class="map-card__caption">{compactTitle}</div>
+    </article>
+
+    <template if:true={isModalOpen}>
+      <section
+        class="map-modal"
+        role="dialog"
+        aria-modal="true"
+        aria-label={modalTitle}
+      >
+        <button
+          class="map-modal__backdrop"
+          type="button"
+          onclick={closeModal}
+          aria-label="Close map modal"
+        ></button>
+
+        <div class="map-modal__panel">
+          <button
+            class="map-modal__close"
+            type="button"
+            onclick={closeModal}
+            aria-label="Close expanded map"
+          >
+            ×
+          </button>
+
+          <div class="map-wrapper map-wrapper--modal">
+            <div class="header">
+              <div class="marker-block">
+                <span class="marker yellow"></span>
+                <span class="marker red"></span>
+                <span class="marker gray"></span>
+              </div>
+              <div class="title-wrap">
+                <div class="title">{modalTitle}</div>
+                <div class="subtitle">based on 3 years</div>
+              </div>
+            </div>
+
+            <template if:true={errorMessage}>
+              <div class="error">{errorMessage}</div>
+            </template>
+
+            <div
+              class="map map--modal"
+              data-map-role="modal"
+              lwc:dom="manual"
+            ></div>
+
+            <div class="state-watermark">{stateWatermark}</div>
+
+            <div class="legend">
+              <div class="legend-title">① N° District Total</div>
+              <template for:each={legendRows} for:item="entry">
+                <div class="legend-row" key={entry.key}>
+                  <span class="swatch" style={entry.swatchStyle}></span>
+                  <span>{entry.rangeLabel}</span>
+                  <span>Range</span>
+                </div>
+              </template>
+            </div>
+
+            <img src={logoUrl} alt="ABC Logo" class="abc-logo" />
+          </div>
+        </div>
+      </section>
+    </template>
+  </template>
+
+  <template if:false={isCompact}>
+    <div class="map-wrapper map-wrapper--full">
+      <div class="header">
+        <div class="marker-block">
+          <span class="marker yellow"></span>
+          <span class="marker red"></span>
+          <span class="marker gray"></span>
+        </div>
+        <div class="title-wrap">
+          <div class="title">{modalTitle}</div>
+          <div class="subtitle">based on 3 years</div>
+        </div>
+      </div>
+
+      <template if:true={errorMessage}>
+        <div class="error">{errorMessage}</div>
+      </template>
+
+      <div class="map map--full" data-map-role="preview" lwc:dom="manual"></div>
+
+      <div class="state-watermark">{stateWatermark}</div>
+
+      <div class="legend">
+        <div class="legend-title">① N° District Total</div>
+        <template for:each={legendRows} for:item="entry">
+          <div class="legend-row" key={entry.key}>
+            <span class="swatch" style={entry.swatchStyle}></span>
+            <span>{entry.rangeLabel}</span>
+            <span>Range</span>
+          </div>
+        </template>
+      </div>
+
+      <img src={logoUrl} alt="ABC Logo" class="abc-logo" />
+    </div>
+  </template>
+</template>

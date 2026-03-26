@@ -1,0 +1,196 @@
+/* ═══════════════════════════════════════════════════════════════════
+   ABC HEADER – responsive overrides
+   Loaded globally via loadStyle in stateFilterLwc
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* ------------------------------------------------------------------
+   TABLET  (768px – 1024px)
+   Keep Logo / State / Nav+Search+Cart in a horizontal row
+   ------------------------------------------------------------------ */
+@media only screen and (min-width: 48em) and (max-width: 64em) {
+
+  /* Force main header row to stay horizontal */
+  [data-component-id="columns-47c9"] .columns {
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
+    align-items: center !important;
+  }
+
+  /* Hide spacers on tablet to save space */
+  [data-component-id="columns-47c9"] dxp_layout-column-spacer {
+    display: none !important;
+  }
+
+  /* Logo column: shrink to content */
+  [data-component-id="columns-47c9"] > .columns-content > .columns > dxp_layout-column:first-of-type {
+    flex: 0 0 auto !important;
+    width: auto !important;
+    max-width: 100px !important;
+    padding: 0 8px !important;
+  }
+  [data-component-id="columns-47c9"] > .columns-content > .columns > dxp_layout-column:first-of-type img {
+    max-height: 55px !important;
+    width: auto !important;
+  }
+
+  /* State filter column: shrink to content */
+  [data-component-id="columns-47c9"] > .columns-content > .columns > dxp_layout-column:nth-of-type(2) {
+    flex: 0 0 auto !important;
+    width: auto !important;
+    max-width: 160px !important;
+    padding: 0 4px !important;
+  }
+  [data-component-id="columns-47c9"] c-state-filter-lwc .wrap {
+    max-width: 140px !important;
+  }
+
+  /* Nav+Search+Cart column: fill remaining space */
+  [data-component-id="columns-47c9"] > .columns-content > .columns > dxp_layout-column:nth-of-type(3) {
+    flex: 1 1 0% !important;
+    width: auto !important;
+    min-width: 0 !important;
+    padding: 0 !important;
+  }
+
+  /* Nav list: horizontal scroll, no wrap */
+  [data-component-id="columns-47c9"] nav ul {
+    flex-wrap: nowrap !important;
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  [data-component-id="columns-47c9"] nav ul::-webkit-scrollbar {
+    display: none;
+  }
+  /* Tighten nav spacing */
+  [data-component-id="columns-47c9"] nav ul li a,
+  [data-component-id="columns-47c9"] nav ul li button {
+    font-size: 11px !important;
+    padding: 6px 8px !important;
+    white-space: nowrap !important;
+  }
+
+  /* Search+Cart inner row stays horizontal */
+  [data-component-id="columns-3835"] .columns {
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
+    align-items: center !important;
+  }
+  /* Search column fills available space */
+  [data-component-id="columns-3835"] > .columns-content > .columns > dxp_layout-column:first-of-type {
+    flex: 1 1 0% !important;
+    width: auto !important;
+    min-width: 0 !important;
+  }
+  /* Cart column: auto width */
+  [data-component-id="columns-3835"] > .columns-content > .columns > dxp_layout-column:last-of-type {
+    flex: 0 0 auto !important;
+    width: auto !important;
+    max-width: 50px !important;
+  }
+
+  /* Reduce overall header padding */
+  [data-layout-site-region="header"] {
+    padding: 4px 12px !important;
+  }
+}
+
+
+/* ------------------------------------------------------------------
+   MOBILE  (< 768px)
+   Row 1: Logo + State selector side by side
+   Row 2: Nav horizontally scrollable
+   Row 3: Search + Cart side by side
+   ------------------------------------------------------------------ */
+@media only screen and (max-width: 47.9375em) {
+
+  /* Main header row: wrap so logo+state sit together, nav drops below */
+  [data-component-id="columns-47c9"] .columns {
+    flex-direction: row !important;
+    flex-wrap: wrap !important;
+    align-items: center !important;
+  }
+
+  /* Hide spacers on mobile */
+  [data-component-id="columns-47c9"] dxp_layout-column-spacer {
+    display: none !important;
+  }
+
+  /* Logo column: auto width */
+  [data-component-id="columns-47c9"] > .columns-content > .columns > dxp_layout-column:first-of-type {
+    flex: 0 0 auto !important;
+    width: auto !important;
+    max-width: 80px !important;
+    padding: 4px 8px !important;
+  }
+  [data-component-id="columns-47c9"] > .columns-content > .columns > dxp_layout-column:first-of-type img {
+    max-height: 45px !important;
+    width: auto !important;
+  }
+
+  /* State filter column: takes remaining space on first row */
+  [data-component-id="columns-47c9"] > .columns-content > .columns > dxp_layout-column:nth-of-type(2) {
+    flex: 1 1 0% !important;
+    width: auto !important;
+    max-width: 200px !important;
+    padding: 4px 4px !important;
+  }
+  [data-component-id="columns-47c9"] c-state-filter-lwc .wrap {
+    max-width: 170px !important;
+  }
+
+  /* Nav+Search+Cart column: force to new row, full width */
+  [data-component-id="columns-47c9"] > .columns-content > .columns > dxp_layout-column:nth-of-type(3) {
+    flex: 0 0 100% !important;
+    width: 100% !important;
+    padding: 0 !important;
+  }
+
+  /* Nav list: scroll horizontally, hide scrollbar */
+  [data-component-id="columns-47c9"] nav ul {
+    flex-wrap: nowrap !important;
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    gap: 0 !important;
+    padding: 4px 0 !important;
+  }
+  [data-component-id="columns-47c9"] nav ul::-webkit-scrollbar {
+    display: none;
+  }
+  /* Tighten nav item spacing on mobile */
+  [data-component-id="columns-47c9"] nav ul li a,
+  [data-component-id="columns-47c9"] nav ul li button {
+    font-size: 11px !important;
+    padding: 4px 7px !important;
+    white-space: nowrap !important;
+  }
+
+  /* Search+Cart row stays horizontal */
+  [data-component-id="columns-3835"] .columns {
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
+    align-items: center !important;
+  }
+  /* Hide spacers in search/cart row */
+  [data-component-id="columns-3835"] dxp_layout-column-spacer {
+    display: none !important;
+  }
+  /* Search column fills space */
+  [data-component-id="columns-3835"] > .columns-content > .columns > dxp_layout-column:first-of-type {
+    flex: 1 1 0% !important;
+    width: auto !important;
+    min-width: 0 !important;
+  }
+  /* Cart column: auto width */
+  [data-component-id="columns-3835"] > .columns-content > .columns > dxp_layout-column:last-of-type {
+    flex: 0 0 auto !important;
+    width: auto !important;
+    max-width: 45px !important;
+  }
+
+  /* Reduce overall header padding on mobile */
+  [data-layout-site-region="header"] {
+    padding: 4px 8px !important;
+  }
+}

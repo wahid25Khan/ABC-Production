@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>59.0</apiVersion>
+    <isExposed>true</isExposed>
+    <targets>
+        <target>lightningCommunity__Page</target>
+        <target>lightningCommunity__Default</target>
+    </targets>
+    <targetConfigs>
+        <targetConfig targets="lightningCommunity__Default">
+            <property
+        name="titleYear"
+        type="String"
+        label="Title Year"
+        default="2026"
+      />
+            <property
+        name="selectedState"
+        type="String"
+        label="Selected State"
+        default="Georgia"
+      />
+            <property
+        name="stateFips"
+        type="String"
+        label="Override State FIPS"
+      />
+            <property
+        name="geoJsonPath"
+        type="String"
+        label="GeoJSON File Path"
+      />
+            <property
+        name="mapboxAccessToken"
+        type="String"
+        label="Mapbox Access Token"
+      />
+        </targetConfig>
+    </targetConfigs>
+</LightningComponentBundle>

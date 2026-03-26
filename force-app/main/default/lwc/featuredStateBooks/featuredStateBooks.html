@@ -5,14 +5,12 @@
     </template>
 
     <template if:true={showProducts}>
-      <!-- ── Heading ────────────────────────────────────────────── -->
       <div class="heading-row">
         <div class="heading-line" aria-hidden="true"></div>
         <h2 class="heading-text">{headingText}</h2>
         <div class="heading-line" aria-hidden="true"></div>
       </div>
 
-      <!-- ── Shop All button ───────────────────────────────────── -->
       <div class="shop-all-row">
         <a
           href={resolvedShopAllUrl}
@@ -24,9 +22,7 @@
         </a>
       </div>
 
-      <!-- ── Main content: featured + grid ────────────────────── -->
       <div class="content-layout">
-        <!-- Featured product (left) -->
         <template if:true={featuredProduct}>
           <div class="featured-col">
             <article class="featured-card" data-pid={featuredProduct.id}>
@@ -52,7 +48,6 @@
                   </template>
                 </button>
 
-                <!-- Hover overlay for featured -->
                 <div class="card-overlay" aria-hidden="true">
                   <button
                     class="overlay-btn overlay-btn--look"
@@ -82,11 +77,18 @@
               >
                 {featuredProduct.name}
               </button>
+
+              <div class="score-logo-wrap">
+                <img
+                  src={scoreGuaranteeLogo}
+                  alt="Score Improvement Guarantee"
+                  class="score-logo"
+                />
+              </div>
             </article>
           </div>
         </template>
 
-        <!-- Product grid (right) -->
         <div class={gridClass}>
           <template for:each={gridProducts} for:item="product">
             <article key={product.id} class="grid-card">
@@ -110,7 +112,6 @@
                   </template>
                 </button>
 
-                <!-- Hover overlay for grid card -->
                 <div class="card-overlay" aria-hidden="true">
                   <button
                     class="overlay-btn overlay-btn--look"
@@ -144,25 +145,23 @@
           </template>
         </div>
       </div>
-      <!-- /content-layout --> </template
-    ><!-- /showProducts -->
 
-    <!-- ── Quick Shop Modal ─────────────────────────────────────── -->
-    <template if:true={isModalOpen}>
-      <c-quick-shop-modal
-        title={modalTitle}
-        isbn={modalIsbn}
-        book-image-url={modalImageUrl}
-        variation-pricing={modalVariationPricing}
-        currency-iso-code={modalCurrencyIsoCode}
-        minimum-quantity={modalMinimumQuantity}
-        maximum-quantity={modalMaximumQuantity}
-        increment-quantity={modalIncrementQuantity}
-        onaddtocart={handleAddToCart}
-        onviewdetails={handleViewDetails}
-        onclose={handleModalClose}
-      >
-      </c-quick-shop-modal>
+      <template if:true={isModalOpen}>
+        <c-quick-shop-modal
+          title={modalTitle}
+          isbn={modalIsbn}
+          book-image-url={modalImageUrl}
+          variation-pricing={modalVariationPricing}
+          currency-iso-code={modalCurrencyIsoCode}
+          minimum-quantity={modalMinimumQuantity}
+          maximum-quantity={modalMaximumQuantity}
+          increment-quantity={modalIncrementQuantity}
+          onaddtocart={handleAddToCart}
+          onviewdetails={handleViewDetails}
+          onclose={handleModalClose}
+        >
+        </c-quick-shop-modal>
+      </template>
     </template>
   </section>
 </template>

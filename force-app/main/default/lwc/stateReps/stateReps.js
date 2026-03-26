@@ -1,48 +1,89 @@
-import { LightningElement, track } from 'lwc';
-import repsAssets from '@salesforce/resourceUrl/abc_reps';
+import { LightningElement, track } from "lwc";
+import repsAssets from "@salesforce/resourceUrl/abc_reps";
 
-import phoneIcon from '@salesforce/resourceUrl/phoneIcon';
-import mailIcon from '@salesforce/resourceUrl/mailIcon';
+const STORAGE_KEY = "abc_selected_state";
+const ZIP_ROOT_FOLDER = "abc_reps";
+const RESULTS_SEG = "/global-search";
 
-const STORAGE_KEY = 'abc_selected_state';
-const ZIP_ROOT_FOLDER = 'abc_reps';
-const RESULTS_SEG = '/global-search';
-
-const DEFAULT_PHONE = '(888) 264-5877';
+const DEFAULT_PHONE = "(888) 264-5877";
 
 const STATES = new Set([
-  'Alabama','Alaska','Arizona','Arkansas','California','Colorado','Connecticut',
-  'Delaware','District of Columbia','Florida','Georgia','Hawaii','Idaho','Illinois',
-  'Indiana','Iowa','Kansas','Kentucky','Louisiana','Maine','Maryland','Massachusetts',
-  'Michigan','Minnesota','Mississippi','Missouri','Montana','Nebraska','Nevada',
-  'New Hampshire','New Jersey','New Mexico','New York','North Carolina','North Dakota',
-  'Ohio','Oklahoma','Oregon','Pennsylvania','Rhode Island','South Carolina','South Dakota',
-  'Tennessee','Texas','Utah','Vermont','Virginia','Washington','West Virginia','Wisconsin','Wyoming'
+  "Alabama",
+  "Alaska",
+  "Arizona",
+  "Arkansas",
+  "California",
+  "Colorado",
+  "Connecticut",
+  "Delaware",
+  "District of Columbia",
+  "Florida",
+  "Georgia",
+  "Hawaii",
+  "Idaho",
+  "Illinois",
+  "Indiana",
+  "Iowa",
+  "Kansas",
+  "Kentucky",
+  "Louisiana",
+  "Maine",
+  "Maryland",
+  "Massachusetts",
+  "Michigan",
+  "Minnesota",
+  "Mississippi",
+  "Missouri",
+  "Montana",
+  "Nebraska",
+  "Nevada",
+  "New Hampshire",
+  "New Jersey",
+  "New Mexico",
+  "New York",
+  "North Carolina",
+  "North Dakota",
+  "Ohio",
+  "Oklahoma",
+  "Oregon",
+  "Pennsylvania",
+  "Rhode Island",
+  "South Carolina",
+  "South Dakota",
+  "Tennessee",
+  "Texas",
+  "Utah",
+  "Vermont",
+  "Virginia",
+  "Washington",
+  "West Virginia",
+  "Wisconsin",
+  "Wyoming"
 ]);
 
 const FOLDER_OVERRIDES = {
-  'District of Columbia': 'districtof-columbia'
+  "District of Columbia": "districtof-columbia"
 };
 
 function stateToFolder(stateName) {
   if (FOLDER_OVERRIDES[stateName]) return FOLDER_OVERRIDES[stateName];
-  return (stateName || '').toLowerCase().trim().replace(/\s+/g, '-');
+  return (stateName || "").toLowerCase().trim().replace(/\s+/g, "-");
 }
 
 function toTelHref(phone) {
-  const digits = (phone || '').replace(/[^\d+]/g, '');
-  return digits ? `tel:${digits}` : 'javascript:void(0)';
+  const digits = (phone || "").replace(/[^\d+]/g, "");
+  return digits ? `tel:${digits}` : "#";
 }
 
 function decodeDeep(str) {
-  if (!str) return '';
+  if (!str) return "";
   let out = str;
   for (let i = 0; i < 3; i++) {
     try {
       const dec = decodeURIComponent(out);
       if (dec === out) break;
       out = dec;
-    } catch (e) {
+    } catch {
       break;
     }
   }
@@ -50,7 +91,7 @@ function decodeDeep(str) {
 }
 
 const PLACEHOLDER_SVG =
-  'data:image/svg+xml;utf8,' +
+  "data:image/svg+xml;utf8," +
   encodeURIComponent(`
 <svg xmlns="http://www.w3.org/2000/svg" width="92" height="92">
   <circle cx="46" cy="46" r="46" fill="#e6e8eb"/>
@@ -58,76 +99,231 @@ const PLACEHOLDER_SVG =
 </svg>
 `);
 
-const SHARED_ABC_LOGO_BASE = 'abc-sales-team';
+const SHARED_ABC_LOGO_BASE = "abc-sales-team";
 
 const REPS_BY_STATE = {
   Georgia: [
-    { key: 'ga-laura', name: 'Laura Riffle', title: 'Georgia Account Executive', phone: DEFAULT_PHONE, email: 'lriffle@americanbookcompany.com', imageBase: 'laura-riffle' },
-    { key: 'ga-dawn',  name: 'Dawn Bigby',  title: 'Georgia, Minnesota, & New Jersey Account Executive', phone: DEFAULT_PHONE, email: 'dbigby@americanbookcompany.com', imageBase: 'dawn-bigby' },
-    { key: 'ga-david', name: 'David Pintozzi', title: 'Georgia Account Executive', phone: DEFAULT_PHONE, email: 'djpintozzi@americanbookcompany.com', imageBase: 'david-pintozzi' }
+    {
+      key: "ga-laura",
+      name: "Laura Riffle",
+      title: "Georgia Account Executive",
+      phone: DEFAULT_PHONE,
+      email: "lriffle@americanbookcompany.com",
+      imageBase: "laura-riffle"
+    },
+    {
+      key: "ga-dawn",
+      name: "Dawn Bigby",
+      title: "Georgia, Minnesota, & New Jersey Account Executive",
+      phone: DEFAULT_PHONE,
+      email: "dbigby@americanbookcompany.com",
+      imageBase: "dawn-bigby"
+    },
+    {
+      key: "ga-david",
+      name: "David Pintozzi",
+      title: "Georgia Account Executive",
+      phone: DEFAULT_PHONE,
+      email: "djpintozzi@americanbookcompany.com",
+      imageBase: "david-pintozzi"
+    }
   ],
 
   Alabama: [
-    { key: 'al-danielle', name: 'Danielle Pintozzi', title: 'Alabama Account Executive', phone: DEFAULT_PHONE, email: 'drpintozzi@americanbookcompany.com', imageBase: 'danielle-pintozzi' },
-    { key: 'al-lindsey',  name: 'Lindsey Cohn', title: 'Alabama Account Executive', phone: DEFAULT_PHONE, email: 'lcohn@americanbookcompany.com', imageBase: 'lindsey-cohn' }
+    {
+      key: "al-danielle",
+      name: "Danielle Pintozzi",
+      title: "Alabama Account Executive",
+      phone: DEFAULT_PHONE,
+      email: "drpintozzi@americanbookcompany.com",
+      imageBase: "danielle-pintozzi"
+    },
+    {
+      key: "al-lindsey",
+      name: "Lindsey Cohn",
+      title: "Alabama Account Executive",
+      phone: DEFAULT_PHONE,
+      email: "lcohn@americanbookcompany.com",
+      imageBase: "lindsey-cohn"
+    }
   ],
 
   Arkansas: [
-    { key: 'ar-debbie', name: 'Debbie Price', title: 'Arkansas & Louisiana Account Executive', phone: DEFAULT_PHONE, email: 'dprice@americanbookcompany.com', imageBase: 'debbie-price' }
+    {
+      key: "ar-debbie",
+      name: "Debbie Price",
+      title: "Arkansas & Louisiana Account Executive",
+      phone: DEFAULT_PHONE,
+      email: "dprice@americanbookcompany.com",
+      imageBase: "debbie-price"
+    },
+    {
+      key: "ar-danielle",
+      name: "Danielle Pintozzi",
+      title: "Arkansas Account Executive",
+      phone: DEFAULT_PHONE,
+      email: "drpintozzi@americanbookcompany.com",
+      imageBase: "danielle-pintozzi"
+    }
   ],
 
   Louisiana: [
-    { key: 'la-debbie',  name: 'Debbie Price', title: 'Arkansas & Louisiana Account Executive', phone: DEFAULT_PHONE, email: 'dprice@americanbookcompany.com', imageBase: 'debbie-price' },
-    { key: 'la-michele', name: 'Michele Lantz', title: 'Senior Account Executive', phone: DEFAULT_PHONE, email: 'mlantz@americanbookcompany.com', imageBase: 'michele-lantz' }
-  ],
-
-  Arizona: [
-    { key: 'az-rodney', name: 'Rodney Adams', title: 'Senior Account Executive', phone: DEFAULT_PHONE, email: 'radams@americanbookcompany.com', imageBase: 'rodney-adams' }
+    {
+      key: "la-debbie",
+      name: "Debbie Price",
+      title: "Arkansas & Louisiana Account Executive",
+      phone: DEFAULT_PHONE,
+      email: "dprice@americanbookcompany.com",
+      imageBase: "debbie-price"
+    },
+    {
+      key: "la-michele",
+      name: "Michele Lantz",
+      title: "Senior Account Executive",
+      phone: DEFAULT_PHONE,
+      email: "mlantz@americanbookcompany.com",
+      imageBase: "michele-lantz"
+    }
   ],
 
   Kentucky: [
-    { key: 'ky-jenny', name: 'Jenny Gale', title: 'Senior Account Executive', phone: DEFAULT_PHONE, email: 'jgale@americanbookcompany.com', imageBase: 'jenny-gale' }
+    {
+      key: "ky-jenny",
+      name: "Jenny Gale",
+      title: "Senior Account Executive",
+      phone: DEFAULT_PHONE,
+      email: "jgale@americanbookcompany.com",
+      imageBase: "jenny-gale"
+    }
   ],
 
   Oklahoma: [
-    { key: 'ok-elizabeth', name: 'Elizabeth Hatfield', title: 'Oklahoma Account Executive', phone: DEFAULT_PHONE, email: 'elizabeth.hatfield@americanbookcompany.com', imageBase: 'elizabeth-hatfield' }
+    {
+      key: "ok-michele",
+      name: "Michele Lantz",
+      title: "Senior Account Executive",
+      phone: DEFAULT_PHONE,
+      email: "mlantz@americanbookcompany.com",
+      imageBase: "michele-lantz"
+    }
+  ],
+
+  Indiana: [
+    {
+      key: "in-laura",
+      name: "Laura Riffle",
+      title: "Indiana Account Executive",
+      phone: DEFAULT_PHONE,
+      email: "lriffle@americanbookcompany.com",
+      imageBase: "laura-riffle"
+    }
+  ],
+
+  Mississippi: [
+    {
+      key: "ms-jenny",
+      name: "Jenny Gale",
+      title: "Senior Account Executive",
+      phone: DEFAULT_PHONE,
+      email: "jgale@americanbookcompany.com",
+      imageBase: "jenny-gale"
+    }
+  ],
+
+  Tennessee: [
+    {
+      key: "tn-jenny",
+      name: "Jenny Gale",
+      title: "Senior Account Executive",
+      phone: DEFAULT_PHONE,
+      email: "jgale@americanbookcompany.com",
+      imageBase: "jenny-gale"
+    }
+  ],
+
+  "District of Columbia": [
+    {
+      key: "dc-rodney",
+      name: "Rodney Adams",
+      title: "Senior Account Executive",
+      phone: DEFAULT_PHONE,
+      email: "radams@americanbookcompany.com",
+      imageBase: "rodney-adams"
+    }
   ],
 
   Virginia: [
-    { key: 'va-derek', name: 'Derek Pintozzi', title: 'Virginia Account Executive', phone: DEFAULT_PHONE, email: 'pintozzi@americanbookcompany.com', imageBase: 'derek-pintozzi' }
+    {
+      key: "va-derek",
+      name: "Derek Pintozzi",
+      title: "Virginia Account Executive",
+      phone: DEFAULT_PHONE,
+      email: "pintozzi@americanbookcompany.com",
+      imageBase: "derek-pintozzi"
+    }
   ],
 
-  'North Carolina': [
-    { key: 'nc-glenn', name: 'Glenn Davenport', title: 'North & South Carolina Account Executive', phone: DEFAULT_PHONE, email: 'gdavenport@americanbookcompany.com', imageBase: 'glenn-davenport' }
+  "North Carolina": [
+    {
+      key: "nc-glenn",
+      name: "Glenn Davenport",
+      title: "North & South Carolina Account Executive",
+      phone: DEFAULT_PHONE,
+      email: "gdavenport@americanbookcompany.com",
+      imageBase: "glenn-davenport"
+    }
   ],
 
-  'South Carolina': [
-    { key: 'sc-glenn', name: 'Glenn Davenport', title: 'North & South Carolina Account Executive', phone: DEFAULT_PHONE, email: 'gdavenport@americanbookcompany.com', imageBase: 'glenn-davenport' }
+  "South Carolina": [
+    {
+      key: "sc-glenn",
+      name: "Glenn Davenport",
+      title: "North & South Carolina Account Executive",
+      phone: DEFAULT_PHONE,
+      email: "gdavenport@americanbookcompany.com",
+      imageBase: "glenn-davenport"
+    }
   ],
 
   Minnesota: [
-    { key: 'mn-dawn', name: 'Dawn Bigby', title: 'Georgia, Minnesota, & New Jersey Account Executive', phone: DEFAULT_PHONE, email: 'dbigby@americanbookcompany.com', imageBase: 'dawn-bigby' }
+    {
+      key: "mn-dawn",
+      name: "Dawn Bigby",
+      title: "Georgia, Minnesota, & New Jersey Account Executive",
+      phone: DEFAULT_PHONE,
+      email: "dbigby@americanbookcompany.com",
+      imageBase: "dawn-bigby"
+    }
   ],
 
-  'New Jersey': [
-    { key: 'nj-dawn', name: 'Dawn Bigby', title: 'Georgia, Minnesota, & New Jersey Account Executive', phone: DEFAULT_PHONE, email: 'dbigby@americanbookcompany.com', imageBase: 'dawn-bigby' }
+  "New Jersey": [
+    {
+      key: "nj-dawn",
+      name: "Dawn Bigby",
+      title: "Georgia, Minnesota, & New Jersey Account Executive",
+      phone: DEFAULT_PHONE,
+      email: "dbigby@americanbookcompany.com",
+      imageBase: "dawn-bigby"
+    }
   ]
 };
 
 function defaultTeamRep() {
-  return [{
-    key: 'abc-sales-team',
-    name: 'ABC Sales Team',
-    title: 'Sales and Customer Service',
-    phone: DEFAULT_PHONE,
-    email: 'contact@americanbookcompany.com',
-    imageBase: SHARED_ABC_LOGO_BASE,
-    forceShared: true
-  }];
+  return [
+    {
+      key: "abc-sales-team",
+      name: "ABC Sales Team",
+      title: "Sales and Customer Service",
+      phone: DEFAULT_PHONE,
+      email: "contact@americanbookcompany.com",
+      imageBase: SHARED_ABC_LOGO_BASE,
+      forceShared: true
+    }
+  ];
 }
 
 function buildUrl({ folder, base, ext, forceShared }) {
-  const safeExt = ext || 'webp';
+  const safeExt = ext || "webp";
 
   if (forceShared) {
     return `${repsAssets}/${ZIP_ROOT_FOLDER}/shared/${base}.${safeExt}`;
@@ -136,19 +332,17 @@ function buildUrl({ folder, base, ext, forceShared }) {
 }
 
 export default class StateReps extends LightningElement {
-
-  phoneIcon = phoneIcon;
-  mailIcon = mailIcon;
-  @track selectedState = '';
+  @track selectedState = "";
   @track reps = [];
 
   _watchId;
-  _lastHref = '';
+  _lastHref = "";
 
   connectedCallback() {
     this._lastHref = window.location.href;
     this.updateFromUrl();
 
+    // eslint-disable-next-line @lwc/lwc/no-async-operation
     this._watchId = window.setInterval(() => {
       const href = window.location.href;
       if (href !== this._lastHref) {
@@ -169,15 +363,15 @@ export default class StateReps extends LightningElement {
 
   getStoredState() {
     try {
-      const v = window.localStorage.getItem(STORAGE_KEY) || '';
-      return STATES.has(v) ? v : '';
-    } catch (e) {
-      return '';
+      const v = window.localStorage.getItem(STORAGE_KEY) || "";
+      return STATES.has(v) ? v : "";
+    } catch {
+      return "";
     }
   }
 
   isHomePage(url) {
-    const parts = (url.pathname || '').split('/').filter(Boolean);
+    const parts = (url.pathname || "").split("/").filter(Boolean);
     return parts.length <= 1;
   }
 
@@ -192,59 +386,61 @@ export default class StateReps extends LightningElement {
     const fromParams = this.getStateFromParams(url);
     if (fromParams) return fromParams;
 
-    if ((url.pathname || '').includes(RESULTS_SEG)) {
-      const kw = this.getResultsKeyword(url);
-      if (kw && kw.toLowerCase() !== 'all' && STATES.has(kw)) return kw;
-      return '';
+    if ((url.pathname || "").includes(RESULTS_SEG)) {
+      return "Georgia";
     }
 
-    const hashState = decodeURIComponent((url.hash || '').replace('#', '').trim());
-    const validHashState = STATES.has(hashState) ? hashState : '';
+    const hashState = decodeURIComponent(
+      (url.hash || "").replace("#", "").trim()
+    );
+    const validHashState = STATES.has(hashState) ? hashState : "";
     const storedState = this.getStoredState();
 
-    // Home par default Georgia
     if (this.isHomePage(url)) {
-      return validHashState || 'Georgia';
+      return validHashState || "Georgia";
     }
 
-    // Product / other pages par storage ko prefer karo
-    return storedState || validHashState || 'Georgia';
+    return storedState || validHashState || "Georgia";
   }
 
   getResultsKeyword(url) {
-    const idx = (url.pathname || '').indexOf(RESULTS_SEG);
-    if (idx === -1) return '';
-    const after = (url.pathname || '').slice(idx + RESULTS_SEG.length).replace(/^\/+/, '');
-    const seg = (after.split('/')[0] || '').trim();
+    const idx = (url.pathname || "").indexOf(RESULTS_SEG);
+    if (idx === -1) return "";
+    const after = (url.pathname || "")
+      .slice(idx + RESULTS_SEG.length)
+      .replace(/^\/+/, "");
+    const seg = (after.split("/")[0] || "").trim();
     return decodeURIComponent(seg);
   }
 
   getStateFromParams(url) {
     try {
-      const refinementsRaw = url.searchParams.get('refinements');
+      const refinementsRaw = url.searchParams.get("refinements");
       if (refinementsRaw) {
         const jsonStr = decodeDeep(refinementsRaw);
         const list = JSON.parse(jsonStr);
         const entry = Array.isArray(list)
-          ? list.find((r) => r && r.nameOrId === 'State__c')
+          ? list.find((r) => r && r.nameOrId === "State__c")
           : null;
         if (entry && Array.isArray(entry.values) && entry.values.length) {
           const v = entry.values[0];
-          return STATES.has(v) ? v : '';
+          return STATES.has(v) ? v : "";
         }
       }
 
-      const singleRef = url.searchParams.get('refinement');
+      const singleRef = url.searchParams.get("refinement");
       if (singleRef) {
         const decoded = decodeDeep(singleRef);
-        const prefix = 'State__c:';
+        const prefix = "State__c:";
         if (decoded.startsWith(prefix)) {
           const v = decoded.substring(prefix.length);
-          return STATES.has(v) ? v : '';
+          return STATES.has(v) ? v : "";
         }
       }
-    } catch (e) {}
-    return '';
+    } catch {
+      // ignore
+    }
+    return "";
   }
 
   buildReps(state) {
@@ -252,14 +448,20 @@ export default class StateReps extends LightningElement {
 
     const folder = stateToFolder(state);
 
-    const list = (REPS_BY_STATE[state] && REPS_BY_STATE[state].length)
-      ? REPS_BY_STATE[state]
-      : defaultTeamRep();
+    const list =
+      REPS_BY_STATE[state] && REPS_BY_STATE[state].length
+        ? REPS_BY_STATE[state]
+        : defaultTeamRep();
 
     return list.map((r) => {
       const forceShared = !!r.forceShared;
       const imageBase = r.imageBase;
-      const imageUrl = buildUrl({ folder, base: imageBase, ext: 'webp', forceShared });
+      const imageUrl = buildUrl({
+        folder,
+        base: imageBase,
+        ext: "webp",
+        forceShared
+      });
 
       return {
         ...r,
@@ -268,7 +470,7 @@ export default class StateReps extends LightningElement {
         forceShared,
         imageUrl,
         telHref: toTelHref(r.phone),
-        mailHref: r.email ? `mailto:${r.email}` : 'javascript:void(0)'
+        mailHref: r.email ? `mailto:${r.email}` : "#"
       };
     });
   }
@@ -277,9 +479,9 @@ export default class StateReps extends LightningElement {
     const img = event.target;
     const folder = img.dataset.statefolder;
     const base = img.dataset.imagebase;
-    const forceShared = img.dataset.forceshared === 'true';
+    const forceShared = img.dataset.forceshared === "true";
 
-    let t = Number(img.dataset.try || '0');
+    let t = Number(img.dataset.try || "0");
     t += 1;
     img.dataset.try = String(t);
 

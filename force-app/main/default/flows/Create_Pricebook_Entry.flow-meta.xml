@@ -1,9 +1,10 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <Flow xmlns="http://soap.sforce.com/2006/04/metadata">
     <apiVersion>65.0</apiVersion>
     <areMetricsLoggedToDataCloud>false</areMetricsLoggedToDataCloud>
     <environments>Default</environments>
-    <interviewLabel>Create Pricebook Entry {!$Flow.CurrentDateTime}</interviewLabel>
+    <interviewLabel
+  >Create Pricebook Entry {!$Flow.CurrentDateTime}</interviewLabel>
     <label>Create Pricebook Entry</label>
     <loops>
         <name>Loop_through_Priceboook</name>
@@ -81,7 +82,8 @@
         <label>Get Standard Pricebook</label>
         <locationX>0</locationX>
         <locationY>0</locationY>
-        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <assignNullValuesIfNoRecordsFound
+    >false</assignNullValuesIfNoRecordsFound>
         <connector>
             <targetReference>Loop_through_Priceboook</targetReference>
         </connector>
@@ -115,5 +117,5 @@
         <recordTriggerType>CreateAndUpdate</recordTriggerType>
         <triggerType>RecordAfterSave</triggerType>
     </start>
-    <status>Draft</status>
+    <status>Active</status>
 </Flow>

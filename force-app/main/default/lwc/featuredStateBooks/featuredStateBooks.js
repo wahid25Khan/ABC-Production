@@ -1,5 +1,6 @@
 import { LightningElement, api } from "lwc";
 import getVariationPricing from "@salesforce/apex/ProductVariationController.getVariationPricing";
+import SCORE_GUARANTEE from "@salesforce/resourceUrl/ScoreGuarantee";
 
 const DEFAULT_STORE_NAME = "AmericanBookCompany";
 const DEFAULT_WEBSTORE_ID = "0ZEam000004dJDNGA2";
@@ -25,6 +26,8 @@ export default class FeaturedStateBooks extends LightningElement {
   isModalOpen = false;
   modalProduct = null;
   modalVariationPricing = null;
+
+  scoreGuaranteeLogo = SCORE_GUARANTEE;
 
   connectedCallback() {
     this.initialize();
@@ -91,8 +94,9 @@ export default class FeaturedStateBooks extends LightningElement {
   get modalMaximumQuantity() {
     const rule = this.modalProduct?.purchaseQuantityRule;
     const ruleMax = rule?.maximum ?? rule?.Maximum ?? null;
-    if (Number.isFinite(ruleMax) && ruleMax > 0 && ruleMax <= 9999)
+    if (Number.isFinite(ruleMax) && ruleMax > 0 && ruleMax <= 9999) {
       return ruleMax;
+    }
     return 50;
   }
 
@@ -559,6 +563,9 @@ export default class FeaturedStateBooks extends LightningElement {
     const added = await this.addProductToCart(productId, quantity);
     if (added) {
       this.handleModalClose();
+      globalThis.window.location.href = `/${
+        this.storeName || DEFAULT_STORE_NAME
+      }/cart`;
     }
   }
 

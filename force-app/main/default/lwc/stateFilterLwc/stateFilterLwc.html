@@ -4,24 +4,37 @@
       class="control"
       type="button"
       aria-haspopup="listbox"
-      aria-expanded={isOpen}
       aria-label="Select State"
-      onclick={toggleOpen}>
-      <span class={valueClass}>{displayValue}</span>
+      onclick={toggleOpen}
+    >
+      <span class="pin" aria-hidden="true">
+        <svg
+          viewBox="0 0 24 24"
+          class="pinIcon"
+          focusable="false"
+          aria-hidden="true"
+        >
+          <path
+            d="M12 2.5c-3.86 0-7 3.14-7 7 0 5.16 5.95 11.26 6.2 11.52a1.13 1.13 0 0 0 1.6 0C13.05 20.76 19 14.66 19 9.5c0-3.86-3.14-7-7-7Zm0 9.5a2.5 2.5 0 1 1 0-5 2.5 2.5 0 0 1 0 5Z"
+          ></path>
+        </svg>
+      </span>
+      <span class={valueClass}>{displayShortValue}</span>
       <span class="chev" aria-hidden="true"></span>
     </button>
 
-    <div if:true={isOpen} class="menu" role="listbox">
+    <div if:true={isOpen} class="menu">
       <div class="menuInner">
         <template for:each={optionList} for:item="opt">
-          <div
+          <button
+            type="button"
             key={opt.value}
             class={opt.className}
             data-value={opt.value}
             onclick={handleSelect}
-            role="option">
+          >
             {opt.label}
-          </div>
+          </button>
         </template>
       </div>
     </div>

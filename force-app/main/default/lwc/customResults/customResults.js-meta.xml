@@ -55,7 +55,7 @@
         name="searchFieldApiNames"
         type="String"
         label="Additional Search Fields (comma separated)"
-        default="StockKeepingUnit,Price__c,CurrencyIsoCode"
+        default="StockKeepingUnit,Price__c,Color_Price__c,Color_Price_25__c,BW_Price__c,BW_Price_25__c,CurrencyIsoCode"
       />
 
       <property

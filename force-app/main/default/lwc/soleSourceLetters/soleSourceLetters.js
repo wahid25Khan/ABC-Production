@@ -1,24 +1,30 @@
-import { LightningElement } from 'lwc';
-import PDF_ICON_URL from '@salesforce/resourceUrl/pdf_icon'; 
-import DOC_ICON_URL from '@salesforce/resourceUrl/doc_icon';
+import { LightningElement } from "lwc";
+import CERT0 from "@salesforce/resourceUrl/CertificationImage0";
+import CERT1 from "@salesforce/resourceUrl/CertificationImage1";
+import CERT2 from "@salesforce/resourceUrl/CertificationImage2";
+import CERT3 from "@salesforce/resourceUrl/CertificationImage3";
+import CERT4 from "@salesforce/resourceUrl/CertificationImage4";
+import CERT5 from "@salesforce/resourceUrl/CertificationImage5";
 
-export default class SoleSourceLetters extends LightningElement {
-    pdfIcon = PDF_ICON_URL; 
-    docIcon = DOC_ICON_URL;
+export default class UpdatedComponent extends LightningElement {
+  cert0 = CERT0;
+  cert1 = CERT1;
+  cert2 = CERT2;
+  cert3 = CERT3;
+  cert4 = CERT4;
+  cert5 = CERT5;
 
-    stateLetters = [
-        { id: 1, name: 'All', url: 'https://cms-assets.americanbookcompany.com/sole_source_letters/all.state.source.letter.021726.pdf' },
-        { id: 2, name: 'Alabama', url: 'https://cms-assets.americanbookcompany.com/sole_source_letters/al.source.letter.021726.pdf' },
-        { id: 3, name: 'Arkansas', url: 'https://cms-assets.americanbookcompany.com/sole_source_letters/ar.source.letter.103125.pdf' },
-        { id: 4, name: 'Georgia', url: 'https://cms-assets.americanbookcompany.com/sole_source_letters/ga.source.letter.103125.pdf' },
-        { id: 5, name: 'Kentucky', url: 'https://cms-assets.americanbookcompany.com/sole_source_letters/ky.source.letter.110325.pdf' },
-        { id: 6, name: 'Louisiana', url: 'https://cms-assets.americanbookcompany.com/sole_source_letters/la.source.letter.110325.pdf' },
-        { id: 7, name: 'Minnesota', url: 'https://cms-assets.americanbookcompany.com/sole_source_letters/mn.source.letter.110425.pdf' },
-        { id: 8, name: 'North Carolina', url: 'https://cms-assets.americanbookcompany.com/sole_source_letters/nc.source.letter.102125.pdf' },
-        { id: 9, name: 'New Mexico', url: 'https://cms-assets.americanbookcompany.com/sole_source_letters/nm.source.letter.110425.pdf' },
-        { id: 10, name: 'Oklahoma', url: 'https://cms-assets.americanbookcompany.com/sole_source_letters/ok.source.letter.110425.pdf' },
-        { id: 11, name: 'South Carolina', url: 'https://cms-assets.americanbookcompany.com/sole_source_letters/sc.source.letter.102825v2.pdf' },
-        { id: 12, name: 'Tennessee', url: 'https://cms-assets.americanbookcompany.com/sole_source_letters/tn.source.letter.110425.pdf' },
-        { id: 13, name: 'Virginia', url: 'https://cms-assets.americanbookcompany.com/sole_source_letters/va.source.letter.123125.pdf' }
-    ];
+  links = {
+    vpat: "https://americanbookcompany.com/American-Book-Company-Accessibility-Conformance-Report.pdf",
+    validationStudyPdf:
+      "https://americanbookcompany.com/A-Validation-Study-of-ABC-Final.pdf",
+    validationStudyDoc:
+      "https://view.officeapps.live.com/op/view.aspx?src=https%3A%2F%2Famericanbookcompany.com%2FA-Validation-Study-of-ABC-Final.doc&wdOrigin=BROWSELINK",
+    instructureReport:
+      "https://americanbookcompany.com/ABC-ESSA-Level-IV-Report.pdf",
+    certSecurity:
+      "https://americanbookcompany.com/docs/Certificate-of-Security.pdf",
+    securityAssessment:
+      "https://americanbookcompany.com/docs/Security-Assessment-Public-Report.pdf"
+  };
 }

@@ -92,7 +92,7 @@ export default class ProductDetailComponent extends LightningElement {
   }
 
   get selectedUnitPrice() {
-    return this.selectedVariation?.unitPrice ?? null;
+    return this.resolveUnitPriceForQuantity(this.quantity);
   }
 
   get selectedProductId() {
@@ -117,6 +117,11 @@ export default class ProductDetailComponent extends LightningElement {
   }
 
   get minQty() {
+    const variationMin = this.parsePositiveInteger(
+      this.selectedVariation?.minimumQuantity
+    );
+    if (variationMin !== null) return variationMin;
+
     const rule = this.product?.purchaseQuantityRule;
     const ruleMin = rule?.minimum ?? rule?.Minimum ?? null;
     if (Number.isFinite(ruleMin) && ruleMin > 0) return ruleMin;
@@ -126,6 +131,13 @@ export default class ProductDetailComponent extends LightningElement {
 
   // Upper bound: ignore values > 9999 which indicate "no maximum" in Salesforce (e.g. 100,000,000)
   get maxQty() {
+    const variationMax = this.parsePositiveInteger(
+      this.selectedVariation?.maximumQuantity
+    );
+    if (variationMax !== null && variationMax <= 9999) {
+      return variationMax;
+    }
+
     const rule = this.product?.purchaseQuantityRule;
     const ruleMax = rule?.maximum ?? rule?.Maximum ?? null;
     if (Number.isFinite(ruleMax) && ruleMax > 0 && ruleMax <= 9999)
@@ -134,6 +146,11 @@ export default class ProductDetailComponent extends LightningElement {
   }
 
   get incrementQty() {
+    const variationIncrement = this.parsePositiveInteger(
+      this.selectedVariation?.incrementQuantity
+    );
+    if (variationIncrement !== null) return variationIncrement;
+
     const rule = this.product?.purchaseQuantityRule;
     const ruleInc = rule?.increment ?? rule?.Increment ?? null;
     if (Number.isFinite(ruleInc) && ruleInc > 0) return ruleInc;
@@ -487,7 +504,43 @@ export default class ProductDetailComponent extends LightningElement {
       index < this.variationsList.length
     ) {
       this.selectedVariationIndex = index;
+      this.quantity = this.minQty;
     }
+  }
+
+  parsePositiveInteger(value) {
+    const parsed = Number.parseInt(value, 10);
+    return Number.isFinite(parsed) && parsed > 0 ? parsed : null;
+  }
+
+  resolveUnitPriceForQuantity(quantity) {
+    const variation = this.selectedVariation;
+    if (!variation) {
+      return null;
+    }
+
+    const tiers = variation.tiers;
+    const fallbackPrice = this.toNumber(variation.unitPrice);
+    if (!tiers?.length) {
+      return fallbackPrice;
+    }
+
+    const qty = this.parsePositiveInteger(quantity) ?? this.minQty;
+    for (const tier of tiers) {
+      const lower = this.toNumber(tier?.lowerBound);
+      const upper = this.toNumber(tier?.upperBound);
+      const price = this.toNumber(tier?.price);
+
+      if (price === null || lower === null) {
+        continue;
+      }
+
+      if (qty >= lower && (upper === null || qty <= upper)) {
+        return price;
+      }
+    }
+
+    return fallbackPrice;
   }
 
   get isMinQty() {
@@ -558,6 +611,10 @@ export default class ProductDetailComponent extends LightningElement {
         }
       })
     );
+
+    if (added) {
+      globalThis.window.location.href = `/${this.storeName || DEFAULT_STORE_NAME}/cart`;
+    }
   }
 
   async addProductToCart(productId, quantity) {
