@@ -100,10 +100,14 @@ public without sharing class ProductVariationController {
         tier1.price = fmt.Unit_Price__c;
         vp.tiers.add(tier1);
 
-        // Tier 2: bulk threshold onward (null upperBound = no maximum)
+        // Tier 2: bulk threshold onward
+        // upperBound is null (or >9999 sentinel) → no real max → send as null
         TierInfo tier2 = new TierInfo();
         tier2.lowerBound = fmt.Bulk_Threshold__c;
-        tier2.upperBound = fmt.Max_Quantity__c;
+        tier2.upperBound = (fmt.Max_Quantity__c != null &&
+          fmt.Max_Quantity__c <= 9999)
+          ? fmt.Max_Quantity__c
+          : null;
         tier2.price = fmt.Bulk_Price__c;
         vp.tiers.add(tier2);
       }

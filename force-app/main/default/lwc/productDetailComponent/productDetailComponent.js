@@ -105,7 +105,7 @@ export default class ProductDetailComponent extends LightningElement {
     return tiers.map((tier, index) => ({
       key: `tier-${index}`,
       qtyLabel:
-        tier.upperBound != null && tier.upperBound < 99999
+        tier.upperBound != null
           ? `${tier.lowerBound}\u2013${tier.upperBound}`
           : `${tier.lowerBound}+`,
       formattedPrice: this.formatPrice(tier.price),
