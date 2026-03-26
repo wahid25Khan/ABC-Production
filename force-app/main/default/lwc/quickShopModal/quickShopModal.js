@@ -64,9 +64,10 @@ export default class QuickShopModal extends LightningElement {
     if (!tiers?.length) return [];
     return tiers.map((tier, index) => ({
       key: `tier-${index}`,
-      qtyLabel: tier.upperBound
-        ? `${tier.lowerBound}-${tier.upperBound}`
-        : `${tier.lowerBound}+`,
+      qtyLabel:
+        tier.upperBound != null && tier.upperBound < 99999
+          ? `${tier.lowerBound}\u2013${tier.upperBound}`
+          : `${tier.lowerBound}+`,
       formattedPrice: this.formatPrice(tier.price),
       priceClass: `td price${index > 0 ? " price-red" : ""}`
     }));
@@ -159,14 +160,12 @@ export default class QuickShopModal extends LightningElement {
     return this.isFavorite ? "utility:favorite" : "utility:favorite_alt";
   }
 
-  // Live order total: unitPrice × (qty / increment)
-  // e.g. $41 unit price, increment=10, qty=20 → 41 × (20/10) = $82
+  // Live order total: current tier unit price × total quantity
   get totalPrice() {
     const unit = this.selectedUnitPrice;
     const qty = Number(this.quantity) || this.minQty;
-    const inc = this.incrementQty;
-    if (!unit || !inc) return "";
-    return this.formatPrice(unit * (qty / inc));
+    if (!unit || !qty) return "";
+    return this.formatPrice(unit * qty);
   }
 
   // ---------- open/close ----------

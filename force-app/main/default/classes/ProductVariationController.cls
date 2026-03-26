@@ -100,12 +100,10 @@ public without sharing class ProductVariationController {
         tier1.price = fmt.Unit_Price__c;
         vp.tiers.add(tier1);
 
-        // Tier 2: bulk threshold onward
+        // Tier 2: bulk threshold onward (null upperBound = no maximum)
         TierInfo tier2 = new TierInfo();
         tier2.lowerBound = fmt.Bulk_Threshold__c;
-        tier2.upperBound = fmt.Max_Quantity__c != null
-          ? fmt.Max_Quantity__c
-          : 99999;
+        tier2.upperBound = fmt.Max_Quantity__c;
         tier2.price = fmt.Bulk_Price__c;
         vp.tiers.add(tier2);
       }
