@@ -1,0 +1,51 @@
+{
+  "type": "sfdc_cms__themeLayout",
+  "title": "Commerce Layout",
+  "contentBody": {
+    "component": {
+      "children": [
+        {
+          "attributes": {
+            "dxpStyle": {
+              "padding": {
+                "bottom": "8%",
+                "left": "8%",
+                "right": "8%",
+                "top": "3%"
+              }
+            }
+          },
+          "id": "b77e224e-d087-4694-911c-f7788e4a1c4e"
+        },
+        {
+          "id": "bf9e43ef-6bcd-4192-add1-95d16f031721",
+          "attributes": {
+            "columnVerticalAlign": "center",
+            "dxpStyle": {
+              "isVisible": false
+            }
+          }
+        },
+        {
+          "id": "74943556-03e4-4a04-97ef-acb5dab27cf9",
+          "attributes": {
+            "columnVerticalAlign": "center",
+            "dxpStyle": {
+              "isVisible": true
+            }
+          }
+        },
+        {
+          "id": "5bd60430-0572-443a-bc6c-4ddfe166ce85",
+          "attributes": {
+            "columnVerticalAlign": "center",
+            "dxpStyle": {
+              "isVisible": true
+            }
+          }
+        }
+      ]
+    }
+  },
+  "urlName": "commerce-layout"
+}

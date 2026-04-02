@@ -1,0 +1,414 @@
+{
+  "type": "sfdc_cms__themeLayout",
+  "title": "Commerce Layout",
+  "contentBody": {
+    "component": {
+      "attributes": {},
+      "children": [
+        {
+          "children": [
+            {
+              "attributes": {
+                "columnGutterWidth": "",
+                "columnMinHeight": "",
+                "columnVerticalAlign": "flex-start",
+                "dxpStyle": {},
+                "layoutDirectionDesktop": "row",
+                "layoutDirectionMobile": "row",
+                "layoutDirectionTablet": "row",
+                "sectionConfig": "{\"UUID\":\"74943556-03e4-4a04-97ef-acb5dab27cf9\",\"columns\":[{\"UUID\":\"7191c24b-6602-489a-82d9-0212b14d5f4d\",\"columnName\":\"Column 1\",\"columnKey\":\"748ca\",\"columnWidth\":\"12\",\"seedComponents\":[]}]}"
+              },
+              "children": [
+                {
+                  "children": [
+                    {
+                      "attributes": {
+                        "alignment": "left",
+                        "dxpStyle": {},
+                        "navigationMenuEditor": "Default_Navigation1",
+                        "showBackLabel": true,
+                        "showHomeLink": false
+                      },
+                      "definition": "commerce_builder:drilldownNavigation",
+                      "id": "0bd092ad-312a-4ba7-8e8d-084d3d08659f",
+                      "type": "component"
+                    }
+                  ],
+                  "id": "7191c24b-6602-489a-82d9-0212b14d5f4d",
+                  "name": "748ca",
+                  "title": "Column 1",
+                  "type": "region"
+                }
+              ],
+              "customCssClasses": "back-white abc-header-nav-row",
+              "definition": "dxp_layout:columns",
+              "id": "74943556-03e4-4a04-97ef-acb5dab27cf9",
+              "type": "component"
+            },
+            {
+              "attributes": {
+                "columnGutterWidth": "",
+                "columnMinHeight": "",
+                "columnVerticalAlign": "center",
+                "dxpStyle": {},
+                "layoutDirectionDesktop": "row",
+                "layoutDirectionMobile": "row",
+                "layoutDirectionTablet": "row",
+                "sectionConfig": "{\"UUID\":\"5bd60430-0572-443a-bc6c-4ddfe166ce85\",\"columns\":[{\"UUID\":\"832987d6-40f5-4bf5-bbd9-842c9fedf1a3\",\"columnName\":\"Column 1\",\"columnKey\":\"col1\",\"columnWidth\":\"2\",\"seedComponents\":[]},{\"UUID\":\"2e71a9c5-1834-4933-8ac5-31c10404a7dd\",\"columnName\":\"Column 2\",\"columnKey\":\"44e1c\",\"columnWidth\":\"2\",\"seedComponents\":[]},{\"UUID\":\"5804c0d8-ce10-4f80-aba4-177a13c88771\",\"columnName\":\"Column 3\",\"columnKey\":\"7ead1\",\"columnWidth\":\"5\",\"seedComponents\":[]},{\"UUID\":\"28615e70-dae8-4295-986e-9cd7334b7060\",\"columnName\":\"Column 4\",\"columnKey\":\"07845\",\"columnWidth\":\"3\",\"seedComponents\":[]}]}"
+              },
+              "children": [
+                {
+                  "children": [
+                    {
+                      "attributes": {
+                        "alignment": "left",
+                        "dxpStyle": {
+                          "margin": {
+                            "bottom": "",
+                            "left": "0px",
+                            "right": "",
+                            "top": ""
+                          },
+                          "padding": {
+                            "bottom": "0px",
+                            "left": "",
+                            "right": "",
+                            "top": ""
+                          }
+                        },
+                        "imageInfo": "",
+                        "imageInfoMobile": "",
+                        "logoWidth": 250
+                      },
+                      "definition": "dxp_content_layout:siteLogo",
+                      "id": "10833b82-5984-4314-a8c0-840a7b324eed",
+                      "type": "component"
+                    }
+                  ],
+                  "id": "832987d6-40f5-4bf5-bbd9-842c9fedf1a3",
+                  "name": "col1",
+                  "title": "Column 1",
+                  "type": "region"
+                },
+                {
+                  "children": [
+                    {
+                      "attributes": {
+                        "dxpStyle": {
+                          "margin": {
+                            "bottom": "",
+                            "left": "",
+                            "right": "",
+                            "top": ""
+                          }
+                        }
+                      },
+                      "definition": "c:stateFilterLwc",
+                      "id": "b8f41619-43f4-42ca-8c84-8b8c3b64eb7c",
+                      "type": "component"
+                    }
+                  ],
+                  "id": "2e71a9c5-1834-4933-8ac5-31c10404a7dd",
+                  "name": "44e1c",
+                  "title": "Column 2",
+                  "type": "region"
+                },
+                {
+                  "children": [
+                    {
+                      "attributes": {
+                        "bestSellerHeaderText": "Bestsellers",
+                        "borderRadius": 50,
+                        "dxpStyle": {
+                          "margin": {
+                            "bottom": "",
+                            "left": "",
+                            "right": "",
+                            "top": ""
+                          }
+                        },
+                        "enableProductSuggestions": false,
+                        "enableSearchSuggestions": false,
+                        "placeholderText": "Search",
+                        "recentSearchHeaderText": "",
+                        "suggestedProductsHeaderText": "Suggested products",
+                        "suggestedSearchesHeaderText": ""
+                      },
+                      "definition": "commerce_builder:searchInputContainer",
+                      "id": "d9bd6b62-9bee-4f79-b601-7dab1296457a",
+                      "type": "component"
+                    }
+                  ],
+                  "id": "5804c0d8-ce10-4f80-aba4-177a13c88771",
+                  "name": "7ead1",
+                  "title": "Column 3",
+                  "type": "region"
+                },
+                {
+                  "children": [
+                    {
+                      "attributes": {
+                        "checkoutButtonSize": "large",
+                        "checkoutButtonText": "Checkout",
+                        "continueShoppingButtonSize": "standard",
+                        "continueShoppingButtonText": "Continue Shopping",
+                        "countType": "TotalProductCount",
+                        "dxp:dataProviders": [
+                          {
+                            "componentAttributes": {
+                              "recommendationSettings": "{\"anchor\": \"productCart\", \"recommender\": \"CustomersWhoBoughtAlsoBought\"}",
+                              "sfdcExpressionKey": "Recommendation"
+                            },
+                            "componentName": "commerce_data_provider:einsteinRecommendationsDataProvider",
+                            "expressionKey": "Recommendation"
+                          }
+                        ],
+                        "dxpStyle": {
+                          "margin": {
+                            "bottom": "",
+                            "left": "",
+                            "right": "",
+                            "top": ""
+                          }
+                        },
+                        "headerText": "My Cart",
+                        "paymentMethodSetId": "",
+                        "recommendationHeaderText": "You May Also Like",
+                        "recommendationPriceDisplayType": "displayAllPrices",
+                        "showContinueShoppingButton": true,
+                        "showCount": false,
+                        "showExpressCheckoutButton": false,
+                        "showMiniCart": true,
+                        "showMiniCartProperties": true,
+                        "showRecommendation": false,
+                        "showViewCartButton": true,
+                        "useManualCapture": true,
+                        "viewCartButtonSize": "large",
+                        "viewCartButtonText": "View Cart"
+                      },
+                      "customCssClasses": "",
+                      "definition": "commerce_builder:cartBadge",
+                      "id": "e48e22c1-b44a-47f4-8b41-c720e4aa4f8e",
+                      "type": "component"
+                    }
+                  ],
+                  "id": "28615e70-dae8-4295-986e-9cd7334b7060",
+                  "name": "07845",
+                  "title": "Column 4",
+                  "type": "region"
+                }
+              ],
+              "customCssClasses": "back-white abc-header-utility-row",
+              "definition": "dxp_layout:columns",
+              "id": "5bd60430-0572-443a-bc6c-4ddfe166ce85",
+              "type": "component"
+            }
+          ],
+          "id": "05a4561e-654c-427b-97ab-e32cf30977aa",
+          "name": "header",
+          "title": "Header",
+          "type": "region"
+        },
+        {
+          "children": [
+            {
+              "attributes": {
+                "backgroundImageConfig": "",
+                "backgroundImageOverlay": "rgba(0,0,0,0)",
+                "componentSpacerSize": "0rem",
+                "dxpStyle": {
+                  "padding": {
+                    "bottom": "3px",
+                    "left": "30px",
+                    "right": "30px",
+                    "top": "40px"
+                  }
+                },
+                "layoutDirectionDesktop": "column",
+                "layoutDirectionMobile": "column",
+                "layoutDirectionTablet": "column",
+                "maxContentWidth": "",
+                "sectionColumnGutterWidth": "",
+                "sectionConfig": "{\"UUID\":\"b77e224e-d087-4694-911c-f7788e4a1c4e\",\"columns\":[{\"UUID\":\"42f4ba73-19da-4a63-a1cf-717e79a8e8b9\",\"columnName\":\"Column 1\",\"columnKey\":\"col1\",\"columnWidth\":\"6\",\"seedComponents\":null},{\"UUID\":\"10fa72fa-0384-4ace-94b2-677067a6fa2b\",\"columnName\":\"Column 2\",\"columnKey\":\"bfa4f\",\"columnWidth\":\"6\",\"seedComponents\":[]}]}",
+                "sectionMinHeight": "",
+                "sectionVerticalAlign": "flex-start"
+              },
+              "children": [
+                {
+                  "children": [
+                    {
+                      "attributes": {
+                        "columnGutterWidth": "",
+                        "columnMinHeight": "",
+                        "columnVerticalAlign": "flex-start",
+                        "dxpStyle": {
+                          "margin": {
+                            "bottom": "20px",
+                            "left": "",
+                            "right": "",
+                            "top": ""
+                          }
+                        },
+                        "layoutDirectionDesktop": "row",
+                        "layoutDirectionMobile": "column",
+                        "layoutDirectionTablet": "column",
+                        "sectionConfig": "{\"UUID\":\"b079f16a-4fd3-4e5b-b3db-16a244c22b81\",\"columns\":[{\"UUID\":\"f977c0c0-73ef-4e35-9633-fe7e4fb54a6e\",\"columnName\":\"Column 1\",\"columnKey\":\"col2\",\"columnWidth\":\"4\",\"seedComponents\":[]},{\"UUID\":\"974720f1-0861-49fc-ae3b-a5f9590ab6e8\",\"columnName\":\"Column 2\",\"columnKey\":\"c1362\",\"columnWidth\":\"2\",\"seedComponents\":[]},{\"UUID\":\"f7321fdb-93ca-43ea-a783-e030b34c06d1\",\"columnName\":\"Column 3\",\"columnKey\":\"74537\",\"columnWidth\":\"2\",\"seedComponents\":[]},{\"UUID\":\"5eb12821-ad69-4825-a1b7-5a100ecbf0e3\",\"columnName\":\"Column 4\",\"columnKey\":\"fa26e\",\"columnWidth\":\"2\",\"seedComponents\":[]},{\"UUID\":\"8bf0b7fd-0343-4a16-b775-9699f958fdff\",\"columnName\":\"Column 5\",\"columnKey\":\"34b40\",\"columnWidth\":\"2\",\"seedComponents\":[]}]}"
+                      },
+                      "children": [
+                        {
+                          "children": [
+                            {
+                              "attributes": {
+                                "dxpStyle": {},
+                                "imageInfos": "",
+                                "richTextValue": "<p><span style=\"color: rgb(187, 187, 187); font-size: 12px;\">American Book Company</span></p><p><span style=\"color: rgb(187, 187, 187); font-size: 12px;\">103 Executive Drive</span></p><p><span style=\"color: rgb(187, 187, 187); font-size: 12px;\">Woodstock GA 30188-1383</span></p><p><a href=\"mailto:contact@americanbookcompany.com\" rel=\"noopener noreferrer\" target=\"null\" style=\"background-color: rgb(26, 47, 74); font-size: 12px; font-family: lato, sans-serif; color: rgb(187, 187, 187);\"><img src=\"https://americanbookcompany.com/_ipx/_/images/footer/email.svg\">  contact@americanbookcompany.com</a></p><p><a href=\"null\" rel=\"noopener noreferrer\" target=\"null\" style=\"background-color: rgb(26, 47, 74); font-size: 12px; font-family: lato, sans-serif; color: rgb(187, 187, 187);\"><img src=\"https://americanbookcompany.com/_ipx/_/images/footer/phone.svg\">  1-888-264-5877</a></p>"
+                              },
+                              "definition": "community_builder:richTextEditor",
+                              "id": "e84e501e-6eb1-496d-aea1-c132ac3b9f60",
+                              "type": "component"
+                            }
+                          ],
+                          "id": "f977c0c0-73ef-4e35-9633-fe7e4fb54a6e",
+                          "name": "col2",
+                          "title": "Column 1",
+                          "type": "region"
+                        },
+                        {
+                          "children": [
+                            {
+                              "attributes": {
+                                "dxpStyle": {},
+                                "imageInfos": "",
+                                "richTextValue": "<h2><strong style=\"color: rgb(187, 187, 187);\">GET TO KNOW ABC</strong></h2><p><a href=\"https://americanbookcompany.my.site.com/AmericanBookCompany/about-abc\" rel=\"noopener noreferrer\" target=\"_self\" style=\"color: rgb(187, 187, 187); font-size: 12px;\">About ABC</a></p><p><a href=\"https://americanbookcompany.my.site.com/AmericanBookCompany/careers\" rel=\"noopener noreferrer\" target=\"_self\" style=\"color: rgb(187, 187, 187); font-size: 12px;\">Careers</a></p><p><a href=\"https://americanbookcompany.my.site.com/AmericanBookCompany/blog\" rel=\"noopener noreferrer\" target=\"_self\" style=\"color: rgb(187, 187, 187); font-size: 12px;\">Blog</a></p><p><a href=\"https://americanbookcompany.my.site.com/AmericanBookCompany/podcast\" rel=\"noopener noreferrer\" target=\"_self\" style=\"color: rgb(187, 187, 187); font-size: 12px;\">Podcast</a></p>"
+                              },
+                              "definition": "community_builder:richTextEditor",
+                              "id": "4089c0da-d0ad-4847-9da0-d78813511e96",
+                              "type": "component"
+                            }
+                          ],
+                          "id": "974720f1-0861-49fc-ae3b-a5f9590ab6e8",
+                          "name": "c1362",
+                          "title": "Column 2",
+                          "type": "region"
+                        },
+                        {
+                          "children": [
+                            {
+                              "attributes": {
+                                "dxpStyle": {},
+                                "imageInfos": "",
+                                "richTextValue": "<h2><strong style=\"color: rgb(187, 187, 187);\">ORDERING</strong></h2><p><a href=\"https://americanbookcompany.my.site.com/AmericanBookCompany/how-to-order\" rel=\"noopener noreferrer\" target=\"_self\" style=\"color: rgb(187, 187, 187); font-size: 12px;\">How to Order</a></p><p><a href=\"https://americanbookcompany.my.site.com/AmericanBookCompany/certification\" rel=\"noopener noreferrer\" target=\"_self\" style=\"color: rgb(187, 187, 187); font-size: 12px;\">Documents for Ordering</a></p><p><a href=\"https://americanbookcompany.my.site.com/AmericanBookCompany/catalog\" rel=\"noopener noreferrer\" target=\"_self\" style=\"color: rgb(187, 187, 187); font-size: 12px;\">Catalog</a></p>"
+                              },
+                              "definition": "community_builder:richTextEditor",
+                              "id": "abe38efa-df8c-4f31-8cec-412a35eb1ada",
+                              "type": "component"
+                            }
+                          ],
+                          "id": "f7321fdb-93ca-43ea-a783-e030b34c06d1",
+                          "name": "74537",
+                          "title": "Column 3",
+                          "type": "region"
+                        },
+                        {
+                          "children": [
+                            {
+                              "attributes": {
+                                "dxpStyle": {},
+                                "imageInfos": "",
+                                "richTextValue": "<h2><strong style=\"color: rgb(187, 187, 187);\">ACCOUNT LINKS</strong></h2><p><a href=\"https://americanbookcompany.my.site.com/AmericanBookCompany/login?ec=302&amp;startURL=%2FAmericanBookCompany%2Fmyprofile\" rel=\"noopener noreferrer\" target=\"_self\" style=\"color: rgb(187, 187, 187); font-size: 12px;\">My Account</a></p><p><a href=\"https://americanbookcompany.my.site.com/AmericanBookCompany/mylists\" rel=\"noopener noreferrer\" target=\"_self\" style=\"color: rgb(187, 187, 187); font-size: 12px;\">My Wishlist</a></p><p><a href=\"https://coursewave.com/\" rel=\"noopener noreferrer\" target=\"_blank\" style=\"color: rgb(187, 187, 187); font-size: 12px;\">CourseWave</a></p>"
+                              },
+                              "definition": "community_builder:richTextEditor",
+                              "id": "669bf180-1465-4133-9295-65b90f462c1a",
+                              "type": "component"
+                            }
+                          ],
+                          "id": "5eb12821-ad69-4825-a1b7-5a100ecbf0e3",
+                          "name": "fa26e",
+                          "title": "Column 4",
+                          "type": "region"
+                        },
+                        {
+                          "children": [
+                            {
+                              "attributes": {
+                                "alignment": "center",
+                                "dxpStyle": {},
+                                "fit": "contain",
+                                "height": 350,
+                                "imageInfo": "{\"imageInfoV1\":{\"url\":\"\",\"altText\":\"\",\"contentKey\":\"MCGA4KVLAVSRG2TLCQIBC7HP7PZU\",\"contentType\":null}}",
+                                "overlayColor": "",
+                                "position": "center center",
+                                "width": 48
+                              },
+                              "definition": "dxp_base:image",
+                              "id": "11cf27ca-9099-414d-ba6b-f0772528fc7c",
+                              "type": "component"
+                            }
+                          ],
+                          "id": "8bf0b7fd-0343-4a16-b775-9699f958fdff",
+                          "name": "34b40",
+                          "title": "Column 5",
+                          "type": "region"
+                        }
+                      ],
+                      "definition": "dxp_layout:columns",
+                      "id": "b079f16a-4fd3-4e5b-b3db-16a244c22b81",
+                      "type": "component"
+                    },
+                    {
+                      "attributes": {
+                        "alignment": "center",
+                        "color": "rgb(202, 202, 202)",
+                        "dxpStyle": {},
+                        "lineStyle": "solid",
+                        "size": 1,
+                        "width": 100
+                      },
+                      "definition": "dxp_base:horizontalLine",
+                      "id": "ccec1482-df3b-4430-b1d5-06ddcd24f70b",
+                      "type": "component"
+                    }
+                  ],
+                  "id": "42f4ba73-19da-4a63-a1cf-717e79a8e8b9",
+                  "name": "col1",
+                  "title": "Column 1",
+                  "type": "region"
+                },
+                {
+                  "children": [
+                    {
+                      "attributes": {
+                        "dxpStyle": {},
+                        "imageInfos": "",
+                        "richTextValue": "<p><span style=\"color: rgb(187, 187, 187); font-size: 12px;\">© 2026 American Book Company. All rights reserved.</span></p>\n<p><a href=\"https://americanbookcompany.my.site.com/AmericanBookCompany/terms-of-use\" rel=\"noopener noreferrer\" target=\"_self\" style=\"color: rgb(187, 187, 187); font-size: 12px;\">Terms of Use</a> <span style=\"color: rgb(187, 187, 187); font-size: 12px;\">| </span><a href=\"https://americanbookcompany.my.site.com/AmericanBookCompany/privacy-policy\" rel=\"noopener noreferrer\" target=\"_self\" style=\"color: rgb(187, 187, 187); font-size: 12px;\">Privacy Policy</a> <span style=\"color: rgb(187, 187, 187); font-size: 12px;\">| </span><a href=\"https://americanbookcompany.my.site.com/AmericanBookCompany/accessibility\" rel=\"noopener noreferrer\" target=\"_self\" style=\"color: rgb(187, 187, 187); font-size: 12px;\">Accessibility</a> <span style=\"color: rgb(187, 187, 187); font-size: 12px;\">| </span><a href=\"https://americanbookcompany.com/docs/Certificate-of-Security.pdf\" rel=\"noopener noreferrer\" target=\"_blank\" style=\"color: rgb(187, 187, 187); font-size: 12px;\">&nbsp;CyberGlobal Certificate of Security&nbsp;</a><span style=\"color: rgb(187, 187, 187); font-size: 12px;\">and&nbsp;</span><a href=\"https://americanbookcompany.com/docs/Security-Assessment-Public-Report.pdf\" rel=\"noopener noreferrer\" target=\"_blank\" style=\"color: rgb(187, 187, 187); font-size: 12px;\">Security Assessment</a></p>\n<p style=\"text-align: right;\"><span style=\"color: rgb(187, 187, 187);\">Follow us:</span> <span style=\"color: rgb(187, 187, 187);\"> </span><a href=\"https://www.facebook.com/americanbookco\" rel=\"noopener noreferrer\" target=\"_blank\"><img src=\"{!cmsMedia.MCJBHPANR44FF4NLVZ5VOHKKXW6Q}\" alt=\"\" width=\"25\"></a> <a href=\"https://x.com/americanbookco\" rel=\"noopener noreferrer\" target=\"_blank\"><img src=\"{!cmsMedia.MCL4BUN4PVGNE2RGZ7PPSSCBAT6M}\" alt=\"\" width=\"29\"></a> <a href=\"https://www.instagram.com/americanbookco/\" rel=\"noopener noreferrer\" target=\"_blank\"><img src=\"{!cmsMedia.MCAEOBDEVKKVBFNNEMNBFKLNR76M}\" alt=\"\" width=\"22\"></a></p>"
+                      },
+                      "definition": "community_builder:richTextEditor",
+                      "id": "b844338b-45ac-492e-84fa-b93b397d4419",
+                      "type": "component"
+                    }
+                  ],
+                  "id": "10fa72fa-0384-4ace-94b2-677067a6fa2b",
+                  "name": "bfa4f",
+                  "title": "Column 2",
+                  "type": "region"
+                }
+              ],
+              "definition": "community_layout:section",
+              "id": "b77e224e-d087-4694-911c-f7788e4a1c4e",
+              "scopedBrandingSetId": "B2B_Footer",
+              "type": "component"
+            }
+          ],
+          "id": "f2368e66-8b3d-4b55-9285-278d840a53c6",
+          "name": "footer",
+          "title": "Footer",
+          "type": "region"
+        }
+      ],
+      "definition": "commerce:layoutSite",
+      "id": "15ae8e56-5720-4316-8c01-801de7c88c94",
+      "type": "component"
+    }
+  },
+  "urlName": "commerce-layout"
+}
