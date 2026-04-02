@@ -11,50 +11,12 @@
               "attributes": {
                 "columnGutterWidth": "",
                 "columnMinHeight": "",
-                "columnVerticalAlign": "flex-start",
-                "dxpStyle": {},
-                "layoutDirectionDesktop": "row",
-                "layoutDirectionMobile": "row",
-                "layoutDirectionTablet": "row",
-                "sectionConfig": "{\"UUID\":\"74943556-03e4-4a04-97ef-acb5dab27cf9\",\"columns\":[{\"UUID\":\"7191c24b-6602-489a-82d9-0212b14d5f4d\",\"columnName\":\"Column 1\",\"columnKey\":\"748ca\",\"columnWidth\":\"12\",\"seedComponents\":[]}]}"
-              },
-              "children": [
-                {
-                  "children": [
-                    {
-                      "attributes": {
-                        "alignment": "left",
-                        "dxpStyle": {},
-                        "navigationMenuEditor": "Default_Navigation1",
-                        "showBackLabel": true,
-                        "showHomeLink": false
-                      },
-                      "definition": "commerce_builder:drilldownNavigation",
-                      "id": "0bd092ad-312a-4ba7-8e8d-084d3d08659f",
-                      "type": "component"
-                    }
-                  ],
-                  "id": "7191c24b-6602-489a-82d9-0212b14d5f4d",
-                  "name": "748ca",
-                  "title": "Column 1",
-                  "type": "region"
-                }
-              ],
-              "customCssClasses": "back-white abc-header-nav-row",
-              "definition": "dxp_layout:columns",
-              "id": "74943556-03e4-4a04-97ef-acb5dab27cf9",
-              "type": "component"
-            },
-            {
-              "attributes": {
-                "columnGutterWidth": "",
-                "columnMinHeight": "",
                 "columnVerticalAlign": "center",
                 "dxpStyle": {},
                 "layoutDirectionDesktop": "row",
                 "layoutDirectionMobile": "row",
                 "layoutDirectionTablet": "row",
-                "sectionConfig": "{\"UUID\":\"5bd60430-0572-443a-bc6c-4ddfe166ce85\",\"columns\":[{\"UUID\":\"832987d6-40f5-4bf5-bbd9-842c9fedf1a3\",\"columnName\":\"Column 1\",\"columnKey\":\"col1\",\"columnWidth\":\"2\",\"seedComponents\":[]},{\"UUID\":\"2e71a9c5-1834-4933-8ac5-31c10404a7dd\",\"columnName\":\"Column 2\",\"columnKey\":\"44e1c\",\"columnWidth\":\"2\",\"seedComponents\":[]},{\"UUID\":\"5804c0d8-ce10-4f80-aba4-177a13c88771\",\"columnName\":\"Column 3\",\"columnKey\":\"7ead1\",\"columnWidth\":\"5\",\"seedComponents\":[]},{\"UUID\":\"28615e70-dae8-4295-986e-9cd7334b7060\",\"columnName\":\"Column 4\",\"columnKey\":\"07845\",\"columnWidth\":\"3\",\"seedComponents\":[]}]}"
+                "sectionConfig": "{\"UUID\":\"74943556-03e4-4a04-97ef-acb5dab27cf9\",\"columns\":[{\"UUID\":\"a1b2c3d4-e5f6-4789-abcd-ef0123456789\",\"columnName\":\"Logo\",\"columnKey\":\"logo1\",\"columnWidth\":\"2\",\"seedComponents\":[]},{\"UUID\":\"7191c24b-6602-489a-82d9-0212b14d5f4d\",\"columnName\":\"Navigation\",\"columnKey\":\"748ca\",\"columnWidth\":\"10\",\"seedComponents\":[]}]}"
               },
               "children": [
                 {
@@ -78,18 +40,56 @@
                         },
                         "imageInfo": "",
                         "imageInfoMobile": "",
-                        "logoWidth": 250
+                        "logoWidth": 200
                       },
                       "definition": "dxp_content_layout:siteLogo",
                       "id": "10833b82-5984-4314-a8c0-840a7b324eed",
                       "type": "component"
                     }
                   ],
-                  "id": "832987d6-40f5-4bf5-bbd9-842c9fedf1a3",
-                  "name": "col1",
-                  "title": "Column 1",
+                  "id": "a1b2c3d4-e5f6-4789-abcd-ef0123456789",
+                  "name": "logo1",
+                  "title": "Logo",
                   "type": "region"
                 },
+                {
+                  "children": [
+                    {
+                      "attributes": {
+                        "alignment": "left",
+                        "dxpStyle": {},
+                        "navigationMenuEditor": "Default_Navigation1",
+                        "showBackLabel": true,
+                        "showHomeLink": false
+                      },
+                      "definition": "commerce_builder:drilldownNavigation",
+                      "id": "0bd092ad-312a-4ba7-8e8d-084d3d08659f",
+                      "type": "component"
+                    }
+                  ],
+                  "id": "7191c24b-6602-489a-82d9-0212b14d5f4d",
+                  "name": "748ca",
+                  "title": "Navigation",
+                  "type": "region"
+                }
+              ],
+              "customCssClasses": "back-white abc-header-nav-row",
+              "definition": "dxp_layout:columns",
+              "id": "74943556-03e4-4a04-97ef-acb5dab27cf9",
+              "type": "component"
+            },
+            {
+              "attributes": {
+                "columnGutterWidth": "",
+                "columnMinHeight": "",
+                "columnVerticalAlign": "center",
+                "dxpStyle": {},
+                "layoutDirectionDesktop": "row",
+                "layoutDirectionMobile": "row",
+                "layoutDirectionTablet": "row",
+                "sectionConfig": "{\"UUID\":\"5bd60430-0572-443a-bc6c-4ddfe166ce85\",\"columns\":[{\"UUID\":\"2e71a9c5-1834-4933-8ac5-31c10404a7dd\",\"columnName\":\"Column 1\",\"columnKey\":\"44e1c\",\"columnWidth\":\"2\",\"seedComponents\":[]},{\"UUID\":\"5804c0d8-ce10-4f80-aba4-177a13c88771\",\"columnName\":\"Column 2\",\"columnKey\":\"7ead1\",\"columnWidth\":\"7\",\"seedComponents\":[]},{\"UUID\":\"28615e70-dae8-4295-986e-9cd7334b7060\",\"columnName\":\"Column 3\",\"columnKey\":\"07845\",\"columnWidth\":\"3\",\"seedComponents\":[]}]}"
+              },
+              "children": [
                 {
                   "children": [
                     {
