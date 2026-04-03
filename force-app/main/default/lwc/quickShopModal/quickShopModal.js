@@ -262,6 +262,7 @@ export default class QuickShopModal extends LightningElement {
 
   // ---------- actions ----------
   handleAddToCart() {
+    if (!this.selectedProductId) return;
     this.dispatchEvent(
       new CustomEvent("addtocart", {
         detail: {
@@ -303,7 +304,11 @@ export default class QuickShopModal extends LightningElement {
 
   renderedCallback() {
     const productId = this.selectedProductId;
-    if (!productId || this.favoritePending || productId === this.favoriteProductId) {
+    if (
+      !productId ||
+      this.favoritePending ||
+      productId === this.favoriteProductId
+    ) {
       return;
     }
 

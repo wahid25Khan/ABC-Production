@@ -253,7 +253,6 @@
 
     <div class="results-layout">
       <aside class={filtersColumnClass}>
-
         <!-- Collapsed trigger: visible on mobile when drawer is closed -->
         <button
           type="button"
@@ -261,7 +260,11 @@
           onclick={handleToggleMobileFilters}
         >
           <span>Filter</span>
-          <svg class="filter-toggle-icon" viewBox="0 0 24 24" aria-hidden="true">
+          <svg
+            class="filter-toggle-icon"
+            viewBox="0 0 24 24"
+            aria-hidden="true"
+          >
             <line x1="4" y1="7" x2="20" y2="7"></line>
             <line x1="7" y1="12" x2="17" y2="12"></line>
             <line x1="10" y1="17" x2="14" y2="17"></line>
@@ -293,7 +296,6 @@
 
         <!-- Filter content panel -->
         <div class={mobileFilterPanelClass}>
-
           <!-- Search (mobile drawer only) -->
           <div class="drawer-search-wrap">
             <div class="search-box search-box--drawer">
@@ -427,7 +429,6 @@
             See results
           </button>
         </div>
-
       </aside>
 
       <div class="products-column">
@@ -522,6 +523,7 @@
         maximum-quantity={modalMaximumQuantity}
         increment-quantity={modalIncrementQuantity}
         onaddtocart={handleAddToCart}
+        ontrial={handleTrial}
         onviewdetails={handleViewDetails}
         onclose={handleModalClose}
       >

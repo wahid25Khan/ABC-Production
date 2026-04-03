@@ -8,6 +8,11 @@ const DEFAULT_PAGE_SIZE = 20;
 const SEARCH_MARKER = "/global-search/";
 const URL_WATCH_INTERVAL_MS = 250;
 const URL_WATCH_DEBOUNCE_MS = 120;
+const CART_REQUEST_PARAMS = Object.freeze({
+  language: "en-US",
+  asGuest: "true",
+  htmlEncode: "false"
+});
 
 const SEARCH_FIELDS = ["StockKeepingUnit"];
 
@@ -211,6 +216,7 @@ export default class CustomResults extends LightningElement {
   @track viewMode = "grid";
 
   @track isModalOpen = false;
+  isAddingToCart = false;
   @track modalProduct = null;
   @track modalVariationPricing = null;
 
@@ -1682,7 +1688,15 @@ export default class CustomResults extends LightningElement {
     );
   }
 
+  handleTrial() {
+    if (!this.modalProduct) return;
+    globalThis.window.location.href = this.buildProductDetailPath(
+      this.modalProduct
+    );
+  }
+
   async handleAddToCart(event) {
+    if (this.isAddingToCart) return;
     const productId = event?.detail?.productId || this.modalProduct?.id || "";
     if (!productId) return;
 
@@ -1690,10 +1704,15 @@ export default class CustomResults extends LightningElement {
     const quantity =
       Number.isFinite(requestedQty) && requestedQty > 0 ? requestedQty : 1;
 
-    const added = await this.addProductToCart(productId, quantity);
-    if (added) {
-      this.handleModalClose();
-      globalThis.window.location.href = `/${this.storeName || DEFAULT_STORE_NAME}/cart`;
+    this.isAddingToCart = true;
+    try {
+      const added = await this.addProductToCart(productId, quantity);
+      if (added) {
+        this.handleModalClose();
+        globalThis.window.location.href = `/${this.storeName || DEFAULT_STORE_NAME}/cart`;
+      }
+    } finally {
+      this.isAddingToCart = false;
     }
   }
 
@@ -1718,7 +1737,10 @@ export default class CustomResults extends LightningElement {
   }
 
   buildAddToCartEndpoint(cartStateOrId) {
-    return `/${this.storeName || DEFAULT_STORE_NAME}/webruntime/api/services/data/v66.0/commerce/webstores/${this.webStoreId || DEFAULT_WEBSTORE_ID}/carts/${cartStateOrId}/cart-items`;
+    const targetCart = String(cartStateOrId || "current").trim() || "current";
+    const params = new URLSearchParams(CART_REQUEST_PARAMS);
+
+    return `/${this.storeName || DEFAULT_STORE_NAME}/webruntime/api/services/data/v66.0/commerce/webstores/${this.webStoreId || DEFAULT_WEBSTORE_ID}/carts/${targetCart}/cart-items?${params.toString()}`;
   }
 
   resolveProductImageUrl(item) {

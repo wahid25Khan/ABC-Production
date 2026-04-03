@@ -146,7 +146,12 @@
               </div>
 
               <div class="btn-offset">
-                <button class="btn-add" type="button" onclick={handleAddToCart}>
+                <button
+                  class="btn-add"
+                  type="button"
+                  onclick={handleAddToCart}
+                  disabled={isAddingToCart}
+                >
                   Add to Cart
                 </button>
               </div>

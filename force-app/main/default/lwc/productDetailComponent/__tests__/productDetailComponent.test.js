@@ -288,9 +288,9 @@ describe("c-product-detail-component", () => {
     // maximumQuantity = 10000 from MOCK_VARIATION_RESULT (> 9999 sentinel)
     // → maxQty falls back to @api prop default 50
     const el = await createInitialized();
-    expect(
-      el.shadowRoot.querySelector(".qty-input").getAttribute("max")
-    ).toBe("50");
+    expect(el.shadowRoot.querySelector(".qty-input").getAttribute("max")).toBe(
+      "50"
+    );
   });
 
   // ── Tier display ───────────────────────────────────────────────────────────
@@ -323,8 +323,9 @@ describe("c-product-detail-component", () => {
     });
 
     const el = await createInitialized();
-    const headers = [...el.shadowRoot.querySelectorAll(".price-table-head .th")]
-      .map((node) => node.textContent.trim());
+    const headers = [
+      ...el.shadowRoot.querySelectorAll(".price-table-head .th")
+    ].map((node) => node.textContent.trim());
     const row = el.shadowRoot.querySelector(".price-row");
 
     expect(headers).toEqual(["Quantity", "Price"]);
@@ -368,7 +369,11 @@ describe("c-product-detail-component", () => {
       url.includes("/cart-items")
     );
     expect(cartCall).toBeDefined();
+    const cartUrl = new URL(cartCall[0], "https://example.com");
     const body = JSON.parse(cartCall[1].body);
+    expect(cartUrl.searchParams.get("language")).toBe("en-US");
+    expect(cartUrl.searchParams.get("asGuest")).toBe("true");
+    expect(cartUrl.searchParams.get("htmlEncode")).toBe("false");
     expect(body.productId).toBe(PRODUCT_ID);
     expect(body.quantity).toBe(10);
     expect(body.type).toBe("Product");

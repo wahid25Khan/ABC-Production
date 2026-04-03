@@ -173,12 +173,22 @@
                   </div>
                 </div>
                 <div class="btn-offset">
-                  <button class="btn-add" onclick={handleAddToCart}>
+                  <button
+                    class="btn-add"
+                    type="button"
+                    onclick={handleAddToCart}
+                    disabled={isLoading}
+                  >
                     Add to Cart
                   </button>
                 </div>
                 <div class="btn-offset">
-                  <button class="btn-trial" onclick={handleTrial}>
+                  <button
+                    class="btn-trial"
+                    type="button"
+                    onclick={handleTrial}
+                    disabled={isLoading}
+                  >
                     FREE Two-Week Trial!
                   </button>
                 </div>

@@ -8,6 +8,11 @@ const STATE_STORAGE_KEY = "abc_selected_state";
 const SHOP_ALL_URL =
   "https://americanbookcompany.my.site.com/AmericanBookCompany/global-search/all";
 const SEARCH_PRODUCT_FIELDS = ["StockKeepingUnit"];
+const CART_REQUEST_PARAMS = Object.freeze({
+  language: "en-US",
+  asGuest: "true",
+  htmlEncode: "false"
+});
 
 export default class FeaturedStateBooks extends LightningElement {
   @api storeName = DEFAULT_STORE_NAME;
@@ -26,6 +31,7 @@ export default class FeaturedStateBooks extends LightningElement {
   isModalOpen = false;
   modalProduct = null;
   modalVariationPricing = null;
+  isAddingToCart = false;
 
   scoreGuaranteeLogo = SCORE_GUARANTEE;
 
@@ -550,7 +556,17 @@ export default class FeaturedStateBooks extends LightningElement {
     globalThis.location.href = this.buildProductDetailPath(this.modalProduct);
   }
 
+  handleTrial() {
+    if (!this.modalProduct) {
+      return;
+    }
+
+    globalThis.location.href = this.buildProductDetailPath(this.modalProduct);
+  }
+
   async handleAddToCart(event) {
+    if (this.isAddingToCart) return;
+
     const productId = event?.detail?.productId || this.modalProduct?.id || "";
     if (!productId) {
       return;
@@ -560,12 +576,17 @@ export default class FeaturedStateBooks extends LightningElement {
     const quantity =
       Number.isFinite(requestedQty) && requestedQty > 0 ? requestedQty : 1;
 
-    const added = await this.addProductToCart(productId, quantity);
-    if (added) {
-      this.handleModalClose();
-      globalThis.window.location.href = `/${
-        this.storeName || DEFAULT_STORE_NAME
-      }/cart`;
+    this.isAddingToCart = true;
+    try {
+      const added = await this.addProductToCart(productId, quantity);
+      if (added) {
+        this.handleModalClose();
+        globalThis.window.location.href = `/${
+          this.storeName || DEFAULT_STORE_NAME
+        }/cart`;
+      }
+    } finally {
+      this.isAddingToCart = false;
     }
   }
 
@@ -601,7 +622,8 @@ export default class FeaturedStateBooks extends LightningElement {
   buildAddToCartEndpoint(cartStateOrId = "current") {
     const storeName = this.storeName || DEFAULT_STORE_NAME;
     const webStoreId = this.webStoreId || DEFAULT_WEBSTORE_ID;
-    return `/${storeName}/webruntime/api/services/data/v66.0/commerce/webstores/${webStoreId}/carts/${cartStateOrId}/cart-items?language=en-US&asGuest=true&htmlEncode=false`;
+    const params = new URLSearchParams(CART_REQUEST_PARAMS);
+    return `/${storeName}/webruntime/api/services/data/v66.0/commerce/webstores/${webStoreId}/carts/${cartStateOrId}/cart-items?${params.toString()}`;
   }
 
   firstString(values) {

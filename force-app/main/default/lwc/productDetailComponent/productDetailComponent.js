@@ -7,7 +7,16 @@ const DEFAULT_STORE_NAME = "AmericanBookCompany";
 const DEFAULT_WEBSTORE_ID = "0ZEam000004dJDNGA2";
 const DEFAULT_CURRENCY = "USD";
 const PRODUCT_ID_PATTERN = /01t[a-zA-Z0-9]{12,15}/;
-const PRODUCT_DETAIL_FIELDS = ["StockKeepingUnit", "Name", "purchaseQuantityRule"];
+const PRODUCT_DETAIL_FIELDS = [
+  "StockKeepingUnit",
+  "Name",
+  "purchaseQuantityRule"
+];
+const CART_REQUEST_PARAMS = Object.freeze({
+  language: "en-US",
+  asGuest: "true",
+  htmlEncode: "false"
+});
 
 export default class ProductDetailComponent extends LightningElement {
   @api storeName = DEFAULT_STORE_NAME;
@@ -28,6 +37,7 @@ export default class ProductDetailComponent extends LightningElement {
   isFavorite = false;
   favoritePending = false;
   favoriteProductId = "";
+  isAddingToCart = false;
 
   featuresLeft = ["Answer Key", "Posttest", "Pretest"];
   featuresRight = ["eBook"];
@@ -625,6 +635,8 @@ export default class ProductDetailComponent extends LightningElement {
   }
 
   async handleAddToCart() {
+    if (this.isAddingToCart) return;
+
     // Clamp and validate quantity at submission time
     let qty = this.quantity;
     if (qty < this.minQty) qty = this.minQty;
@@ -637,24 +649,29 @@ export default class ProductDetailComponent extends LightningElement {
       return;
     }
 
-    const added = await this.addProductToCart(productId, this.quantity);
-    this.dispatchEvent(
-      new CustomEvent("addtocart", {
-        detail: {
-          added,
-          productId,
-          quantity: this.quantity,
-          format: this.selectedVariation?.format,
-          isbn: this.isbn,
-          title: this.title,
-          unitPrice: this.selectedUnitPrice,
-          currencyIsoCode: this.currencyIsoCode
-        }
-      })
-    );
+    this.isAddingToCart = true;
+    try {
+      const added = await this.addProductToCart(productId, this.quantity);
+      this.dispatchEvent(
+        new CustomEvent("addtocart", {
+          detail: {
+            added,
+            productId,
+            quantity: this.quantity,
+            format: this.selectedVariation?.format,
+            isbn: this.isbn,
+            title: this.title,
+            unitPrice: this.selectedUnitPrice,
+            currencyIsoCode: this.currencyIsoCode
+          }
+        })
+      );
 
-    if (added) {
-      globalThis.window.location.href = `/${this.storeName || DEFAULT_STORE_NAME}/cart`;
+      if (added) {
+        globalThis.window.location.href = `/${this.storeName || DEFAULT_STORE_NAME}/cart`;
+      }
+    } finally {
+      this.isAddingToCart = false;
     }
   }
 
@@ -685,7 +702,10 @@ export default class ProductDetailComponent extends LightningElement {
   }
 
   buildAddToCartEndpoint(cartStateOrId) {
-    return `/${this.storeName || DEFAULT_STORE_NAME}/webruntime/api/services/data/v66.0/commerce/webstores/${this.webStoreId || DEFAULT_WEBSTORE_ID}/carts/${cartStateOrId}/cart-items`;
+    const targetCart = String(cartStateOrId || "current").trim() || "current";
+    const params = new URLSearchParams(CART_REQUEST_PARAMS);
+
+    return `/${this.storeName || DEFAULT_STORE_NAME}/webruntime/api/services/data/v66.0/commerce/webstores/${this.webStoreId || DEFAULT_WEBSTORE_ID}/carts/${targetCart}/cart-items?${params.toString()}`;
   }
 
   handleTrial() {
