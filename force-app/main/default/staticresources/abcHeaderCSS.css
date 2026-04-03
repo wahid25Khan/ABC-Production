@@ -276,33 +276,32 @@ commerce_builder-mini-cart {
     display: none !important;
   }
 
-  /* Utility col 1 – State filter (tablet): shifted right to align under "Shop All" nav tab */
+  /* Utility col 1 – State (tablet): margin-left:auto pushes the entire State+Search+Cart group to the right */
   [data-layout-site-region="header"] .abc-header-utility-row > .columns-content > .columns > dxp_layout-column:nth-of-type(1) {
     flex: 0 0 auto !important;
     width: auto !important;
     max-width: 155px !important;
+    margin-left: auto !important;
     padding: 0 8px !important;
-    margin-left: 130px !important;
   }
   [data-layout-site-region="header"] .abc-header-utility-row c-state-filter-lwc .wrap {
     max-width: 140px !important;
   }
 
-  /* Utility col 2 – Search (tablet): fixed width, pushed right next to cart */
+  /* Utility col 2 – Search (tablet): fixed width, immediately after State */
   [data-layout-site-region="header"] .abc-header-utility-row > .columns-content > .columns > dxp_layout-column:nth-of-type(2) {
     flex: 0 0 auto !important;
     width: 210px !important;
     min-width: 0 !important;
-    margin-left: auto !important;
     padding: 0 8px !important;
   }
 
-  /* Utility col 3 – Cart */
+  /* Utility col 3 – Cart (tablet): hugs right edge, under My Account */
   [data-layout-site-region="header"] .abc-header-utility-row > .columns-content > .columns > dxp_layout-column:nth-of-type(3) {
     flex: 0 0 auto !important;
     width: auto !important;
     max-width: 72px !important;
-    padding: 0 0 0 8px !important;
+    padding: 0 0 0 12px !important;
     display: flex !important;
     justify-content: flex-end !important;
   }
@@ -384,32 +383,33 @@ commerce_builder-mini-cart {
     justify-content: center !important;
   }
 
-  /* Utility col 1 – State (desktop): shifted right to align under "Shop All" nav tab.
-     margin-left ≈ logo column width (max-height:64px logo + 16px right padding ≈ 190px).
-     Adjust this value if the logo is wider/narrower on the live site. */
+  /* Utility col 1 – State (desktop): margin-left:auto is the key —
+     it collapses ALL the empty space to the LEFT of State, so the
+     entire State → Search → Cart group is pushed to the right side,
+     with Cart landing directly under "My Account". */
   [data-layout-site-region="header"] .abc-header-utility-row > .columns-content > .columns > dxp_layout-column:nth-of-type(1) {
     flex: 0 0 auto !important;
     width: auto !important;
-    margin-left: 190px !important;
-    padding-right: 16px !important;
+    margin-left: auto !important;
+    padding-right: 12px !important;
   }
 
-  /* Utility col 2 – Search (desktop): fixed width, pushed right next to cart.
-     margin-left:auto collapses all leftover space before the search bar so it
-     sits immediately to the left of the cart icon. */
+  /* Utility col 2 – Search (desktop): fixed width, sits immediately after State.
+     No auto margin here — the group stays tight. */
   [data-layout-site-region="header"] .abc-header-utility-row > .columns-content > .columns > dxp_layout-column:nth-of-type(2) {
     flex: 0 0 auto !important;
-    width: 300px !important;
+    width: 280px !important;
     min-width: 0 !important;
-    margin-left: auto !important;
+    padding: 0 12px !important;
   }
 
-  /* Utility col 3 – Cart (desktop): auto-width, hugs cart icon */
+  /* Utility col 3 – Cart (desktop): immediately right of Search, under My Account */
   [data-layout-site-region="header"] .abc-header-utility-row > .columns-content > .columns > dxp_layout-column:nth-of-type(3) {
     flex: 0 0 auto !important;
     width: auto !important;
-    padding-left: 20px !important;
     min-width: 0 !important;
+    display: flex !important;
+    justify-content: flex-end !important;
   }
 }
 
