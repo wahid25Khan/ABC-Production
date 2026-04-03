@@ -1,8 +1,8 @@
 /* ═══════════════════════════════════════════════════════════════════
-   ABC HEADER – responsive overrides  v6
+   ABC HEADER – responsive overrides  v7
    Matches americanbookcompany.com 2-row layout:
-     Row 1 (.abc-header-nav-row):      Logo (2/12) + drilldownNav (10/12)
-     Row 2 (.abc-header-utility-row):  State (2/12) + Search (7/12) + Cart (3/12)
+     Row 1 (.abc-header-nav-row):      Logo (auto) + drilldownNav (fills)
+     Row 2 (.abc-header-utility-row):  [~logo-width gap] + State | [auto gap] | Search (300px) | Cart
 
    Shared header rows:
      [data-layout-site-region="header"]
@@ -121,6 +121,46 @@ commerce_cart-managed-contents .item-prices .visually-hidden ~ span {
   font-weight: 700 !important;
 }
 
+body[data-abc-cart-empty="true"] commerce_builder-b2b-cart-contents {
+  padding-left: 0 !important;
+}
+
+body[data-abc-cart-empty="true"] community_layout-column.col-large-size_7-of-12 {
+  flex: 0 0 100% !important;
+  max-width: 100% !important;
+}
+
+body[data-abc-cart-empty="true"] community_layout-column.col-large-size_1-of-12,
+body[data-abc-cart-empty="true"] community_layout-column.col-large-size_4-of-12,
+body[data-abc-cart-empty="true"] c-cart-action-buttons,
+body[data-abc-cart-empty="true"] [data-automation="clearCart"] {
+  display: none !important;
+}
+
+body[data-abc-cart-empty="true"] .abc-cart-empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+  max-width: 1320px;
+  margin: 0 auto;
+  padding: 8px 0 48px;
+}
+
+body[data-abc-cart-empty="true"] .abc-cart-empty-message {
+  margin: 0;
+  font-size: 20px;
+  line-height: 1.5;
+  text-align: center;
+  color: #1f2937;
+}
+
+body[data-abc-cart-empty="true"] .abc-cart-empty-image {
+  display: block;
+  width: min(1320px, 100%);
+  height: auto;
+}
+
 
 /* ------------------------------------------------------------------
    CART ICON – increase size (all viewports)
@@ -236,22 +276,24 @@ commerce_builder-mini-cart {
     display: none !important;
   }
 
-  /* Utility col 1 – State filter */
+  /* Utility col 1 – State filter (tablet): shifted right to align under "Shop All" nav tab */
   [data-layout-site-region="header"] .abc-header-utility-row > .columns-content > .columns > dxp_layout-column:nth-of-type(1) {
     flex: 0 0 auto !important;
     width: auto !important;
     max-width: 155px !important;
     padding: 0 8px !important;
+    margin-left: 130px !important;
   }
   [data-layout-site-region="header"] .abc-header-utility-row c-state-filter-lwc .wrap {
     max-width: 140px !important;
   }
 
-  /* Utility col 2 – Search (fills remaining space) */
+  /* Utility col 2 – Search (tablet): fixed width, pushed right next to cart */
   [data-layout-site-region="header"] .abc-header-utility-row > .columns-content > .columns > dxp_layout-column:nth-of-type(2) {
-    flex: 1 1 0% !important;
-    width: auto !important;
+    flex: 0 0 auto !important;
+    width: 210px !important;
     min-width: 0 !important;
+    margin-left: auto !important;
     padding: 0 8px !important;
   }
 
@@ -342,18 +384,24 @@ commerce_builder-mini-cart {
     justify-content: center !important;
   }
 
-  /* Utility col 1 – State (desktop): auto-width so it hugs content */
+  /* Utility col 1 – State (desktop): shifted right to align under "Shop All" nav tab.
+     margin-left ≈ logo column width (max-height:64px logo + 16px right padding ≈ 190px).
+     Adjust this value if the logo is wider/narrower on the live site. */
   [data-layout-site-region="header"] .abc-header-utility-row > .columns-content > .columns > dxp_layout-column:nth-of-type(1) {
     flex: 0 0 auto !important;
     width: auto !important;
+    margin-left: 190px !important;
     padding-right: 16px !important;
   }
 
-  /* Utility col 2 – Search (desktop): expands to fill remaining space */
+  /* Utility col 2 – Search (desktop): fixed width, pushed right next to cart.
+     margin-left:auto collapses all leftover space before the search bar so it
+     sits immediately to the left of the cart icon. */
   [data-layout-site-region="header"] .abc-header-utility-row > .columns-content > .columns > dxp_layout-column:nth-of-type(2) {
-    flex: 1 1 0% !important;
-    width: auto !important;
+    flex: 0 0 auto !important;
+    width: 300px !important;
     min-width: 0 !important;
+    margin-left: auto !important;
   }
 
   /* Utility col 3 – Cart (desktop): auto-width, hugs cart icon */
@@ -470,4 +518,3 @@ commerce_builder-mini-cart {
   }
   commerce_cart-managed-contents figure img { max-width: 80px !important; }
 }
-0
