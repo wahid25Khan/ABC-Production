@@ -1,8 +1,8 @@
-import { LightningElement, api, track } from 'lwc';
+import { LightningElement, api, track } from "lwc";
 
-const DEFAULT_STORE_NAME = 'AmericanBookCompany';
-const DEFAULT_WEBSTORE_ID = '0ZEam000004dJDNGA2';
-const STATE_STORAGE_KEY = 'abc_selected_state';
+const DEFAULT_STORE_NAME = "AmericanBookCompany";
+const DEFAULT_WEBSTORE_ID = "0ZEam000004dJDNGA2";
+const STATE_STORAGE_KEY = "abc_selected_state";
 const PRODUCT_ID_PATTERN = /01t[a-zA-Z0-9]{12,15}/;
 
 export default class SimilarProductsByState extends LightningElement {
@@ -10,16 +10,16 @@ export default class SimilarProductsByState extends LightningElement {
   @api webStoreId = DEFAULT_WEBSTORE_ID;
   @api maxProducts = 18;
   @api visibleCount = 6;
-  @api refinementKey = 'State__c';
-  @api searchTerm = '';
+  @api refinementKey = "State__c";
+  @api searchTerm = "";
 
   @track products = [];
 
   loading = false;
   showProducts = false;
   currentIndex = 0;
-  currentProductId = '';
-  selectedState = '';
+  currentProductId = "";
+  selectedState = "";
 
   connectedCallback() {
     this.initialize();
@@ -40,8 +40,8 @@ export default class SimilarProductsByState extends LightningElement {
   }
 
   get normalizedSearchTerm() {
-    const value = String(this.searchTerm || '').trim();
-    return value && value !== '*' ? value : 'all';
+    const value = String(this.searchTerm || "").trim();
+    return value && value !== "*" ? value : "all";
   }
 
   get canGoLeft() {
@@ -49,7 +49,9 @@ export default class SimilarProductsByState extends LightningElement {
   }
 
   get canGoRight() {
-    return this.currentIndex + this.normalizedVisibleCount < this.products.length;
+    return (
+      this.currentIndex + this.normalizedVisibleCount < this.products.length
+    );
   }
 
   get disablePrev() {
@@ -65,8 +67,10 @@ export default class SimilarProductsByState extends LightningElement {
   }
 
   get headingText() {
-    const state = (this.selectedState || '').trim();
-    return state ? `Looking for additional ${state} books?` : 'Looking for additional books?';
+    const state = (this.selectedState || "").trim();
+    return state
+      ? `Looking for additional ${state} books?`
+      : "Looking for additional books?";
   }
 
   async initialize() {
@@ -81,7 +85,9 @@ export default class SimilarProductsByState extends LightningElement {
         return;
       }
 
-      const fetchedProducts = await this.fetchProductsByState(this.selectedState);
+      const fetchedProducts = await this.fetchProductsByState(
+        this.selectedState
+      );
       this.products = fetchedProducts
         .map((item) => this.normalizeProduct(item))
         .filter(Boolean)
@@ -90,9 +96,9 @@ export default class SimilarProductsByState extends LightningElement {
 
       this.showProducts = this.products.length > 0;
       this.currentIndex = 0;
-      this.scrollToCurrentIndex('auto');
+      this.scrollToCurrentIndex("auto");
     } catch (error) {
-      console.debug('initialize failed', error);
+      console.debug("initialize failed", error);
       this.resetProducts();
     } finally {
       this.loading = false;
@@ -117,8 +123,8 @@ export default class SimilarProductsByState extends LightningElement {
   async fetchProductsByState(stateValue) {
     try {
       const response = await fetch(this.buildSearchEndpoint(stateValue), {
-        method: 'GET',
-        credentials: 'include'
+        method: "GET",
+        credentials: "include"
       });
 
       if (!response.ok) {
@@ -128,13 +134,13 @@ export default class SimilarProductsByState extends LightningElement {
       const data = await response.json();
       return this.extractProductList(data);
     } catch (e) {
-      console.debug('fetchProductsByState failed', e);
+      console.debug("fetchProductsByState failed", e);
       return [];
     }
   }
 
   extractProductList(data) {
-    if (!data || typeof data !== 'object') {
+    if (!data || typeof data !== "object") {
       return [];
     }
 
@@ -153,11 +159,13 @@ export default class SimilarProductsByState extends LightningElement {
     const webStoreId = this.webStoreId || DEFAULT_WEBSTORE_ID;
     const base = `/${storeName}/webruntime/api/services/data/v66.0/commerce/webstores/${webStoreId}/search/products`;
     const params = new URLSearchParams({
-      language: 'en-US',
-      asGuest: 'true',
+      language: "en-US",
+      asGuest: "true",
       searchTerm: this.buildSearchTermWithState(stateValue),
-      page: '0',
-      pageSize: String(this.normalizedMaxProducts + this.normalizedVisibleCount),
+      page: "0",
+      pageSize: String(
+        this.normalizedMaxProducts + this.normalizedVisibleCount
+      ),
       refinement: `${this.refinementKey}:${stateValue}`
     });
 
@@ -165,14 +173,14 @@ export default class SimilarProductsByState extends LightningElement {
   }
 
   buildSearchTermWithState(stateValue) {
-    const state = String(stateValue || '').trim();
+    const state = String(stateValue || "").trim();
     const baseSearchTerm = this.normalizedSearchTerm;
 
     if (!state) {
       return baseSearchTerm;
     }
 
-    if (baseSearchTerm === '*' || baseSearchTerm === 'all') {
+    if (baseSearchTerm === "*" || baseSearchTerm === "all") {
       return state;
     }
 
@@ -185,47 +193,49 @@ export default class SimilarProductsByState extends LightningElement {
 
   readStateFromStorage() {
     try {
-      return (globalThis.localStorage.getItem(STATE_STORAGE_KEY) || '').trim();
+      return (globalThis.localStorage.getItem(STATE_STORAGE_KEY) || "").trim();
     } catch (e) {
-      console.debug('readStateFromStorage failed', e);
-      return '';
+      console.debug("readStateFromStorage failed", e);
+      return "";
     }
   }
 
   getStateFromPath() {
-    if (typeof globalThis === 'undefined' || !globalThis.location?.pathname) {
-      return '';
+    if (typeof globalThis === "undefined" || !globalThis.location?.pathname) {
+      return "";
     }
 
     const path = globalThis.location.pathname;
-    const marker = '/global-search/';
+    const marker = "/global-search/";
     const markerIndex = path.indexOf(marker);
 
     if (markerIndex === -1) {
-      return '';
+      return "";
     }
 
     const afterMarker = path.slice(markerIndex + marker.length);
-    const firstSegment = afterMarker.split('/')[0] || '';
+    const firstSegment = afterMarker.split("/")[0] || "";
 
-    if (!firstSegment || firstSegment.toLowerCase() === 'all') {
-      return '';
+    if (!firstSegment || firstSegment.toLowerCase() === "all") {
+      return "";
     }
 
     try {
       return decodeURIComponent(firstSegment).trim();
     } catch (e) {
-      console.debug('decodeURIComponent failed', e);
+      console.debug("decodeURIComponent failed", e);
       return firstSegment.trim();
     }
   }
 
   getCurrentProductId() {
-    if (typeof globalThis === 'undefined' || !globalThis.location?.href) {
-      return '';
+    if (typeof globalThis === "undefined" || !globalThis.location?.href) {
+      return "";
     }
 
-    const fromQuery = new URLSearchParams(globalThis.location.search || '').get('pid');
+    const fromQuery = new URLSearchParams(globalThis.location.search || "").get(
+      "pid"
+    );
     if (fromQuery) {
       return fromQuery;
     }
@@ -236,20 +246,22 @@ export default class SimilarProductsByState extends LightningElement {
       return sfProductId[0];
     }
 
-    const parts = (globalThis.location.pathname || '').split('/').filter(Boolean);
-    const lastSegment = parts.length ? decodeURIComponent(parts.at(-1)) : '';
-    return PRODUCT_ID_PATTERN.test(lastSegment) ? lastSegment : '';
+    const parts = (globalThis.location.pathname || "")
+      .split("/")
+      .filter(Boolean);
+    const lastSegment = parts.length ? decodeURIComponent(parts.at(-1)) : "";
+    return PRODUCT_ID_PATTERN.test(lastSegment) ? lastSegment : "";
   }
 
   normalizeProduct(item) {
-    const id = String(item.id || '').trim();
+    const id = String(item.id || "").trim();
     if (!id) {
       return null;
     }
 
-    const name = String(item.name || '').trim() || 'Untitled';
+    const name = String(item.name || "").trim() || "Untitled";
     const imageUrl = this.resolveProductImageUrl(item);
-    const urlName = String(item.urlName || item.slug || '').trim();
+    const urlName = String(item.urlName || item.slug || "").trim();
 
     return {
       ...item,
@@ -261,8 +273,12 @@ export default class SimilarProductsByState extends LightningElement {
   }
 
   isCurrentProduct(product) {
-    const currentId = String(this.currentProductId || '').trim().toLowerCase();
-    const productId = String(product?.id ?? '').trim().toLowerCase();
+    const currentId = String(this.currentProductId || "")
+      .trim()
+      .toLowerCase();
+    const productId = String(product?.id ?? "")
+      .trim()
+      .toLowerCase();
 
     if (!currentId || !productId) {
       return false;
@@ -288,37 +304,38 @@ export default class SimilarProductsByState extends LightningElement {
     ];
 
     for (const value of directCandidates) {
-      if (typeof value === 'string' && value.trim()) {
+      if (typeof value === "string" && value.trim()) {
         return value.trim();
       }
     }
 
-    return '';
+    return "";
   }
 
   findMediaGroupImageUrl(item) {
     const mediaGroups = Array.isArray(item.mediaGroups) ? item.mediaGroups : [];
     for (const group of mediaGroups) {
-      const mediaItems = group && Array.isArray(group.mediaItems) ? group.mediaItems : [];
+      const mediaItems =
+        group && Array.isArray(group.mediaItems) ? group.mediaItems : [];
       for (const media of mediaItems) {
         const url = media && (media.url || media.image?.url);
-        if (typeof url === 'string' && url.trim()) {
+        if (typeof url === "string" && url.trim()) {
           return url.trim();
         }
       }
     }
 
-    return '';
+    return "";
   }
 
   buildProductDetailPath(product) {
-    const nameSource = product.urlName || product.name || 'detail';
+    const nameSource = product.urlName || product.name || "detail";
     const recordName = String(nameSource)
       .toLowerCase()
-      .replaceAll(/[^a-z0-9]+/g, '-')
-      .replaceAll(/^-+|-+$/g, '');
+      .replaceAll(/[^a-z0-9]+/g, "-")
+      .replaceAll(/^-+|-+$/g, "");
 
-    return `/${this.storeName || DEFAULT_STORE_NAME}/product/${recordName || 'detail'}/${product.id}`;
+    return `/${this.storeName || DEFAULT_STORE_NAME}/product/${recordName || "detail"}/${product.id}`;
   }
 
   handleClickProduct(event) {
@@ -341,7 +358,7 @@ export default class SimilarProductsByState extends LightningElement {
     }
 
     this.currentIndex = Math.max(0, this.currentIndex - 1);
-    this.scrollToCurrentIndex('smooth');
+    this.scrollToCurrentIndex("smooth");
   }
 
   handleNext() {
@@ -349,23 +366,26 @@ export default class SimilarProductsByState extends LightningElement {
       return;
     }
 
-    const maxStart = Math.max(0, this.products.length - this.normalizedVisibleCount);
+    const maxStart = Math.max(
+      0,
+      this.products.length - this.normalizedVisibleCount
+    );
     this.currentIndex = Math.min(maxStart, this.currentIndex + 1);
-    this.scrollToCurrentIndex('smooth');
+    this.scrollToCurrentIndex("smooth");
   }
 
-  scrollToCurrentIndex(behavior = 'smooth') {
+  scrollToCurrentIndex(behavior = "smooth") {
     globalThis.requestAnimationFrame(() => {
-      const viewport = this.template.querySelector('.products-viewport');
-      const track = this.template.querySelector('.products-track');
-      const firstCard = this.template.querySelector('.product-card');
+      const viewport = this.template.querySelector(".products-viewport");
+      const trackElement = this.template.querySelector(".products-track");
+      const firstCard = this.template.querySelector(".product-card");
 
-      if (!viewport || !track || !firstCard) {
+      if (!viewport || !trackElement || !firstCard) {
         return;
       }
 
-      const style = globalThis.getComputedStyle(track);
-      const gapValue = style.columnGap || style.gap || '0';
+      const style = globalThis.getComputedStyle(trackElement);
+      const gapValue = style.columnGap || style.gap || "0";
       const gap = Number.parseFloat(gapValue) || 0;
       const cardWidth = firstCard.getBoundingClientRect().width;
       const left = Math.max(0, this.currentIndex * (cardWidth + gap));

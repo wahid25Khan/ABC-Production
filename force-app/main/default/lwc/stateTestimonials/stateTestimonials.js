@@ -1,165 +1,162 @@
-import { LightningElement, track } from 'lwc';
-import { loadScript, loadStyle } from 'lightning/platformResourceLoader';
-import getCarouselData from '@salesforce/apex/TestimonialCarouselController.getCarouselData';
-import LOGO_URL from '@salesforce/resourceUrl/testimonialsLogo';
-import SWIPER from '@salesforce/resourceUrl/SwiperJS';
+import { LightningElement, track } from "lwc";
+import { loadScript, loadStyle } from "lightning/platformResourceLoader";
+import getCarouselData from "@salesforce/apex/TestimonialCarouselController.getCarouselData";
+import LOGO_URL from "@salesforce/resourceUrl/testimonialsLogo";
+import SWIPER from "@salesforce/resourceUrl/SwiperJS";
 
-const STORAGE_KEY = 'abc_selected_state';
+const STORAGE_KEY = "abc_selected_state";
 
 export default class TestimonialCarousel extends LightningElement {
-    logoUrl = LOGO_URL;
-    
-    @track currentState = 'Georgia';
-    @track formattedSlides = [];
-    @track isLoading = true;
-    
-    swiperInitialized = false;
-    swiperInstance = null;
+  logoUrl = LOGO_URL;
 
-    _watchId;
-    _lastHash = '';
+  @track currentState = "Georgia";
+  @track formattedSlides = [];
+  @track isLoading = true;
 
-    connectedCallback() {
-        this.updateStateFromUrlOrStorage();
+  swiperInitialized = false;
+  swiperInstance = null;
 
-        this.fetchCarouselData();
+  _watchId;
+  _lastHash = "";
 
-        this.startHashWatcher();
+  connectedCallback() {
+    this.updateStateFromUrlOrStorage();
+
+    this.fetchCarouselData();
+
+    this.startHashWatcher();
+  }
+
+  disconnectedCallback() {
+    this.stopHashWatcher();
+  }
+
+  get hasData() {
+    if (!this.formattedSlides) return false;
+    return this.formattedSlides.length > 0;
+  }
+  // --- State Management ---
+
+  updateStateFromUrlOrStorage() {
+    let hashState = this.getStateFromHash();
+
+    if (!hashState) {
+      hashState = window.localStorage.getItem(STORAGE_KEY);
     }
 
-    disconnectedCallback() {
-        this.stopHashWatcher();
+    if (hashState) {
+      this.currentState = hashState;
     }
+  }
 
-    
-    get hasData(){ 
-        if (!this.formattedSlides) return false;
-        return this.formattedSlides.length > 0;
+  getStateFromHash() {
+    try {
+      const h = (window.location.hash || "").replace(/^#/, "").trim();
+      if (!h) return "";
+      return decodeURIComponent(h);
+    } catch {
+      return "";
     }
-    // --- State Management ---
-    
-    updateStateFromUrlOrStorage() {
-        let hashState = this.getStateFromHash();
-        
-        if (!hashState) {
-            hashState = window.localStorage.getItem(STORAGE_KEY);
+  }
+
+  // --- Hash Watcher ---
+
+  startHashWatcher() {
+    this._lastHash = window.location.hash;
+
+    this._watchId = window.setInterval(() => {
+      const currentHash = window.location.hash;
+      if (currentHash !== this._lastHash) {
+        this._lastHash = currentHash;
+
+        const newState = this.getStateFromHash();
+        if (newState && newState !== this.currentState) {
+          this.currentState = newState;
+          this.fetchCarouselData();
         }
+      }
+    }, 250);
+  }
 
-        if (hashState) {
-            this.currentState = hashState;
-        }
+  stopHashWatcher() {
+    if (this._watchId) {
+      window.clearInterval(this._watchId);
+      this._watchId = null;
     }
+  }
 
-    getStateFromHash() {
-        try {
-            const h = (window.location.hash || '').replace(/^#/, '').trim();
-            if (!h) return '';
-            return decodeURIComponent(h);
-        } catch (e) {
-            return '';
-        }
-    }
+  // --- Data Fetching (Apex) ---
 
-    // --- Hash Watcher ---
+  fetchCarouselData() {
+    this.isLoading = true;
 
-    startHashWatcher() {
-        this._lastHash = window.location.hash;
-        
-        this._watchId = window.setInterval(() => {
-            const currentHash = window.location.hash;
-            if (currentHash !== this._lastHash) {
-                this._lastHash = currentHash;
-                
-                const newState = this.getStateFromHash();
-                if (newState && newState !== this.currentState) {
-                    this.currentState = newState;
-                    this.fetchCarouselData();
-                }
-            }
-        }, 250);
-    }
-
-    stopHashWatcher() {
-        if (this._watchId) {
-            window.clearInterval(this._watchId);
-            this._watchId = null;
-        }
-    }
-
-    // --- Data Fetching (Apex) ---
-
-    fetchCarouselData() {
-        this.isLoading = true;
-        
-        getCarouselData({ stateCode: this.currentState })
-            .then(data => {
-                if (data && data.length > 0) {
-                    this.formattedSlides = data.map(item => ({
-                        ...item,
-                        isVideo: item.Media_Type__c === 'Video',
-                        isText: item.Media_Type__c === 'Text'
-                    }));
-                } else {
-                    this.formattedSlides = [];
-                }
-            })
-            .catch(error => {
-                console.error('Error fetching carousel data: ', error);
-                this.formattedSlides = [];
-            })
-            .finally(() => {
-                this.isLoading = false;
-
-                setTimeout(() => {
-                    this.setupOrUpdateSwiper();
-                }, 0);
-            });
-    }
-
-    // --- Swiper Initialization & Update ---
-
-    setupOrUpdateSwiper() {
-        if (!window.Swiper) {
-            Promise.all([
-                loadScript(this, SWIPER + '/SwiperJS/swiper-bundle.min.js'),
-                loadStyle(this, SWIPER + '/SwiperJS/swiper-bundle.min.css')
-            ])
-            .then(() => {
-                this.initSwiper();
-            })
-            .catch(error => {
-                console.error('Error loading Swiper files: ', error);
-            });
+    getCarouselData({ stateCode: this.currentState })
+      .then((data) => {
+        if (data && data.length > 0) {
+          this.formattedSlides = data.map((item) => ({
+            ...item,
+            isVideo: item.Media_Type__c === "Video",
+            isText: item.Media_Type__c === "Text"
+          }));
         } else {
-            setTimeout(() => {
-                this.initSwiper();
-            }, 0);
+          this.formattedSlides = [];
         }
+      })
+      .catch((error) => {
+        console.error("Error fetching carousel data: ", error);
+        this.formattedSlides = [];
+      })
+      .finally(() => {
+        this.isLoading = false;
+
+        setTimeout(() => {
+          this.setupOrUpdateSwiper();
+        }, 0);
+      });
+  }
+
+  // --- Swiper Initialization & Update ---
+
+  setupOrUpdateSwiper() {
+    if (!window.Swiper) {
+      Promise.all([
+        loadScript(this, SWIPER + "/SwiperJS/swiper-bundle.min.js"),
+        loadStyle(this, SWIPER + "/SwiperJS/swiper-bundle.min.css")
+      ])
+        .then(() => {
+          this.initSwiper();
+        })
+        .catch((error) => {
+          console.error("Error loading Swiper files: ", error);
+        });
+    } else {
+      setTimeout(() => {
+        this.initSwiper();
+      }, 0);
     }
+  }
 
-    initSwiper() {
-        const swiperContainer = this.template.querySelector('.swiper');
-        
-        if (swiperContainer && window.Swiper) {
-            if (this.swiperInstance) {
-                this.swiperInstance.destroy(true, true);
-            }
+  initSwiper() {
+    const swiperContainer = this.template.querySelector(".swiper");
 
-            this.swiperInitialized = true;
-            this.swiperInstance = new window.Swiper(swiperContainer, {
-                slidesPerView: 1,
-                spaceBetween: 15,
-                navigation: {
-                    nextEl: this.template.querySelector('.swiper-button-next'),
-                    prevEl: this.template.querySelector('.swiper-button-prev'),
-                },
-                breakpoints: {
-                    768: { slidesPerView: 2 },
-                    1024: { slidesPerView: 3 }
-                }
-            });
+    if (swiperContainer && window.Swiper) {
+      if (this.swiperInstance) {
+        this.swiperInstance.destroy(true, true);
+      }
+
+      this.swiperInitialized = true;
+      this.swiperInstance = new window.Swiper(swiperContainer, {
+        slidesPerView: 1,
+        spaceBetween: 15,
+        navigation: {
+          nextEl: this.template.querySelector(".swiper-button-next"),
+          prevEl: this.template.querySelector(".swiper-button-prev")
+        },
+        breakpoints: {
+          768: { slidesPerView: 2 },
+          1024: { slidesPerView: 3 }
         }
+      });
     }
-
-    
+  }
 }
