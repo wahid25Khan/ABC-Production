@@ -1,0 +1,18 @@
+{
+  "folders": [
+    {
+      "path": "/Users/mac/Development/ABC-Production"
+    }
+  ],
+  "settings": {
+    "eslint.workingDirectories": [
+      "/Users/mac/Development/ABC-Production"
+    ],
+    "eslint.validate": [
+      "javascript",
+      "typescript"
+    ],
+    "eslint.useFlatConfig": true,
+    "typescript.tsserver.experimental.enableProjectDiagnostics": false
+  }
+}

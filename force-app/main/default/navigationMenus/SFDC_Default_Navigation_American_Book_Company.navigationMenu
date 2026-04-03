@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<NavigationMenu xmlns="http://soap.sforce.com/2006/04/metadata">
+    <container>American Book Company</container>
+    <containerType>Network</containerType>
+    <label>Default Navigation</label>
+    <navigationMenuItem>
+        <label>SHOP ALL</label>
+        <position>1</position>
+        <publiclyAvailable>true</publiclyAvailable>
+        <target>/global-search/all</target>
+        <type>InternalLink</type>
+    </navigationMenuItem>
+    <navigationMenuItem>
+        <label>GET CATALOG</label>
+        <position>2</position>
+        <publiclyAvailable>true</publiclyAvailable>
+        <target>/catalog</target>
+        <type>InternalLink</type>
+    </navigationMenuItem>
+    <navigationMenuItem>
+        <label>ABOUT ABC</label>
+        <position>3</position>
+        <publiclyAvailable>true</publiclyAvailable>
+        <target>/about-abc</target>
+        <type>InternalLink</type>
+    </navigationMenuItem>
+    <navigationMenuItem>
+        <label>COURSEWAVE</label>
+        <position>4</position>
+        <publiclyAvailable>true</publiclyAvailable>
+        <target>https://coursewave.com/</target>
+        <type>ExternalLink</type>
+    </navigationMenuItem>
+    <navigationMenuItem>
+        <label>CERTIFICATION</label>
+        <position>5</position>
+        <publiclyAvailable>true</publiclyAvailable>
+        <target>/certification</target>
+        <type>InternalLink</type>
+    </navigationMenuItem>
+    <navigationMenuItem>
+        <label>ORDERING DOCS</label>
+        <position>6</position>
+        <publiclyAvailable>true</publiclyAvailable>
+        <target>/ordering-docs</target>
+        <type>InternalLink</type>
+    </navigationMenuItem>
+    <navigationMenuItem>
+        <label>BLOG</label>
+        <position>7</position>
+        <publiclyAvailable>true</publiclyAvailable>
+        <target>/blog</target>
+        <type>InternalLink</type>
+    </navigationMenuItem>
+    <navigationMenuItem>
+        <label>PODCAST</label>
+        <position>8</position>
+        <publiclyAvailable>true</publiclyAvailable>
+        <target>/podcast</target>
+        <type>InternalLink</type>
+    </navigationMenuItem>
+    <navigationMenuItem>
+        <label>My ACCOUNT</label>
+        <position>9</position>
+        <publiclyAvailable>true</publiclyAvailable>
+        <subMenu>
+            <navigationMenuItem>
+                <label>ACCOUNT DETAILS</label>
+                <position>0</position>
+                <publiclyAvailable>true</publiclyAvailable>
+                <target>/myprofile</target>
+                <type>InternalLink</type>
+            </navigationMenuItem>
+            <navigationMenuItem>
+                <label>MY ORDERS</label>
+                <position>1</position>
+                <publiclyAvailable>true</publiclyAvailable>
+                <target>/my-orders</target>
+                <type>InternalLink</type>
+            </navigationMenuItem>
+            <navigationMenuItem>
+                <label>MY WISHLIST</label>
+                <position>2</position>
+                <publiclyAvailable>true</publiclyAvailable>
+                <target>/mylists</target>
+                <type>InternalLink</type>
+            </navigationMenuItem>
+            <navigationMenuItem>
+                <label>SUBMIT A PO</label>
+                <position>3</position>
+                <publiclyAvailable>true</publiclyAvailable>
+                <target>/submit-a-po</target>
+                <type>InternalLink</type>
+            </navigationMenuItem>
+            <navigationMenuItem>
+                <label>LOG OUT</label>
+                <position>4</position>
+                <publiclyAvailable>true</publiclyAvailable>
+                <target>https://americanbookcompany.my.site.com/AmericanBookCompany/secur/logout.jsp?retUrl=%2FAmericanBookCompany%2F</target>
+                <type>ExternalLink</type>
+            </navigationMenuItem>
+        </subMenu>
+        <type>MenuLabel</type>
+    </navigationMenuItem>
+</NavigationMenu>

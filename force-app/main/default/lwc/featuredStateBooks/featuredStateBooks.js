@@ -324,7 +324,7 @@ export default class FeaturedStateBooks extends LightningElement {
     const params = new URLSearchParams({
       language: "en-US",
       asGuest: "true",
-      searchTerm: stateValue,
+      searchTerm: "*",
       page: "0",
       pageSize: String(this.normalizedMaxProducts + 4),
       refinement: `${this.refinementKey}:${stateValue}`

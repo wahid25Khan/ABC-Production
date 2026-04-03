@@ -1,0 +1,97 @@
+{
+  "type" : "sfdc_cms__view",
+  "title" : "Privacy Policy",
+  "contentBody" : {
+    "component" : {
+      "children" : [ {
+        "children" : [ {
+          "attributes" : {
+            "backgroundImageConfig" : "",
+            "backgroundImageOverlay" : "rgba(0,0,0,0)",
+            "componentSpacerSize" : "",
+            "dxpStyle" : { },
+            "layoutDirectionDesktop" : "row",
+            "layoutDirectionMobile" : "column",
+            "layoutDirectionTablet" : "column",
+            "maxContentWidth" : "",
+            "sectionColumnGutterWidth" : "",
+            "sectionConfig" : "{\"UUID\":\"7cd4c051-2e9c-4387-bf27-bfe8b88fbae4\",\"columns\":[{\"UUID\":\"7d7d8e79-f058-4807-ad3f-9fc51ec04c97\",\"columnName\":\"Column 1\",\"columnKey\":\"col1\",\"columnWidth\":\"12\",\"seedComponents\":null}]}",
+            "sectionMinHeight" : "",
+            "sectionVerticalAlign" : "flex-start"
+          },
+          "children" : [ {
+            "children" : [ {
+              "attributes" : {
+                "backgroundColor" : "",
+                "dxpStyle" : { },
+                "isLinkable" : false,
+                "linkAssistiveText" : "",
+                "paddingHorizontal" : "none",
+                "paddingVertical" : "large",
+                "text" : "Privacy Policy",
+                "textAlign" : "left",
+                "textColor" : "rgb(36, 41, 47)",
+                "textDecoration" : "{\"bold\":true}",
+                "textDisplayInfo" : "{\"textStyle\":\"heading-xlarge\",\"headingTag\":\"h1\",\"enableOverride\":false}"
+              },
+              "definition" : "dxp_base:textBlock",
+              "id" : "ec41c53a-2ad8-48b1-bb55-eec4a79622f7",
+              "type" : "component"
+            }, {
+              "attributes" : {
+                "dxpStyle" : {
+                  "margin" : {
+                    "bottom" : "0px",
+                    "left" : "30px",
+                    "right" : "0px",
+                    "top" : "0px"
+                  }
+                },
+                "imageInfos" : "",
+                "richTextValue" : "<div style=\"font-family: 'Lato', sans-serif; font-style: normal; font-weight: 400; font-size: 16px; line-height: 24px; color: oklch(0.278 0.033 256.848); text-align: justify;\">\n\n    <p style=\"margin-bottom: 20px;\">AmericanBookCompany.com, the wholly owned online platform of American Book Company, Inc. is committed to protecting the privacy of our customers' personal information. In accordance with the Family Education Rights and Privacy Act (FERPA) and the Children's Online Privacy Protection Act (COPPA), all personal information submitted by student and teacher customers for use on the American Book Company, Inc. website is for educational purposes only and not retained by American Book Company, Inc. beyond the time necessary to provide services. American Book Company will not trade, sell, or share any personal contact information entered on our site with any outside organization, except where necessary for them to perform a technology support function for us. This applies with respect to the information that we collect from the company web site, located at www.americanbookcompany.com.</p>\n\n    <p style=\"margin-bottom: 20px;\">American Book Company, Inc. relies on the institution's consent in lieu of a parent in collecting verifiable consent of students under the age of 13.</p>\n\n    <p style=\"margin-bottom: 20px;\">Approved amendments to this statement will be delivered to subscribers via email prior to being posted at this URL and will become effective once posted. The absence of written disagreements from subscribers about these intended changes and their continued use of this site following the notice of any amendment, modification or change shall constitute acceptance thereof.</p>\n\n    <h3 style=\"font-family: 'Lato', sans-serif; font-weight: 300; font-size: 16px; line-height: 24px; color: #1e2939; margin-top: 30px; margin-bottom: 10px; text-transform: uppercase; font-style: normal;\">I. INFORMATION COLLECTED</h3>\n    <p style=\"margin-bottom: 20px;\">We collect non-personally identifiable information about you by tracking your activities through your IP address, computer settings, or most-recently visited URL. We do not collect any personally identifiable information (PII) except that which is voluntarily submitted. The types of information that may be requested include first and last name, email address (optional), and student identification number (optional). This personal information is collected in one of three ways - either by direct student or teacher entry into the American Book Company account page, or by bulk upload of information by an individual school or school district. All Personally Identifiable Information is owned by the customers.</p>\n\n    <h3 style=\"font-family: 'Lato', sans-serif; font-weight: 300; font-size: 16px; line-height: 24px; color: oklch(0.278 0.033 256.848); margin-top: 30px; margin-bottom: 10px; text-transform: uppercase; font-style: normal;\">II. USE OF INFORMATION</h3>\n    <p style=\"margin-bottom: 20px;\">We will only use information for the purpose for which such information was provided. This personal information is used solely for the recording and tracking of student results on assessment items within the American Book Company website and can be accessed only by the individual student and teachers or administrators at the school or district level. Your information may also be used to contact you with respect to site functionality, such as assigning resources, notifying students of assessment results, and password reset functions. Users may opt-out of receiving future mailings from us by following the instructions set forth in the opt-out section below.</p>\n    <p style=\"margin-bottom: 20px;\">Non-personally identifiable and profile data is used to tailor your experience at our site, showing you content we think educational professionals might be interested in.</p>\n    <p style=\"margin-bottom: 20px;\">Anonymized, non-identifiable data may be used for the following purposes:<br></p>\n   <p style=\"margin-left: 20px;\"> 1. Analytics on student responses to identify problems with test content, such as unclear questions or answers so test content can be improved.<br>\n    2. Training AI models for automatic grading of answers for questions with variable answers i.e. short answer questions.</p>\n\n    <h3 style=\"font-family: 'Lato', sans-serif; font-weight: 300; font-size: 16px; line-height: 24px; color: oklch(0.278 0.033 256.848); margin-top: 30px; margin-bottom: 10px; text-transform: uppercase; font-style: normal;\">III. USE OF IP ADDRESSES</h3>\n    <p style=\"margin-bottom: 20px;\">We use your IP Address to help diagnose problems with our server and to administer our website.</p>\n\n    <h3 style=\"font-family: 'Lato', sans-serif; font-weight: 300; font-size: 16px; line-height: 24px; color: oklch(0.278 0.033 256.848); margin-top: 30px; margin-bottom: 10px; text-transform: uppercase; font-style: normal;\">IV. USE OF COOKIES</h3>\n    <p style=\"margin-bottom: 20px;\">When you visit our website, we might store some information on your computer. This information will be in the form of a \"cookie\" or similar file. Cookies are small pieces of information stored on your hard drive, not on our site. Cookies do not spy on you or otherwise invade your privacy, and they cannot invade your hard drive or steal information. Rather, they help you navigate our website as easily as possible. We use cookies to deliver content specific to your interests and to prevent you from re-entering all of your registration data at each connection.</p>\n    <p style=\"margin-bottom: 20px;\">Types of cookies we use:<br></p>\n    <p style=\"margin-left: 20px;\">Essential cookies: These help make a website usable by enabling basic functions like page navigation and access to secure areas of the website. The website cannot function properly without these cookies.<br>\n    Analytics cookies: These help the website operator understand how its website performs, how visitors interact with the site, and whether there may be technical issues.</p>\n\n    <h3 style=\"font-family: 'Lato', sans-serif; font-weight: 300; font-size: 16px; line-height: 24px; color: oklch(0.278 0.033 256.848); margin-top: 30px; margin-bottom: 10px; text-transform: uppercase; font-style: normal;\">V. PARENTAL RIGHTS</h3>\n    <p style=\"margin-bottom: 20px;\">American Book Company, Inc. requires only the collection of the first and last name of each student for participation in online assessment activities. The only other personal information requested by American Book Company, Inc. is the student ID Number and Email; this information is optional and site usage is fully functional without this information. Schools or districts may require this information for tracking purposes. The parent/guardian of each child is capable of reviewing their child's personal information with the use of the student's username and password. Teachers can make corrections and changes to their students' names, ID numbers, and email addresses within American Book Company.</p>\n    <p style=\"margin-bottom: 20px;\">Parents/Guardians may request to review, delete, or refuse collection of their child's personal information directly with the school or school district. The schools will be responsible for communicating deletion requests to American Book Company, Inc.</p>\n\n    <h3 style=\"font-family: 'Lato', sans-serif; font-weight: 300; font-size: 16px; line-height: 24px; color: oklch(0.278 0.033 256.848); margin-top: 30px; margin-bottom: 10px; text-transform: uppercase; font-style: normal;\">VI. USE OF GOOGLE &amp; MICROSOFT APIS</h3>\n    <p style=\"margin-bottom: 20px;\">You may log in to americanbookcompany.com using another service such as your Google or Microsoft Account. If you do, we use that service to verify your identity and we store your OAuth token for the purpose of logging you in via the \"Sign In with Google\" or \"Sign In with Microsoft\" buttons. This information is stored and transmitted always via an encrypted channel.</p>\n\n    <h3 style=\"font-family: 'Lato', sans-serif; font-weight: 300; font-size: 16px; line-height: 24px; color: oklch(0.278 0.033 256.848); margin-top: 30px; margin-bottom: 10px; text-transform: uppercase; font-style: normal;\">VII. SECURITY</h3>\n    <p style=\"margin-bottom: 20px;\">Our site has industry-standard security measures in place to protect the loss, misuse, and alteration of the information under our control. While there is no such thing as \"perfect security\" on the Internet, we will take all reasonable steps to ensure the safety of your personal information.</p>\n    <p style=\"margin-bottom: 20px;\">American Book Company servers are cloud-hosted on AWS infrastructure. This allows Amazon to maintain the security updates of their platforms and services which are used by American Book Company along with other AWS customers. American Book Company servers receive automated weekly security updates and can receive faster updates in cases of critical vulnerabilities when they are detected and updated by Amazon's infrastructure teams.</p>\n    <p style=\"margin-bottom: 20px;\">American Book Company's code is scanned weekly for vulnerabilities and reports are provided to the development team for patching and updating. Once applied, these updates are deployed through an automated deployment process which allows us to quickly respond to code, package, and dependency vulnerabilities in code.</p>\n\n    <h3 style=\"font-family: 'Lato', sans-serif; font-weight: 300; font-size: 16px; line-height: 24px; color: oklch(0.278 0.033 256.848); margin-top: 30px; margin-bottom: 10px; text-transform: uppercase; font-style: normal;\">VIII. OTHER WEBSITES; LINKS</h3>\n    <p style=\"margin-bottom: 20px;\">americanbookcompany.com, in some states where educational standards require audio or video questions in assessments, will have embedded audio or video files created by ABC and hosted at external sites. These embedded files may contain links to our material at those external sites. American Book Company, Inc. is not responsible for the privacy practices or the content of such sites.</p>\n\n    <h3 style=\"font-family: 'Lato', sans-serif; font-weight: 300; font-size: 16px; line-height: 24px; color: oklch(0.278 0.033 256.848); margin-top: 30px; margin-bottom: 10px; text-transform: uppercase; font-style: normal;\">IX. CORRECT; UPDATE</h3>\n    <p style=\"margin-bottom: 20px;\">American Book Company, Inc. allows teacher users the option to change or modify information previously provided, such as names, email addresses, and student ID numbers. Additional changes may be made through the following methods:<br></p>\n   <p style=\"margin-left: 20px;\"> E-mail the information to: contact@americanbookcompany.com<br>\n    Call: 1-888-264-5877</p>\n\n    <h3 style=\"font-family: 'Lato', sans-serif; font-weight: 300; font-size: 16px; line-height: 24px; color: oklch(0.278 0.033 256.848); margin-top: 30px; margin-bottom: 10px; text-transform: uppercase; font-style: normal;\">X. CHOICE; OPT-OUT</h3>\n    <p style=\"margin-bottom: 20px;\">Educators may receive occasional marketing messages from American Book Company, Inc. You may opt-out of receiving marketing communications from us by the following means:<br></p>\n   <p style=\"margin-left: 20px;\"> Send an e-mail to: contact@americanbookcompany.com<br>\n    Call: 1-888-264-5877<br>\n    Follow the unsubscribe link at the bottom of the email.</p>\n    <p style=\"margin-bottom: 20px;\">You will still receive transactional emails such as receipts, and messages related to the processes and policies defined in this Privacy Policy document.</p>\n\n    <h3 style=\"font-family: 'Lato', sans-serif; font-weight: 300; font-size: 16px; line-height: 24px; color: oklch(0.278 0.033 256.848); margin-top: 30px; margin-bottom: 10px; text-transform: uppercase; font-style: normal;\">XI. SUCCESSION</h3>\n    <p style=\"margin-bottom: 20px;\">In the event of the sale of the company, successor entities remain bound to the processes and policies defined in this Privacy Policy document.</p>\n\n    <div style=\"margin-top: 30px;\">\n        <p style=\"font-weight: 400; margin-bottom: 10px;font-size:30px;\">CONTACTING US:</p></div>\n        \n        <p style=\"margin-bottom: 20px;font-size:16px;\">If you have any questions about this privacy statement, the practices of this site, or your dealings with this website, you can contact us at: contact@americanbookcompany.com</p>\n\n        <p style=\"font-weight: 400; margin-bottom: 10px; margin-top: 20px;font-size:30px;\">DATA &amp; PRIVACY FAQS</p>\n    <div style=\"font-size:16px\">\n        <p style=\"font-family: 'Lato', sans-serif; font-weight: 300; font-size: 16px; line-height: 24px; color: oklch(0.278 0.033 256.848); margin-bottom: 5px;\">\n    HOW DO YOU STORE STUDENT DATA?\n</p>\n\n<p style=\"font-family: 'Lato', sans-serif; font-weight: 600; font-size: 16px; line-height: 24px; color: oklch(0.278 0.033 256.848); margin-bottom: 20px;\">\n    We store student data in an encrypted form and only transmit student data across encrypted channels.\n</p>\n\n<p style=\"font-family: 'Lato', sans-serif; font-weight: 300; font-size: 16px; line-height: 24px; color: oklch(0.278 0.033 256.848); margin-bottom: 5px;\">\n    DO YOU SHARE DATA WITH OTHER COMPANIES?\n</p>\n\n<p style=\"font-family: 'Lato', sans-serif; font-weight: 600; font-size: 16px; line-height: 24px; color: oklch(0.278 0.033 256.848); margin-bottom: 20px;\">\n    American Book Company, Inc. will not trade, sell, or share any personal contact information entered on our site with any outside organization, except where necessary for the development and administration of the website.\n</p>\n\n<p style=\"font-family: 'Lato', sans-serif; font-weight: 300; font-size: 16px; line-height: 24px; color: oklch(0.278 0.033 256.848); margin-bottom: 5px;\">\n    IS MY DATA SECURE? DOES IT MEET MY DISTRICT/STATE SECURITY GUIDELINES?\n</p>\n\n<p style=\"font-family: 'Lato', sans-serif; font-weight: 600; font-size: 16px; line-height: 24px; color: oklch(0.278 0.033 256.848); margin-bottom: 20px;\">\n    American Book Company, Inc. is committed to protecting the privacy of our customers' personal information. Security compliance requirements can differ by state, county, and district. Please feel free to contact us at contact@americanbookcompany.com with any specific security questions you may have.\n    </div>\n</p>\n</div>"
+              },
+              "definition" : "community_builder:htmlEditor",
+              "id" : "4007ee49-d836-44c1-b64b-b324d019f8bc",
+              "type" : "component"
+            } ],
+            "id" : "7d7d8e79-f058-4807-ad3f-9fc51ec04c97",
+            "name" : "col1",
+            "title" : "Column 1",
+            "type" : "region"
+          } ],
+          "definition" : "community_layout:section",
+          "id" : "7cd4c051-2e9c-4387-bf27-bfe8b88fbae4",
+          "type" : "component"
+        } ],
+        "id" : "92180ae3-22b2-4fd0-ab3e-34c15cff771d",
+        "name" : "content",
+        "title" : "Content",
+        "type" : "region"
+      }, {
+        "children" : [ {
+          "attributes" : {
+            "customHeadTags" : "",
+            "description" : "",
+            "dxpStyle" : { },
+            "pageTitle" : "Privacy Policy",
+            "recordId" : "{!recordId}"
+          },
+          "definition" : "community_builder:seoAssistant",
+          "id" : "4b6a076c-96f9-4aa6-a285-90c406a2d406",
+          "type" : "component"
+        } ],
+        "id" : "6ab5b192-26de-47d5-8fca-ef90b9170e99",
+        "name" : "sfdcHiddenRegion",
+        "title" : "sfdcHiddenRegion",
+        "type" : "region"
+      } ],
+      "definition" : "community_layout:sldsFlexibleLayout",
+      "id" : "6f6a09ce-9caa-41d8-aba4-4f02d34885e4",
+      "type" : "component"
+    },
+    "dataProviders" : [ ],
+    "themeLayoutType" : "Inner",
+    "viewType" : "privacy-policy"
+  },
+  "urlName" : "privacy-policy"
+}

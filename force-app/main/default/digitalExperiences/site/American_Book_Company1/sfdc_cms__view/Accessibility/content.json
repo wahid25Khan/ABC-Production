@@ -1,0 +1,85 @@
+{
+  "type" : "sfdc_cms__view",
+  "title" : "Accessibility",
+  "contentBody" : {
+    "component" : {
+      "children" : [ {
+        "children" : [ {
+          "attributes" : {
+            "backgroundImageConfig" : "",
+            "backgroundImageOverlay" : "rgba(0,0,0,0)",
+            "componentSpacerSize" : "",
+            "layoutDirectionDesktop" : "row",
+            "layoutDirectionMobile" : "column",
+            "layoutDirectionTablet" : "column",
+            "maxContentWidth" : "",
+            "sectionColumnGutterWidth" : "",
+            "sectionConfig" : "{\"UUID\":\"f68ed265-4dd3-4322-9b3b-4238ab273250\",\"columns\":[{\"UUID\":\"641e4704-8347-4350-bbca-61f97e641784\",\"columnName\":\"Column 1\",\"columnKey\":\"col1\",\"columnWidth\":\"12\",\"seedComponents\":[]}]}",
+            "sectionMinHeight" : "",
+            "sectionVerticalAlign" : "flex-start"
+          },
+          "children" : [ {
+            "children" : [ {
+              "attributes" : {
+                "backgroundColor" : "",
+                "isLinkable" : false,
+                "linkAssistiveText" : "",
+                "paddingHorizontal" : "none",
+                "paddingVertical" : "large",
+                "text" : "Accessibility",
+                "textAlign" : "left",
+                "textDecoration" : "{\"bold\":true}",
+                "textDisplayInfo" : "{\"textStyle\":\"heading-xlarge\",\"headingTag\":\"h1\",\"enableOverride\":false}"
+              },
+              "definition" : "dxp_base:textBlock",
+              "id" : "c074b386-b745-46e1-82c3-07b9f702d0d7",
+              "type" : "component"
+            }, {
+              "attributes" : {
+                "imageInfos" : "",
+                "richTextValue" : "<p><span style=\"color: oklch(0.278 0.033 256.848); font-family: arial; font-size: 24px;\"><span class=\"ql-cursor\">﻿</span></span><span style=\"color: oklch(0.278 0.033 256.848); font-family: arial; font-size: 18px;\">Coming soon...</span></p>"
+              },
+              "definition" : "community_builder:richTextEditor",
+              "id" : "43bf499a-0ebd-4a44-964a-26ed8a061422",
+              "type" : "component"
+            } ],
+            "id" : "641e4704-8347-4350-bbca-61f97e641784",
+            "name" : "col1",
+            "title" : "Column 1",
+            "type" : "region"
+          } ],
+          "definition" : "community_layout:section",
+          "id" : "f68ed265-4dd3-4322-9b3b-4238ab273250",
+          "type" : "component"
+        } ],
+        "id" : "d2845d5e-28df-4b83-b315-70c7a46adb4c",
+        "name" : "content",
+        "title" : "Content",
+        "type" : "region"
+      }, {
+        "children" : [ {
+          "attributes" : {
+            "customHeadTags" : "",
+            "description" : "",
+            "pageTitle" : "Accessibility",
+            "recordId" : "{!recordId}"
+          },
+          "definition" : "community_builder:seoAssistant",
+          "id" : "ee330fb8-9026-4d67-9ced-a7d2a6625bb8",
+          "type" : "component"
+        } ],
+        "id" : "b97791a3-6c20-4f74-b1c9-150cc0ce0241",
+        "name" : "sfdcHiddenRegion",
+        "title" : "sfdcHiddenRegion",
+        "type" : "region"
+      } ],
+      "definition" : "community_layout:sldsFlexibleLayout",
+      "id" : "326329d8-55a1-4c6d-a357-7d5103bf045e",
+      "type" : "component"
+    },
+    "dataProviders" : [ ],
+    "themeLayoutType" : "Inner",
+    "viewType" : "custom-accessibility"
+  },
+  "urlName" : "accessibility"
+}

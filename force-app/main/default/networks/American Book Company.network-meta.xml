@@ -80,7 +80,7 @@
     </networkPageOverrides>
     <picassoSite>American_Book_Company1</picassoSite>
     <selfRegProfile>american book company shopper profile</selfRegProfile>
-    <selfRegistration>false</selfRegistration>
+    <selfRegistration>true</selfRegistration>
     <sendWelcomeEmail>false</sendWelcomeEmail>
     <site>American_Book_Company</site>
     <siteArchiveStatus>NotArchived</siteArchiveStatus>

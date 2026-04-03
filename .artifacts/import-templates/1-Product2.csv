@@ -1,0 +1,6 @@
+Name,StockKeepingUnit,ProductCode,IsActive,ProductClass,State__c,Grade_Level__c,Category__c,Series__c,Description
+"Georgia History Foundations","ISBN: 641189001","64118-900-1",true,Simple,"Georgia","Grade 8","Social Studies","State History","Georgia state history textbook for 8th grade"
+"Algebra I Foundations","ISBN: 641176001","64117-600-1",true,Simple,"Alabama;Georgia;Florida;Tennessee;Texas","Grade 9","Math","Algebra","Introductory algebra course for high school"
+"US History Review","ISBN: 641177001","64117-700-1",true,Simple,"Alabama;Georgia;Florida;Tennessee;Texas;North Carolina;South Carolina","Grade 11","Social Studies","US History","Comprehensive US History review guide"
+"Biology Lab Manual","ISBN: 641178001","64117-800-1",true,Simple,"Alabama;Georgia;Florida","Grade 10","Science","Lab Manuals","Hands-on biology lab manual for 10th grade"
+"English II Foundations","ISBN: 641179001","64117-900-1",true,Simple,"Alabama;Georgia;Florida;Tennessee","Grade 10","English","English","English language arts for 10th grade"

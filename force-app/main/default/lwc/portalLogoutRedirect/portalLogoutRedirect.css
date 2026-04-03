@@ -1,0 +1,14 @@
+.logout-shell {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 240px;
+    padding: 2rem 1rem;
+}
+
+.logout-message {
+    margin: 0;
+    color: #1e2a3a;
+    font-size: 1rem;
+    font-weight: 600;
+}

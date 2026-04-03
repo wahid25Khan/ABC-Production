@@ -21,6 +21,7 @@ const PRODUCT_DETAIL_FIELDS = [
 ];
 
 const PRODUCT_DETAIL_BATCH_SIZE = 20;
+const PRICING_BATCH_SIZE = 200;
 
 const GRADE_FILTER_VALUES = [
   "Kindergarten",
@@ -149,6 +150,13 @@ function parseCsv(value) {
     .filter(Boolean);
 }
 
+function parseMultiValueString(value) {
+  return String(value || "")
+    .split(";")
+    .map((item) => item.trim())
+    .filter(Boolean);
+}
+
 function toArray(value) {
   return Array.isArray(value) ? value : [];
 }
@@ -209,6 +217,7 @@ export default class CustomResults extends LightningElement {
   @track isStateDropdownOpen = false;
   @track isSortDropdownOpen = false;
   @track isPageSizeDropdownOpen = false;
+  @track isMobileFiltersOpen = false;
 
   stateProducts = [];
   selectedFiltersByField = {};
@@ -242,6 +251,9 @@ export default class CustomResults extends LightningElement {
     if (this.docClickHandler) {
       document.removeEventListener("click", this.docClickHandler);
       this.docClickHandler = null;
+    }
+    if (globalThis.document?.body) {
+      globalThis.document.body.style.overflow = "";
     }
   }
 
@@ -287,11 +299,11 @@ export default class CustomResults extends LightningElement {
   }
 
   get ariaGridPressed() {
-    return this.isGridView ? "true" : "false";
+    return this.isGridView;
   }
 
   get ariaListPressed() {
-    return this.isListView ? "true" : "false";
+    return this.isListView;
   }
 
   get sortOptions() {
@@ -392,6 +404,16 @@ export default class CustomResults extends LightningElement {
     return this.selectedState
       ? "custom-select-option"
       : "custom-select-option selected";
+  }
+
+  get filtersColumnClass() {
+    return this.isMobileFiltersOpen
+      ? "filters-column mobile-open"
+      : "filters-column";
+  }
+
+  get mobileFilterPanelClass() {
+    return "mobile-filter-panel";
   }
 
   get stateOptionsForUi() {
@@ -541,13 +563,19 @@ export default class CustomResults extends LightningElement {
     const response = await this.fetchAllProducts(
       this.buildStateSearchCriteria()
     );
-    const hydratedProducts = await this.hydrateProductsWithFields(
-      response.products
-    );
+    const productIds = toArray(response.products)
+      .map((item) => String(item?.id || "").trim())
+      .filter(Boolean);
+
+    const [hydratedProducts, pricingMap] = await Promise.all([
+      this.hydrateProductsWithFields(response.products),
+      this.fetchPricingForProducts(productIds)
+    ]);
+
     const baseProducts = hydratedProducts
       .map((item) => this.normalizeProduct(item))
       .filter(Boolean);
-    const products = await this.enrichProductsWithPricing(baseProducts);
+    const products = this.applyPricingMapToProducts(baseProducts, pricingMap);
 
     return {
       facets: response.facets,
@@ -577,7 +605,11 @@ export default class CustomResults extends LightningElement {
     if (!productIds.length) return products;
 
     const pricingMap = await this.fetchPricingForProducts(productIds);
-    if (!pricingMap.size) return products;
+    return this.applyPricingMapToProducts(products, pricingMap);
+  }
+
+  applyPricingMapToProducts(products, pricingMap) {
+    if (!pricingMap?.size) return products;
 
     return products.map((product) => {
       const priceInfo = pricingMap.get(product.id);
@@ -603,18 +635,31 @@ export default class CustomResults extends LightningElement {
   }
 
   async fetchPricingForProducts(productIds) {
-    try {
-      const response = await fetch(this.buildPricingEndpoint(productIds), {
-        method: "GET",
-        credentials: "include"
-      });
+    const batches = chunkArray(productIds, PRICING_BATCH_SIZE);
 
-      if (!response.ok) return new Map();
-      const data = await response.json();
-      return this.extractPricingMap(data);
-    } catch {
-      return new Map();
-    }
+    const merged = new Map();
+    const batchMaps = await Promise.all(
+      batches.map(async (batch) => {
+        try {
+          const response = await fetch(this.buildPricingEndpoint(batch), {
+            method: "GET",
+            credentials: "include"
+          });
+
+          if (!response.ok) return new Map();
+          const data = await response.json();
+          return this.extractPricingMap(data);
+        } catch {
+          return new Map();
+        }
+      })
+    );
+
+    batchMaps.forEach((batchMap) => {
+      batchMap.forEach((value, key) => merged.set(key, value));
+    });
+
+    return merged;
   }
 
   buildPricingEndpoint(productIds) {
@@ -637,7 +682,7 @@ export default class CustomResults extends LightningElement {
       const hydrated = hydratedMap.get(String(item?.id || "").trim());
       if (!hydrated) return item;
 
-      return {
+      const merged = {
         ...item,
         ...hydrated,
         fields:
@@ -645,6 +690,19 @@ export default class CustomResults extends LightningElement {
             ? hydrated.fields
             : item.fields
       };
+
+      /* Preserve search-API image when product-detail overrides with empty */
+      if (!merged.defaultImage?.url && item.defaultImage?.url) {
+        merged.defaultImage = item.defaultImage;
+      }
+      if (!merged.imageUrl && item.imageUrl) {
+        merged.imageUrl = item.imageUrl;
+      }
+      if (!merged.mediaGroups?.length && item.mediaGroups?.length) {
+        merged.mediaGroups = item.mediaGroups;
+      }
+
+      return merged;
     });
   }
 
@@ -658,14 +716,16 @@ export default class CustomResults extends LightningElement {
     ];
     if (!ids.length) return new Map();
 
-    const merged = new Map();
     const batches = chunkArray(ids, PRODUCT_DETAIL_BATCH_SIZE);
 
-    for (const batch of batches) {
-      // eslint-disable-next-line no-await-in-loop
-      const batchMap = await this.fetchProductFieldBatch(batch);
+    const merged = new Map();
+    const batchMaps = await Promise.all(
+      batches.map((batch) => this.fetchProductFieldBatch(batch))
+    );
+
+    batchMaps.forEach((batchMap) => {
       batchMap.forEach((value, key) => merged.set(key, value));
-    }
+    });
 
     return merged;
   }
@@ -777,7 +837,9 @@ export default class CustomResults extends LightningElement {
       }
     });
 
-    return deduped.length ? deduped.join(" ") : "*";
+    if (deduped.length) return deduped.join(" ");
+    const fallback = String(this.defaultSearchTerm || "").trim();
+    return fallback || "all";
   }
 
   getPathSearchToken() {
@@ -1010,8 +1072,9 @@ export default class CustomResults extends LightningElement {
       return;
     }
 
-    const normalized = String(value).trim().toLowerCase();
-    if (normalized) values.push(normalized);
+    parseMultiValueString(value).forEach((entry) => {
+      values.push(entry.toLowerCase());
+    });
   }
 
   resolveCurrencyIsoCode(item) {
@@ -1082,8 +1145,9 @@ export default class CustomResults extends LightningElement {
       return;
     }
 
-    const normalized = String(value).trim();
-    if (normalized) parts.push(normalized);
+    parseMultiValueString(value).forEach((entry) => {
+      parts.push(entry);
+    });
   }
 
   normalizeSearchText(value) {
@@ -1109,7 +1173,10 @@ export default class CustomResults extends LightningElement {
           value: entry.value,
           label: entry.value,
           count: entry.count,
-          checked: selected.has(entry.value)
+          checked: selected.has(entry.value),
+          pillClass: selected.has(entry.value)
+            ? "filter-option-row filter-option-checked"
+            : "filter-option-row"
         })
       );
 
@@ -1820,11 +1887,12 @@ export default class CustomResults extends LightningElement {
 
   extractPricingMap(data) {
     const root = data && typeof data === "object" ? data : {};
-    const rows = Array.isArray(root.pricingLineItemResults)
-      ? root.pricingLineItemResults
-      : Array.isArray(root.pricingResults)
-        ? root.pricingResults
-        : [];
+    let rows = [];
+    if (Array.isArray(root.pricingLineItemResults)) {
+      rows = root.pricingLineItemResults;
+    } else if (Array.isArray(root.pricingResults)) {
+      rows = root.pricingResults;
+    }
 
     const pricingByProductId = new Map();
 
@@ -1957,6 +2025,23 @@ export default class CustomResults extends LightningElement {
     const value = String(event.currentTarget.dataset.value || "relevance");
     this.closeAllDropdowns();
     this.handleSortChange({ detail: { value } });
+  }
+
+  handleToggleMobileFilters() {
+    this.isMobileFiltersOpen = !this.isMobileFiltersOpen;
+    if (globalThis.document?.body) {
+      globalThis.document.body.style.overflow = this.isMobileFiltersOpen
+        ? "hidden"
+        : "";
+    }
+  }
+
+  handleClearAllFilters() {
+    this.selectedFiltersByField = {};
+    this.searchText = "";
+    this.currentPage = 1;
+    this.rebuildFilterGroups();
+    this.applyLocalFiltersAndPagination();
   }
 
   handlePageSizeOptionClick(event) {

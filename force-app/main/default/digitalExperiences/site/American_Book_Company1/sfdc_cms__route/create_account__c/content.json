@@ -1,0 +1,12 @@
+{
+  "type" : "sfdc_cms__route",
+  "title" : "create-account-custom",
+  "contentBody" : {
+    "activeViewId" : "create_account",
+    "configurationTags" : [ ],
+    "pageAccess" : "Public",
+    "routeType" : "custom-createaccount",
+    "urlPrefix" : "create-account"
+  },
+  "urlName" : "create-account"
+}

@@ -1,0 +1,340 @@
+[
+  {
+    "page": "login",
+    "viewport": "tablet",
+    "screenshotPath": ".artifacts/login-tablet.png",
+    "metrics": {
+      "viewport": {
+        "key": "tablet",
+        "width": 820,
+        "height": 1180
+      },
+      "scrollWidth": 820,
+      "overflowX": false,
+      "header": {
+        "exists": false,
+        "navCount": 0,
+        "searchCount": 0,
+        "cartCount": 0,
+        "navRect": null,
+        "searchRect": null
+      },
+      "login": {
+        "floatingButtonPresent": true,
+        "floatingButtonRect": {
+          "x": 366,
+          "y": 55,
+          "width": 88.1,
+          "height": 50.8
+        },
+        "formCardRect": {
+          "x": 0,
+          "y": 204.1,
+          "width": 820,
+          "height": 361.5
+        }
+      },
+      "createAccount": {
+        "firstNameRect": null,
+        "lastNameRect": null,
+        "emailRect": null,
+        "googleButtonRect": null,
+        "microsoftButtonRect": null,
+        "sameRowNameFields": false,
+        "sameRowSocialButtons": false
+      },
+      "checkout": {
+        "newCustomersRect": null,
+        "returningCustomersRect": null,
+        "returnToCartRect": null,
+        "sameRowCustomerBlocks": false,
+        "stackedCustomerBlocks": false
+      }
+    }
+  },
+  {
+    "page": "create-account",
+    "viewport": "tablet",
+    "screenshotPath": ".artifacts/create-account-tablet.png",
+    "metrics": {
+      "viewport": {
+        "key": "tablet",
+        "width": 820,
+        "height": 1180
+      },
+      "scrollWidth": 820,
+      "overflowX": false,
+      "header": {
+        "exists": true,
+        "navCount": 1,
+        "searchCount": 1,
+        "cartCount": 1,
+        "navRect": {
+          "x": 12,
+          "y": 4,
+          "width": 803,
+          "height": 27.4
+        },
+        "searchRect": {
+          "x": 259.9,
+          "y": 45.4,
+          "width": 499.1,
+          "height": 24
+        }
+      },
+      "login": {
+        "floatingButtonPresent": false,
+        "floatingButtonRect": null,
+        "formCardRect": {
+          "x": 0,
+          "y": 98.4,
+          "width": 820,
+          "height": 1152.9
+        }
+      },
+      "createAccount": {
+        "firstNameRect": null,
+        "lastNameRect": null,
+        "emailRect": null,
+        "googleButtonRect": null,
+        "microsoftButtonRect": null,
+        "sameRowNameFields": false,
+        "sameRowSocialButtons": false
+      },
+      "checkout": {
+        "newCustomersRect": null,
+        "returningCustomersRect": null,
+        "returnToCartRect": null,
+        "sameRowCustomerBlocks": false,
+        "stackedCustomerBlocks": false
+      }
+    }
+  },
+  {
+    "page": "checkout",
+    "viewport": "tablet",
+    "screenshotPath": ".artifacts/checkout-tablet.png",
+    "metrics": {
+      "viewport": {
+        "key": "tablet",
+        "width": 820,
+        "height": 1180
+      },
+      "scrollWidth": 820,
+      "overflowX": false,
+      "header": {
+        "exists": true,
+        "navCount": 1,
+        "searchCount": 1,
+        "cartCount": 1,
+        "navRect": {
+          "x": 12,
+          "y": 4,
+          "width": 803,
+          "height": 27.4
+        },
+        "searchRect": {
+          "x": 259.9,
+          "y": 45.4,
+          "width": 499.1,
+          "height": 24
+        }
+      },
+      "login": {
+        "floatingButtonPresent": false,
+        "floatingButtonRect": null,
+        "formCardRect": {
+          "x": 123,
+          "y": 98.4,
+          "width": 574,
+          "height": 548.8
+        }
+      },
+      "createAccount": {
+        "firstNameRect": null,
+        "lastNameRect": null,
+        "emailRect": null,
+        "googleButtonRect": null,
+        "microsoftButtonRect": null,
+        "sameRowNameFields": false,
+        "sameRowSocialButtons": false
+      },
+      "checkout": {
+        "newCustomersRect": null,
+        "returningCustomersRect": null,
+        "returnToCartRect": {
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        "sameRowCustomerBlocks": false,
+        "stackedCustomerBlocks": false
+      }
+    }
+  },
+  {
+    "page": "login",
+    "viewport": "mobile",
+    "screenshotPath": ".artifacts/login-mobile.png",
+    "metrics": {
+      "viewport": {
+        "key": "mobile",
+        "width": 390,
+        "height": 844
+      },
+      "scrollWidth": 390,
+      "overflowX": false,
+      "header": {
+        "exists": false,
+        "navCount": 0,
+        "searchCount": 0,
+        "cartCount": 0,
+        "navRect": null,
+        "searchRect": null
+      },
+      "login": {
+        "floatingButtonPresent": true,
+        "floatingButtonRect": {
+          "x": 151,
+          "y": 35,
+          "width": 88.1,
+          "height": 50.8
+        },
+        "formCardRect": {
+          "x": 0,
+          "y": 371.5,
+          "width": 390,
+          "height": 416.5
+        }
+      },
+      "createAccount": {
+        "firstNameRect": null,
+        "lastNameRect": null,
+        "emailRect": null,
+        "googleButtonRect": null,
+        "microsoftButtonRect": null,
+        "sameRowNameFields": false,
+        "sameRowSocialButtons": false
+      },
+      "checkout": {
+        "newCustomersRect": null,
+        "returningCustomersRect": null,
+        "returnToCartRect": null,
+        "sameRowCustomerBlocks": false,
+        "stackedCustomerBlocks": false
+      }
+    }
+  },
+  {
+    "page": "create-account",
+    "viewport": "mobile",
+    "screenshotPath": ".artifacts/create-account-mobile.png",
+    "metrics": {
+      "viewport": {
+        "key": "mobile",
+        "width": 390,
+        "height": 844
+      },
+      "scrollWidth": 390,
+      "overflowX": false,
+      "header": {
+        "exists": true,
+        "navCount": 0,
+        "searchCount": 1,
+        "cartCount": 1,
+        "navRect": null,
+        "searchRect": {
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        }
+      },
+      "login": {
+        "floatingButtonPresent": false,
+        "floatingButtonRect": null,
+        "formCardRect": {
+          "x": 0,
+          "y": 301,
+          "width": 390,
+          "height": 1306
+        }
+      },
+      "createAccount": {
+        "firstNameRect": null,
+        "lastNameRect": null,
+        "emailRect": null,
+        "googleButtonRect": null,
+        "microsoftButtonRect": null,
+        "sameRowNameFields": false,
+        "sameRowSocialButtons": false
+      },
+      "checkout": {
+        "newCustomersRect": null,
+        "returningCustomersRect": null,
+        "returnToCartRect": null,
+        "sameRowCustomerBlocks": false,
+        "stackedCustomerBlocks": false
+      }
+    }
+  },
+  {
+    "page": "checkout",
+    "viewport": "mobile",
+    "screenshotPath": ".artifacts/checkout-mobile.png",
+    "metrics": {
+      "viewport": {
+        "key": "mobile",
+        "width": 390,
+        "height": 844
+      },
+      "scrollWidth": 390,
+      "overflowX": false,
+      "header": {
+        "exists": true,
+        "navCount": 0,
+        "searchCount": 1,
+        "cartCount": 1,
+        "navRect": null,
+        "searchRect": {
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        }
+      },
+      "login": {
+        "floatingButtonPresent": false,
+        "floatingButtonRect": null,
+        "formCardRect": {
+          "x": 0,
+          "y": 301,
+          "width": 390,
+          "height": 750.9
+        }
+      },
+      "createAccount": {
+        "firstNameRect": null,
+        "lastNameRect": null,
+        "emailRect": null,
+        "googleButtonRect": null,
+        "microsoftButtonRect": null,
+        "sameRowNameFields": false,
+        "sameRowSocialButtons": false
+      },
+      "checkout": {
+        "newCustomersRect": null,
+        "returningCustomersRect": null,
+        "returnToCartRect": {
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        "sameRowCustomerBlocks": false,
+        "stackedCustomerBlocks": false
+      }
+    }
+  }
+]

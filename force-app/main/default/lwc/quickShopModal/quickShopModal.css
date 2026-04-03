@@ -497,9 +497,22 @@ button.slds-backdrop {
     font-size: 1.3rem;
   }
 
+  .plan-toggle {
+    flex-wrap: wrap;
+  }
+
   .plan-option {
     padding: 8px 12px;
     font-size: 13px;
+  }
+
+  .feature-cols {
+    grid-template-columns: 1fr;
+  }
+
+  .qty-wrap {
+    width: 100%;
+    min-width: 0;
   }
 
   .btns > div,

@@ -66,7 +66,7 @@
               >
                 <template for:each={variations} for:item="v">
                   <button
-                    key={v.productId}
+                    key={v.index}
                     class={v.tabClass}
                     type="button"
                     onclick={handleTabClick}
@@ -168,6 +168,9 @@
                       &plus;
                     </button>
                   </div>
+                  <div class="order-total-line">
+                    Order Total: <strong>{totalPrice}</strong>
+                  </div>
                 </div>
                 <div class="btn-offset">
                   <button class="btn-add" onclick={handleAddToCart}>
@@ -184,6 +187,7 @@
                   type="button"
                   title="Save to favorites"
                   aria-label="Save to favorites"
+                  disabled={isFavoriteDisabled}
                   onclick={toggleFavorite}
                 >
                   <lightning-icon

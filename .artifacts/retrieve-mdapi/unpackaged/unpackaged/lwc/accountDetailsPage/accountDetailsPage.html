@@ -1,0 +1,200 @@
+<template>
+    <div class="account-details-page">
+        <template if:true={isLoading}>
+            <lightning-spinner alternative-text="Loading account details" size="medium"></lightning-spinner>
+        </template>
+
+        <template if:false={isLoading}>
+            <section class="account-hero">
+                <div class="hero-copy">
+                    <p class="hero-kicker">My Account</p>
+                    <div class="page-header">
+                        <h1>{heroTitle}</h1>
+                        <p class="hero-description">{heroDescription}</p>
+                    </div>
+
+                    <div class="hero-summary">
+                        <article class="summary-card">
+                            <span class="summary-label">Contact Email</span>
+                            <span class="summary-value">{displayEmail}</span>
+                        </article>
+                        <article class="summary-card">
+                            <span class="summary-label">Organization</span>
+                            <span class="summary-value">{displayOrganization}</span>
+                        </article>
+                        <article class="summary-card">
+                            <span class="summary-label">Shipping</span>
+                            <span class="summary-value">{shippingStatusLabel}</span>
+                        </article>
+                    </div>
+                </div>
+
+                <div class="hero-actions">
+                    <a class="hero-action-card" href={ordersUrl}>
+                        <span class="hero-action-label">My Orders</span>
+                        <span class="hero-action-copy">Review recent orders and order history.</span>
+                    </a>
+                    <a class="hero-action-card" href={submitPoUrl}>
+                        <span class="hero-action-label">Submit a PO</span>
+                        <span class="hero-action-copy">Upload a purchase order for your school or district.</span>
+                    </a>
+                    <a class="hero-action-card" href={wishlistUrl}>
+                        <span class="hero-action-label">My Wishlist</span>
+                        <span class="hero-action-copy">Open saved books and educator picks.</span>
+                    </a>
+                </div>
+            </section>
+
+            <div class="section-tabs" role="tablist" aria-label="Account Details Sections">
+                <template for:each={sectionTabs} for:item="tab">
+                    <button
+                        key={tab.id}
+                        class={tab.className}
+                        data-target={tab.id}
+                        onclick={handleTabClick}
+                        type="button"
+                    >
+                        {tab.label}
+                    </button>
+                </template>
+            </div>
+
+            <template if:true={statusMessage}>
+                <output class={statusClass}>{statusMessage}</output>
+            </template>
+
+            <section class="detail-section" data-section="about-you" id="about-you">
+                <div class="section-heading">
+                    <div>
+                        <p class="section-kicker">Profile</p>
+                        <h2>About You</h2>
+                    </div>
+                    <button class="edit-link" type="button" onclick={handleEditAbout}>Edit</button>
+                </div>
+
+                <template if:false={isEditingAbout}>
+                    <div class="about-grid">
+                        <div class="detail-row">
+                            <div class="detail-label">Name</div>
+                            <div class="detail-value">{displayName}</div>
+                        </div>
+                        <div class="detail-row">
+                            <div class="detail-label">Email</div>
+                            <div class="detail-value">{displayEmail}</div>
+                        </div>
+                        <div class="detail-row">
+                            <div class="detail-label">Phone</div>
+                            <div class="detail-value">{displayPhone}</div>
+                        </div>
+                    </div>
+                </template>
+
+                <template if:true={isEditingAbout}>
+                    <div class="form-grid">
+                        <label class="field">
+                            <span>First Name</span>
+                            <input data-field="firstName" type="text" value={aboutForm.firstName} oninput={handleAboutInput} />
+                        </label>
+                        <label class="field">
+                            <span>Last Name</span>
+                            <input data-field="lastName" type="text" value={aboutForm.lastName} oninput={handleAboutInput} />
+                        </label>
+                        <label class="field full-width">
+                            <span>Email</span>
+                            <input data-field="email" type="email" value={aboutForm.email} oninput={handleAboutInput} />
+                        </label>
+                        <label class="field full-width">
+                            <span>Phone</span>
+                            <input data-field="phone" type="tel" value={aboutForm.phone} oninput={handleAboutInput} />
+                        </label>
+                    </div>
+                    <div class="button-row">
+                        <button class="primary-button" type="button" onclick={handleSaveAbout} disabled={isSavingAbout}>Save Details</button>
+                        <button class="secondary-button" type="button" onclick={handleCancelAbout}>Cancel</button>
+                    </div>
+                </template>
+            </section>
+
+            <section class="detail-section" data-section="password-security" id="password-security">
+                <div class="section-heading">
+                    <div>
+                        <p class="section-kicker">Security</p>
+                        <h2>Password &amp; Security</h2>
+                    </div>
+                </div>
+                <div class="password-layout">
+                    <div class="password-form">
+                        <label class="field">
+                            <span>Current Password *</span>
+                            <input data-field="currentPassword" type="password" value={passwordForm.currentPassword} oninput={handlePasswordInput} />
+                        </label>
+                        <label class="field">
+                            <span>New Password *</span>
+                            <input data-field="newPassword" type="password" value={passwordForm.newPassword} oninput={handlePasswordInput} />
+                        </label>
+                        <label class="field">
+                            <span>Confirm Password *</span>
+                            <input data-field="confirmPassword" type="password" value={passwordForm.confirmPassword} oninput={handlePasswordInput} />
+                        </label>
+                        <button class="secondary-pill" type="button" onclick={handleSavePassword} disabled={isPasswordSubmitDisabled}>Update Password</button>
+                    </div>
+                    <div class="password-rules">
+                        <div class="rules-title">Password requirements:</div>
+                        <div class="rules-columns">
+                            <ul>
+                                <template for:each={passwordRequirements} for:item="requirement">
+                                    <li key={requirement.label} class={requirement.className}>{requirement.label}</li>
+                                </template>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="detail-section" data-section="organization-details" id="organization-details">
+                <div class="section-heading">
+                    <div>
+                        <p class="section-kicker">School / District</p>
+                        <h2>Organization Details</h2>
+                    </div>
+                </div>
+                <template if:false={isEditingOrganization}>
+                    <div class="section-copy">{displayOrganization}</div>
+                    <button class="secondary-pill" type="button" onclick={handleEditOrganization}>{organizationButtonLabel}</button>
+                </template>
+                <template if:true={isEditingOrganization}>
+                    <label class="field organization-field">
+                        <span>Organization Name</span>
+                        <input type="text" value={organizationForm.organizationName} oninput={handleOrganizationInput} />
+                    </label>
+                    <div class="button-row">
+                        <button class="primary-button" type="button" onclick={handleSaveOrganization} disabled={isSavingOrganization}>Save Organization</button>
+                        <button class="secondary-button" type="button" onclick={handleCancelOrganization}>Cancel</button>
+                    </div>
+                </template>
+            </section>
+
+            <section class="detail-section" data-section="shipping-address" id="shipping-address">
+                <div class="section-heading">
+                    <div>
+                        <p class="section-kicker">Fulfillment</p>
+                        <h2>Shipping Address</h2>
+                    </div>
+                </div>
+                <div class="section-copy">{displayShippingAddress}</div>
+                <button class="secondary-pill" type="button" onclick={handleManageShipping}>{shippingButtonLabel}</button>
+            </section>
+
+            <section class="detail-section" data-section="payment-methods" id="payment-methods">
+                <div class="section-heading">
+                    <div>
+                        <p class="section-kicker">Billing</p>
+                        <h2>Payment Methods</h2>
+                    </div>
+                </div>
+                <div class="section-copy">{displayPaymentSummary}</div>
+                <button class="text-link" type="button" onclick={handleManagePayment}>Add payment method</button>
+            </section>
+        </template>
+    </div>
+</template>

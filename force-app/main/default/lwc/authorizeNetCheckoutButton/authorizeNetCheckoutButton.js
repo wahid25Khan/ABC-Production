@@ -113,7 +113,7 @@ export default class AuthorizeNetCheckoutButton extends LightningElement {
                     headers: { Accept: 'application/json' }
                 }
             );
-        } catch {
+        } catch (e) {
             // Non-fatal — proceed even if the pre-clear fails.
         }
     }
@@ -146,7 +146,7 @@ export default class AuthorizeNetCheckoutButton extends LightningElement {
                 return null;
             }
 
-            console.log('Active checkout response:', JSON.stringify(parsed));
+            // N1 fix: Do not log checkout response — may contain business-sensitive data.
             return parsed;
         } catch (error) {
             console.warn('Error checking for active checkout:', error.message);

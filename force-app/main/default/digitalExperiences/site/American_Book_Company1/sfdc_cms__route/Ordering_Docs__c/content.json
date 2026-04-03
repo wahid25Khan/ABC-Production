@@ -1,0 +1,12 @@
+{
+  "type" : "sfdc_cms__route",
+  "title" : "Ordering Docs",
+  "contentBody" : {
+    "activeViewId" : "Ordering_Docs",
+    "configurationTags" : [ ],
+    "pageAccess" : "UseParent",
+    "routeType" : "custom-ordering-docs",
+    "urlPrefix" : "ordering-docs"
+  },
+  "urlName" : "ordering-docs"
+}

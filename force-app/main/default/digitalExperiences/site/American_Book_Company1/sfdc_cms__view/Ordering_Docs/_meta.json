@@ -1,0 +1,5 @@
+{
+  "apiName" : "Ordering_Docs",
+  "type" : "sfdc_cms__view",
+  "path" : "views"
+}

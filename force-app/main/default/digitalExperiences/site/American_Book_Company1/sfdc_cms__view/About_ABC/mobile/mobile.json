@@ -1,0 +1,106 @@
+{
+  "type" : "sfdc_cms__view",
+  "title" : "About ABC",
+  "contentBody" : {
+    "component" : {
+      "children" : [ {
+        "attributes" : {
+          "dxpStyle" : {
+            "margin" : {
+              "bottom" : "0px",
+              "left" : "0px",
+              "right" : "0px",
+              "top" : "0px"
+            }
+          }
+        },
+        "id" : "39ba7ea1-6239-411a-b5b5-0bdc9d2d7ed2"
+      }, {
+        "id" : "42badfeb-0d28-4426-8093-c0dd680d9214",
+        "attributes" : {
+          "dxpStyle" : {
+            "margin" : {
+              "top" : "0%",
+              "right" : "0%",
+              "bottom" : "0%",
+              "left" : "0%"
+            }
+          }
+        }
+      }, {
+        "id" : "a3ac58ce-64a2-4fed-89c3-b66f85add305",
+        "attributes" : {
+          "dxpStyle" : {
+            "padding" : {
+              "bottom" : "0px",
+              "left" : "0px",
+              "right" : "0px",
+              "top" : "0px"
+            },
+            "margin" : {
+              "top" : "0px",
+              "right" : "0px",
+              "bottom" : "0px",
+              "left" : "0px"
+            }
+          }
+        }
+      }, {
+        "id" : "e93ab698-4ba1-4025-b6f8-7d8d041f1514",
+        "attributes" : {
+          "dxpStyle" : {
+            "margin" : {
+              "top" : "0px",
+              "right" : "0px",
+              "bottom" : "0px",
+              "left" : "0px"
+            }
+          }
+        }
+      }, {
+        "id" : "245c1aab-57b3-4723-8c0b-d64e4ed37c40",
+        "attributes" : {
+          "dxpStyle" : {
+            "margin" : {
+              "top" : "0px",
+              "right" : "0px",
+              "bottom" : "0px",
+              "left" : "0px"
+            }
+          }
+        }
+      }, {
+        "id" : "d7ee153a-0610-4f8c-bb0c-7418eb7d2db1",
+        "attributes" : {
+          "dxpStyle" : {
+            "padding" : {
+              "top" : "0px",
+              "right" : "0px",
+              "bottom" : "0px",
+              "left" : "0px"
+            },
+            "margin" : {
+              "bottom" : "0px",
+              "left" : "0px",
+              "right" : "0px",
+              "top" : "0px"
+            }
+          }
+        }
+      }, {
+        "id" : "5d866e32-b2c5-4898-8777-330b6ce1e444",
+        "attributes" : {
+          "dxpStyle" : {
+            "margin" : {
+              "top" : "0px",
+              "right" : "0px",
+              "bottom" : "0px",
+              "left" : "0px"
+            }
+          }
+        }
+      } ]
+    }
+  },
+  "urlName" : "about-abc"
+}

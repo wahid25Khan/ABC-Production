@@ -28,7 +28,7 @@ export default class CatalogDownloader extends LightningElement {
         { value: 'ma', label: 'Massachusetts', imageUrl: 'https://cms-assets.americanbookcompany.com/catalogs/cover-images/ntl-catalog-thumb.jpg', pdfUrl: 'https://cms-assets.americanbookcompany.com/catalogs/pdfs/ntl-catalog-spring-022526v1-web.pdf?c=0.8057235714919356' },
         { value: 'mi', label: 'Michigan', imageUrl: 'https://cms-assets.americanbookcompany.com/catalogs/cover-images/ntl-catalog-thumb.jpg', pdfUrl: 'https://cms-assets.americanbookcompany.com/catalogs/pdfs/ntl-catalog-spring-022526v1-web.pdf?c=0.01838815895305146' },
         { value: 'mn', label: 'Minnesota', imageUrl: 'https://cms-assets.americanbookcompany.com/catalogs/cover-images/mn-catalog-thumb.jpg', pdfUrl: 'https://cms-assets.americanbookcompany.com/catalogs/pdfs/mn-catalog-spring-022526v1-web.pdf?c=0.8001784437710985' },
-        { value: 'ms', label: 'Mississippi', imageUrl: 'https://cms-assets.americanbookcompany.com/catalogs/cover-images/mn-catalog-thumb.jpg', pdfUrl: 'https://cms-assets.americanbookcompany.com/catalogs/pdfs/mn-catalog-spring-022526v1-web.pdf?c=0.8001784437710985' },
+        { value: 'ms', label: 'Mississippi', imageUrl: 'https://cms-assets.americanbookcompany.com/catalogs/cover-images/ms-catalog-thumb.jpg', pdfUrl: 'https://cms-assets.americanbookcompany.com/catalogs/pdfs/ms-catalog-spring-022526v1-web.pdf' },
         { value: 'mo', label: 'Missouri', imageUrl: 'https://cms-assets.americanbookcompany.com/catalogs/cover-images/ntl-catalog-thumb.jpg', pdfUrl: 'https://cms-assets.americanbookcompany.com/catalogs/pdfs/ntl-catalog-spring-022526v1-web.pdf?c=0.17602888672774153' },
         { value: 'mt', label: 'Montana', imageUrl: 'https://cms-assets.americanbookcompany.com/catalogs/cover-images/ntl-catalog-thumb.jpg', pdfUrl: 'https://cms-assets.americanbookcompany.com/catalogs/pdfs/ntl-catalog-spring-022526v1-web.pdf?c=0.795957428361768' },
         { value: 'ne', label: 'Nebraska', imageUrl: 'https://cms-assets.americanbookcompany.com/catalogs/cover-images/ntl-catalog-thumb.jpg', pdfUrl: 'https://cms-assets.americanbookcompany.com/catalogs/pdfs/ntl-catalog-spring-022526v1-web.pdf?c=0.7399779513126231' },
@@ -58,8 +58,36 @@ export default class CatalogDownloader extends LightningElement {
     ];
 
     connectedCallback() {
-        // Set default state data
-        this.selectedStateData = this.catalogData[0];
+        // B4 fix: Read selected state from localStorage before falling back to first entry
+        const savedState = globalThis.localStorage.getItem('abc_selected_state');
+        if (savedState) {
+            const match = this.catalogData.find(
+                c => c.label.toLowerCase() === savedState.toLowerCase()
+            );
+            this.selectedStateData = match || this.catalogData[0];
+        } else {
+            this.selectedStateData = this.catalogData[0];
+        }
+
+        // Listen for state changes from stateFilterLwc
+        this._handleStateChange = (event) => {
+            const newState = event.detail?.state || globalThis.localStorage.getItem('abc_selected_state');
+            if (newState) {
+                const match = this.catalogData.find(
+                    c => c.label.toLowerCase() === newState.toLowerCase()
+                );
+                if (match) {
+                    this.selectedStateData = match;
+                }
+            }
+        };
+        globalThis.addEventListener('abcstatechange', this._handleStateChange);
+    }
+
+    disconnectedCallback() {
+        if (this._handleStateChange) {
+            globalThis.removeEventListener('abcstatechange', this._handleStateChange);
+        }
     }
 
     get stateOptions() {

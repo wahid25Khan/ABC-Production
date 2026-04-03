@@ -1,0 +1,569 @@
+{
+  "type" : "sfdc_cms__view",
+  "title" : "BLOG 3",
+  "contentBody" : {
+    "component" : {
+      "children" : [ {
+        "children" : [ {
+          "attributes" : {
+            "backgroundImageConfig" : "",
+            "backgroundImageOverlay" : "rgba(0,0,0,0)",
+            "componentSpacerSize" : "",
+            "dxpStyle" : { },
+            "layoutDirectionDesktop" : "row",
+            "layoutDirectionMobile" : "column",
+            "layoutDirectionTablet" : "column",
+            "maxContentWidth" : "",
+            "sectionColumnGutterWidth" : "",
+            "sectionConfig" : "{\"UUID\":\"48b0a3a3-ae2c-4321-9143-2f43e34bd034\",\"columns\":[{\"UUID\":\"70cba877-19e4-4682-b627-63ada22830c9\",\"columnName\":\"Column 1\",\"columnKey\":\"col1\",\"columnWidth\":\"4\",\"seedComponents\":[]},{\"UUID\":\"6a6b09bc-31e3-4405-8680-b36318fad672\",\"columnName\":\"Column 2\",\"columnKey\":\"05a48\",\"columnWidth\":\"4\",\"seedComponents\":[]},{\"UUID\":\"507a7dde-5875-47da-b77b-50a00d6b3175\",\"columnName\":\"Column 3\",\"columnKey\":\"87037\",\"columnWidth\":\"4\",\"seedComponents\":[]}]}",
+            "sectionMinHeight" : "",
+            "sectionVerticalAlign" : "flex-start"
+          },
+          "children" : [ {
+            "id" : "70cba877-19e4-4682-b627-63ada22830c9",
+            "name" : "col1",
+            "title" : "Column 1",
+            "type" : "region"
+          }, {
+            "children" : [ {
+              "attributes" : {
+                "dxpStyle" : { },
+                "imageInfos" : "",
+                "richTextValue" : "<h2 style=\"text-align: center;\"><strong style=\"font-size: 28px; font-family: helvetica;\">Recent Posts</strong></h2>"
+              },
+              "definition" : "community_builder:richTextEditor",
+              "id" : "8dd00867-0b85-4e89-b6ca-53923bdd7178",
+              "type" : "component"
+            } ],
+            "id" : "6a6b09bc-31e3-4405-8680-b36318fad672",
+            "name" : "05a48",
+            "title" : "Column 2",
+            "type" : "region"
+          }, {
+            "children" : [ {
+              "attributes" : {
+                "borderColor" : "rgb(169, 176, 182)",
+                "borderRadius" : "20px",
+                "buttonBackgroundColor" : "rgb(255, 255, 255)",
+                "buttonBackgroundHoverColor" : "rgb(255, 255, 255)",
+                "dxpStyle" : {
+                  "margin" : {
+                    "bottom" : "",
+                    "left" : "30%",
+                    "right" : "30%",
+                    "top" : ""
+                  }
+                },
+                "iconColor" : "rgb(146, 139, 139)",
+                "placeholderText" : "Search...",
+                "showSearchButton" : true
+              },
+              "definition" : "dxp_search:searchInput",
+              "id" : "b76e4c83-8950-44cb-90d4-41e1b0fc399b",
+              "type" : "component"
+            } ],
+            "id" : "507a7dde-5875-47da-b77b-50a00d6b3175",
+            "name" : "87037",
+            "title" : "Column 3",
+            "type" : "region"
+          } ],
+          "definition" : "community_layout:section",
+          "id" : "48b0a3a3-ae2c-4321-9143-2f43e34bd034",
+          "type" : "component"
+        }, {
+          "attributes" : {
+            "backgroundImageConfig" : "",
+            "backgroundImageOverlay" : "rgba(0,0,0,0)",
+            "componentSpacerSize" : "",
+            "dxpStyle" : {
+              "margin" : {
+                "bottom" : "2%",
+                "left" : "10%",
+                "right" : "10%",
+                "top" : ""
+              }
+            },
+            "layoutDirectionDesktop" : "row",
+            "layoutDirectionMobile" : "column",
+            "layoutDirectionTablet" : "column",
+            "maxContentWidth" : "",
+            "sectionColumnGutterWidth" : "",
+            "sectionConfig" : "{\"UUID\":\"cd1f8d04-78f4-45dd-b93d-dd95f943e4fe\",\"columns\":[{\"UUID\":\"a7c01a87-fce4-4e5b-bda7-c710bacef629\",\"columnName\":\"Column 1\",\"columnKey\":\"col1\",\"columnWidth\":\"4\",\"seedComponents\":[]},{\"UUID\":\"65a5735a-e046-42d0-86ac-2a05c096f759\",\"columnName\":\"Column 2\",\"columnKey\":\"5c449\",\"columnWidth\":\"8\",\"seedComponents\":[]}]}",
+            "sectionMinHeight" : "",
+            "sectionVerticalAlign" : "flex-start"
+          },
+          "children" : [ {
+            "children" : [ {
+              "attributes" : {
+                "alignment" : "center",
+                "dxpStyle" : { },
+                "fit" : "contain",
+                "height" : 350,
+                "imageInfo" : "{\"imageInfoV1\":{\"url\":\"/sfsites/c/cms/delivery/media/MCFCSFPD4TNNFOPO5XKXX7SQNTVI?lastModifiedDate=Tue Feb 24 17:45:23 GMT 2026\",\"altText\":\"\",\"contentKey\":\"MCFCSFPD4TNNFOPO5XKXX7SQNTVI\",\"contentType\":null}}",
+                "overlayColor" : "",
+                "position" : "center center",
+                "width" : 100
+              },
+              "definition" : "dxp_base:image",
+              "id" : "b7d22f26-5668-41d5-98de-0868da921cbe",
+              "type" : "component"
+            } ],
+            "id" : "a7c01a87-fce4-4e5b-bda7-c710bacef629",
+            "name" : "col1",
+            "title" : "Column 1",
+            "type" : "region"
+          }, {
+            "children" : [ {
+              "attributes" : {
+                "dxpStyle" : { },
+                "imageInfos" : "",
+                "richTextValue" : "<h3><strong style=\"font-family: sans-serif; font-size: 20px; color: oklch(0.278 0.033 256.848);\">10 Secrets for Virtual Learning Success</strong><span style=\"font-size: 20px;\">﻿</span></h3><p><br></p><p><span style=\"font-size: 16px; color: oklch(0.278 0.033 256.848);\">Are you or your students feeling the virtual learning slump? Reignite the fire to learn with these 10 secrets for virtual learning success.</span></p>"
+              },
+              "definition" : "community_builder:richTextEditor",
+              "id" : "c81ab123-b1da-4fba-b819-46475a5b09cc",
+              "type" : "component"
+            }, {
+              "attributes" : {
+                "alignment" : "left",
+                "dxpStyle" : { },
+                "size" : "small",
+                "stretch" : "standard",
+                "text" : "Read More",
+                "type" : "secondary"
+              },
+              "definition" : "dxp_base:button",
+              "id" : "58996add-ee37-49de-abd7-c66e2d1ebedf",
+              "type" : "component"
+            } ],
+            "id" : "65a5735a-e046-42d0-86ac-2a05c096f759",
+            "name" : "5c449",
+            "title" : "Column 2",
+            "type" : "region"
+          } ],
+          "customCssClasses" : "card-style",
+          "definition" : "community_layout:section",
+          "id" : "cd1f8d04-78f4-45dd-b93d-dd95f943e4fe",
+          "type" : "component"
+        }, {
+          "attributes" : {
+            "backgroundImageConfig" : "",
+            "backgroundImageOverlay" : "rgba(0,0,0,0)",
+            "componentSpacerSize" : "",
+            "dxpStyle" : {
+              "margin" : {
+                "bottom" : "2%",
+                "left" : "10%",
+                "right" : "10%",
+                "top" : ""
+              }
+            },
+            "layoutDirectionDesktop" : "row",
+            "layoutDirectionMobile" : "column",
+            "layoutDirectionTablet" : "column",
+            "maxContentWidth" : "",
+            "sectionColumnGutterWidth" : "",
+            "sectionConfig" : "{\"UUID\":\"85a2d457-69f7-4bdd-97e4-5fa828758759\",\"columns\":[{\"UUID\":\"d58b5bd5-c497-4316-897e-15446e8694ca\",\"columnName\":\"Column 1\",\"columnKey\":\"col1\",\"columnWidth\":\"4\",\"seedComponents\":[]},{\"UUID\":\"9b8bdbb5-25a0-4e62-b8dc-56c3cceef221\",\"columnName\":\"Column 2\",\"columnKey\":\"5c449\",\"columnWidth\":\"8\",\"seedComponents\":[]}]}",
+            "sectionMinHeight" : "",
+            "sectionVerticalAlign" : "flex-start"
+          },
+          "children" : [ {
+            "children" : [ {
+              "attributes" : {
+                "alignment" : "center",
+                "dxpStyle" : { },
+                "fit" : "contain",
+                "height" : 350,
+                "imageInfo" : "{\"imageInfoV1\":{\"url\":\"/sfsites/c/cms/delivery/media/MCFDZXTN2PGJFUZF7JRLIZIS2SJA?lastModifiedDate=Tue Feb 24 17:45:55 GMT 2026\",\"altText\":\"\",\"contentKey\":\"MCFDZXTN2PGJFUZF7JRLIZIS2SJA\",\"contentType\":null}}",
+                "overlayColor" : "",
+                "position" : "center center",
+                "width" : 100
+              },
+              "definition" : "dxp_base:image",
+              "id" : "e8d717a0-3b14-4d7f-a629-afe1b69dafa0",
+              "type" : "component"
+            } ],
+            "id" : "d58b5bd5-c497-4316-897e-15446e8694ca",
+            "name" : "col1",
+            "title" : "Column 1",
+            "type" : "region"
+          }, {
+            "children" : [ {
+              "attributes" : {
+                "dxpStyle" : { },
+                "imageInfos" : "",
+                "richTextValue" : "<h3><strong style=\"font-family: sans-serif; font-size: 20px; color: oklch(0.278 0.033 256.848);\">The Emphasis on Learning Recovery</strong><span style=\"font-size: 20px; font-family: sans-serif;\">﻿</span></h3><p><br></p><p><span style=\"font-size: 16px; color: oklch(0.278 0.033 256.848);\">In previous years, no two words were ever more daunting to students than “summer school.” The journey of summer learning recovery is changing with the times. While it was once dreaded and avoided by students at all costs, it is now necessary for student success.</span></p>"
+              },
+              "definition" : "community_builder:richTextEditor",
+              "id" : "8fe30f41-5dfb-4b07-ac68-c5322171e180",
+              "type" : "component"
+            }, {
+              "attributes" : {
+                "alignment" : "left",
+                "dxpStyle" : { },
+                "size" : "small",
+                "stretch" : "standard",
+                "text" : "Read More",
+                "type" : "secondary"
+              },
+              "definition" : "dxp_base:button",
+              "id" : "3e919296-4e85-4dbd-a149-fa743c1a7965",
+              "type" : "component"
+            } ],
+            "id" : "9b8bdbb5-25a0-4e62-b8dc-56c3cceef221",
+            "name" : "5c449",
+            "title" : "Column 2",
+            "type" : "region"
+          } ],
+          "customCssClasses" : "card-style",
+          "definition" : "community_layout:section",
+          "id" : "85a2d457-69f7-4bdd-97e4-5fa828758759",
+          "type" : "component"
+        }, {
+          "attributes" : {
+            "backgroundImageConfig" : "",
+            "backgroundImageOverlay" : "rgba(0,0,0,0)",
+            "componentSpacerSize" : "",
+            "dxpStyle" : {
+              "margin" : {
+                "bottom" : "2%",
+                "left" : "10%",
+                "right" : "10%",
+                "top" : ""
+              }
+            },
+            "layoutDirectionDesktop" : "row",
+            "layoutDirectionMobile" : "column",
+            "layoutDirectionTablet" : "column",
+            "maxContentWidth" : "",
+            "sectionColumnGutterWidth" : "",
+            "sectionConfig" : "{\"UUID\":\"0066b944-5fea-489a-b875-ef40aaf1441e\",\"columns\":[{\"UUID\":\"96d4d81c-1676-42b3-851f-a41bd5ab2b49\",\"columnName\":\"Column 1\",\"columnKey\":\"col1\",\"columnWidth\":\"4\",\"seedComponents\":[]},{\"UUID\":\"7a0acda8-7af6-4d3c-a070-2bf8a6f5bc04\",\"columnName\":\"Column 2\",\"columnKey\":\"5c449\",\"columnWidth\":\"8\",\"seedComponents\":[]}]}",
+            "sectionMinHeight" : "",
+            "sectionVerticalAlign" : "flex-start"
+          },
+          "children" : [ {
+            "children" : [ {
+              "attributes" : {
+                "alignment" : "center",
+                "dxpStyle" : { },
+                "fit" : "contain",
+                "height" : 350,
+                "imageInfo" : "{\"imageInfoV1\":{\"url\":\"/sfsites/c/cms/delivery/media/MCVEUNGT2K3RG3JKFQS52UHDKQIE?lastModifiedDate=Tue Feb 24 17:46:30 GMT 2026\",\"altText\":\"\",\"contentKey\":\"MCVEUNGT2K3RG3JKFQS52UHDKQIE\",\"contentType\":null}}",
+                "overlayColor" : "",
+                "position" : "center center",
+                "width" : 100
+              },
+              "definition" : "dxp_base:image",
+              "id" : "6ba179b0-4793-4ac1-b2c8-43cb0abad740",
+              "type" : "component"
+            } ],
+            "id" : "96d4d81c-1676-42b3-851f-a41bd5ab2b49",
+            "name" : "col1",
+            "title" : "Column 1",
+            "type" : "region"
+          }, {
+            "children" : [ {
+              "attributes" : {
+                "dxpStyle" : { },
+                "imageInfos" : "",
+                "richTextValue" : "<h3><strong style=\"font-family: lato, sans-serif; font-size: 20px; color: oklch(0.278 0.033 256.848);\">How to Incorporate Social Emotional Learning in your Classroom</strong><span style=\"font-size: 20px;\">﻿</span></h3><p><br></p><p><span style=\"font-size: 16px; color: oklch(0.278 0.033 256.848);\">According to the The Collaborative for Academic, Social, and Emotional Learning (CASEL), Social Emotional Learning (SEL) is “the process through which children and adults acquire and effectively apply the knowledge,</span></p>"
+              },
+              "definition" : "community_builder:richTextEditor",
+              "id" : "1c90709f-5eb8-492e-ad45-40a9c9fe5ae2",
+              "type" : "component"
+            }, {
+              "attributes" : {
+                "alignment" : "left",
+                "dxpStyle" : { },
+                "size" : "small",
+                "stretch" : "standard",
+                "text" : "Read More",
+                "type" : "secondary"
+              },
+              "definition" : "dxp_base:button",
+              "id" : "e4d0b610-39b3-4218-9407-dce4bd9f7c89",
+              "type" : "component"
+            } ],
+            "id" : "7a0acda8-7af6-4d3c-a070-2bf8a6f5bc04",
+            "name" : "5c449",
+            "title" : "Column 2",
+            "type" : "region"
+          } ],
+          "customCssClasses" : "card-style",
+          "definition" : "community_layout:section",
+          "id" : "0066b944-5fea-489a-b875-ef40aaf1441e",
+          "type" : "component"
+        }, {
+          "attributes" : {
+            "backgroundImageConfig" : "",
+            "backgroundImageOverlay" : "rgba(0,0,0,0)",
+            "componentSpacerSize" : "",
+            "dxpStyle" : {
+              "margin" : {
+                "bottom" : "2%",
+                "left" : "10%",
+                "right" : "10%",
+                "top" : ""
+              }
+            },
+            "layoutDirectionDesktop" : "row",
+            "layoutDirectionMobile" : "column",
+            "layoutDirectionTablet" : "column",
+            "maxContentWidth" : "",
+            "sectionColumnGutterWidth" : "",
+            "sectionConfig" : "{\"UUID\":\"3a4c8a40-502e-4873-9bfe-30c106409b59\",\"columns\":[{\"UUID\":\"2894c399-080b-414c-94f5-5a3414f1a09e\",\"columnName\":\"Column 1\",\"columnKey\":\"col1\",\"columnWidth\":\"4\",\"seedComponents\":[]},{\"UUID\":\"5b0db457-5ca7-4412-8445-af2929250964\",\"columnName\":\"Column 2\",\"columnKey\":\"5c449\",\"columnWidth\":\"8\",\"seedComponents\":[]}]}",
+            "sectionMinHeight" : "",
+            "sectionVerticalAlign" : "flex-start"
+          },
+          "children" : [ {
+            "children" : [ {
+              "attributes" : {
+                "alignment" : "center",
+                "dxpStyle" : { },
+                "fit" : "contain",
+                "height" : 350,
+                "imageInfo" : "{\"imageInfoV1\":{\"url\":\"/sfsites/c/cms/delivery/media/MCOAHZTZYAU5ANNEHFWUXYREXF4E?lastModifiedDate=Tue Feb 24 17:48:45 GMT 2026\",\"altText\":\"\",\"contentKey\":\"MCOAHZTZYAU5ANNEHFWUXYREXF4E\",\"contentType\":null}}",
+                "overlayColor" : "",
+                "position" : "center center",
+                "width" : 100
+              },
+              "definition" : "dxp_base:image",
+              "id" : "f954af82-5d5f-43cc-9526-6cb757e38c74",
+              "type" : "component"
+            } ],
+            "id" : "2894c399-080b-414c-94f5-5a3414f1a09e",
+            "name" : "col1",
+            "title" : "Column 1",
+            "type" : "region"
+          }, {
+            "children" : [ {
+              "attributes" : {
+                "dxpStyle" : { },
+                "imageInfos" : "",
+                "richTextValue" : "<h3><strong style=\"font-family: sans-serif; font-size: 20px;\">Equity vs. Equality in the Classroom</strong><span style=\"font-size: 20px;\">﻿</span></h3><p><br></p><p><span style=\"font-size: 16px; color: oklch(0.278 0.033 256.848);\">Balancing equity v. equality in the classroom is not a simple task. Here are the differences and how to incorporate more equity in the classroom to aid student success.</span></p>"
+              },
+              "definition" : "community_builder:richTextEditor",
+              "id" : "ee9d7624-c356-46ab-baf8-a70ac94e90f7",
+              "type" : "component"
+            }, {
+              "attributes" : {
+                "alignment" : "left",
+                "dxpStyle" : { },
+                "size" : "small",
+                "stretch" : "standard",
+                "text" : "Read More",
+                "type" : "secondary"
+              },
+              "definition" : "dxp_base:button",
+              "id" : "8ecbf482-3b29-4ad2-ac7f-fe7d1e8b975e",
+              "type" : "component"
+            } ],
+            "id" : "5b0db457-5ca7-4412-8445-af2929250964",
+            "name" : "5c449",
+            "title" : "Column 2",
+            "type" : "region"
+          } ],
+          "customCssClasses" : "card-style",
+          "definition" : "community_layout:section",
+          "id" : "3a4c8a40-502e-4873-9bfe-30c106409b59",
+          "type" : "component"
+        }, {
+          "attributes" : {
+            "backgroundImageConfig" : "",
+            "backgroundImageOverlay" : "rgba(0,0,0,0)",
+            "componentSpacerSize" : "",
+            "dxpStyle" : {
+              "margin" : {
+                "bottom" : "2%",
+                "left" : "10%",
+                "right" : "10%",
+                "top" : ""
+              }
+            },
+            "layoutDirectionDesktop" : "row",
+            "layoutDirectionMobile" : "column",
+            "layoutDirectionTablet" : "column",
+            "maxContentWidth" : "",
+            "sectionColumnGutterWidth" : "",
+            "sectionConfig" : "{\"UUID\":\"01c38da1-5821-412d-9c23-8e1488a2d902\",\"columns\":[{\"UUID\":\"b8f7d3bd-a27a-420c-85fb-27817cbde03b\",\"columnName\":\"Column 1\",\"columnKey\":\"col1\",\"columnWidth\":\"4\",\"seedComponents\":[]},{\"UUID\":\"c78cd59d-690d-42b8-9a2e-498708194143\",\"columnName\":\"Column 2\",\"columnKey\":\"5c449\",\"columnWidth\":\"8\",\"seedComponents\":[]}]}",
+            "sectionMinHeight" : "",
+            "sectionVerticalAlign" : "flex-start"
+          },
+          "children" : [ {
+            "children" : [ {
+              "attributes" : {
+                "alignment" : "center",
+                "dxpStyle" : { },
+                "fit" : "contain",
+                "height" : 350,
+                "imageInfo" : "{\"imageInfoV1\":{\"url\":\"/sfsites/c/cms/delivery/media/MCKWKIMO7LSRF6HM3T3JUAWTVIL4?lastModifiedDate=Tue Feb 24 17:49:26 GMT 2026\",\"altText\":\"\",\"contentKey\":\"MCKWKIMO7LSRF6HM3T3JUAWTVIL4\",\"contentType\":null}}",
+                "overlayColor" : "",
+                "position" : "center center",
+                "width" : 100
+              },
+              "definition" : "dxp_base:image",
+              "id" : "3c852737-6114-4814-ad00-852e5e340e88",
+              "type" : "component"
+            } ],
+            "id" : "b8f7d3bd-a27a-420c-85fb-27817cbde03b",
+            "name" : "col1",
+            "title" : "Column 1",
+            "type" : "region"
+          }, {
+            "children" : [ {
+              "attributes" : {
+                "dxpStyle" : { },
+                "imageInfos" : "",
+                "richTextValue" : "<h3><strong style=\"font-size: 20px; font-family: lato, sans-serif; color: oklch(0.278 0.033 256.848);\">The Best Mask Hacks for Kids</strong><span style=\"font-size: 20px;\">﻿</span></h3><p><br></p><p><span style=\"font-size: 16px; color: oklch(0.278 0.033 256.848);\">Wearing a mask is new to all of us. With no end in sight, it’s time we get used to them and encourage our children to do the same. If you are struggling to get your child to wear a mask in public, don’t give up! Check out these tips to help your children master wearing a mask. Here are the best mask hacks for kids:</span></p>"
+              },
+              "definition" : "community_builder:richTextEditor",
+              "id" : "4abeda50-7a1a-4851-aafd-d0d49536d26e",
+              "type" : "component"
+            }, {
+              "attributes" : {
+                "alignment" : "left",
+                "dxpStyle" : { },
+                "size" : "small",
+                "stretch" : "standard",
+                "text" : "Read More",
+                "type" : "secondary"
+              },
+              "definition" : "dxp_base:button",
+              "id" : "4a5c950a-64e4-4d2a-b7e7-35419572885b",
+              "type" : "component"
+            } ],
+            "id" : "c78cd59d-690d-42b8-9a2e-498708194143",
+            "name" : "5c449",
+            "title" : "Column 2",
+            "type" : "region"
+          } ],
+          "customCssClasses" : "card-style",
+          "definition" : "community_layout:section",
+          "id" : "01c38da1-5821-412d-9c23-8e1488a2d902",
+          "type" : "component"
+        }, {
+          "attributes" : {
+            "backgroundImageConfig" : "",
+            "backgroundImageOverlay" : "rgba(0,0,0,0)",
+            "componentSpacerSize" : "",
+            "dxpStyle" : { },
+            "layoutDirectionDesktop" : "row",
+            "layoutDirectionMobile" : "column",
+            "layoutDirectionTablet" : "column",
+            "maxContentWidth" : "",
+            "sectionColumnGutterWidth" : "",
+            "sectionConfig" : "{\"UUID\":\"9c6ba3c5-3d91-4bfd-a54d-90241700f7a6\",\"columns\":[{\"UUID\":\"84400d1f-92be-435f-976e-cafe2451038d\",\"columnName\":\"Column 1\",\"columnKey\":\"col1\",\"columnWidth\":\"2\",\"seedComponents\":[]},{\"UUID\":\"1f55816e-b722-431b-8ece-2d3645da82a2\",\"columnName\":\"Column 2\",\"columnKey\":\"db663\",\"columnWidth\":\"2\",\"seedComponents\":[]},{\"UUID\":\"861af858-a635-4613-8e33-afd12e5ed250\",\"columnName\":\"Column 3\",\"columnKey\":\"85c73\",\"columnWidth\":\"2\",\"seedComponents\":[]},{\"UUID\":\"7ef98d1c-969a-4a34-8973-a544c45de7a2\",\"columnName\":\"Column 4\",\"columnKey\":\"986cf\",\"columnWidth\":\"2\",\"seedComponents\":[]},{\"UUID\":\"46a3ff92-928f-4a47-9950-ce9bc044515f\",\"columnName\":\"Column 5\",\"columnKey\":\"8fb73\",\"columnWidth\":\"2\",\"seedComponents\":[]},{\"UUID\":\"7e35b223-fe59-4199-a617-5f604aeba786\",\"columnName\":\"Column 6\",\"columnKey\":\"9377c\",\"columnWidth\":\"2\",\"seedComponents\":[]}]}",
+            "sectionMinHeight" : "",
+            "sectionVerticalAlign" : "flex-start"
+          },
+          "children" : [ {
+            "id" : "84400d1f-92be-435f-976e-cafe2451038d",
+            "name" : "col1",
+            "title" : "Column 1",
+            "type" : "region"
+          }, {
+            "id" : "1f55816e-b722-431b-8ece-2d3645da82a2",
+            "name" : "db663",
+            "title" : "Column 2",
+            "type" : "region"
+          }, {
+            "id" : "861af858-a635-4613-8e33-afd12e5ed250",
+            "name" : "85c73",
+            "title" : "Column 3",
+            "type" : "region"
+          }, {
+            "children" : [ {
+              "attributes" : {
+                "alignment" : "right",
+                "dxpStyle" : { },
+                "size" : "standard",
+                "stretch" : "standard",
+                "text" : "❮",
+                "type" : "secondary",
+                "url" : "{\"linkInfo\":{\"pageReference\":{\"type\":\"comm__namedPage\",\"attributes\":{\"name\":\"BLOG2__c\"}}}}"
+              },
+              "definition" : "dxp_base:button",
+              "id" : "e3c7925c-ea7e-4c9c-8450-9d9946e14dcf",
+              "type" : "component"
+            } ],
+            "id" : "7ef98d1c-969a-4a34-8973-a544c45de7a2",
+            "name" : "986cf",
+            "title" : "Column 4",
+            "type" : "region"
+          }, {
+            "children" : [ {
+              "attributes" : {
+                "backgroundColor" : "",
+                "dxpStyle" : { },
+                "isLinkable" : false,
+                "linkAssistiveText" : "",
+                "paddingHorizontal" : "none",
+                "paddingVertical" : "none",
+                "text" : "Page 3 of 5",
+                "textAlign" : "center",
+                "textDecoration" : "{}",
+                "textDisplayInfo" : "{\"headingTag\":\"h3\",\"textStyle\":\"heading-medium\"}"
+              },
+              "definition" : "dxp_base:textBlock",
+              "id" : "7ec7bb3f-3175-4452-af17-5bd3221d0b8b",
+              "type" : "component"
+            } ],
+            "id" : "46a3ff92-928f-4a47-9950-ce9bc044515f",
+            "name" : "8fb73",
+            "title" : "Column 5",
+            "type" : "region"
+          }, {
+            "children" : [ {
+              "attributes" : {
+                "alignment" : "left",
+                "dxpStyle" : { },
+                "size" : "standard",
+                "stretch" : "standard",
+                "text" : "❯",
+                "type" : "secondary",
+                "url" : "{\"linkInfo\":{\"pageReference\":{\"type\":\"comm__namedPage\",\"attributes\":{\"name\":\"BLOG4__c\"}}}}"
+              },
+              "definition" : "dxp_base:button",
+              "id" : "6949a3b7-d311-42b3-81c1-4ff6eb0b3bc1",
+              "type" : "component"
+            } ],
+            "id" : "7e35b223-fe59-4199-a617-5f604aeba786",
+            "name" : "9377c",
+            "title" : "Column 6",
+            "type" : "region"
+          } ],
+          "definition" : "community_layout:section",
+          "id" : "9c6ba3c5-3d91-4bfd-a54d-90241700f7a6",
+          "type" : "component"
+        } ],
+        "id" : "abd73c5d-741b-4a97-aaca-028292ea8d2a",
+        "name" : "content",
+        "title" : "Content",
+        "type" : "region"
+      }, {
+        "children" : [ {
+          "attributes" : {
+            "customHeadTags" : "",
+            "description" : "",
+            "dxpStyle" : { },
+            "pageTitle" : "BLOG 3",
+            "recordId" : "{!recordId}"
+          },
+          "definition" : "community_builder:seoAssistant",
+          "id" : "e5513a5d-dfc8-43f8-a004-7e91883fbcf9",
+          "type" : "component"
+        } ],
+        "id" : "b181837e-7596-4f94-ab72-a8d899775915",
+        "name" : "sfdcHiddenRegion",
+        "title" : "sfdcHiddenRegion",
+        "type" : "region"
+      } ],
+      "definition" : "community_layout:sldsFlexibleLayout",
+      "id" : "def4a900-245d-4a22-9951-6f5b81a8db66",
+      "type" : "component"
+    },
+    "dataProviders" : [ ],
+    "themeLayoutType" : "Inner",
+    "viewType" : "custom-blog-3"
+  },
+  "urlName" : "blog-3"
+}

@@ -1,0 +1,12 @@
+{
+  "type" : "sfdc_cms__route",
+  "title" : "Create Account",
+  "contentBody" : {
+    "activeViewId" : "self_register",
+    "configurationTags" : [ ],
+    "pageAccess" : "Public",
+    "routeType" : "self-register",
+    "urlPrefix" : "SelfRegister"
+  },
+  "urlName" : "register"
+}

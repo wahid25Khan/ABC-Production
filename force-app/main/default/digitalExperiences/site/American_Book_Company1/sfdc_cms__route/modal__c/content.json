@@ -1,0 +1,12 @@
+{
+  "type" : "sfdc_cms__route",
+  "title" : "modal",
+  "contentBody" : {
+    "activeViewId" : "modal",
+    "configurationTags" : [ ],
+    "pageAccess" : "UseParent",
+    "routeType" : "custom-modal",
+    "urlPrefix" : "modal"
+  },
+  "urlName" : "modal"
+}

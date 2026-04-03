@@ -1,0 +1,12 @@
+{
+  "type" : "sfdc_cms__route",
+  "title" : "careers",
+  "contentBody" : {
+    "activeViewId" : "careers",
+    "configurationTags" : [ ],
+    "pageAccess" : "UseParent",
+    "routeType" : "custom-careers",
+    "urlPrefix" : "careers"
+  },
+  "urlName" : "careers"
+}

@@ -1,0 +1,40 @@
+{
+  "type" : "sfdc_cms__view",
+  "title" : "News Detail",
+  "contentBody" : {
+    "component" : {
+      "children" : [ {
+        "attributes" : {
+          "dxpStyle" : {
+            "margin" : {
+              "bottom" : "0%",
+              "left" : "0%",
+              "right" : "0%",
+              "top" : "10%"
+            },
+            "padding" : {
+              "top" : "",
+              "left" : "",
+              "bottom" : "",
+              "right" : "25px"
+            }
+          }
+        },
+        "id" : "9a039e48-e122-4789-b224-63ee821d7fea"
+      }, {
+        "id" : "0878704f-42bf-4feb-b436-25fc5b59c179",
+        "attributes" : {
+          "dxpStyle" : {
+            "margin" : {
+              "top" : "",
+              "right" : "",
+              "bottom" : "",
+              "left" : ""
+            }
+          }
+        }
+      } ]
+    }
+  },
+  "urlName" : "news-detail"
+}

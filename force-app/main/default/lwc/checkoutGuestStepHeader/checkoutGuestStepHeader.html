@@ -1,0 +1,12 @@
+<template>
+    <template if:true={isDetailsStage}>
+        <div class="step-header-shell">
+            <div class="title-row">
+                <h1 class="page-title">{heading}</h1>
+                <template if:true={showSignInLink}>
+                    <a href={signInUrl} class="sign-in-link">Already Have an Account? Sign In.</a>
+                </template>
+            </div>
+        </div>
+    </template>
+</template>

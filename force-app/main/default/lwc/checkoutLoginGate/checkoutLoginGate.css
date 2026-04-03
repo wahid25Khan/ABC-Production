@@ -1,12 +1,12 @@
 .gate-shell {
     max-width: 1100px;
     margin: 0 auto;
-    padding: 40px 24px 60px;
+    padding: 24px 24px 48px;
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
 }
 
 .back-row {
-    margin-bottom: 32px;
+    margin-bottom: 28px;
 }
 
 .back-link {
@@ -26,40 +26,43 @@
 .gate-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 48px;
+    gap: 40px;
     align-items: start;
 }
 
 .gate-card {
-    min-height: 320px;
+    min-height: 0;
 }
 
 .card-heading {
-    font-size: 24px;
+    font-size: 2rem;
     font-weight: 700;
     color: #111827;
+    line-height: 1.2;
     margin: 0 0 12px;
-    border-bottom: 2px solid #111827;
-    padding-bottom: 4px;
-    display: inline-block;
 }
 
 .card-desc {
     color: #374151;
     font-size: 15px;
     line-height: 1.55;
-    margin: 0 0 32px;
+    max-width: 34rem;
+    margin: 0 0 24px;
 }
 
 .card-actions {
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    align-items: flex-start;
+    gap: 14px;
 }
 
 .btn-outline {
-    display: block;
-    width: 100%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: auto;
+    min-width: 220px;
     padding: 14px 24px;
     border: 2px solid #007cba;
     border-radius: 999px;
@@ -89,6 +92,7 @@
 
 .form-group {
     margin-bottom: 20px;
+    max-width: 28rem;
 }
 
 .form-label {
@@ -121,6 +125,7 @@
     align-items: center;
     justify-content: space-between;
     margin-bottom: 24px;
+    max-width: 28rem;
 }
 
 .remember-label {
@@ -153,7 +158,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 100%;
+    width: auto;
+    min-width: 180px;
     padding: 14px 24px;
     border: none;
     border-radius: 999px;
@@ -164,6 +170,11 @@
     cursor: pointer;
     transition: background 0.15s ease;
     min-height: 50px;
+}
+
+.guest-btn,
+.sign-in-btn {
+    align-self: flex-start;
 }
 
 .btn-primary:hover {
@@ -193,5 +204,16 @@
 
     .gate-shell {
         padding: 24px 16px 40px;
+    }
+
+    .card-actions,
+    .form-group,
+    .remember-row {
+        max-width: none;
+    }
+
+    .btn-outline,
+    .btn-primary {
+        width: 100%;
     }
 }

@@ -1,0 +1,12 @@
+{
+  "type" : "sfdc_cms__route",
+  "title" : "Logout",
+  "contentBody" : {
+    "activeViewId" : "logout",
+    "configurationTags" : [ ],
+    "pageAccess" : "UseParent",
+    "routeType" : "custom-logout",
+    "urlPrefix" : "portal-signout"
+  },
+  "urlName" : "portal-signout"
+}

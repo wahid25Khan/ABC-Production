@@ -11,7 +11,7 @@
 
 .grid {
   width: 100%;
-  max-width: 760px; /* keeps it like the 2nd image */
+  max-width: 760px;         /* keeps it like the 2nd image */
   margin: 0 auto;
   display: flex;
   justify-content: space-evenly;

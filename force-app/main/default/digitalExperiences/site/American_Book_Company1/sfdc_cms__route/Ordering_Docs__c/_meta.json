@@ -1,0 +1,5 @@
+{
+  "apiName" : "Ordering_Docs__c",
+  "type" : "sfdc_cms__route",
+  "path" : "routes"
+}

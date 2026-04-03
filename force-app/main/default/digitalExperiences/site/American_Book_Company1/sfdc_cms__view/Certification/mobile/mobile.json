@@ -1,0 +1,28 @@
+{
+  "type" : "sfdc_cms__view",
+  "title" : "Certification",
+  "contentBody" : {
+    "component" : {
+      "children" : [ {
+        "attributes" : {
+          "dxpStyle" : {
+            "margin" : {
+              "bottom" : "",
+              "left" : "",
+              "right" : "",
+              "top" : ""
+            },
+            "padding" : {
+              "bottom" : "",
+              "left" : "",
+              "right" : "",
+              "top" : ""
+            }
+          }
+        },
+        "id" : "974a940a-a94f-41ac-8c85-44b0b2fccfd7"
+      } ]
+    }
+  },
+  "urlName" : "certification"
+}

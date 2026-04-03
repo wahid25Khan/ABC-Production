@@ -21,9 +21,21 @@ export default class SimilarProductsBySubject extends LightningElement {
   currentProductId = '';
   selectedState = '';
   selectedSubject = '';
+  _effectiveVisible = 6;
+  _resizeHandler = null;
 
   connectedCallback() {
+    this._updateEffectiveVisible();
+    this._resizeHandler = () => this._updateEffectiveVisible();
+    globalThis.addEventListener('resize', this._resizeHandler);
     this.initialize();
+  }
+
+  disconnectedCallback() {
+    if (this._resizeHandler) {
+      globalThis.removeEventListener('resize', this._resizeHandler);
+      this._resizeHandler = null;
+    }
   }
 
   get normalizedMaxProducts() {
@@ -50,7 +62,21 @@ export default class SimilarProductsBySubject extends LightningElement {
   }
 
   get canGoRight() {
-    return this.currentIndex + this.normalizedVisibleCount < this.products.length;
+    return this.currentIndex + this._effectiveVisible < this.products.length;
+  }
+
+  _updateEffectiveVisible() {
+    const innerWidth = globalThis.innerWidth ?? 1280;
+    // Mirror the CSS breakpoints: <=768px caps at 2 cols, <=1200px caps at 4 cols
+    let cssMax;
+    if (innerWidth <= 768) {
+      cssMax = 2;
+    } else if (innerWidth <= 1200) {
+      cssMax = 4;
+    } else {
+      cssMax = this.normalizedVisibleColumns;
+    }
+    this._effectiveVisible = Math.min(cssMax, this.normalizedVisibleColumns);
   }
 
   get disablePrev() {
@@ -85,7 +111,7 @@ export default class SimilarProductsBySubject extends LightningElement {
       const fetchedProducts = await this.fetchProducts();
       this.products = fetchedProducts
         .map((item) => this.normalizeProduct(item))
-        .filter((item) => Boolean(item))
+        .filter(Boolean)
         .filter((item) => !this.isCurrentProduct(item))
         .filter((item) => this.matchesSubject(item))
         .slice(0, this.normalizedMaxProducts);
@@ -93,7 +119,7 @@ export default class SimilarProductsBySubject extends LightningElement {
       this.showProducts = this.products.length > 0;
       this.currentIndex = 0;
       this.scrollToCurrentIndex('auto');
-    } catch (e) {
+    } catch {
       this.resetProducts();
     } finally {
       this.loading = false;
@@ -119,13 +145,19 @@ export default class SimilarProductsBySubject extends LightningElement {
 
       const data = await response.json();
       return this.extractProductList(data);
-    } catch (e) {
+    } catch {
       return [];
     }
   }
 
   extractProductList(data) {
-    const list = data?.productsPage?.products || data?.productPage?.products;
+    // N7 fix: Check all 5 API response shapes (matching customResults/similarProductsByState)
+    const list =
+      data?.productsPage?.products ||
+      data?.productPage?.products ||
+      data?.productSearchResult?.products ||
+      data?.searchProductResult?.products ||
+      data?.products;
 
     return Array.isArray(list) ? list : [];
   }
@@ -180,21 +212,23 @@ export default class SimilarProductsBySubject extends LightningElement {
       }
     }
 
-    return deduped.length ? deduped.join(' ') : '*';
+    if (deduped.length) return deduped.join(' ');
+    const fallback = String(this.searchTerm || '').trim();
+    return fallback && fallback !== '*' ? fallback : 'all';
   }
 
   getSelectedState() {
     try {
-      return (window.localStorage.getItem(STATE_STORAGE_KEY) || '').trim();
-    } catch (e) {
+      return (globalThis.localStorage.getItem(STATE_STORAGE_KEY) || '').trim();
+    } catch {
       return '';
     }
   }
 
   getSelectedSubject() {
     const slug = this.getProductSlugFromPath();
-    const match = slug.match(/-grade-[0-9]+-(.+)$/i);
-    const subjectSlug = match && match[1] ? match[1] : '';
+    const match = /-grade-\d+-(.+)$/i.exec(slug);
+    const subjectSlug = match?.[1] ?? '';
 
     if (!subjectSlug) {
       return '';
@@ -202,18 +236,18 @@ export default class SimilarProductsBySubject extends LightningElement {
 
     return subjectSlug
       .split('-')
-      .filter((part) => Boolean(part))
+      .filter(Boolean)
       .map((part) => part.charAt(0).toUpperCase() + part.slice(1).toLowerCase())
       .join(' ')
       .trim();
   }
 
   getProductSlugFromPath() {
-    if (typeof window === 'undefined' || !window.location || !window.location.pathname) {
+    if (!globalThis.location?.pathname) {
       return '';
     }
 
-    const parts = window.location.pathname.split('/').filter((segment) => Boolean(segment));
+    const parts = globalThis.location.pathname.split('/').filter(Boolean);
     const productIndex = parts.findIndex((segment) => segment.toLowerCase() === 'product');
 
     if (productIndex === -1 || productIndex + 1 >= parts.length) {
@@ -222,29 +256,29 @@ export default class SimilarProductsBySubject extends LightningElement {
 
     try {
       return decodeURIComponent(parts[productIndex + 1]).trim();
-    } catch (e) {
+    } catch {
       return parts[productIndex + 1].trim();
     }
   }
 
   getCurrentProductId() {
-    if (typeof window === 'undefined' || !window.location || !window.location.href) {
+    if (!globalThis.location?.href) {
       return '';
     }
 
-    const fromQuery = new URLSearchParams(window.location.search || '').get('pid');
+    const fromQuery = new URLSearchParams(globalThis.location.search || '').get('pid');
     if (fromQuery) {
       return fromQuery;
     }
 
-    const fullUrl = window.location.href;
-    const sfProductId = fullUrl.match(PRODUCT_ID_PATTERN);
-    if (sfProductId && sfProductId[0]) {
+    const fullUrl = globalThis.location.href;
+    const sfProductId = PRODUCT_ID_PATTERN.exec(fullUrl);
+    if (sfProductId?.[0]) {
       return sfProductId[0];
     }
 
-    const parts = (window.location.pathname || '').split('/').filter((segment) => Boolean(segment));
-    const lastSegment = parts.length ? decodeURIComponent(parts[parts.length - 1]) : '';
+    const parts = (globalThis.location?.pathname ?? '').split('/').filter(Boolean);
+    const lastSegment = parts.length ? decodeURIComponent(parts.at(-1)) : '';
     return PRODUCT_ID_PATTERN.test(lastSegment) ? lastSegment : '';
   }
 
@@ -297,8 +331,8 @@ export default class SimilarProductsBySubject extends LightningElement {
     const nameSource = product.urlName || product.name || 'detail';
     const recordName = String(nameSource)
       .toLowerCase()
-      .replace(/[^a-z0-9]+/g, '-')
-      .replace(/^-+|-+$/g, '');
+      .replaceAll(/[^a-z0-9]+/g, '-')
+      .replaceAll(/^-+|-+$/g, '');
 
     return `/${this.storeName || DEFAULT_STORE_NAME}/product/${recordName || 'detail'}/${product.id}`;
   }
@@ -314,7 +348,7 @@ export default class SimilarProductsBySubject extends LightningElement {
       return;
     }
 
-    window.location.href = this.buildProductDetailPath(product);
+    globalThis.location.href = this.buildProductDetailPath(product);
   }
 
   handlePrev() {
@@ -331,13 +365,13 @@ export default class SimilarProductsBySubject extends LightningElement {
       return;
     }
 
-    const maxStart = Math.max(0, this.products.length - this.normalizedVisibleCount);
+    const maxStart = Math.max(0, this.products.length - this._effectiveVisible);
     this.currentIndex = Math.min(maxStart, this.currentIndex + 1);
     this.scrollToCurrentIndex('smooth');
   }
 
   scrollToCurrentIndex(behavior = 'smooth') {
-    window.requestAnimationFrame(() => {
+    globalThis.requestAnimationFrame(() => {
       const viewport = this.template.querySelector('.products-viewport');
       const track = this.template.querySelector('.products-track');
       const firstCard = this.template.querySelector('.product-card');
@@ -346,7 +380,7 @@ export default class SimilarProductsBySubject extends LightningElement {
         return;
       }
 
-      const style = window.getComputedStyle(track);
+      const style = globalThis.getComputedStyle(track);
       const gapValue = style.columnGap || style.gap || '0';
       const gap = Number.parseFloat(gapValue) || 0;
       const cardWidth = firstCard.getBoundingClientRect().width;

@@ -1,7 +1,13 @@
 import { LightningElement, api, track } from "lwc";
+import isGuest from "@salesforce/user/isGuest";
 
 const STORAGE_KEY = "abc_selected_state";
-const HEADER_CSS_ID = "abc-header-responsive-css";
+const CHECKOUT_STAGE_KEY = "abc_checkout_stage";
+const LOGIN_URL = "/AmericanBookCompany/login";
+const GUEST_LOGIN_GUARD_PATHS = new Set([
+  "/AmericanBookCompany/mylists",
+  "/AmericanBookCompany/my-orders"
+]);
 
 const STATE_ABBREVIATIONS = {
   Alabama: "AL",
@@ -56,98 +62,6 @@ const STATE_ABBREVIATIONS = {
   Wisconsin: "WI",
   Wyoming: "WY"
 };
-
-const HEADER_CSS = `
-/* ═══════════════════════════════════════════════════════════════════
-   ABC HEADER – responsive overrides  v3
-   Injected by stateFilterLwc into document.head.
-
-   Live DOM structure (columns-47c9 / columns-3835 no longer exist):
-     [data-layout-site-region="header"]
-       [data-component-id="columns-7cf9"]   ← Nav row
-         commerce_builder-drilldown-navigation
-       [data-component-id="columns-ce85"]   ← 4-col utility row
-         dxp_layout-column:nth-of-type(1)   ← Logo   (2/12)
-         dxp_layout-column:nth-of-type(2)   ← State  (2/12)
-         dxp_layout-column:nth-of-type(3)   ← Search (5/12)
-         dxp_layout-column:nth-of-type(4)   ← Cart   (3/12)
-
-   OOB col-large-size breakpoint = 64em (1024px):
-     ≥1024px → row layout (OOB handles, no overrides needed)
-     768–1023px → our tablet block forces row
-     <768px → our mobile block gives 2-row layout
-═══════════════════════════════════════════════════════════════════ */
-
-/* ─── CART PAGE ──────────────────────────────────────────────────── */
-commerce_builder-b2b-cart-contents{padding-left:60px!important}
-commerce_builder-cart-summary{padding-right:24px!important}
-commerce_cart-header h1{font-size:36px!important;font-weight:700!important;font-style:normal!important;margin-bottom:24px!important;line-height:1.4!important;color:#1e2a3a!important}
-commerce_cart-header .header-labels{align-items:center!important}
-commerce_cart-managed-contents article{padding:20px 0!important;border-bottom:1px solid #d4d8dc!important}
-commerce_cart-managed-contents .container.image{grid-template-columns:160px 1fr auto auto!important;column-gap:20px!important}
-commerce_cart-managed-contents figure{margin-left:0!important}
-commerce_cart-managed-contents figure img{max-width:150px!important;border-radius:0!important;border:1px solid #d4d8dc!important;box-shadow:0 4px 6px -1px rgba(120,120,120,0.15),0 2px 4px -2px rgba(120,120,120,0.15)!important}
-commerce_cart-managed-contents .item-name a,commerce_cart-managed-contents .item-name a p{font-size:20px!important;font-weight:700!important;color:#1e2a3a!important;text-decoration:none!important;line-height:1.25!important}
-commerce_cart-managed-contents .item-name a:hover,commerce_cart-managed-contents .item-name a:hover p{text-decoration:underline!important}
-commerce_cart-managed-contents .product-sku{font-size:13px!important;color:#76716b!important}
-commerce_cart-managed-contents .item-unit-price{font-size:16px!important;font-weight:700!important;color:#1e2a3a!important}
-commerce_cart-managed-contents .item-prices{font-size:16px!important;font-weight:700!important;color:#1e2a3a!important}
-commerce_cart-managed-contents .item-actions button{color:#2e609c!important;font-size:14px!important}
-commerce_builder-cart-summary>div{background:#f4f7fa!important;padding:20px!important;border-radius:4px!important}
-commerce_builder-cart-summary h2{font-size:24px!important;font-weight:700!important;color:#1e2a3a!important;margin-bottom:12px!important}
-commerce_builder-cart-summary dt p{font-size:15px!important}
-commerce_builder-cart-summary dd{font-size:15px!important}
-commerce_builder-cart-summary button,button.checkout-btn{border-radius:9999px!important;font-size:16px!important;padding:12px 24px!important}
-commerce_builder-cart-summary a{font-size:14px!important;color:#2e609c!important}
-commerce_cart-managed-contents .item-unit-price .visually-hidden~span,commerce_cart-managed-contents .item-prices .visually-hidden~span{font-size:16px!important;font-weight:700!important}
-
-/* ─── TABLET (768px – 1023px) ───────────────────────────────────── */
-@media only screen and (min-width:48em) and (max-width:63.9375em){
-[data-layout-site-region="header"]{padding:4px 12px!important}
-/* Force the 4-col utility row to go horizontal */
-[data-component-id="columns-ce85"]>.columns-content>.columns{flex-direction:row!important;flex-wrap:nowrap!important;align-items:center!important}
-[data-component-id="columns-ce85"] dxp_layout-column-spacer{display:none!important}
-/* Col 1 – Logo */
-[data-component-id="columns-ce85"]>.columns-content>.columns>dxp_layout-column:nth-of-type(1){flex:0 0 auto!important;width:auto!important;max-width:110px!important;padding:0 8px 0 0!important}
-[data-component-id="columns-ce85"]>.columns-content>.columns>dxp_layout-column:nth-of-type(1) img{max-height:52px!important;width:auto!important}
-/* Col 2 – State filter */
-[data-component-id="columns-ce85"]>.columns-content>.columns>dxp_layout-column:nth-of-type(2){flex:0 0 auto!important;width:auto!important;max-width:155px!important;padding:0 8px!important}
-[data-component-id="columns-ce85"] c-state-filter-lwc .wrap{max-width:140px!important}
-/* Col 3 – Search (fills remaining space) */
-[data-component-id="columns-ce85"]>.columns-content>.columns>dxp_layout-column:nth-of-type(3){flex:1 1 0%!important;width:auto!important;min-width:0!important;padding:0 8px!important}
-/* Col 4 – Cart */
-[data-component-id="columns-ce85"]>.columns-content>.columns>dxp_layout-column:nth-of-type(4){flex:0 0 auto!important;width:auto!important;max-width:56px!important;padding:0 0 0 8px!important}
-/* Nav: scrollable on tablet */
-[data-component-id="columns-7cf9"] nav ul{flex-wrap:nowrap!important;overflow-x:auto!important;-webkit-overflow-scrolling:touch;scrollbar-width:none}
-[data-component-id="columns-7cf9"] nav ul::-webkit-scrollbar{display:none}
-[data-component-id="columns-7cf9"] nav ul li a,[data-component-id="columns-7cf9"] nav ul li button{font-size:12px!important;padding:6px 8px!important;white-space:nowrap!important}
-}
-
-/* ─── MOBILE (< 768px) ──────────────────────────────────────────── */
-@media only screen and (max-width:47.9375em){
-[data-layout-site-region="header"]{padding:8px 12px 10px!important;background:#fff!important;border-bottom:1px solid #e5e7eb!important}
-/* Row 1: Logo | State | Cart; Row 2: Search – achieved via order + flex-wrap */
-[data-component-id="columns-ce85"]>.columns-content>.columns{flex-direction:row!important;flex-wrap:wrap!important;align-items:center!important;row-gap:8px!important}
-[data-component-id="columns-ce85"] dxp_layout-column-spacer{display:none!important}
-/* Col 1 – Logo (left, row 1) */
-[data-component-id="columns-ce85"]>.columns-content>.columns>dxp_layout-column:nth-of-type(1){order:1!important;flex:0 0 auto!important;width:auto!important;max-width:80px!important;padding:0!important}
-[data-component-id="columns-ce85"]>.columns-content>.columns>dxp_layout-column:nth-of-type(1) img{max-height:44px!important;width:auto!important;max-width:76px!important}
-/* Col 2 – State (center, row 1, fills between logo and cart) */
-[data-component-id="columns-ce85"]>.columns-content>.columns>dxp_layout-column:nth-of-type(2){order:2!important;flex:1 1 0%!important;width:auto!important;max-width:200px!important;padding:0 8px!important}
-[data-component-id="columns-ce85"] c-state-filter-lwc .wrap{max-width:180px!important}
-/* Col 4 – Cart (far right, row 1) */
-[data-component-id="columns-ce85"]>.columns-content>.columns>dxp_layout-column:nth-of-type(4){order:3!important;flex:0 0 auto!important;width:auto!important;max-width:52px!important;padding:0!important}
-/* Col 3 – Search (full-width row 2) */
-[data-component-id="columns-ce85"]>.columns-content>.columns>dxp_layout-column:nth-of-type(3){order:4!important;flex:0 0 100%!important;width:100%!important;padding:4px 0 0!important}
-[data-component-id="columns-ce85"]>.columns-content>.columns>dxp_layout-column:nth-of-type(3) input,
-[data-component-id="columns-ce85"]>.columns-content>.columns>dxp_layout-column:nth-of-type(3) [type="search"]{min-height:44px!important;border-radius:999px!important;border:1px solid #d5dbe3!important;background:#fff!important;padding-left:18px!important;padding-right:48px!important;font-size:15px!important}
-/* Cart page – reduce padding on narrow screens */
-commerce_builder-b2b-cart-contents{padding-left:16px!important}
-commerce_builder-cart-summary{padding-right:0!important}
-commerce_cart-managed-contents .container.image{grid-template-columns:90px 1fr auto!important;column-gap:12px!important}
-commerce_cart-managed-contents figure img{max-width:80px!important}
-}
-`;
 
 export default class StateFilterLwc extends LightningElement {
   @api refinementKey = "State__c";
@@ -233,17 +147,14 @@ export default class StateFilterLwc extends LightningElement {
   _cleanT1;
   _cleanT2;
   _searchInputWatchId;
+  _cartPatchId;
 
   connectedCallback() {
-    // eslint-disable-next-line @lwc/lwc/no-document-query
-    if (!document.getElementById(HEADER_CSS_ID)) {
-      const style = document.createElement("style");
-      style.id = HEADER_CSS_ID;
-      style.textContent = HEADER_CSS;
-      document.head.appendChild(style);
+    if (this.redirectGuestAccountPageToLogin()) {
+      return;
     }
 
-    const url = new URL(window.location.href);
+    const url = new URL(globalThis.location.href);
 
     if (this.isResultsPage(url)) {
       this.ensureResultsAllIfMissing(url);
@@ -252,7 +163,7 @@ export default class StateFilterLwc extends LightningElement {
       this.selectedValue = st;
       this.safeSetStorage(STORAGE_KEY, st);
 
-      const refreshedUrl = new URL(window.location.href);
+      const refreshedUrl = new URL(globalThis.location.href);
       if (refreshedUrl.search && refreshedUrl.search.length > 1) {
         this.cleanUrlAfterDelay();
       }
@@ -265,7 +176,7 @@ export default class StateFilterLwc extends LightningElement {
         this.ensureHomeHash(st);
       }
 
-      const refreshedUrl = new URL(window.location.href);
+      const refreshedUrl = new URL(globalThis.location.href);
       if (
         (!this.isHomePage(refreshedUrl) && refreshedUrl.hash) ||
         (refreshedUrl.search && refreshedUrl.search.length > 1)
@@ -283,24 +194,53 @@ export default class StateFilterLwc extends LightningElement {
 
     this.startUrlWatcher();
     this.startSearchInputWatcher();
+    this.startCartPatchWatcher();
 
     // eslint-disable-next-line @lwc/lwc/no-async-operation
-    window.setTimeout(() => {
+    globalThis.setTimeout(() => {
       this.clearVisibleSearchInputIfAll();
     }, 250);
 
     // eslint-disable-next-line @lwc/lwc/no-async-operation
-    window.setTimeout(() => {
+    globalThis.setTimeout(() => {
       this.clearVisibleSearchInputIfAll();
     }, 800);
+  }
+
+  redirectGuestAccountPageToLogin() {
+    if (!isGuest) {
+      return false;
+    }
+
+    const currentUrl = new URL(globalThis.location.href);
+    const currentPath = this.normalizeGuardPath(currentUrl.pathname);
+
+    if (!GUEST_LOGIN_GUARD_PATHS.has(currentPath)) {
+      return false;
+    }
+
+    const startUrl = `${currentUrl.pathname}${currentUrl.search}${currentUrl.hash}`;
+    globalThis.location.replace(
+      `${LOGIN_URL}?startURL=${encodeURIComponent(startUrl)}`
+    );
+    return true;
+  }
+
+  normalizeGuardPath(path) {
+    if (!path || path === "/") {
+      return path || "/";
+    }
+
+    return path.endsWith("/") ? path.slice(0, -1) : path;
   }
 
   disconnectedCallback() {
     document.removeEventListener("click", this._docClickHandler);
     this.stopUrlWatcher();
     this.stopSearchInputWatcher();
-    window.clearTimeout(this._cleanT1);
-    window.clearTimeout(this._cleanT2);
+    this.stopCartPatchWatcher();
+    globalThis.clearTimeout(this._cleanT1);
+    globalThis.clearTimeout(this._cleanT2);
   }
 
   get displayValue() {
@@ -339,15 +279,15 @@ export default class StateFilterLwc extends LightningElement {
   }
 
   startUrlWatcher() {
-    this._lastHref = window.location.href;
+    this._lastHref = globalThis.location.href;
     // eslint-disable-next-line @lwc/lwc/no-async-operation
-    this._watchId = window.setInterval(() => {
-      const href = window.location.href;
+    this._watchId = globalThis.setInterval(() => {
+      const href = globalThis.location.href;
       if (href !== this._lastHref) {
         this._lastHref = href;
-        window.clearTimeout(this._watchDebounce);
+        globalThis.clearTimeout(this._watchDebounce);
         // eslint-disable-next-line @lwc/lwc/no-async-operation
-        this._watchDebounce = window.setTimeout(() => {
+        this._watchDebounce = globalThis.setTimeout(() => {
           this.onUrlChanged();
         }, this.watchDebounceMs);
       }
@@ -355,17 +295,17 @@ export default class StateFilterLwc extends LightningElement {
   }
 
   stopUrlWatcher() {
-    window.clearInterval(this._watchId);
-    window.clearTimeout(this._watchDebounce);
+    globalThis.clearInterval(this._watchId);
+    globalThis.clearTimeout(this._watchDebounce);
     this._watchId = null;
     this._watchDebounce = null;
   }
 
   startSearchInputWatcher() {
     // eslint-disable-next-line @lwc/lwc/no-async-operation
-    this._searchInputWatchId = window.setInterval(() => {
+    this._searchInputWatchId = globalThis.setInterval(() => {
       try {
-        const url = new URL(window.location.href);
+        const url = new URL(globalThis.location.href);
         if (!this.isResultsPage(url)) return;
 
         const kw = this.getResultsKeyword(url);
@@ -414,10 +354,10 @@ export default class StateFilterLwc extends LightningElement {
             this.resultsAllPath +
             (params.toString() ? `?${params.toString()}` : "");
           const currentPathAndSearch =
-            window.location.pathname + window.location.search;
+            globalThis.location.pathname + globalThis.location.search;
 
           if (currentPathAndSearch !== target) {
-            window.location.assign(target);
+            globalThis.location.assign(target);
           }
         }
       } catch {
@@ -427,13 +367,425 @@ export default class StateFilterLwc extends LightningElement {
   }
 
   stopSearchInputWatcher() {
-    window.clearInterval(this._searchInputWatchId);
+    globalThis.clearInterval(this._searchInputWatchId);
     this._searchInputWatchId = null;
+  }
+
+  startCartPatchWatcher() {
+    this.runCartPageDomPatch();
+
+    // eslint-disable-next-line @lwc/lwc/no-async-operation
+    globalThis.setTimeout(() => {
+      this.runCartPageDomPatch();
+    }, 250);
+
+    // eslint-disable-next-line @lwc/lwc/no-async-operation
+    globalThis.setTimeout(() => {
+      this.runCartPageDomPatch();
+    }, 1000);
+
+    // eslint-disable-next-line @lwc/lwc/no-async-operation
+    this._cartPatchId = globalThis.setInterval(() => {
+      this.runCartPageDomPatch();
+    }, 750);
+  }
+
+  stopCartPatchWatcher() {
+    globalThis.clearInterval(this._cartPatchId);
+    this._cartPatchId = null;
+  }
+
+  runCartPageDomPatch() {
+    try {
+      const pathname = globalThis.location?.pathname || "";
+      if (/(^|\/)checkout\/?$/.test(pathname)) {
+        this.normalizeCheckoutGatePage();
+        return;
+      }
+
+      if (!/(^|\/)cart\/?$/.test(pathname)) {
+        this.resetCheckoutGatePage();
+        return;
+      }
+
+      this.clearCheckoutStage();
+
+      this.normalizeCartHeading();
+      this.normalizeCartSummaryHeading();
+
+      const cartBody = document.querySelector('section[data-automation="cartBody"]');
+      const emptyHeading = this.findElementByExactText(
+        ["h1", "h2", "p", "div", "span"],
+        "Your cart is empty"
+      );
+
+      if (cartBody && emptyHeading) {
+        document.body.dataset.abcCartEmpty = "true";
+        this.applyEmptyCartPatch(cartBody);
+        return;
+      }
+
+      delete document.body.dataset.abcCartEmpty;
+      this.restoreFilledCartMainColumn();
+      this.normalizeFilledCartHeading();
+      this.hideCartChromeForFilledState();
+      this.renameDeleteActions();
+      this.normalizeCartItemTitles();
+      this.normalizeCartActionArea();
+    } catch {
+      // ignore
+    }
+  }
+
+  normalizeCheckoutGatePage() {
+    const gate = document.querySelector("c-checkout-login-gate");
+    const columnsContent = gate?.parentElement?.parentElement?.parentElement;
+
+    if (!gate || !columnsContent) {
+      return;
+    }
+
+    columnsContent.classList.add("abc-checkout-columns");
+
+    const currentStage = this.getCheckoutStage();
+    document.body.dataset.abcCheckoutStage = currentStage;
+
+    if (currentStage === "gate") {
+      const guestButton = this.findElementByExactText(["button"], "Continue as Guest");
+      const signInButton = this.findElementByExactText(["button"], "Sign In");
+
+      this.bindCheckoutStageAdvance(guestButton);
+      this.bindCheckoutStageAdvance(signInButton);
+      delete document.body.dataset.abcCheckoutHideDelivery;
+      return;
+    }
+
+    this.toggleEmptyShippingMethodSection();
+  }
+
+  resetCheckoutGatePage() {
+    delete document.body.dataset.abcCheckoutStage;
+    delete document.body.dataset.abcCheckoutHideDelivery;
+    document.querySelectorAll(".abc-checkout-columns").forEach((el) => {
+      el.classList.remove("abc-checkout-columns");
+    });
+  }
+
+  toggleEmptyShippingMethodSection() {
+    const deliverySection = document.querySelector(
+      "commerce_unified_checkout-checkout-section-delivery"
+    );
+
+    if (!deliverySection) {
+      delete document.body.dataset.abcCheckoutHideDelivery;
+      return;
+    }
+
+    const sectionText = (deliverySection.textContent || "").trim();
+    const hasShippingChoices = !!deliverySection.querySelector(
+      'input[type="radio"], select, [role="radio"]'
+    );
+
+    if (
+      !hasShippingChoices &&
+      sectionText.includes("Enter an address to see shipping method options")
+    ) {
+      document.body.dataset.abcCheckoutHideDelivery = "true";
+      return;
+    }
+
+    delete document.body.dataset.abcCheckoutHideDelivery;
+  }
+
+  bindCheckoutStageAdvance(element) {
+    if (!element || element.dataset.abcCheckoutBound === "true") {
+      return;
+    }
+
+    element.dataset.abcCheckoutBound = "true";
+    element.addEventListener("click", () => {
+      this.setCheckoutStage("details");
+      document.body.dataset.abcCheckoutStage = "details";
+      globalThis.dispatchEvent(
+        new CustomEvent("abccheckoutstagechange", {
+          detail: { stage: "details" }
+        })
+      );
+    });
+  }
+
+  getCheckoutStage() {
+    try {
+      return globalThis.sessionStorage?.getItem(CHECKOUT_STAGE_KEY) || "gate";
+    } catch {
+      return "gate";
+    }
+  }
+
+  setCheckoutStage(stageValue) {
+    try {
+      globalThis.sessionStorage?.setItem(CHECKOUT_STAGE_KEY, stageValue);
+    } catch {
+      // ignore
+    }
+  }
+
+  clearCheckoutStage() {
+    try {
+      globalThis.sessionStorage?.removeItem(CHECKOUT_STAGE_KEY);
+    } catch {
+      // ignore
+    }
+  }
+
+  normalizeCartHeading() {
+    const cartHeadingCandidates = Array.from(document.querySelectorAll("h1, p"));
+
+    cartHeadingCandidates.forEach((el) => {
+      const text = (el.textContent || "").trim();
+      if (text === "Cart") {
+        el.textContent = "Your Cart";
+      }
+    });
+  }
+
+  normalizeCartSummaryHeading() {
+    const summaryHeading = this.findElementByExactText(["h1", "h2", "p", "div", "span"], "Summary");
+    if (summaryHeading) {
+      summaryHeading.textContent = "Order Summary";
+    }
+  }
+
+  normalizeFilledCartHeading() {
+    const heading = document.querySelector("commerce_cart-header h1");
+    if (heading) {
+      heading.textContent = "Your Cart";
+    }
+
+    const countNodes = Array.from(document.querySelectorAll("p, div, span"));
+    countNodes.forEach((el) => {
+      const text = (el.textContent || "").trim();
+      if (/^\(\d+\s+items?\)$/i.test(text)) {
+        el.style.display = "none";
+      }
+
+      if (text === "Sort By") {
+        const wrapper = el.closest("div");
+        if (wrapper) {
+          wrapper.style.display = "none";
+        }
+        el.style.display = "none";
+      }
+
+      if (text === "Product Code") {
+        const wrapper = el.parentElement;
+        if (wrapper) {
+          wrapper.style.display = "none";
+        }
+      }
+    });
+  }
+
+  hideCartChromeForFilledState() {
+    const elementsToHide = [
+      this.findElementByExactText(["button"], "Skip to Bottom"),
+      this.findElementByExactText(["button"], "Skip to Top"),
+      this.findElementByExactText(["button"], "Previous"),
+      this.findElementByExactText(["button"], "Next"),
+      this.findElementByExactText(["button"], "Quantity Help")
+    ];
+
+    elementsToHide.forEach((el) => {
+      if (el) {
+        el.style.display = "none";
+      }
+    });
+
+    const pagination = document.querySelector("commerce_cart-managed-contents nav");
+    if (pagination) {
+      pagination.style.display = "none";
+    }
+
+    const sortControl = document.querySelector("commerce_cart-header lightning-combobox");
+    if (sortControl) {
+      const wrapper = sortControl.closest("div");
+      if (wrapper) {
+        wrapper.style.display = "none";
+      }
+    }
+
+    const clearCart = this.findElementByExactText(["button"], "Clear Cart");
+    if (clearCart) {
+      clearCart.style.display = "none";
+    }
+
+    const couponLink = this.findElementByExactText(["a", "button"], "Enter a Coupon Code");
+    if (couponLink) {
+      couponLink.style.display = "none";
+    }
+
+    const skuNodes = Array.from(document.querySelectorAll("p, div, span"));
+    skuNodes.forEach((el) => {
+      const text = (el.textContent || "").trim();
+      if (text.startsWith("SKU# ")) {
+        el.style.display = "none";
+      }
+    });
+  }
+
+  renameDeleteActions() {
+    const deleteButtons = Array.from(document.querySelectorAll("button"));
+    deleteButtons.forEach((button) => {
+      const text = (button.textContent || "").trim();
+      if (text === "Delete") {
+        button.textContent = "Remove from cart";
+      }
+    });
+  }
+
+  normalizeCartItemTitles() {
+    const itemLinks = Array.from(document.querySelectorAll("commerce_cart-managed-contents a, commerce_cart-managed-contents p"));
+    itemLinks.forEach((el) => {
+      const text = (el.textContent || "").trim();
+      if (text.endsWith(" - Color Print + Digital")) {
+        el.textContent = text.replace(/\s+-\s+Color Print \+ Digital$/, "");
+      }
+    });
+  }
+
+  restoreFilledCartMainColumn() {
+    const mainColumn = document.querySelector(
+      'community_layout-column.col-large-size_7-of-12'
+    );
+    const content = mainColumn?.querySelector(':scope > div.column-content');
+
+    if (content) {
+      content.style.setProperty("display", "block", "important");
+      content.style.setProperty("width", "100%", "important");
+    }
+  }
+
+  normalizeCartActionArea() {
+    const downloadButton = this.findElementByExactText(["button", "a"], "Download a Quote");
+    const checkoutButton = this.findElementByExactText(["button", "a"], "Proceed to Checkout");
+    const poLink = this.findElementByExactText(["button", "a"], "Need to submit a PO?");
+
+    if (downloadButton) {
+      this.applyButtonStyle(downloadButton, {
+        background: "#fff",
+        color: "#007cba",
+        border: "2px solid #007cba"
+      });
+    }
+
+    if (checkoutButton) {
+      this.applyButtonStyle(checkoutButton, {
+        background: "#007cba",
+        color: "#fff",
+        border: "none"
+      });
+    }
+
+    if (poLink) {
+      poLink.style.background = "transparent";
+      poLink.style.border = "none";
+      poLink.style.color = "#2e609c";
+      poLink.style.display = "block";
+      poLink.style.fontSize = "15px";
+      poLink.style.fontWeight = "400";
+      poLink.style.margin = "6px auto 0";
+      poLink.style.padding = "4px 0 0";
+      poLink.style.textAlign = "center";
+      poLink.style.boxShadow = "none";
+      poLink.style.width = "100%";
+      poLink.style.maxWidth = "100%";
+      poLink.style.borderRadius = "0";
+    }
+  }
+
+  applyButtonStyle(element, options) {
+    element.style.display = "flex";
+    element.style.alignItems = "center";
+    element.style.justifyContent = "center";
+    element.style.width = "100%";
+    element.style.minHeight = "50px";
+    element.style.padding = "14px 24px";
+    element.style.borderRadius = "9999px";
+    element.style.fontSize = "16px";
+    element.style.fontWeight = "700";
+    element.style.textAlign = "center";
+    element.style.textDecoration = "none";
+    element.style.boxSizing = "border-box";
+    element.style.background = options.background;
+    element.style.color = options.color;
+    element.style.border = options.border;
+  }
+
+  applyEmptyCartPatch(cartBody) {
+    this.normalizeCartHeading();
+
+    if (!cartBody.querySelector(".abc-cart-empty-state")) {
+      cartBody.innerHTML = [
+        '<div class="abc-cart-empty-state">',
+        '<p class="abc-cart-empty-message">No items in cart</p>',
+        '<img class="abc-cart-empty-image" src="https://americanbookcompany.com/images/need-to-download-a-quote-wide.svg" alt="Need to download a quote? Add items to your cart to begin.">',
+        "</div>"
+      ].join("");
+    }
+
+    const clearCart = document.querySelector('[data-automation="clearCart"]');
+    if (clearCart) {
+      clearCart.style.display = "none";
+    }
+
+    const checkoutButton = this.findElementByExactText(["button", "a"], "Checkout");
+    if (checkoutButton) {
+      checkoutButton.style.display = "none";
+    }
+
+    const continueShopping = this.findElementByExactText(["a", "button"], "Continue Shopping");
+    if (continueShopping) {
+      continueShopping.style.display = "none";
+    }
+
+    const mainColumn = document.querySelector(
+      'community_layout-section[data-component-id="section-5592"] community_layout-column.col-large-size_7-of-12'
+    );
+    if (mainColumn) {
+      mainColumn.style.flex = "0 0 100%";
+      mainColumn.style.maxWidth = "100%";
+    }
+
+    const spacerColumn = document.querySelector(
+      'community_layout-section[data-component-id="section-5592"] community_layout-column.col-large-size_1-of-12'
+    );
+    if (spacerColumn) {
+      spacerColumn.style.display = "none";
+    }
+
+    const summaryColumn = document.querySelector(
+      'community_layout-section[data-component-id="section-5592"] community_layout-column.col-large-size_4-of-12'
+    );
+    if (summaryColumn) {
+      summaryColumn.style.display = "none";
+    }
+  }
+
+  findElementByExactText(selectors, text) {
+    for (const selector of selectors) {
+      const candidates = Array.from(document.querySelectorAll(selector));
+      const match = candidates.find((el) => (el.textContent || "").trim() === text);
+      if (match) {
+        return match;
+      }
+    }
+
+    return null;
   }
 
   clearVisibleSearchInputIfAll() {
     try {
-      const url = new URL(window.location.href);
+      const url = new URL(globalThis.location.href);
       if (!this.isResultsPage(url)) return;
 
       const kw = this.getResultsKeyword(url);
@@ -474,9 +826,9 @@ export default class StateFilterLwc extends LightningElement {
       'input[name="search"]'
     ];
 
-    for (let i = 0; i < selectors.length; i += 1) {
+    for (const selector of selectors) {
       // eslint-disable-next-line @lwc/lwc/no-document-query
-      const el = document.querySelector(selectors[i]);
+      const el = document.querySelector(selector);
       if (el) return el;
     }
     return null;
@@ -484,7 +836,7 @@ export default class StateFilterLwc extends LightningElement {
 
   onUrlChanged() {
     try {
-      const url = new URL(window.location.href);
+      const url = new URL(globalThis.location.href);
 
       if (this.isResultsPage(url)) {
         this.ensureResultsAllIfMissing(url);
@@ -514,7 +866,7 @@ export default class StateFilterLwc extends LightningElement {
       }
 
       // eslint-disable-next-line @lwc/lwc/no-async-operation
-      window.setTimeout(() => {
+      globalThis.setTimeout(() => {
         this.clearVisibleSearchInputIfAll();
       }, 250);
     } catch {
@@ -533,7 +885,7 @@ export default class StateFilterLwc extends LightningElement {
 
   getStoredState() {
     try {
-      const v = window.localStorage.getItem(STORAGE_KEY) || "";
+      const v = globalThis.localStorage.getItem(STORAGE_KEY) || "";
       return this.states.includes(v) ? v : "";
     } catch {
       return "";
@@ -553,7 +905,7 @@ export default class StateFilterLwc extends LightningElement {
 
   safeSetStorage(key, val) {
     try {
-      window.localStorage.setItem(key, val);
+      globalThis.localStorage.setItem(key, val);
     } catch {
       // ignore
     }
@@ -583,15 +935,15 @@ export default class StateFilterLwc extends LightningElement {
 
   ensureHomeHash(stateVal) {
     try {
-      const url = new URL(window.location.href);
+      const url = new URL(globalThis.location.href);
       const desiredHash = `#${encodeURIComponent(stateVal)}`;
       if (url.hash !== desiredHash) {
-        window.history.replaceState(
+        globalThis.history.replaceState(
           {},
           "",
           url.pathname + url.search + desiredHash
         );
-        this._lastHref = window.location.href;
+        this._lastHref = globalThis.location.href;
       }
     } catch {
       // ignore
@@ -623,7 +975,7 @@ export default class StateFilterLwc extends LightningElement {
         const jsonStr = this.decodeDeep(refinementsRaw);
         const list = JSON.parse(jsonStr);
         const stateEntry = Array.isArray(list)
-          ? list.find((r) => r && r.nameOrId === this.refinementKey)
+          ? list.find((r) => r?.nameOrId === this.refinementKey)
           : null;
 
         if (
@@ -674,18 +1026,18 @@ export default class StateFilterLwc extends LightningElement {
       const hasKw = !!kw;
 
       if (!hasKw) {
-        window.history.replaceState(
+        globalThis.history.replaceState(
           {},
           "",
           this.resultsAllPath + urlObj.search
         );
-        this._lastHref = window.location.href;
+        this._lastHref = globalThis.location.href;
         return;
       }
 
       if (urlObj.hash) {
-        window.history.replaceState({}, "", urlObj.pathname + urlObj.search);
-        this._lastHref = window.location.href;
+        globalThis.history.replaceState({}, "", urlObj.pathname + urlObj.search);
+        this._lastHref = globalThis.location.href;
       }
     } catch {
       // ignore
@@ -693,18 +1045,18 @@ export default class StateFilterLwc extends LightningElement {
   }
 
   cleanUrlAfterDelay() {
-    window.clearTimeout(this._cleanT1);
-    window.clearTimeout(this._cleanT2);
+    globalThis.clearTimeout(this._cleanT1);
+    globalThis.clearTimeout(this._cleanT2);
 
     const tryClean = () => {
       try {
-        const url = new URL(window.location.href);
+        const url = new URL(globalThis.location.href);
 
         if (this.isResultsPage(url)) {
           const kw = this.getResultsKeyword(url) || "all";
           const desiredPath = `${this.resultsBasePath}/${encodeURIComponent(kw)}`;
-          window.history.replaceState({}, "", desiredPath);
-          this._lastHref = window.location.href;
+          globalThis.history.replaceState({}, "", desiredPath);
+          this._lastHref = globalThis.location.href;
           this.clearVisibleSearchInputIfAll();
         } else if (this.isHomePage(url)) {
           const st =
@@ -712,11 +1064,11 @@ export default class StateFilterLwc extends LightningElement {
             this.selectedValue ||
             this.defaultState;
           const desiredHash = `#${encodeURIComponent(st)}`;
-          window.history.replaceState({}, "", url.pathname + desiredHash);
-          this._lastHref = window.location.href;
+          globalThis.history.replaceState({}, "", url.pathname + desiredHash);
+          this._lastHref = globalThis.location.href;
         } else {
-          window.history.replaceState({}, "", url.pathname);
-          this._lastHref = window.location.href;
+          globalThis.history.replaceState({}, "", url.pathname);
+          this._lastHref = globalThis.location.href;
         }
       } catch {
         // ignore
@@ -724,13 +1076,13 @@ export default class StateFilterLwc extends LightningElement {
     };
 
     // eslint-disable-next-line @lwc/lwc/no-async-operation
-    this._cleanT1 = window.setTimeout(tryClean, this.cleanDelayFastMs);
+    this._cleanT1 = globalThis.setTimeout(tryClean, this.cleanDelayFastMs);
     // eslint-disable-next-line @lwc/lwc/no-async-operation
-    this._cleanT2 = window.setTimeout(tryClean, this.cleanDelaySlowMs);
+    this._cleanT2 = globalThis.setTimeout(tryClean, this.cleanDelaySlowMs);
   }
 
   applyToUrl(stateVal) {
-    const current = new URL(window.location.href);
+    const current = new URL(globalThis.location.href);
     const params = new URLSearchParams(current.search);
 
     params.set("page", "1");
@@ -761,7 +1113,7 @@ export default class StateFilterLwc extends LightningElement {
       const targetPath = `${this.resultsBasePath}/${encodeURIComponent(kw)}`;
       const newUrl =
         targetPath + (params.toString() ? `?${params.toString()}` : "");
-      window.location.assign(newUrl);
+      globalThis.location.assign(newUrl);
     } else {
       const targetPath = current.pathname;
       const hash = this.isHomePage(current)
@@ -769,7 +1121,7 @@ export default class StateFilterLwc extends LightningElement {
         : "";
       const newUrl =
         targetPath + (params.toString() ? `?${params.toString()}` : "") + hash;
-      window.location.assign(newUrl);
+      globalThis.location.assign(newUrl);
     }
   }
 

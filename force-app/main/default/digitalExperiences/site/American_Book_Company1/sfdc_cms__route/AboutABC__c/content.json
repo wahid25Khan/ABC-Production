@@ -1,0 +1,12 @@
+{
+  "type" : "sfdc_cms__route",
+  "title" : "About ABC",
+  "contentBody" : {
+    "activeViewId" : "About_ABC",
+    "configurationTags" : [ ],
+    "pageAccess" : "UseParent",
+    "routeType" : "custom-about-abc",
+    "urlPrefix" : "about-abc"
+  },
+  "urlName" : "about-abc"
+}

@@ -1,0 +1,108 @@
+PRODUCT DATA IMPORT GUIDE
+=========================
+
+Import files in numbered order. Each file depends on the previous one.
+Target org: ABC-Production (wahid@americanbook.com)
+
+
+FILE 1 — Product2 (1-Product2.csv)
+-----------------------------------
+Creates the base product records — one row per book.
+
+Required columns:
+  Name              - Product title (e.g. "Algebra I Foundations")
+  StockKeepingUnit  - Unique ISBN (e.g. "ISBN: 641176001")
+  ProductCode       - Internal code (e.g. "64117-600-1")
+  IsActive          - Always "true"
+  ProductClass      - Always "Simple"
+
+Optional columns:
+  State__c          - Semicolon-separated states (e.g. "Alabama;Georgia;Florida")
+                      Max 255 characters — fits ~27 states
+  Grade_Level__c    - Grade level picklist value (e.g. "Grade 9")
+  Category__c       - Subject picklist (Math, English, Reading, Social Studies, Science, Writing)
+  Series__c         - Book series name
+  Description       - Product description text
+
+Import command:
+  sf data import bulk --sobject Product2 --file 1-Product2.csv --target-org ABC-Production --wait 10
+
+
+FILE 2 — PricebookEntry (2-PricebookEntry.csv)
+-----------------------------------------------
+Creates prices for each product in all 3 pricebooks.
+Each product needs 3 rows (one per pricebook).
+
+Columns:
+  Product2.StockKeepingUnit  - Matches ISBN from file 1 (lookup by SKU)
+  Pricebook2Id               - Pricebook ID (see IDs below)
+  UnitPrice                  - Price in USD
+  IsActive                   - Always "true"
+
+Pricebook IDs:
+  01sam000003vfHdAAI  Standard Price Book                        (required by Salesforce)
+  01sam0000041Az8AAE  American Book Company Price Book            (store price — what customers see)
+  01sam0000041Az7AAE  American Book Company Strikethrough Price Book  (crossed-out "was" price)
+
+Tip: Standard and Store prices are usually the same. Strikethrough is the lower "compare at" price.
+
+Import command:
+  sf data import bulk --sobject PricebookEntry --file 2-PricebookEntry.csv --target-org ABC-Production --wait 10
+
+
+FILE 3 — ProductCategoryProduct (3-ProductCategoryProduct.csv)
+--------------------------------------------------------------
+Assigns products to storefront categories.
+Each product should have at least 2 rows: its subject category + "Shop All".
+
+Columns:
+  Product2.StockKeepingUnit   - Matches ISBN from file 1 (lookup by SKU)
+  ProductCategory.Name        - Category name (exact match)
+
+Available categories:
+  Math, English, Reading, Social Studies, Science, Writing, Shop All, Products
+
+Note: "Shop All" makes the product appear on the main shop page.
+
+Import command:
+  sf data import bulk --sobject ProductCategoryProduct --file 3-ProductCategoryProduct.csv --target-org ABC-Production --wait 10
+
+
+FILE 4 — ProductFormatPricing__c (4-ProductFormatPricing.csv)
+-------------------------------------------------------------
+Creates format/pricing tabs on the product detail popup.
+Each product gets up to 3 rows (one per format).
+
+Columns:
+  Product__r.StockKeepingUnit  - Matches ISBN from file 1 (lookup by SKU)
+  Format_Name__c               - "Color Print + Digital", "B&W Print + Digital", or "Digital Only"
+  Unit_Price__c                - Price for 1-24 units
+  Bulk_Price__c                - Discounted price for 25+ units (leave empty for Digital Only)
+  Bulk_Threshold__c            - Qty for bulk discount (usually 25, empty for Digital Only)
+  Min_Quantity__c              - Minimum order qty (10 for print, empty for Digital Only)
+  Max_Quantity__c              - Maximum order qty (10000)
+  Increment_Quantity__c        - Qty step (1)
+  Sort_Order__c                - Display order: 1=Color, 2=B&W, 3=Digital
+  Is_Active__c                 - Always "true"
+
+Import command:
+  sf data import bulk --sobject ProductFormatPricing__c --file 4-ProductFormatPricing.csv --target-org ABC-Production --wait 10
+
+
+AFTER IMPORT — Rebuild search index + publish site
+---------------------------------------------------
+After all 4 files are imported, run:
+
+  sf commerce search start --store-name "American Book Company" --target-org ABC-Production
+  sf community publish --name "American Book Company" --target-org ABC-Production
+
+This rebuilds the Commerce search index so new products appear on the site.
+
+
+NOTES
+-----
+- Import order matters: Product2 first, then PricebookEntry/CategoryProduct, then FormatPricing
+- StockKeepingUnit (ISBN) is used as the lookup key — it must be unique per product
+- If a product has no Bulk pricing, leave Bulk_Price__c and Bulk_Threshold__c empty
+- State__c has a 255-character limit — about 27 states max per product
+- ProductMedia (images) must be uploaded through Commerce CMS, not CSV import

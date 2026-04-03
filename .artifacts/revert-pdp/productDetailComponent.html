@@ -1,0 +1,184 @@
+<template>
+  <section class="inline-shell">
+    <template if:true={loading}>
+      <div class="loading-wrap">
+        <lightning-spinner
+          alternative-text="Loading product quick shop"
+          size="medium"
+        ></lightning-spinner>
+      </div>
+    </template>
+
+    <template if:true={hasProduct}>
+      <div class="content-grid">
+        <div class="left-col">
+          <div class="cover-frame">
+            <template if:true={bookImageUrl}>
+              <img src={bookImageUrl} alt={title} class="cover-img" />
+            </template>
+            <template if:false={bookImageUrl}>
+              <div class="cover-placeholder">
+                <lightning-icon
+                  icon-name="utility:image"
+                  size="large"
+                ></lightning-icon>
+                <div class="ph-text">Book Cover</div>
+              </div>
+            </template>
+          </div>
+        </div>
+
+        <div class="right-col">
+          <div class="header-block">
+            <h2 class="title">{title}</h2>
+            <div class="subtitle">{isbn}</div>
+          </div>
+
+          <div class="divider"></div>
+
+          <template if:true={hasMultipleVariations}>
+            <div class="plan-toggle" role="tablist" aria-label="Format options">
+              <template for:each={variations} for:item="v">
+                <button
+                  key={v.productId}
+                  class={v.tabClass}
+                  type="button"
+                  onclick={handleTabClick}
+                  data-index={v.index}
+                  role="tab"
+                  aria-selected={v.ariaSelected}
+                >
+                  {v.label}
+                </button>
+              </template>
+            </div>
+          </template>
+
+          <div class="row-split">
+            <div class="price-card">
+              <template if:true={hasTiers}>
+                <div class="price-table-head">
+                  <div class="th">Quantity</div>
+                  <div class="th">Price</div>
+                </div>
+                <template for:each={displayTiers} for:item="tier">
+                  <div key={tier.key} class="price-row">
+                    <div class="td">{tier.qtyLabel}</div>
+                    <div class={tier.priceClass}>{tier.formattedPrice}</div>
+                  </div>
+                </template>
+              </template>
+              <template if:false={hasTiers}>
+                <div class="unit-price-display">
+                  <span class="unit-price-label">Unit Price</span>
+                  <span class="unit-price-value">{formattedUnitPrice}</span>
+                </div>
+              </template>
+            </div>
+
+            <div class="feature-cols">
+              <div class="feature-col">
+                <template for:each={featuresLeft} for:item="feature">
+                  <div key={feature} class="feature-item">
+                    <lightning-icon
+                      icon-name="utility:check"
+                      size="x-small"
+                      class="check-icn"
+                    >
+                    </lightning-icon>
+                    <span>{feature}</span>
+                  </div>
+                </template>
+              </div>
+
+              <div class="feature-col">
+                <template for:each={featuresRight} for:item="feature">
+                  <div key={feature} class="feature-item">
+                    <lightning-icon
+                      icon-name="utility:check"
+                      size="x-small"
+                      class="check-icn"
+                    >
+                    </lightning-icon>
+                    <span>{feature}</span>
+                  </div>
+                </template>
+              </div>
+            </div>
+          </div>
+
+          <div class="action-strip">
+            <div class="btns">
+              <div class="qty-wrap">
+                <div class="qty-label">Qty (min {minQty}, max {maxQty})</div>
+                <div class="qty-stepper">
+                  <button
+                    type="button"
+                    class="qty-btn"
+                    onclick={handleQtyDecrement}
+                    disabled={isMinQty}
+                    aria-label="Decrease quantity"
+                  >
+                    &minus;
+                  </button>
+                  <input
+                    type="number"
+                    value={quantity}
+                    min={minQty}
+                    max={maxQty}
+                    step={incrementQty}
+                    oninput={handleQtyChange}
+                    class="qty-input"
+                  />
+                  <button
+                    type="button"
+                    class="qty-btn"
+                    onclick={handleQtyIncrement}
+                    disabled={isMaxQty}
+                    aria-label="Increase quantity"
+                  >
+                    &plus;
+                  </button>
+                </div>
+                <div class="order-total-line">
+                  Order Total: <strong>{totalPrice}</strong>
+                </div>
+              </div>
+
+              <div class="btn-offset">
+                <button class="btn-add" type="button" onclick={handleAddToCart}>
+                  Add to Cart
+                </button>
+              </div>
+
+              <template if:true={displayTrialButton}>
+                <div class="btn-offset">
+                  <button class="btn-trial" type="button" onclick={handleTrial}>
+                    FREE Two-Week Trial!
+                  </button>
+                </div>
+              </template>
+
+              <button
+                class="heart-btn"
+                type="button"
+                title="Save to favorites"
+                aria-label="Save to favorites"
+                onclick={toggleFavorite}
+              >
+                <lightning-icon
+                  icon-name={heartIcon}
+                  size="small"
+                ></lightning-icon>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </template>
+
+    <template if:true={showError}>
+      <p class="error-message">{errorMessage}</p>
+    </template>
+  </section>
+</template>

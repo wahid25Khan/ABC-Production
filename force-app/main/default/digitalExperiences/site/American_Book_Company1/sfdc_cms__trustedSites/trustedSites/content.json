@@ -1,0 +1,16 @@
+{
+  "type" : "sfdc_cms__trustedSites",
+  "title" : "trustedSites",
+  "contentBody" : {
+    "trustedSites" : [ {
+      "isActive" : true,
+      "source" : "https://americanbookcompany--c.vf.force.com/resource/1771348362000/OnlineTesting",
+      "sourceName" : "ABC VFP"
+    }, {
+      "isActive" : true,
+      "source" : "https://americanbookcompany.live-preview.salesforce-experience.com",
+      "sourceName" : "ABC_logo"
+    } ]
+  },
+  "urlName" : "trustedsites"
+}

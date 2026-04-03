@@ -12,7 +12,7 @@
         <targetConfig targets="lightningCommunity__Default">
             <property name="cartUrl" type="String" default="/cart" label="Cart Page URL" />
             <property name="checkoutUrl" type="String" default="/checkout" label="Checkout Page URL" />
-            <property name="createAccountUrl" type="String" default="/SelfRegister" label="Create Account URL" />
+            <property name="createAccountUrl" type="String" default="/create-account" label="Create Account URL" />
             <property name="forgotPasswordUrl" type="String" default="/ForgotPassword" label="Forgot Password URL" />
         </targetConfig>
     </targetConfigs>

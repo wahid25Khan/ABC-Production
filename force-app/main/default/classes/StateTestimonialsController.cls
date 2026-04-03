@@ -83,53 +83,54 @@ public with sharing class StateTestimonialsController {
     public static List<Card> getStateTestimonials(String state, String siteId) {
         List<Card> result = new List<Card>();
 
-        System.debug(LoggingLevel.ERROR, '=== StateTestimonialsController.getStateTestimonials START ===');
-        System.debug(LoggingLevel.ERROR, 'Input state = ' + state);
-        System.debug(LoggingLevel.ERROR, 'Input siteId = ' + siteId);
-        System.debug(LoggingLevel.ERROR, 'Network.getNetworkId() = ' + Network.getNetworkId());
+        System.debug(LoggingLevel.DEBUG, '=== StateTestimonialsController.getStateTestimonials START ===');
+        System.debug(LoggingLevel.DEBUG, 'Input state = ' + state);
+        System.debug(LoggingLevel.DEBUG, 'Input siteId = ' + siteId);
+        System.debug(LoggingLevel.DEBUG, 'Network.getNetworkId() = ' + Network.getNetworkId());
 
         if (String.isBlank(state) || !STATE_COLLECTIONS.containsKey(state)) {
-            System.debug(LoggingLevel.ERROR, 'Invalid or blank state. Returning empty list.');
+            System.debug(LoggingLevel.DEBUG, 'Invalid or blank state. Returning empty list.');
             return result;
         }
 
+        // Fix: Prefer Network.getNetworkId() (runtime context) over caller-supplied siteId
         String resolvedSiteId = firstNonBlank(new List<String>{
-            siteId,
-            Network.getNetworkId()
+            Network.getNetworkId(),
+            siteId
         });
 
-        System.debug(LoggingLevel.ERROR, 'Resolved siteId = ' + resolvedSiteId);
+        System.debug(LoggingLevel.DEBUG, 'Resolved siteId = ' + resolvedSiteId);
 
         if (String.isBlank(resolvedSiteId)) {
-            System.debug(LoggingLevel.ERROR, 'Resolved siteId is blank. Returning empty list.');
+            System.debug(LoggingLevel.DEBUG, 'Resolved siteId is blank. Returning empty list.');
             return result;
         }
 
         StateCollections cfg = STATE_COLLECTIONS.get(state);
-        System.debug(LoggingLevel.ERROR, 'State config found. imageKey=' + cfg.imageKey + ', videoKey=' + cfg.videoKey);
+        System.debug(LoggingLevel.DEBUG, 'State config found. imageKey=' + cfg.imageKey + ', videoKey=' + cfg.videoKey);
 
         Integer sortSeed = 0;
 
         if (!String.isBlank(cfg.videoKey)) {
             List<Card> videoCards = fetchCollection(resolvedSiteId, cfg.videoKey, 'video', state, sortSeed);
-            System.debug(LoggingLevel.ERROR, 'Video cards fetched = ' + videoCards.size());
+            System.debug(LoggingLevel.DEBUG, 'Video cards fetched = ' + videoCards.size());
             result.addAll(videoCards);
             sortSeed += 1000;
         } else {
-            System.debug(LoggingLevel.ERROR, 'No videoKey configured for state ' + state);
+            System.debug(LoggingLevel.DEBUG, 'No videoKey configured for state ' + state);
         }
 
         if (!String.isBlank(cfg.imageKey)) {
             List<Card> imageCards = fetchCollection(resolvedSiteId, cfg.imageKey, 'image', state, sortSeed);
-            System.debug(LoggingLevel.ERROR, 'Image cards fetched = ' + imageCards.size());
+            System.debug(LoggingLevel.DEBUG, 'Image cards fetched = ' + imageCards.size());
             result.addAll(imageCards);
         } else {
-            System.debug(LoggingLevel.ERROR, 'No imageKey configured for state ' + state);
+            System.debug(LoggingLevel.DEBUG, 'No imageKey configured for state ' + state);
         }
 
         result.sort(new CardComparator());
-        System.debug(LoggingLevel.ERROR, 'Final result size = ' + result.size());
-        System.debug(LoggingLevel.ERROR, '=== StateTestimonialsController.getStateTestimonials END ===');
+        System.debug(LoggingLevel.DEBUG, 'Final result size = ' + result.size());
+        System.debug(LoggingLevel.DEBUG, '=== StateTestimonialsController.getStateTestimonials END ===');
 
         return result;
     }
@@ -143,7 +144,7 @@ public with sharing class StateTestimonialsController {
     ) {
         List<Card> cards = new List<Card>();
 
-        System.debug(LoggingLevel.ERROR,
+        System.debug(LoggingLevel.DEBUG,
             'fetchCollection called. siteId=' + siteId +
             ', collectionKey=' + collectionKey +
             ', type=' + type +
@@ -152,30 +153,30 @@ public with sharing class StateTestimonialsController {
         );
 
         if (String.isBlank(siteId) || String.isBlank(collectionKey)) {
-            System.debug(LoggingLevel.ERROR, 'siteId or collectionKey blank. Returning empty cards.');
+            System.debug(LoggingLevel.DEBUG, 'siteId or collectionKey blank. Returning empty cards.');
             return cards;
         }
 
         ConnectApi.ManagedContentCollectionItems resp = fetchCollectionItems(siteId, collectionKey);
 
         if (resp == null) {
-            System.debug(LoggingLevel.ERROR, 'fetchCollectionItems returned null.');
+            System.debug(LoggingLevel.DEBUG, 'fetchCollectionItems returned null.');
             return cards;
         }
 
         if (resp.items == null) {
-            System.debug(LoggingLevel.ERROR, 'fetchCollectionItems returned resp with null items.');
+            System.debug(LoggingLevel.DEBUG, 'fetchCollectionItems returned resp with null items.');
             return cards;
         }
 
-        System.debug(LoggingLevel.ERROR, 'Collection item count = ' + resp.items.size());
+        System.debug(LoggingLevel.DEBUG, 'Collection item count = ' + resp.items.size());
 
         Integer i = 0;
         for (ConnectApi.ManagedContentCollectionItem item : resp.items) {
             Card c = toCard(item, type, state, baseSort + i);
             if (c != null) {
                 cards.add(c);
-                System.debug(LoggingLevel.ERROR,
+                System.debug(LoggingLevel.DEBUG,
                     'Card added => id=' + c.id +
                     ', title=' + c.title +
                     ', type=' + c.type +
@@ -183,7 +184,7 @@ public with sharing class StateTestimonialsController {
                     ', thumbUrl=' + c.thumbUrl
                 );
             } else {
-                System.debug(LoggingLevel.ERROR, 'toCard returned null for item index ' + i);
+                System.debug(LoggingLevel.DEBUG, 'toCard returned null for item index ' + i);
             }
             i++;
         }
@@ -199,7 +200,7 @@ public with sharing class StateTestimonialsController {
 
         for (String locale : locales) {
             try {
-                System.debug(LoggingLevel.ERROR,
+                System.debug(LoggingLevel.DEBUG,
                     'Trying getCollectionItemsForSite with siteId=' + siteId +
                     ', collectionKey=' + collectionKey +
                     ', locale=' + locale
@@ -213,26 +214,26 @@ public with sharing class StateTestimonialsController {
                     );
 
                 Integer sizeVal = (resp != null && resp.items != null) ? resp.items.size() : null;
-                System.debug(LoggingLevel.ERROR, 'Response received. items size=' + sizeVal);
+                System.debug(LoggingLevel.DEBUG, 'Response received. items size=' + sizeVal);
 
                 if (resp != null && resp.items != null && !resp.items.isEmpty()) {
-                    System.debug(LoggingLevel.ERROR, 'Returning response with populated items for locale=' + locale);
+                    System.debug(LoggingLevel.DEBUG, 'Returning response with populated items for locale=' + locale);
                     return resp;
                 }
 
                 if (resp != null && resp.items != null) {
-                    System.debug(LoggingLevel.ERROR, 'Returning response with empty items list for locale=' + locale);
+                    System.debug(LoggingLevel.DEBUG, 'Returning response with empty items list for locale=' + locale);
                     return resp;
                 }
             } catch (Exception e) {
-                System.debug(LoggingLevel.ERROR,
+                System.debug(LoggingLevel.DEBUG,
                     'Exception in getCollectionItemsForSite. locale=' + locale +
                     ', message=' + e.getMessage()
                 );
             }
         }
 
-        System.debug(LoggingLevel.ERROR, 'All locale attempts failed or returned null.');
+        System.debug(LoggingLevel.DEBUG, 'All locale attempts failed or returned null.');
         return null;
     }
 

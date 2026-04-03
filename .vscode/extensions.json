@@ -4,6 +4,24 @@
     "redhat.vscode-xml",
     "dbaeumer.vscode-eslint",
     "esbenp.prettier-vscode",
-    "financialforce.lana"
+    "financialforce.lana",
+    "salesforce.salesforcedx-einstein-gpt",
+    "salesforce.salesforcedx-vscode-apex",
+    "salesforce.salesforcedx-vscode-lightning",
+    "salesforce.salesforcedx-vscode-core",
+    "openai.chatgpt",
+    "salesforce.salesforcedx-vscode-apex-debugger",
+    "salesforce.salesforcedx-vscode-apex-oas",
+    "salesforce.salesforcedx-vscode-apex-replay-debugger",
+    "salesforce.salesforcedx-vscode-apex-testing",
+    "salesforce.salesforce-vscode-slds",
+    "salesforce.salesforcedx-vscode-services",
+    "salesforce.salesforcedx-vscode-org",
+    "salesforce.salesforcedx-vscode-org-browser",
+    "salesforce.salesforcedx-vscode-metadata",
+    "salesforce.salesforcedx-vscode-ui-preview",
+    "salesforce.salesforcedx-vscode-expanded",
+    "salesforce.salesforcedx-vscode-soql",
+    "salesforce.salesforcedx-vscode-visualforce"
   ]
 }

@@ -1,6 +1,4 @@
 public without sharing class ProductVariationController {
-  @TestVisible
-  private static Id testPricebookId;
 
   public class TierInfo {
     @AuraEnabled
@@ -104,8 +102,7 @@ public without sharing class ProductVariationController {
         // upperBound is null (or >9999 sentinel) → no real max → send as null
         TierInfo tier2 = new TierInfo();
         tier2.lowerBound = fmt.Bulk_Threshold__c;
-        tier2.upperBound = (fmt.Max_Quantity__c != null &&
-          fmt.Max_Quantity__c <= 9999)
+        tier2.upperBound = (fmt.Max_Quantity__c != null && fmt.Max_Quantity__c <= 9999)
           ? fmt.Max_Quantity__c
           : null;
         tier2.price = fmt.Bulk_Price__c;

@@ -1,0 +1,342 @@
+{
+  "type" : "sfdc_cms__view",
+  "title" : "Search",
+  "contentBody" : {
+    "component" : {
+      "children" : [ {
+          "children" : [ {
+            "attributes" : {
+              "backgroundImageConfig" : "",
+              "backgroundImageOverlay" : "rgba(0,0,0,0)",
+              "componentSpacerSize" : "",
+              "dxpStyle" : { },
+              "layoutDirectionDesktop" : "row",
+              "layoutDirectionMobile" : "column",
+              "layoutDirectionTablet" : "column",
+              "maxContentWidth" : "",
+              "sectionColumnGutterWidth" : "",
+              "sectionConfig" : "{\"UUID\":\"0b72c24b-54f6-4956-ae2a-f906e883a1b9\",\"columns\":[{\"UUID\":\"85357f1c-76ce-44f0-9df6-5b9472553291\",\"columnName\":\"Column 1\",\"columnKey\":\"col1\",\"columnWidth\":\"12\",\"seedComponents\":[]}]}",
+              "sectionMinHeight" : "",
+              "sectionVerticalAlign" : "flex-start"
+            },
+            "children" : [ {
+              "children" : [ {
+                "attributes" : {
+                  "defaultPageSize" : 20,
+                  "defaultSearchTerm" : "all",
+                  "fetchPageSize" : 120,
+                  "filterFieldApiNames" : "Grade_Level__c,Category__c",
+                  "filterFieldLabels" : "Grade Level,Subject",
+                  "maxFetchPages" : 8,
+                  "pageSizeOptions" : "20,40,60",
+                  "searchFieldApiNames" : "StockKeepingUnit,Price__c,Color_Price__c,Color_Price_25__c,BW_Price__c,BW_Price_25__c,CurrencyIsoCode",
+                  "stateFieldApiName" : "State__c",
+                  "storeName" : "AmericanBookCompany",
+                  "webStoreId" : "0ZEam000004dJDNGA2"
+                },
+                "definition" : "c:customResults",
+                "id" : "ce47f9de-f10d-4fea-a180-71b23a96d522",
+                "type" : "component"
+              } ],
+              "id" : "85357f1c-76ce-44f0-9df6-5b9472553291",
+              "name" : "col1",
+              "title" : "Column 1",
+              "type" : "region"
+            } ],
+            "definition" : "community_layout:section",
+            "id" : "0b72c24b-54f6-4956-ae2a-f906e883a1b9",
+            "type" : "component"
+          }, {
+          "attributes" : {
+            "backgroundImageConfig" : "",
+            "backgroundImageOverlay" : "rgba(0,0,0,0)",
+            "componentSpacerSize" : "",
+            "layoutDirectionDesktop" : "row",
+            "layoutDirectionMobile" : "column",
+            "layoutDirectionTablet" : "column",
+            "maxContentWidth" : "",
+            "sectionColumnGutterWidth" : "",
+            "sectionConfig" : "{\"UUID\":\"c4590e72-ecb1-4717-802c-24d5901d897a\",\"columns\":[{\"UUID\":\"04b2891c-ed0e-49f4-92c8-05c6507c1403\",\"columnName\":\"Column 1\",\"columnKey\":\"col1\",\"columnWidth\":\"12\",\"seedComponents\":[]}]}",
+            "sectionMinHeight" : "",
+            "sectionVerticalAlign" : "flex-start"
+          },
+          "children" : [ {
+            "children" : [ {
+              "attributes" : {
+                "maxProducts" : 18,
+                "storeName" : "AmericanBookCompany",
+                "visibleCount" : 6,
+                "webStoreId" : "0ZEam000004dJDNGA2"
+              },
+              "definition" : "c:productRecommendation",
+              "id" : "98484d6e-9ef5-450a-b162-8ad8ccb82621",
+              "type" : "component"
+            }, {
+              "attributes" : {
+                "imageInfos" : "",
+                "richTextValue" : "<hr style=\"border: none; border-top: 1px solid #000;\">"
+              },
+              "definition" : "community_builder:htmlEditor",
+              "id" : "b080bfa9-0c33-410e-8f6f-eec415d30aab",
+              "type" : "component"
+            }, {
+              "attributes" : {
+                "columnGutterWidth" : "",
+                "columnMinHeight" : "",
+                "columnVerticalAlign" : "flex-start",
+                "layoutDirectionDesktop" : "row",
+                "layoutDirectionMobile" : "column",
+                "layoutDirectionTablet" : "column",
+                "sectionConfig" : "{\"UUID\":\"1a16208e-8a40-47f8-866d-56e27652652b\",\"columns\":[{\"UUID\":\"1726cef5-5f14-42e8-af27-5a461efa2b23\",\"columnName\":\"Column 1\",\"columnKey\":\"col1\",\"columnWidth\":\"2\",\"seedComponents\":[]},{\"UUID\":\"a26e3b39-1d04-4d88-97f6-dffc66d603da\",\"columnName\":\"Column 2\",\"columnKey\":\"col2\",\"columnWidth\":\"2\",\"seedComponents\":[]},{\"UUID\":\"da8a2216-80be-4ffd-908c-1d08bde75c07\",\"columnName\":\"Column 3\",\"columnKey\":\"c87a9\",\"columnWidth\":\"2\",\"seedComponents\":[]},{\"UUID\":\"98e09fdc-c2e5-4bec-adb6-5f3e2d067538\",\"columnName\":\"Column 4\",\"columnKey\":\"e7ed7\",\"columnWidth\":\"2\",\"seedComponents\":[]},{\"UUID\":\"1d0a02f0-0f57-4fe1-8eaa-a8dfa1c69b96\",\"columnName\":\"Column 5\",\"columnKey\":\"7e656\",\"columnWidth\":\"2\",\"seedComponents\":[]},{\"UUID\":\"63bd96fa-000c-4326-9d4c-e75edd6c97cd\",\"columnName\":\"Column 6\",\"columnKey\":\"ebc3d\",\"columnWidth\":\"2\",\"seedComponents\":[]}]}"
+              },
+              "children" : [ {
+                "children" : [ {
+                  "attributes" : {
+                    "imageInfos" : "",
+                    "richTextValue" : "<p style=\"text-align: center;\"><img src=\"{!cmsMedia.MCQBSGXW4IPREN5EVB5Z2OR5QMGE}\" alt=\"\"></p>"
+                  },
+                  "definition" : "community_builder:richTextEditor",
+                  "id" : "bb290ddc-c575-4c9a-afbe-3c2533f39976",
+                  "type" : "component"
+                } ],
+                "id" : "1726cef5-5f14-42e8-af27-5a461efa2b23",
+                "name" : "col1",
+                "title" : "Column 1",
+                "type" : "region"
+              }, {
+                "children" : [ {
+                  "attributes" : {
+                    "dxpStyle" : {
+                      "margin" : {
+                        "bottom" : "",
+                        "left" : "",
+                        "right" : "",
+                        "top" : "20px"
+                      }
+                    },
+                    "imageInfos" : "",
+                    "richTextValue" : "<p style=\"text-align: center;\"><img src=\"{!cmsMedia.MCWAXXTGICHFAITMQ4WMROCE2CIM}\" alt=\"\"></p>"
+                  },
+                  "definition" : "community_builder:richTextEditor",
+                  "id" : "35e07b64-63c2-4217-ae50-3e44d8076213",
+                  "type" : "component"
+                } ],
+                "id" : "a26e3b39-1d04-4d88-97f6-dffc66d603da",
+                "name" : "col2",
+                "title" : "Column 2",
+                "type" : "region"
+              }, {
+                "children" : [ {
+                  "attributes" : {
+                    "dxpStyle" : {
+                      "margin" : {
+                        "bottom" : "",
+                        "left" : "",
+                        "right" : "",
+                        "top" : "20px"
+                      }
+                    },
+                    "imageInfos" : "",
+                    "richTextValue" : "<p style=\"text-align: center;\"><img src=\"{!cmsMedia.MCZE52HDFPZFAYNJJ2Y5L7VK6U5Y}\" alt=\"\"></p>"
+                  },
+                  "definition" : "community_builder:richTextEditor",
+                  "id" : "0b1fb21a-8566-4b35-8034-1d51c7b33ebb",
+                  "type" : "component"
+                } ],
+                "id" : "da8a2216-80be-4ffd-908c-1d08bde75c07",
+                "name" : "c87a9",
+                "title" : "Column 3",
+                "type" : "region"
+              }, {
+                "children" : [ {
+                  "attributes" : {
+                    "dxpStyle" : {
+                      "margin" : {
+                        "bottom" : "0px",
+                        "left" : "50px",
+                        "right" : "50px",
+                        "top" : "20px"
+                      },
+                      "padding" : {
+                        "bottom" : "",
+                        "left" : "",
+                        "right" : "",
+                        "top" : ""
+                      }
+                    },
+                    "imageInfos" : "",
+                    "richTextValue" : "<p><img src=\"{!cmsMedia.MCNQLRYOD2AFAP3LNIPPJELRSQGE}\" alt=\"\"></p>"
+                  },
+                  "definition" : "community_builder:richTextEditor",
+                  "id" : "e7770d87-d64a-4ff7-afcd-7ffc5b440b53",
+                  "type" : "component"
+                } ],
+                "id" : "98e09fdc-c2e5-4bec-adb6-5f3e2d067538",
+                "name" : "e7ed7",
+                "title" : "Column 4",
+                "type" : "region"
+              }, {
+                "children" : [ {
+                  "attributes" : {
+                    "dxpStyle" : {
+                      "margin" : {
+                        "bottom" : "0px",
+                        "left" : "50px",
+                        "right" : "50px",
+                        "top" : "20px"
+                      }
+                    },
+                    "imageInfos" : "",
+                    "richTextValue" : "<p><img src=\"{!cmsMedia.MCOD7NACGDLFFAJECK27NOYZ5CFQ}\" alt=\"\"></p>"
+                  },
+                  "definition" : "community_builder:richTextEditor",
+                  "id" : "02c39d47-9f38-4578-a672-60839c45cafc",
+                  "type" : "component"
+                } ],
+                "id" : "1d0a02f0-0f57-4fe1-8eaa-a8dfa1c69b96",
+                "name" : "7e656",
+                "title" : "Column 5",
+                "type" : "region"
+              }, {
+                "children" : [ {
+                  "attributes" : {
+                    "dxpStyle" : {
+                      "margin" : {
+                        "bottom" : "",
+                        "left" : "100px",
+                        "right" : "100px",
+                        "top" : ""
+                      },
+                      "padding" : {
+                        "bottom" : "",
+                        "left" : "",
+                        "right" : "",
+                        "top" : ""
+                      }
+                    },
+                    "imageInfos" : "",
+                    "richTextValue" : "<p><img src=\"{!cmsMedia.MCNPION5UQB5CQZBSTBQBP36X55M}\" alt=\"\"></p>"
+                  },
+                  "definition" : "community_builder:richTextEditor",
+                  "id" : "d067f122-9572-4600-ab9d-48dfbc87ff65",
+                  "type" : "component"
+                } ],
+                "id" : "63bd96fa-000c-4326-9d4c-e75edd6c97cd",
+                "name" : "ebc3d",
+                "title" : "Column 6",
+                "type" : "region"
+              } ],
+              "definition" : "dxp_layout:columns",
+              "id" : "1a16208e-8a40-47f8-866d-56e27652652b",
+              "type" : "component"
+            }, {
+              "attributes" : {
+                "columnGutterWidth" : "",
+                "columnMinHeight" : "",
+                "columnVerticalAlign" : "flex-start",
+                "dxpStyle" : {
+                  "margin" : {
+                    "bottom" : "",
+                    "left" : "7px",
+                    "right" : "7px",
+                    "top" : ""
+                  },
+                  "padding" : {
+                    "bottom" : "",
+                    "left" : "",
+                    "right" : "50px",
+                    "top" : ""
+                  }
+                },
+                "layoutDirectionDesktop" : "row",
+                "layoutDirectionMobile" : "column",
+                "layoutDirectionTablet" : "column",
+                "sectionConfig" : "{\"UUID\":\"bf1e6a42-b72c-4ffb-a4e5-7803d8a2fe52\",\"columns\":[{\"UUID\":\"c3974cd5-7379-4777-ae56-9a84c35ec600\",\"columnName\":\"Column 1\",\"columnKey\":\"col1\",\"columnWidth\":\"6\",\"seedComponents\":[]},{\"UUID\":\"8f7c72d5-4a11-4845-8fc7-c5b537f3f9b3\",\"columnName\":\"Column 2\",\"columnKey\":\"col2\",\"columnWidth\":\"6\",\"seedComponents\":[]}]}"
+              },
+              "children" : [ {
+                "children" : [ {
+                  "attributes" : {
+                    "dxpStyle" : {
+                      "margin" : {
+                        "bottom" : "20px",
+                        "left" : "20px",
+                        "right" : "20px",
+                        "top" : "20px"
+                      }
+                    },
+                    "imageInfos" : "",
+                    "richTextValue" : "<div style=\"width:100%; max-width:1200px; margin:0 auto; font-family: 'Segoe UI', Arial, sans-serif;\">\n  \n  <div style=\"\n      background-color:#167DA6;\n      color:white;\n      text-align:center;\n      padding:80px 20px 100px 20px;\n      position:relative;\n      overflow:hidden;\n      border-radius:4px;\n  \">\n\n    <!-- Top Right Red Shape -->\n    <div style=\"\n        position:absolute;\n        top:-120px;\n        right:-120px;\n        width:300px;\n        height:300px;\n        background:#E3171E;\n        border-radius:50%;\n    \"></div>\n\n    <!-- Bottom Left Yellow Shape -->\n    <div style=\"\n        position:absolute;\n        bottom:-150px;\n        left:-150px;\n        width:400px;\n        height:400px;\n        background:#FDB913;\n        border-radius:50%;\n    \"></div>\n\n    <!-- Content -->\n    <h1 style=\"\n        font-size:40px;\n        font-weight:600;\n        margin-bottom:25px;\n        position:relative;\n        z-index:2;\n    \">\n      Need help?\n    </h1>\n\n    <p style=\"\n        font-size:18px;\n        max-width:700px;\n        margin:0 auto 35px auto;\n        line-height:1.6;\n        position:relative;\n        z-index:2;\n    \">\n      Your Georgia representatives are here to personally help you determine the best solution for you.\n    </p>\n\n    <!-- Email Button -->\n    <a href=\"mailto:contact@americanbookcompany.com\"\n       style=\"\n          display:inline-block;\n          padding:14px 30px;\n          border:2px solid #ffffff;\n          border-radius:30px;\n          color:#ffffff;\n          text-decoration:none;\n          font-size:16px;\n          font-weight:500;\n          transition:all 0.3s ease;\n          position:relative;\n          z-index:2;\n       \">\n       Email Our Sales Team\n    </a>\n\n    <!-- Phone & Fax -->\n    <div style=\"\n        margin-top:40px;\n        font-size:16px;\n        line-height:1.8;\n        position:relative;\n        z-index:2;\n    \">\n      Phone: (888) 264-5877<br>\n      Fax: (866) 827-3240\n    </div>\n\n  </div>\n</div>"
+                  },
+                  "definition" : "community_builder:htmlEditor",
+                  "id" : "b6a30092-8ff3-4bb9-8ae9-1028e99f16a5",
+                  "type" : "component"
+                } ],
+                "id" : "c3974cd5-7379-4777-ae56-9a84c35ec600",
+                "name" : "col1",
+                "title" : "Column 1",
+                "type" : "region"
+              }, {
+                "children" : [ {
+                  "attributes" : {
+                    "dxpStyle" : {
+                      "margin" : {
+                        "bottom" : "",
+                        "left" : "",
+                        "right" : "",
+                        "top" : "130px"
+                      }
+                    }
+                  },
+                  "customCssClasses" : "",
+                  "definition" : "c:stateReps",
+                  "id" : "5aca7f76-c966-464f-bdbb-b81af8e42df6",
+                  "type" : "component"
+                } ],
+                "id" : "8f7c72d5-4a11-4845-8fc7-c5b537f3f9b3",
+                "name" : "col2",
+                "title" : "Column 2",
+                "type" : "region"
+              } ],
+              "customCssClasses" : "back-grey",
+              "definition" : "dxp_layout:columns",
+              "id" : "bf1e6a42-b72c-4ffb-a4e5-7803d8a2fe52",
+              "type" : "component"
+            } ],
+            "id" : "04b2891c-ed0e-49f4-92c8-05c6507c1403",
+            "name" : "col1",
+            "title" : "Column 1",
+            "type" : "region"
+          } ],
+          "definition" : "community_layout:section",
+          "id" : "c4590e72-ecb1-4717-802c-24d5901d897a",
+          "type" : "component"
+        } ],
+        "id" : "a5b699bb-0b83-447e-8949-b0dbff4d7d53",
+        "name" : "content",
+        "title" : "Content",
+        "type" : "region"
+      }, {
+        "children" : [ {
+          "attributes" : {
+            "dxpStyle" : { },
+            "recordId" : "{!recordId}"
+          },
+          "definition" : "community_builder:seoAssistant",
+          "id" : "8a5aedcb-5787-4046-830e-c9b6b44435d2",
+          "type" : "component"
+        } ],
+        "id" : "d75fd8a8-5b71-4a3e-9aac-9ceaae2c3200",
+        "name" : "sfdcHiddenRegion",
+        "title" : "sfdcHiddenRegion",
+        "type" : "region"
+      } ],
+      "definition" : "community_layout:sldsFlexibleLayout",
+      "id" : "e3fbe403-a171-4de4-a737-4c13e27e80af",
+      "type" : "component"
+    },
+    "dataProviders" : [ ],
+    "themeLayoutType" : "Inner",
+    "viewType" : "global-search"
+  },
+  "urlName" : "search"
+}

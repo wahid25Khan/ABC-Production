@@ -40,7 +40,7 @@
             <div class="plan-toggle" role="tablist" aria-label="Format options">
               <template for:each={variations} for:item="v">
                 <button
-                  key={v.productId}
+                  key={v.index}
                   class={v.tabClass}
                   type="button"
                   onclick={handleTabClick}
@@ -56,11 +56,11 @@
 
           <div class="row-split">
             <div class="price-card">
+              <div class="price-table-head">
+                <div class="th">Quantity</div>
+                <div class="th">Price</div>
+              </div>
               <template if:true={hasTiers}>
-                <div class="price-table-head">
-                  <div class="th">Quantity</div>
-                  <div class="th">Price</div>
-                </div>
                 <template for:each={displayTiers} for:item="tier">
                   <div key={tier.key} class="price-row">
                     <div class="td">{tier.qtyLabel}</div>
@@ -69,9 +69,9 @@
                 </template>
               </template>
               <template if:false={hasTiers}>
-                <div class="unit-price-display">
-                  <span class="unit-price-label">Unit Price</span>
-                  <span class="unit-price-value">{formattedUnitPrice}</span>
+                <div class="price-row">
+                  <div class="td">{minQty}+</div>
+                  <div class="td price">{formattedUnitPrice}</div>
                 </div>
               </template>
             </div>
@@ -110,7 +110,7 @@
           <div class="action-strip">
             <div class="btns">
               <div class="qty-wrap">
-                <div class="qty-label">Qty (min {minQty}, max {maxQty})</div>
+                <div class="qty-label">Quantity (min {minQty})</div>
                 <div class="qty-stepper">
                   <button
                     type="button"
@@ -164,6 +164,7 @@
                 type="button"
                 title="Save to favorites"
                 aria-label="Save to favorites"
+                disabled={isFavoriteDisabled}
                 onclick={toggleFavorite}
               >
                 <lightning-icon

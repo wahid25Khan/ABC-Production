@@ -1,0 +1,724 @@
+{
+  "type" : "sfdc_cms__view",
+  "title" : "PODCAST",
+  "contentBody" : {
+    "component" : {
+      "children" : [ {
+        "attributes" : {
+          "dxpStyle" : {
+            "margin" : {
+              "bottom" : "0px",
+              "left" : "0px",
+              "right" : "0px",
+              "top" : "0px"
+            },
+            "padding" : {
+              "bottom" : "0px",
+              "left" : "0px",
+              "right" : "0px",
+              "top" : "0px"
+            }
+          }
+        },
+        "id" : "8c5a712e-a2be-4860-975d-6f2b7d458f80"
+      }, {
+        "id" : "a4afd025-8afb-465f-8e2d-f21d07fd0039",
+        "attributes" : {
+          "dxpStyle" : {
+            "padding" : {
+              "bottom" : "0px",
+              "left" : "0px",
+              "right" : "0px",
+              "top" : "0px"
+            },
+            "margin" : {
+              "top" : "0px",
+              "right" : "0px",
+              "bottom" : "0px",
+              "left" : "0px"
+            }
+          }
+        }
+      }, {
+        "id" : "a8455970-e46a-4181-870e-39952ef7c75e",
+        "attributes" : {
+          "dxpStyle" : {
+            "margin" : {
+              "top" : "",
+              "right" : "",
+              "bottom" : "",
+              "left" : ""
+            }
+          }
+        }
+      }, {
+        "id" : "e7cd82ac-58f5-4719-8d1c-63d34902212c",
+        "attributes" : {
+          "dxpStyle" : {
+            "padding" : {
+              "bottom" : "0px",
+              "left" : "0px",
+              "right" : "0px",
+              "top" : "0px"
+            },
+            "margin" : {
+              "top" : "0px",
+              "right" : "0px",
+              "bottom" : "0px",
+              "left" : "0px"
+            }
+          }
+        }
+      }, {
+        "id" : "0405f628-0d32-4f80-ae63-b5eb3aecbb61",
+        "attributes" : {
+          "dxpStyle" : {
+            "padding" : {
+              "bottom" : "0px",
+              "left" : "0px",
+              "right" : "0px",
+              "top" : "0px"
+            },
+            "margin" : {
+              "top" : "0px",
+              "right" : "0px",
+              "bottom" : "0px",
+              "left" : "0px"
+            }
+          }
+        }
+      }, {
+        "id" : "db888ad7-e0f2-4c28-972b-2f21c49a8b61",
+        "attributes" : {
+          "dxpStyle" : {
+            "padding" : {
+              "bottom" : "0px",
+              "left" : "0px",
+              "right" : "0px",
+              "top" : "0px"
+            },
+            "margin" : {
+              "top" : "0px",
+              "right" : "0px",
+              "bottom" : "0px",
+              "left" : "0px"
+            }
+          }
+        }
+      }, {
+        "id" : "5cb27eb4-c44a-4fbe-b572-d23d843a3f1c",
+        "attributes" : {
+          "dxpStyle" : {
+            "padding" : {
+              "bottom" : "0px",
+              "left" : "0px",
+              "right" : "0px",
+              "top" : "0px"
+            },
+            "margin" : {
+              "top" : "0px",
+              "right" : "0px",
+              "bottom" : "0px",
+              "left" : "0px"
+            }
+          }
+        }
+      }, {
+        "id" : "0bc64e07-ea4f-48bd-8861-957d75296fe5",
+        "attributes" : {
+          "dxpStyle" : {
+            "padding" : {
+              "bottom" : "0px",
+              "left" : "0px",
+              "right" : "0px",
+              "top" : "0px"
+            },
+            "margin" : {
+              "top" : "0px",
+              "right" : "0px",
+              "bottom" : "0px",
+              "left" : "0px"
+            }
+          }
+        }
+      }, {
+        "id" : "c10efe11-9147-48e8-ad72-f302c901614c",
+        "attributes" : {
+          "dxpStyle" : {
+            "padding" : {
+              "bottom" : "0px",
+              "left" : "0px",
+              "right" : "0px",
+              "top" : "0px"
+            },
+            "margin" : {
+              "top" : "0px",
+              "right" : "0px",
+              "bottom" : "0px",
+              "left" : "0px"
+            }
+          }
+        }
+      }, {
+        "id" : "28322509-dd29-4d7c-b6ef-7ffd65e8ba21",
+        "attributes" : {
+          "dxpStyle" : {
+            "padding" : {
+              "bottom" : "0px",
+              "left" : "0px",
+              "right" : "0px",
+              "top" : "0px"
+            },
+            "margin" : {
+              "top" : "0px",
+              "right" : "0px",
+              "bottom" : "0px",
+              "left" : "0px"
+            }
+          }
+        }
+      }, {
+        "id" : "d6f18060-49f4-4a0d-b892-ab76567f292c",
+        "attributes" : {
+          "dxpStyle" : {
+            "padding" : {
+              "bottom" : "0px",
+              "left" : "0px",
+              "right" : "0px",
+              "top" : "0px"
+            },
+            "margin" : {
+              "top" : "0px",
+              "right" : "0px",
+              "bottom" : "0px",
+              "left" : "0px"
+            }
+          }
+        }
+      }, {
+        "id" : "b4529f69-eac0-4a29-b722-7745438cf3a5",
+        "attributes" : {
+          "dxpStyle" : {
+            "padding" : {
+              "bottom" : "0px",
+              "left" : "0px",
+              "right" : "0px",
+              "top" : "0px"
+            },
+            "margin" : {
+              "top" : "0px",
+              "right" : "0px",
+              "bottom" : "0px",
+              "left" : "0px"
+            }
+          }
+        }
+      }, {
+        "id" : "8389d05f-a177-4110-951c-dcc8775b415c",
+        "attributes" : {
+          "dxpStyle" : {
+            "padding" : {
+              "bottom" : "0px",
+              "left" : "0px",
+              "right" : "0px",
+              "top" : "0px"
+            },
+            "margin" : {
+              "top" : "0px",
+              "right" : "0px",
+              "bottom" : "0px",
+              "left" : "0px"
+            }
+          }
+        }
+      }, {
+        "id" : "e2d1fc30-3b6c-4ff2-8d34-acab81ce1890",
+        "attributes" : {
+          "dxpStyle" : {
+            "padding" : {
+              "bottom" : "0px",
+              "left" : "0px",
+              "right" : "0px",
+              "top" : "0px"
+            },
+            "margin" : {
+              "top" : "0px",
+              "right" : "0px",
+              "bottom" : "0px",
+              "left" : "0px"
+            }
+          }
+        }
+      }, {
+        "id" : "f12f5b29-321e-46ce-97d6-e32b246df9b6",
+        "attributes" : {
+          "dxpStyle" : {
+            "padding" : {
+              "bottom" : "0px",
+              "left" : "0px",
+              "right" : "0px",
+              "top" : "0px"
+            },
+            "margin" : {
+              "top" : "0px",
+              "right" : "0px",
+              "bottom" : "0px",
+              "left" : "0px"
+            }
+          }
+        }
+      }, {
+        "id" : "21606445-ecaa-4482-abba-65fd5d3355c6",
+        "attributes" : {
+          "dxpStyle" : {
+            "padding" : {
+              "bottom" : "0px",
+              "left" : "0px",
+              "right" : "0px",
+              "top" : "0px"
+            },
+            "margin" : {
+              "top" : "0px",
+              "right" : "0px",
+              "bottom" : "0px",
+              "left" : "0px"
+            }
+          }
+        }
+      }, {
+        "id" : "d1e953da-f962-4fc2-ad8c-a9dcf0993579",
+        "attributes" : {
+          "dxpStyle" : {
+            "padding" : {
+              "bottom" : "0px",
+              "left" : "0px",
+              "right" : "0px",
+              "top" : "0px"
+            },
+            "margin" : {
+              "top" : "0px",
+              "right" : "0px",
+              "bottom" : "0px",
+              "left" : "0px"
+            }
+          }
+        }
+      }, {
+        "id" : "31cf9e97-4c70-45d7-9929-f09390071f58",
+        "attributes" : {
+          "dxpStyle" : {
+            "padding" : {
+              "bottom" : "0px",
+              "left" : "0px",
+              "right" : "0px",
+              "top" : "0px"
+            },
+            "margin" : {
+              "top" : "0px",
+              "right" : "0px",
+              "bottom" : "0px",
+              "left" : "0px"
+            }
+          }
+        }
+      }, {
+        "id" : "86e33c99-1a41-47d8-a0da-776456aa1301",
+        "attributes" : {
+          "dxpStyle" : {
+            "padding" : {
+              "bottom" : "0px",
+              "left" : "0px",
+              "right" : "0px",
+              "top" : "0px"
+            },
+            "margin" : {
+              "top" : "0px",
+              "right" : "0px",
+              "bottom" : "0px",
+              "left" : "0px"
+            }
+          }
+        }
+      }, {
+        "id" : "bf44820d-6f62-4465-9d77-cdd86b083a08",
+        "attributes" : {
+          "dxpStyle" : {
+            "padding" : {
+              "bottom" : "",
+              "left" : "",
+              "right" : "",
+              "top" : ""
+            },
+            "margin" : {
+              "top" : "0px",
+              "right" : "0px",
+              "bottom" : "0px",
+              "left" : "0px"
+            }
+          }
+        }
+      }, {
+        "id" : "dac25776-42fc-47ea-8cfd-ac074548560e",
+        "attributes" : {
+          "dxpStyle" : {
+            "padding" : {
+              "top" : "0px",
+              "right" : "0px",
+              "bottom" : "0px",
+              "left" : "0px"
+            },
+            "margin" : {
+              "bottom" : "",
+              "left" : "",
+              "right" : "",
+              "top" : "20px"
+            }
+          }
+        }
+      }, {
+        "id" : "fa70dc52-e309-465a-8999-389cbac8ea59",
+        "attributes" : {
+          "dxpStyle" : {
+            "padding" : {
+              "bottom" : "0px",
+              "left" : "0px",
+              "right" : "0px",
+              "top" : "0px"
+            },
+            "margin" : {
+              "top" : "0px",
+              "right" : "",
+              "bottom" : "",
+              "left" : ""
+            }
+          }
+        }
+      }, {
+        "id" : "c5804ff8-0bde-4beb-8e04-702bebabd0b8",
+        "attributes" : {
+          "dxpStyle" : {
+            "padding" : {
+              "bottom" : "0px",
+              "left" : "0px",
+              "right" : "0px",
+              "top" : "0px"
+            },
+            "margin" : {
+              "top" : "0px",
+              "right" : "0px",
+              "bottom" : "0px",
+              "left" : "0px"
+            }
+          }
+        }
+      }, {
+        "id" : "2678dfac-4dde-4c1c-b5b5-5ccb9c20efbc",
+        "attributes" : {
+          "dxpStyle" : {
+            "padding" : {
+              "bottom" : "0px",
+              "left" : "0px",
+              "right" : "0px",
+              "top" : "0px"
+            },
+            "margin" : {
+              "top" : "0px",
+              "right" : "0px",
+              "bottom" : "0px",
+              "left" : "0px"
+            }
+          }
+        }
+      }, {
+        "id" : "92109564-4fe5-4d94-ab0c-35d5cc450374",
+        "attributes" : {
+          "dxpStyle" : {
+            "padding" : {
+              "bottom" : "0px",
+              "left" : "0px",
+              "right" : "0px",
+              "top" : "0px"
+            },
+            "margin" : {
+              "top" : "0px",
+              "right" : "0px",
+              "bottom" : "0px",
+              "left" : "0px"
+            }
+          }
+        }
+      }, {
+        "id" : "b252d16a-8044-4fa2-9697-046409472f0c",
+        "attributes" : {
+          "dxpStyle" : {
+            "padding" : {
+              "top" : "0px",
+              "right" : "0px",
+              "bottom" : "0px",
+              "left" : "0px"
+            },
+            "margin" : {
+              "bottom" : "0px",
+              "left" : "0px",
+              "right" : "0px",
+              "top" : "0px"
+            }
+          }
+        }
+      }, {
+        "id" : "b45b3cb3-758b-4815-8f41-00b9cb523c69",
+        "attributes" : {
+          "dxpStyle" : {
+            "margin" : {
+              "top" : "0px",
+              "right" : "0px",
+              "bottom" : "0px",
+              "left" : "0px"
+            }
+          }
+        }
+      }, {
+        "id" : "946616f7-a14f-4652-ba12-5f96a7b0ded9",
+        "attributes" : {
+          "dxpStyle" : {
+            "padding" : {
+              "top" : "0px",
+              "right" : "0px",
+              "bottom" : "0px",
+              "left" : "0px"
+            },
+            "margin" : {
+              "bottom" : "",
+              "left" : "",
+              "right" : "",
+              "top" : "20px"
+            }
+          }
+        }
+      }, {
+        "id" : "4058996f-fc78-4982-a0be-973b7e855df7",
+        "attributes" : {
+          "dxpStyle" : {
+            "margin" : {
+              "top" : "0px",
+              "right" : "0px",
+              "bottom" : "0px",
+              "left" : "0px"
+            }
+          }
+        }
+      }, {
+        "id" : "121c4e21-6772-43de-9e83-1ea071bc0665",
+        "attributes" : {
+          "dxpStyle" : {
+            "padding" : {
+              "top" : "0px",
+              "right" : "0px",
+              "bottom" : "0px",
+              "left" : "0px"
+            },
+            "margin" : {
+              "bottom" : "0px",
+              "left" : "0px",
+              "right" : "0px",
+              "top" : "0px"
+            }
+          }
+        }
+      }, {
+        "id" : "5aea3487-c0dd-49d8-85b7-d981f6e2c5c9",
+        "attributes" : {
+          "dxpStyle" : {
+            "margin" : {
+              "top" : "0px",
+              "right" : "0px",
+              "bottom" : "0px",
+              "left" : "0px"
+            }
+          }
+        }
+      }, {
+        "id" : "41d6be6e-d4f8-45db-96d4-7774c4d7577a",
+        "attributes" : {
+          "dxpStyle" : {
+            "padding" : {
+              "top" : "0px",
+              "right" : "0px",
+              "bottom" : "0px",
+              "left" : "0px"
+            },
+            "margin" : {
+              "bottom" : "0px",
+              "left" : "0px",
+              "right" : "0px",
+              "top" : "0px"
+            }
+          }
+        }
+      }, {
+        "id" : "e78cf92c-a4e9-4a2b-958a-e3ee234d404a",
+        "attributes" : {
+          "dxpStyle" : {
+            "padding" : {
+              "top" : "0px",
+              "right" : "0px",
+              "bottom" : "0px",
+              "left" : "0px"
+            },
+            "margin" : {
+              "bottom" : "0px",
+              "left" : "0px",
+              "right" : "0px",
+              "top" : "0px"
+            }
+          }
+        }
+      }, {
+        "id" : "d8bc0abe-cf38-428b-95b0-3d71c11c7e76",
+        "attributes" : {
+          "dxpStyle" : {
+            "margin" : {
+              "top" : "0px",
+              "right" : "0px",
+              "bottom" : "0px",
+              "left" : "0px"
+            }
+          }
+        }
+      }, {
+        "id" : "83f1148b-4c88-4ade-a11d-c96b748fe81b",
+        "attributes" : {
+          "dxpStyle" : {
+            "margin" : {
+              "top" : "0px",
+              "right" : "0px",
+              "bottom" : "0px",
+              "left" : "0px"
+            }
+          }
+        }
+      }, {
+        "id" : "d952026d-0e68-4e6b-adce-4ffc2300bb95",
+        "attributes" : {
+          "dxpStyle" : {
+            "margin" : {
+              "top" : "0px",
+              "right" : "0px",
+              "bottom" : "0px",
+              "left" : "0px"
+            }
+          }
+        }
+      }, {
+        "id" : "e3aaffa2-d33f-458f-9c5b-f2d2ddba5bce",
+        "attributes" : {
+          "dxpStyle" : {
+            "margin" : {
+              "top" : "0px",
+              "right" : "0px",
+              "bottom" : "0px",
+              "left" : "0px"
+            }
+          }
+        }
+      }, {
+        "id" : "deb0d1ba-8b01-4790-a7cb-aaaedc56ae12",
+        "attributes" : {
+          "dxpStyle" : {
+            "margin" : {
+              "top" : "0px",
+              "right" : "0px",
+              "bottom" : "0px",
+              "left" : "0px"
+            }
+          }
+        }
+      }, {
+        "id" : "e3f8fb2b-4bc1-4a08-a291-777ed383411b",
+        "attributes" : {
+          "dxpStyle" : {
+            "margin" : {
+              "top" : "0px",
+              "right" : "0px",
+              "bottom" : "0px",
+              "left" : "0px"
+            }
+          }
+        }
+      }, {
+        "id" : "a61980df-c691-4409-bb2d-70a8bc71d4b0",
+        "attributes" : {
+          "dxpStyle" : {
+            "margin" : {
+              "top" : "0px",
+              "right" : "0px",
+              "bottom" : "0px",
+              "left" : "0px"
+            }
+          }
+        }
+      }, {
+        "id" : "f9daea49-6435-46e6-9e81-45d987d4c830",
+        "attributes" : {
+          "dxpStyle" : {
+            "margin" : {
+              "top" : "0px",
+              "right" : "0px",
+              "bottom" : "0px",
+              "left" : "0px"
+            }
+          }
+        }
+      }, {
+        "id" : "3ccb4716-0869-4d40-8bc1-971ad540d4f4",
+        "attributes" : {
+          "dxpStyle" : {
+            "margin" : {
+              "top" : "0px",
+              "right" : "0px",
+              "bottom" : "0px",
+              "left" : "0px"
+            }
+          }
+        }
+      }, {
+        "id" : "c80f5e60-9467-4377-8af7-2dba74fb80f8",
+        "attributes" : {
+          "dxpStyle" : {
+            "margin" : {
+              "top" : "0px",
+              "right" : "0px",
+              "bottom" : "0px",
+              "left" : "0px"
+            }
+          }
+        }
+      }, {
+        "id" : "1d94610b-bcec-48ba-b2f8-e2728e03f6ed",
+        "attributes" : {
+          "dxpStyle" : {
+            "margin" : {
+              "top" : "0px",
+              "right" : "0px",
+              "bottom" : "0px",
+              "left" : "0px"
+            }
+          }
+        }
+      }, {
+        "id" : "b4e9f6d2-b52e-4181-8ca8-04822c2b46fe",
+        "attributes" : {
+          "dxpStyle" : {
+            "margin" : {
+              "top" : "0px",
+              "right" : "0px",
+              "bottom" : "0px",
+              "left" : "0px"
+            }
+          }
+        }
+      } ]
+    }
+  },
+  "urlName" : "podcast"
+}

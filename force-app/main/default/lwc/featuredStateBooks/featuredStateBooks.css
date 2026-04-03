@@ -52,23 +52,21 @@
 .shop-all-btn {
   display: inline-block;
   padding: 0.65rem 1.4rem;
-  border: 1.5px solid #1783c6;
+  border: 1.5px solid #0d5d9f;
   border-radius: 9999px;
-  color: #1783c6 !important;
+  color: #0d5d9f !important;
   background: #fff;
   font-size: 0.9rem;
   font-weight: 600;
   text-decoration: none;
   line-height: 1;
   cursor: pointer;
-  transition:
-    background 0.18s ease,
-    color 0.18s ease;
+  transition: background 0.18s ease, color 0.18s ease;
 }
 
 .shop-all-btn:hover,
 .shop-all-btn:focus-visible {
-  background: #1783c6;
+  background: #0d5d9f;
   color: #fff !important;
   outline: none;
 }
@@ -278,15 +276,13 @@
   border-radius: 9999px;
   text-align: center;
   cursor: pointer;
-  transition:
-    background 0.15s ease,
-    color 0.15s ease;
+  transition: background 0.15s ease, color 0.15s ease;
 }
 
 .overlay-btn--look {
   background: rgba(255, 255, 255, 0.9);
   border: 1px solid #d1d5db;
-  color: #9ca3af;
+  color: #5f6b7a;
   cursor: default;
 }
 

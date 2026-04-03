@@ -1,10 +1,15 @@
 import { LightningElement, api } from "lwc";
+import getFavoriteState from "@salesforce/apex/WishlistController.getFavoriteState";
+import toggleFavorite from "@salesforce/apex/WishlistController.toggleFavorite";
+
+const DEFAULT_WEBSTORE_ID = "0ZEam000004dJDNGA2";
 
 export default class QuickShopModal extends LightningElement {
   @api title = "";
   @api isbn = "";
   @api bookImageUrl;
   @api variationPricing;
+  @api webStoreId = DEFAULT_WEBSTORE_ID;
   @api currencyIsoCode = "USD";
   @api minimumQuantity = 10;
   @api maximumQuantity = 50;
@@ -16,6 +21,8 @@ export default class QuickShopModal extends LightningElement {
 
   isFavorite = false;
   isOpen = true;
+  favoritePending = false;
+  favoriteProductId = "";
 
   get isLoading() {
     return !this.title || !this.variationPricing;
@@ -41,7 +48,7 @@ export default class QuickShopModal extends LightningElement {
       index: i,
       label: v.format || "Standard",
       tabClass: `plan-option ${this.selectedVariationIndex === i ? "active" : ""}`,
-      ariaSelected: this.selectedVariationIndex === i ? "true" : "false"
+      ariaSelected: this.selectedVariationIndex === i
     }));
   }
 
@@ -65,9 +72,10 @@ export default class QuickShopModal extends LightningElement {
     return tiers.map((tier, index) => ({
       key: `tier-${index}`,
       qtyLabel:
-        tier.upperBound != null
-          ? `${tier.lowerBound}\u2013${tier.upperBound}`
-          : `${tier.lowerBound}+`,
+        tier.upperBound == null
+          ? `${tier.lowerBound}+`
+          : `${tier.lowerBound}\u2013${tier.upperBound}`,
+
       formattedPrice: this.formatPrice(tier.price),
       priceClass: `td price${index > 0 ? " price-red" : ""}`
     }));
@@ -160,6 +168,10 @@ export default class QuickShopModal extends LightningElement {
     return this.isFavorite ? "utility:favorite" : "utility:favorite_alt";
   }
 
+  get isFavoriteDisabled() {
+    return this.favoritePending || !this.selectedProductId;
+  }
+
   // Live order total: current tier unit price × total quantity
   get totalPrice() {
     const unit = this.selectedUnitPrice;
@@ -235,6 +247,7 @@ export default class QuickShopModal extends LightningElement {
     }
 
     this.quantity = val;
+    e.target.value = String(val); // force-sync when clamped value equals current quantity
   }
 
   handleQtyDecrement() {
@@ -285,12 +298,82 @@ export default class QuickShopModal extends LightningElement {
   }
 
   toggleFavorite() {
-    this.isFavorite = !this.isFavorite;
-    this.dispatchEvent(
-      new CustomEvent("favoritechange", {
-        detail: { favorite: this.isFavorite }
-      })
-    );
+    this.handleToggleFavorite();
+  }
+
+  renderedCallback() {
+    const productId = this.selectedProductId;
+    if (!productId || this.favoritePending || productId === this.favoriteProductId) {
+      return;
+    }
+
+    this.syncFavoriteState(productId);
+  }
+
+  async syncFavoriteState(productId) {
+    if (!productId) {
+      this.isFavorite = false;
+      this.favoriteProductId = "";
+      return;
+    }
+
+    try {
+      const result = await getFavoriteState({
+        productId,
+        webStoreId: this.webStoreId || DEFAULT_WEBSTORE_ID
+      });
+
+      if (this.selectedProductId !== productId) {
+        return;
+      }
+
+      this.isFavorite = Boolean(result?.favorite);
+      this.favoriteProductId = productId;
+    } catch (error) {
+      console.warn("Failed to load wishlist state.", error);
+      this.isFavorite = false;
+      this.favoriteProductId = productId;
+    }
+  }
+
+  async handleToggleFavorite() {
+    const productId = this.selectedProductId;
+    if (!productId || this.favoritePending) {
+      return;
+    }
+
+    this.favoritePending = true;
+    const previous = this.isFavorite;
+
+    try {
+      const result = await toggleFavorite({
+        productId,
+        webStoreId: this.webStoreId || DEFAULT_WEBSTORE_ID
+      });
+
+      if (result?.success === false) {
+        this.isFavorite = previous;
+        return;
+      }
+
+      this.isFavorite = Boolean(result?.favorite);
+      this.favoriteProductId = productId;
+      this.dispatchEvent(
+        new CustomEvent("favoritechange", {
+          detail: {
+            favorite: this.isFavorite,
+            productId,
+            wishlistId: result?.wishlistId || null,
+            wishlistItemId: result?.wishlistItemId || null
+          }
+        })
+      );
+    } catch (error) {
+      console.warn("Failed to update wishlist state.", error);
+      this.isFavorite = previous;
+    } finally {
+      this.favoritePending = false;
+    }
   }
 
   // ESC close

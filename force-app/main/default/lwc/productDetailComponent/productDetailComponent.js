@@ -1,11 +1,13 @@
 import { LightningElement, api, track } from "lwc";
 import getVariationPricing from "@salesforce/apex/ProductVariationController.getVariationPricing";
+import getFavoriteState from "@salesforce/apex/WishlistController.getFavoriteState";
+import toggleFavorite from "@salesforce/apex/WishlistController.toggleFavorite";
 
 const DEFAULT_STORE_NAME = "AmericanBookCompany";
 const DEFAULT_WEBSTORE_ID = "0ZEam000004dJDNGA2";
 const DEFAULT_CURRENCY = "USD";
 const PRODUCT_ID_PATTERN = /01t[a-zA-Z0-9]{12,15}/;
-const PRODUCT_DETAIL_FIELDS = ["StockKeepingUnit", "Name"];
+const PRODUCT_DETAIL_FIELDS = ["StockKeepingUnit", "Name", "purchaseQuantityRule"];
 
 export default class ProductDetailComponent extends LightningElement {
   @api storeName = DEFAULT_STORE_NAME;
@@ -24,6 +26,8 @@ export default class ProductDetailComponent extends LightningElement {
   quantity = 10;
   selectedVariationIndex = 0;
   isFavorite = false;
+  favoritePending = false;
+  favoriteProductId = "";
 
   featuresLeft = ["Answer Key", "Posttest", "Pretest"];
   featuresRight = ["eBook"];
@@ -77,7 +81,7 @@ export default class ProductDetailComponent extends LightningElement {
       index: i,
       label: v.format || "Standard",
       tabClass: `plan-option ${this.selectedVariationIndex === i ? "active" : ""}`,
-      ariaSelected: this.selectedVariationIndex === i ? "true" : "false"
+      ariaSelected: this.selectedVariationIndex === i
     }));
   }
 
@@ -105,9 +109,10 @@ export default class ProductDetailComponent extends LightningElement {
     return tiers.map((tier, index) => ({
       key: `tier-${index}`,
       qtyLabel:
-        tier.upperBound != null
-          ? `${tier.lowerBound}\u2013${tier.upperBound}`
-          : `${tier.lowerBound}+`,
+        tier.upperBound == null
+          ? `${tier.lowerBound}+`
+          : `${tier.lowerBound}\u2013${tier.upperBound}`,
+
       formattedPrice: this.formatPrice(tier.price),
       priceClass: `td price${index > 0 ? " price-red" : ""}`
     }));
@@ -162,6 +167,10 @@ export default class ProductDetailComponent extends LightningElement {
     return this.isFavorite ? "utility:favorite" : "utility:favorite_alt";
   }
 
+  get isFavoriteDisabled() {
+    return this.favoritePending || !this.selectedProductId;
+  }
+
   get formattedUnitPrice() {
     return this.formatPrice(this.selectedUnitPrice);
   }
@@ -210,6 +219,8 @@ export default class ProductDetailComponent extends LightningElement {
       } catch (apexError) {
         console.warn("Failed to load variation pricing.", apexError);
       }
+
+      await this.syncFavoriteState(this.selectedProductId || currentProductId);
     } catch {
       this.product = null;
       this.errorMessage = "Unable to load product details.";
@@ -261,7 +272,6 @@ export default class ProductDetailComponent extends LightningElement {
 
     for (const endpoint of endpoints) {
       try {
-        // eslint-disable-next-line no-await-in-loop
         const response = await fetch(endpoint, {
           method: "GET",
           credentials: "include"
@@ -271,7 +281,6 @@ export default class ProductDetailComponent extends LightningElement {
           continue;
         }
 
-        // eslint-disable-next-line no-await-in-loop
         const data = await response.json();
         const products = this.extractProductCollection(data);
         if (products.length) {
@@ -505,6 +514,37 @@ export default class ProductDetailComponent extends LightningElement {
     ) {
       this.selectedVariationIndex = index;
       this.quantity = this.minQty;
+      const variation = this.variationsList[index];
+      const nextProductId = variation?.productId || this.product?.id || "";
+      if (nextProductId && nextProductId !== this.favoriteProductId) {
+        this.syncFavoriteState(nextProductId);
+      }
+    }
+  }
+
+  async syncFavoriteState(productId) {
+    if (!productId) {
+      this.isFavorite = false;
+      this.favoriteProductId = "";
+      return;
+    }
+
+    try {
+      const result = await getFavoriteState({
+        productId,
+        webStoreId: this.webStoreId || DEFAULT_WEBSTORE_ID
+      });
+
+      if ((this.selectedProductId || this.product?.id || "") !== productId) {
+        return;
+      }
+
+      this.isFavorite = Boolean(result?.favorite);
+      this.favoriteProductId = productId;
+    } catch (error) {
+      console.warn("Failed to load wishlist state.", error);
+      this.isFavorite = false;
+      this.favoriteProductId = productId;
     }
   }
 
@@ -571,6 +611,7 @@ export default class ProductDetailComponent extends LightningElement {
     }
 
     this.quantity = value;
+    event.target.value = String(value); // force-sync when clamped value equals current quantity
   }
 
   handleQtyDecrement() {
@@ -663,13 +704,44 @@ export default class ProductDetailComponent extends LightningElement {
     }
   }
 
-  toggleFavorite() {
-    this.isFavorite = !this.isFavorite;
-    this.dispatchEvent(
-      new CustomEvent("favoritechange", {
-        detail: { favorite: this.isFavorite }
-      })
-    );
+  async toggleFavorite() {
+    const productId = this.selectedProductId || this.product?.id || "";
+    if (!productId || this.favoritePending) {
+      return;
+    }
+
+    this.favoritePending = true;
+    const previous = this.isFavorite;
+
+    try {
+      const result = await toggleFavorite({
+        productId,
+        webStoreId: this.webStoreId || DEFAULT_WEBSTORE_ID
+      });
+
+      if (result?.success === false) {
+        this.isFavorite = previous;
+        return;
+      }
+
+      this.isFavorite = Boolean(result?.favorite);
+      this.favoriteProductId = productId;
+      this.dispatchEvent(
+        new CustomEvent("favoritechange", {
+          detail: {
+            favorite: this.isFavorite,
+            productId,
+            wishlistId: result?.wishlistId || null,
+            wishlistItemId: result?.wishlistItemId || null
+          }
+        })
+      );
+    } catch (error) {
+      console.warn("Failed to update wishlist state.", error);
+      this.isFavorite = previous;
+    } finally {
+      this.favoritePending = false;
+    }
   }
 
   resolvePrice(source, paths) {

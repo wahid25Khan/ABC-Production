@@ -1,0 +1,12 @@
+{
+  "type" : "sfdc_cms__route",
+  "title" : "how-to-order",
+  "contentBody" : {
+    "activeViewId" : "how_to_order",
+    "configurationTags" : [ ],
+    "pageAccess" : "UseParent",
+    "routeType" : "custom-how-to-order",
+    "urlPrefix" : "how-to-order"
+  },
+  "urlName" : "how-to-order"
+}

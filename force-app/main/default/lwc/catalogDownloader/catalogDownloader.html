@@ -3,9 +3,9 @@
         <h1 class="main-heading">Download catalog</h1>
         
         <div class="dropdown-box">
-            <label class="dropdown-label">Which catalog are you looking for?</label>
+            <label class="dropdown-label" for="catalog-state-select">Which catalog are you looking for?</label>
             <div class="select-wrapper">
-                <select class="state-select" onchange={handleStateChange}>
+                <select id="catalog-state-select" class="state-select" onchange={handleStateChange}>
                     <template for:each={stateOptions} for:item="option">
                         <option key={option.value} value={option.value}>{option.label}</option>
                     </template>
@@ -16,7 +16,9 @@
         <template if:true={showCatalog}>
             <div class="content-section">
                 <div class="image-box">
-                    <img onclick={openPdf} src={selectedStateData.imageUrl} alt={catalogTitle} class="catalog-image cursor-pointer" />
+                    <button type="button" class="catalog-image-button" onclick={openPdf}>
+                        <img src={selectedStateData.imageUrl} alt={catalogTitle} class="catalog-image" />
+                    </button>
                 </div>
                 
                 <div class="text-box">

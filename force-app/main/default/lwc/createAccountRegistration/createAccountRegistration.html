@@ -1,0 +1,174 @@
+<template>
+    <section class="register-shell">
+        <div class="register-card">
+            <h1 class="register-title">Create Account</h1>
+
+            <p class="register-intro">
+                <span class="register-divider" aria-hidden="true"></span>
+                <span class="register-copy">Create an account using</span>
+                <span class="register-divider" aria-hidden="true"></span>
+            </p>
+
+            <div class="social-actions">
+                <button class="social-button" type="button" onclick={handleGoogleClick}>
+                    <span class="social-icon social-icon_google" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" focusable="false" aria-hidden="true">
+                            <path fill="#EA4335" d="M12.24 10.285V14.4h5.88c-.26 1.33-1.8 3.9-5.88 3.9-3.54 0-6.42-2.93-6.42-6.54s2.88-6.54 6.42-6.54c2.02 0 3.37.86 4.15 1.6l2.83-2.74C17.41 2.4 15.08 1.5 12.24 1.5 6.96 1.5 2.7 5.78 2.7 11.06s4.26 9.56 9.54 9.56c5.5 0 9.15-3.86 9.15-9.29 0-.63-.07-1.1-.15-1.57Z"></path>
+                            <path fill="#34A853" d="M2.7 6.81 6.08 9.3c.91-2.7 3.42-4.63 6.16-4.63 2.02 0 3.37.86 4.15 1.6l2.83-2.74C17.41 2.4 15.08 1.5 12.24 1.5 8.08 1.5 4.47 3.88 2.7 6.81Z"></path>
+                            <path fill="#FBBC05" d="M12.24 20.62c2.77 0 5.09-.91 6.79-2.47l-3.3-2.7c-.88.62-2.05 1.05-3.49 1.05-4.01 0-5.57-2.71-5.82-3.98L3.06 15.1c1.75 3.47 5.34 5.52 9.18 5.52Z"></path>
+                            <path fill="#4285F4" d="M21.39 11.33c0-.63-.07-1.1-.15-1.57h-9v4.12h5.88c-.28 1.4-1.12 2.59-2.39 3.4l3.3 2.7c1.92-1.77 3.36-4.38 3.36-8.65Z"></path>
+                        </svg>
+                    </span>
+                    <span class="social-label">Google</span>
+                </button>
+
+                <button class="social-button" type="button" onclick={handleMicrosoftClick}>
+                    <span class="social-icon social-icon_microsoft" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" focusable="false" aria-hidden="true">
+                            <rect x="2" y="2" width="9" height="9" fill="#F25022"></rect>
+                            <rect x="13" y="2" width="9" height="9" fill="#7FBA00"></rect>
+                            <rect x="2" y="13" width="9" height="9" fill="#00A4EF"></rect>
+                            <rect x="13" y="13" width="9" height="9" fill="#FFB900"></rect>
+                        </svg>
+                    </span>
+                    <span class="social-label">Microsoft</span>
+                </button>
+            </div>
+
+            <p class="register-subtitle">
+                <span class="register-divider" aria-hidden="true"></span>
+                <span class="register-copy">Or create an account using the form below</span>
+                <span class="register-divider" aria-hidden="true"></span>
+            </p>
+
+            <template if:true={errorMessage}>
+                <div class="register-alert" role="alert">{errorMessage}</div>
+            </template>
+
+            <div class="register-form-grid">
+                <div class="field field_half">
+                    <label for="firstName">First Name</label>
+                    <input
+                        id="firstName"
+                        class="field-input"
+                        type="text"
+                        placeholder="Enter first name"
+                        value={firstName}
+                        data-field="firstName"
+                        oninput={handleInput}
+                    />
+                </div>
+
+                <div class="field field_half">
+                    <label for="lastName">Last Name</label>
+                    <input
+                        id="lastName"
+                        class="field-input"
+                        type="text"
+                        placeholder="Enter last name"
+                        value={lastName}
+                        data-field="lastName"
+                        oninput={handleInput}
+                    />
+                </div>
+
+                <div class="field field_full">
+                    <label for="email">Email (This will be your account login)</label>
+                    <input
+                        id="email"
+                        class="field-input"
+                        type="email"
+                        placeholder="Enter email"
+                        value={email}
+                        data-field="email"
+                        oninput={handleInput}
+                    />
+                </div>
+
+                <div class="field field_full">
+                    <label for="confirmEmail">Confirm Email</label>
+                    <input
+                        id="confirmEmail"
+                        class="field-input"
+                        type="email"
+                        placeholder="Enter email"
+                        value={confirmEmail}
+                        data-field="confirmEmail"
+                        oninput={handleInput}
+                    />
+                </div>
+
+                <div class="field field_full">
+                    <label for="organizationName">Organization Name</label>
+                    <input
+                        id="organizationName"
+                        class="field-input"
+                        type="text"
+                        placeholder="Enter organization name"
+                        value={organizationName}
+                        data-field="organizationName"
+                        oninput={handleInput}
+                    />
+                </div>
+
+                <div class="password-rules field_full">
+                    <p>Password requirements:</p>
+                    <ul>
+                        <li>At least 8 characters</li>
+                        <li>Contain upper case letters</li>
+                        <li>Contain lower case letters</li>
+                        <li>At least one number</li>
+                        <li>At least one symbol (#@$%, etc)</li>
+                    </ul>
+                </div>
+
+                <div class="field field_full">
+                    <label for="password">Password</label>
+                    <input
+                        id="password"
+                        class="field-input"
+                        type="password"
+                        placeholder="Enter password"
+                        value={password}
+                        data-field="password"
+                        oninput={handleInput}
+                    />
+                </div>
+
+                <div class="field field_full">
+                    <label for="confirmPassword">Confirm Password</label>
+                    <input
+                        id="confirmPassword"
+                        class="field-input"
+                        type="password"
+                        placeholder="Enter password"
+                        value={confirmPassword}
+                        data-field="confirmPassword"
+                        oninput={handleInput}
+                    />
+                </div>
+            </div>
+
+            <label class="consent-row" for="marketingConsent">
+                <input
+                    id="marketingConsent"
+                    type="checkbox"
+                    checked={marketingConsent}
+                    onchange={handleConsentChange}
+                />
+                <span>I consent to receive periodic emails and promotion from American Book Company.</span>
+            </label>
+
+            <p class="legal-copy">
+                By creating an account, you agree to our
+                <a href="/privacy-policy" target="_blank" rel="noopener noreferrer">Privacy Policy</a>
+                and
+                <a href="/terms-and-conditions" target="_blank" rel="noopener noreferrer">Terms and Conditions</a>.
+            </p>
+
+            <button class="submit-button" type="button" onclick={handleSubmit} disabled={isSubmitting}>
+                {submitButtonLabel}
+            </button>
+        </div>
+    </section>
+</template>

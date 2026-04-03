@@ -43,38 +43,50 @@
 
         <div class="state-dropdown-wrap">
           <div class="custom-select" data-dropdown="state">
-            <button
-              type="button"
-              class="custom-select-trigger"
-              onclick={toggleStateDropdown}
-              aria-haspopup="listbox"
-              aria-expanded={isStateDropdownOpen}
-            >
-              <span class={stateDisplayClass}>{selectedStateLabel}</span>
-              <span class={stateChevronClass}></span>
-            </button>
+            <template if:true={isStateDropdownOpen}>
+              <button
+                type="button"
+                class="custom-select-trigger"
+                onclick={toggleStateDropdown}
+                aria-expanded="true"
+              >
+                <span class={stateDisplayClass}>{selectedStateLabel}</span>
+                <span class={stateChevronClass}></span>
+              </button>
+            </template>
+            <template if:false={isStateDropdownOpen}>
+              <button
+                type="button"
+                class="custom-select-trigger"
+                onclick={toggleStateDropdown}
+                aria-expanded="false"
+              >
+                <span class={stateDisplayClass}>{selectedStateLabel}</span>
+                <span class={stateChevronClass}></span>
+              </button>
+            </template>
 
             <template if:true={isStateDropdownOpen}>
-              <div class="custom-select-menu" role="listbox">
-                <div
+              <div class="custom-select-menu">
+                <button
+                  type="button"
                   class={allStatesOptionClass}
                   data-value=""
                   onclick={handleStateOptionClick}
-                  role="option"
                 >
                   All States
-                </div>
+                </button>
 
                 <template for:each={stateOptionsForUi} for:item="opt">
-                  <div
+                  <button
                     key={opt.value}
+                    type="button"
                     class={opt.className}
                     data-value={opt.value}
                     onclick={handleStateOptionClick}
-                    role="option"
                   >
                     {opt.label}
-                  </div>
+                  </button>
                 </template>
               </div>
             </template>
@@ -84,64 +96,82 @@
 
       <div class="right-controls">
         <div class="custom-select custom-select-sm" data-dropdown="sort">
-          <button
-            type="button"
-            class="custom-select-trigger"
-            onclick={toggleSortDropdown}
-            aria-haspopup="listbox"
-            aria-expanded={isSortDropdownOpen}
-          >
-            <span>Sort</span>
-            <span class={sortChevronClass}></span>
-          </button>
+          <template if:true={isSortDropdownOpen}>
+            <button
+              type="button"
+              class="custom-select-trigger"
+              onclick={toggleSortDropdown}
+              aria-expanded="true"
+            >
+              <span>Sort</span>
+              <span class={sortChevronClass}></span>
+            </button>
+          </template>
+          <template if:false={isSortDropdownOpen}>
+            <button
+              type="button"
+              class="custom-select-trigger"
+              onclick={toggleSortDropdown}
+              aria-expanded="false"
+            >
+              <span>Sort</span>
+              <span class={sortChevronClass}></span>
+            </button>
+          </template>
 
           <template if:true={isSortDropdownOpen}>
-            <div
-              class="custom-select-menu custom-select-menu-sm"
-              role="listbox"
-            >
+            <div class="custom-select-menu custom-select-menu-sm">
               <template for:each={sortOptionsForUi} for:item="opt">
-                <div
+                <button
                   key={opt.value}
+                  type="button"
                   class={opt.className}
                   data-value={opt.value}
                   onclick={handleSortOptionClick}
-                  role="option"
                 >
                   {opt.label}
-                </div>
+                </button>
               </template>
             </div>
           </template>
         </div>
 
         <div class="custom-select custom-select-sm" data-dropdown="pageSize">
-          <button
-            type="button"
-            class="custom-select-trigger"
-            onclick={togglePageSizeDropdown}
-            aria-haspopup="listbox"
-            aria-expanded={isPageSizeDropdownOpen}
-          >
-            <span>{selectedPageSizeLabel}</span>
-            <span class={pageSizeChevronClass}></span>
-          </button>
+          <template if:true={isPageSizeDropdownOpen}>
+            <button
+              type="button"
+              class="custom-select-trigger"
+              onclick={togglePageSizeDropdown}
+              aria-expanded="true"
+            >
+              <span>{selectedPageSizeLabel}</span>
+              <span class={pageSizeChevronClass}></span>
+            </button>
+          </template>
+          <template if:false={isPageSizeDropdownOpen}>
+            <button
+              type="button"
+              class="custom-select-trigger"
+              onclick={togglePageSizeDropdown}
+              aria-expanded="false"
+            >
+              <span>{selectedPageSizeLabel}</span>
+              <span class={pageSizeChevronClass}></span>
+            </button>
+          </template>
 
           <template if:true={isPageSizeDropdownOpen}>
-            <div
-              class="custom-select-menu custom-select-menu-sm"
-              role="listbox"
-            >
+            <div class="custom-select-menu custom-select-menu-sm">
               <template for:each={pageSizeOptionsForUi} for:item="opt">
-                <div
+                <button
                   key={opt.value}
+                  type="button"
                   class={opt.className}
                   data-value={opt.value}
                   onclick={handlePageSizeOptionClick}
-                  role="option"
                 >
                   {opt.label}
-                </div>
+                </button>
               </template>
             </div>
           </template>
@@ -150,82 +180,254 @@
         <fieldset class="view-toggle">
           <legend class="slds-assistive-text">View mode</legend>
 
-          <button
-            type="button"
-            class="view-btn"
-            data-mode="grid"
-            aria-pressed={ariaGridPressed}
-            onclick={handleViewMode}
-            title="Grid view"
-          >
-            ⊞
-          </button>
+          <template if:true={isGridView}>
+            <button
+              type="button"
+              class="view-btn"
+              data-mode="grid"
+              aria-pressed="true"
+              onclick={handleViewMode}
+              title="Grid view"
+            >
+              <svg class="view-icon" viewBox="0 0 16 16" aria-hidden="true">
+                <rect x="1" y="1" width="6" height="6" rx="1"></rect>
+                <rect x="9" y="1" width="6" height="6" rx="1"></rect>
+                <rect x="1" y="9" width="6" height="6" rx="1"></rect>
+                <rect x="9" y="9" width="6" height="6" rx="1"></rect>
+              </svg>
+            </button>
+          </template>
+          <template if:false={isGridView}>
+            <button
+              type="button"
+              class="view-btn"
+              data-mode="grid"
+              aria-pressed="false"
+              onclick={handleViewMode}
+              title="Grid view"
+            >
+              <svg class="view-icon" viewBox="0 0 16 16" aria-hidden="true">
+                <rect x="1" y="1" width="6" height="6" rx="1"></rect>
+                <rect x="9" y="1" width="6" height="6" rx="1"></rect>
+                <rect x="1" y="9" width="6" height="6" rx="1"></rect>
+                <rect x="9" y="9" width="6" height="6" rx="1"></rect>
+              </svg>
+            </button>
+          </template>
 
-          <button
-            type="button"
-            class="view-btn"
-            data-mode="list"
-            aria-pressed={ariaListPressed}
-            onclick={handleViewMode}
-            title="List view"
-          >
-            ☰
-          </button>
+          <template if:true={isListView}>
+            <button
+              type="button"
+              class="view-btn"
+              data-mode="list"
+              aria-pressed="true"
+              onclick={handleViewMode}
+              title="List view"
+            >
+              <svg class="view-icon" viewBox="0 0 16 16" aria-hidden="true">
+                <rect x="1" y="2" width="14" height="2.4" rx="1"></rect>
+                <rect x="1" y="6.8" width="14" height="2.4" rx="1"></rect>
+                <rect x="1" y="11.6" width="14" height="2.4" rx="1"></rect>
+              </svg>
+            </button>
+          </template>
+          <template if:false={isListView}>
+            <button
+              type="button"
+              class="view-btn"
+              data-mode="list"
+              aria-pressed="false"
+              onclick={handleViewMode}
+              title="List view"
+            >
+              <svg class="view-icon" viewBox="0 0 16 16" aria-hidden="true">
+                <rect x="1" y="2" width="14" height="2.4" rx="1"></rect>
+                <rect x="1" y="6.8" width="14" height="2.4" rx="1"></rect>
+                <rect x="1" y="11.6" width="14" height="2.4" rx="1"></rect>
+              </svg>
+            </button>
+          </template>
         </fieldset>
       </div>
     </div>
 
     <div class="results-layout">
-      <aside class="filters-column">
-        <template for:each={filterGroups} for:item="group">
-          <section key={group.key} class="filter-group">
-            <template if:true={group.expanded}>
-              <button
-                type="button"
-                class="filter-header"
-                data-field={group.key}
-                onclick={handleToggleGroup}
-                aria-expanded="true"
-              >
-                <span>{group.label}</span>
-                <span class="toggle-symbol">{group.toggleSymbol}</span>
-              </button>
-            </template>
+      <aside class={filtersColumnClass}>
 
-            <template if:false={group.expanded}>
-              <button
-                type="button"
-                class="filter-header"
-                data-field={group.key}
-                onclick={handleToggleGroup}
-                aria-expanded="false"
-              >
-                <span>{group.label}</span>
-                <span class="toggle-symbol">{group.toggleSymbol}</span>
-              </button>
-            </template>
+        <!-- Collapsed trigger: visible on mobile when drawer is closed -->
+        <button
+          type="button"
+          class="mobile-filter-toggle"
+          onclick={handleToggleMobileFilters}
+        >
+          <span>Filter</span>
+          <svg class="filter-toggle-icon" viewBox="0 0 24 24" aria-hidden="true">
+            <line x1="4" y1="7" x2="20" y2="7"></line>
+            <line x1="7" y1="12" x2="17" y2="12"></line>
+            <line x1="10" y1="17" x2="14" y2="17"></line>
+          </svg>
+        </button>
 
-            <div if:false={group.collapsed} class="filter-options">
-              <template if:true={group.showEmpty}>
-                <p class="filter-empty">No values</p>
+        <!-- Drawer header: visible only when drawer is open on mobile -->
+        <div class="mobile-drawer-header">
+          <button
+            type="button"
+            class="mobile-drawer-close"
+            onclick={handleToggleMobileFilters}
+            aria-label="Close filters"
+          >
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <line x1="4" y1="4" x2="20" y2="20"></line>
+              <line x1="20" y1="4" x2="4" y2="20"></line>
+            </svg>
+          </button>
+          <span class="mobile-drawer-title">Filter</span>
+          <button
+            type="button"
+            class="mobile-drawer-clearall"
+            onclick={handleClearAllFilters}
+          >
+            Clear All
+          </button>
+        </div>
+
+        <!-- Filter content panel -->
+        <div class={mobileFilterPanelClass}>
+
+          <!-- Search (mobile drawer only) -->
+          <div class="drawer-search-wrap">
+            <div class="search-box search-box--drawer">
+              <input
+                type="search"
+                placeholder="Search..."
+                value={searchText}
+                onkeydown={handleSearchKeydown}
+                oninput={handleSearchInput}
+                onchange={handleSearchInput}
+              />
+              <span class="search-icon">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <circle cx="11" cy="11" r="7"></circle>
+                  <line x1="16.65" y1="16.65" x2="21" y2="21"></line>
+                </svg>
+              </span>
+            </div>
+          </div>
+
+          <!-- State dropdown (mobile drawer only) -->
+          <div class="drawer-state-wrap">
+            <div class="custom-select" data-dropdown="state">
+              <template if:true={isStateDropdownOpen}>
+                <button
+                  type="button"
+                  class="custom-select-trigger"
+                  onclick={toggleStateDropdown}
+                  aria-expanded="true"
+                >
+                  <span class={stateDisplayClass}>{selectedStateLabel}</span>
+                  <span class={stateChevronClass}></span>
+                </button>
               </template>
-
-              <template for:each={group.options} for:item="option">
-                <label key={option.key} class="filter-option-row">
-                  <input
-                    type="checkbox"
-                    checked={option.checked}
-                    data-field={group.key}
-                    data-value={option.value}
-                    onchange={handleFilterChange}
-                  />
-                  <span class="option-label">{option.label}</span>
-                  <span class="option-count">({option.count})</span>
-                </label>
+              <template if:false={isStateDropdownOpen}>
+                <button
+                  type="button"
+                  class="custom-select-trigger"
+                  onclick={toggleStateDropdown}
+                  aria-expanded="false"
+                >
+                  <span class={stateDisplayClass}>{selectedStateLabel}</span>
+                  <span class={stateChevronClass}></span>
+                </button>
+              </template>
+              <template if:true={isStateDropdownOpen}>
+                <div class="custom-select-menu">
+                  <button
+                    type="button"
+                    class={allStatesOptionClass}
+                    data-value=""
+                    onclick={handleStateOptionClick}
+                  >
+                    All States
+                  </button>
+                  <template for:each={stateOptionsForUi} for:item="opt">
+                    <button
+                      key={opt.value}
+                      type="button"
+                      class={opt.className}
+                      data-value={opt.value}
+                      onclick={handleStateOptionClick}
+                    >
+                      {opt.label}
+                    </button>
+                  </template>
+                </div>
               </template>
             </div>
-          </section>
-        </template>
+          </div>
+
+          <!-- Filter groups -->
+          <template for:each={filterGroups} for:item="group">
+            <section key={group.key} class="filter-group">
+              <template if:true={group.expanded}>
+                <button
+                  type="button"
+                  class="filter-header"
+                  data-field={group.key}
+                  onclick={handleToggleGroup}
+                  aria-expanded="true"
+                >
+                  <span>{group.label}</span>
+                  <span class="toggle-symbol">{group.toggleSymbol}</span>
+                </button>
+              </template>
+
+              <template if:false={group.expanded}>
+                <button
+                  type="button"
+                  class="filter-header"
+                  data-field={group.key}
+                  onclick={handleToggleGroup}
+                  aria-expanded="false"
+                >
+                  <span>{group.label}</span>
+                  <span class="toggle-symbol">{group.toggleSymbol}</span>
+                </button>
+              </template>
+
+              <div if:false={group.collapsed} class="filter-options">
+                <template if:true={group.showEmpty}>
+                  <p class="filter-empty">No values</p>
+                </template>
+
+                <template for:each={group.options} for:item="option">
+                  <label key={option.key} class={option.pillClass}>
+                    <input
+                      type="checkbox"
+                      checked={option.checked}
+                      data-field={group.key}
+                      data-value={option.value}
+                      onchange={handleFilterChange}
+                    />
+                    <span class="option-label">{option.label}</span>
+                    <span class="option-count">({option.count})</span>
+                  </label>
+                </template>
+              </div>
+            </section>
+          </template>
+        </div>
+
+        <!-- See results footer: mobile drawer only -->
+        <div class="mobile-drawer-footer">
+          <button
+            type="button"
+            class="see-results-btn"
+            onclick={handleToggleMobileFilters}
+          >
+            See results
+          </button>
+        </div>
+
       </aside>
 
       <div class="products-column">

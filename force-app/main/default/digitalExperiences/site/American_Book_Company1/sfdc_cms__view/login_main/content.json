@@ -1,0 +1,102 @@
+{
+  "type" : "sfdc_cms__view",
+  "title" : "Login",
+  "contentBody" : {
+    "component" : {
+      "children" : [ {
+        "children" : [ {
+          "attributes" : {
+            "backgroundImageConfig" : "",
+            "backgroundImageOverlay" : "rgba(0,0,0,0)",
+            "componentSpacerSize" : "",
+            "dxpStyle" : { },
+            "layoutDirectionDesktop" : "row",
+            "layoutDirectionMobile" : "column",
+            "layoutDirectionTablet" : "column",
+            "maxContentWidth" : "",
+            "sectionColumnGutterWidth" : "",
+            "sectionConfig" : "{\"UUID\":\"e5c86fa1-5e01-47d3-9a08-1affa11f330a\",\"columns\":[{\"UUID\":\"6ef0d098-cefd-42a6-b0b3-f4e04c8a5b5c\",\"columnName\":\"Column 1\",\"columnKey\":\"col1\",\"columnWidth\":\"12\",\"seedComponents\":null}]}",
+            "sectionMinHeight" : "",
+            "sectionVerticalAlign" : "flex-start"
+          },
+          "children" : [ {
+            "children" : [ {
+              "attributes" : {
+                "alignment" : "center",
+                "dxpStyle" : {
+                  "margin" : {
+                    "bottom" : "20px",
+                    "left" : "",
+                    "right" : "",
+                    "top" : ""
+                  }
+                },
+                "fit" : "contain",
+                "height" : 350,
+                "imageInfo" : "{\"imageInfoV1\":{\"url\":\"/sfsites/c/cms/delivery/media/MCX6JEC7A26FF4TLFGJ3QNLLLG5U?lastModifiedDate=Mon Feb 16 17:00:34 GMT 2026\",\"altText\":\"\",\"contentKey\":\"MCX6JEC7A26FF4TLFGJ3QNLLLG5U\",\"contentType\":null}}",
+                "overlayColor" : "",
+                "position" : "center center",
+                "width" : 14
+              },
+              "definition" : "dxp_base:image",
+              "id" : "a3df36f4-d1b0-48a7-a4f1-b370b8c26309",
+              "type" : "component"
+            }, {
+              "attributes" : {
+                "defaultStartUrl" : "/myprofile",
+                "forgotPasswordLabel" : "Forgot your password?",
+                "forgotPasswordUrl" : "/ForgotPassword",
+                "googleAuthUrl" : "https://americanbookcompany.my.site.com/services/auth/sso/Google_Login?site=https%3A%2F%2Famericanbookcompany.my.site.com%2FAmericanBookCompanyvforcesite&startURL=%2FAmericanBookCompany%2Fmyprofile",
+                "loginActionUrl" : "/AmericanBookCompany/login",
+                "loginButtonLabel" : "Sign In",
+                "microsoftAuthUrl" : "https://americanbookcompany.my.site.com/services/auth/sso/Microsoft_Login?site=https%3A%2F%2Famericanbookcompany.my.site.com%2FAmericanBookCompanyvforcesite&startURL=%2FAmericanBookCompany%2Fmyprofile",
+                "passwordLabel" : "Password",
+                "selfRegisterLabel" : "Not a member?",
+                "selfRegisterUrl" : "/create-account",
+                "usernameLabel" : "Username"
+              },
+              "definition" : "c:accountLoginFormPopupFlow",
+              "id" : "d6f2aa01-d4ac-485f-a696-56896f078c4a",
+              "type" : "component"
+            } ],
+            "id" : "6ef0d098-cefd-42a6-b0b3-f4e04c8a5b5c",
+            "name" : "col1",
+            "title" : "Column 1",
+            "type" : "region"
+          } ],
+          "definition" : "community_layout:section",
+          "id" : "e5c86fa1-5e01-47d3-9a08-1affa11f330a",
+          "type" : "component"
+        } ],
+        "id" : "d9c12f8e-f210-4620-b062-922561d38990",
+        "name" : "content",
+        "title" : "Content",
+        "type" : "region"
+      }, {
+        "children" : [ {
+          "attributes" : {
+            "customHeadTags" : "",
+            "description" : "",
+            "dxpStyle" : { },
+            "pageTitle" : "Login",
+            "recordId" : "{!recordId}"
+          },
+          "definition" : "community_builder:seoAssistant",
+          "id" : "afef53a1-2c44-4f6b-bbf0-bf384e8da5de",
+          "type" : "component"
+        } ],
+        "id" : "b59fb72e-2e26-445a-8319-fa5d8d29282d",
+        "name" : "sfdcHiddenRegion",
+        "title" : "sfdcHiddenRegion",
+        "type" : "region"
+      } ],
+      "definition" : "community_layout:sldsFlexibleLayout",
+      "id" : "67e18bd0-1c1d-4101-ad33-26d66745fb60",
+      "type" : "component"
+    },
+    "dataProviders" : [ ],
+    "themeLayoutType" : "External",
+    "viewType" : "login-main"
+  },
+  "urlName" : "login"
+}

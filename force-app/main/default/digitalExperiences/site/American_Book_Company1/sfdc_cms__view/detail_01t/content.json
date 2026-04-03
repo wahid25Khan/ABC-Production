@@ -1,0 +1,164 @@
+{
+  "type" : "sfdc_cms__view",
+  "title" : "Product",
+  "contentBody" : {
+    "component" : {
+      "children" : [ {
+        "children" : [ {
+          "attributes" : {
+            "backgroundImageConfig" : "",
+            "backgroundImageOverlay" : "rgba(0,0,0,0)",
+            "componentSpacerSize" : "",
+            "layoutDirectionDesktop" : "row",
+            "layoutDirectionMobile" : "column",
+            "layoutDirectionTablet" : "column",
+            "maxContentWidth" : "",
+            "sectionColumnGutterWidth" : "",
+            "sectionConfig" : "{\"UUID\":\"3e4fe362-d371-4680-81f5-7c4e1c77be54\",\"columns\":[{\"UUID\":\"9cc38381-0cec-4b1b-aee0-147d2dc1fbf9\",\"columnName\":\"Column 1\",\"columnKey\":\"col1\",\"columnWidth\":\"12\",\"seedComponents\":[]}]}",
+            "sectionMinHeight" : "",
+            "sectionVerticalAlign" : "flex-start"
+          },
+          "children" : [ {
+            "children" : [ {
+              "attributes" : {
+                "cartStateOrId" : "current",
+                "minimumQuantity" : 10,
+                "productId" : "",
+                "showTrialButton" : true,
+                "storeName" : "AmericanBookCompany",
+                "trialUrl" : "",
+                "webStoreId" : "0ZEam000004dJDNGA2"
+              },
+              "definition" : "c:productDetailComponent",
+              "id" : "603efe20-4ef8-4c79-810f-2b560f8648d9",
+              "type" : "component"
+            } ],
+            "id" : "9cc38381-0cec-4b1b-aee0-147d2dc1fbf9",
+            "name" : "col1",
+            "title" : "Column 1",
+            "type" : "region"
+          } ],
+          "definition" : "community_layout:section",
+          "id" : "3e4fe362-d371-4680-81f5-7c4e1c77be54",
+          "type" : "component"
+        }, {
+          "attributes" : {
+            "backgroundImageConfig" : "",
+            "backgroundImageOverlay" : "rgba(0,0,0,0)",
+            "componentSpacerSize" : "",
+            "layoutDirectionDesktop" : "row",
+            "layoutDirectionMobile" : "column",
+            "layoutDirectionTablet" : "column",
+            "maxContentWidth" : "",
+            "sectionColumnGutterWidth" : "",
+            "sectionConfig" : "{\"UUID\":\"71617e7d-4be4-4226-9ed0-34b81f7d8395\",\"columns\":[{\"UUID\":\"ccbe1e4f-6aed-4f73-9f31-fc9702ad987e\",\"columnName\":\"Column 1\",\"columnKey\":\"col1\",\"columnWidth\":\"12\",\"seedComponents\":[]}]}",
+            "sectionMinHeight" : "",
+            "sectionVerticalAlign" : "flex-start"
+          },
+          "children" : [ {
+            "children" : [ {
+              "attributes" : {
+                "maxProducts" : 18,
+                "refinementKey" : "State__c",
+                "searchTerm" : "*",
+                "storeName" : "AmericanBookCompany",
+                "visibleCount" : 6,
+                "webStoreId" : "0ZEam000004dJDNGA2"
+              },
+              "definition" : "c:similarProductsByState",
+              "id" : "d18949bc-0b82-483b-926a-9ed36b316064",
+              "type" : "component"
+            } ],
+            "id" : "ccbe1e4f-6aed-4f73-9f31-fc9702ad987e",
+            "name" : "col1",
+            "title" : "Column 1",
+            "type" : "region"
+          } ],
+          "definition" : "community_layout:section",
+          "id" : "71617e7d-4be4-4226-9ed0-34b81f7d8395",
+          "type" : "component"
+        }, {
+          "attributes" : {
+            "backgroundImageConfig" : "",
+            "backgroundImageOverlay" : "rgba(0,0,0,0)",
+            "componentSpacerSize" : "",
+            "layoutDirectionDesktop" : "row",
+            "layoutDirectionMobile" : "column",
+            "layoutDirectionTablet" : "column",
+            "maxContentWidth" : "",
+            "sectionColumnGutterWidth" : "",
+            "sectionConfig" : "{\"UUID\":\"66d4a6b5-a6df-4a4a-a937-33a169e45db7\",\"columns\":[{\"UUID\":\"12c9bcbc-0c81-4381-82c4-c24370ddbb8a\",\"columnName\":\"Column 1\",\"columnKey\":\"col1\",\"columnWidth\":\"12\",\"seedComponents\":[]}]}",
+            "sectionMinHeight" : "",
+            "sectionVerticalAlign" : "flex-start"
+          },
+          "children" : [ {
+            "children" : [ {
+              "attributes" : {
+                "maxProducts" : 18,
+                "refinementKey" : "State__c",
+                "searchTerm" : "*",
+                "storeName" : "AmericanBookCompany",
+                "visibleCount" : 6,
+                "webStoreId" : "0ZEam000004dJDNGA2"
+              },
+              "definition" : "c:similarProductsBySubject",
+              "id" : "bbb2a7fe-5c0b-4194-954d-6cc706166f4a",
+              "type" : "component"
+            }, {
+              "attributes" : {
+                "maxProducts" : 18,
+                "storeName" : "AmericanBookCompany",
+                "visibleCount" : 6,
+                "webStoreId" : "0ZEam000004dJDNGA2"
+              },
+              "definition" : "c:productRecommendation",
+              "id" : "15d67c45-d408-40ac-991b-9b1bf3263c6a",
+              "type" : "component"
+            } ],
+            "id" : "12c9bcbc-0c81-4381-82c4-c24370ddbb8a",
+            "name" : "col1",
+            "title" : "Column 1",
+            "type" : "region"
+          } ],
+          "definition" : "community_layout:section",
+          "id" : "66d4a6b5-a6df-4a4a-a937-33a169e45db7",
+          "type" : "component"
+        } ],
+        "id" : "3cecc1b6-8701-4bf0-b170-7ffb1f599f71",
+        "name" : "content",
+        "title" : "Content",
+        "type" : "region"
+      }, {
+        "children" : [ {
+          "attributes" : {
+            "customHeadTags" : "<script type=\"application/ld+json\">\n[{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"Product\",\n    \"name\": \"{!Record.Name}\",\n    \"description\": \"{!Record._Description}\",\n    \"category\": \"{!Record.ProductCategory.Name}\",\n    \"sku\": \"{!Record.StockKeepingUnit}\",\n    \"offers\": {\n        \"@type\": \"Offer\",\n        \"price\": \"{!Record.Offers.Price}\",\n        \"priceCurrency\": \"{!Record.Offers.Currency}\"\n    },\n    \"image\": \"{!Record.ProductMedia.ProductDetailImages}\"\n},\n{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"BreadcrumbList\",\n    \"itemListElement\": \"{!Record.BreadcrumbList}\"\n}]\n</script>",
+            "description" : "{!Record._Description}",
+            "dxpStyle" : { },
+            "pageTitle" : "{!Record._Title}",
+            "recordId" : "{!recordId}"
+          },
+          "definition" : "community_builder:seoAssistant",
+          "id" : "49830861-5188-4173-b86c-c262d3a32541",
+          "type" : "component"
+        } ],
+        "id" : "e9d4094f-6839-41ad-9086-637e37afb728",
+        "name" : "sfdcHiddenRegion",
+        "title" : "sfdcHiddenRegion",
+        "type" : "region"
+      } ],
+      "definition" : "community_layout:sldsFlexibleLayout",
+      "id" : "eff7752e-deaf-473a-94e9-67a68f7f78f9",
+      "type" : "component"
+    },
+    "dataProviders" : [ {
+      "definition" : "sfdc_cms__commerceProductDetailDataProvider",
+      "sfdcExpressionKey" : "Product",
+      "attributes" : {
+        "recordId" : "{!Route.recordId}"
+      }
+    } ],
+    "themeLayoutType" : "Inner",
+    "viewType" : "detail-01t"
+  },
+  "urlName" : "product"
+}

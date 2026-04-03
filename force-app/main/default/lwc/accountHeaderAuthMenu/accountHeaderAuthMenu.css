@@ -1,0 +1,32 @@
+:host {
+    align-items: center;
+    display: inline-flex;
+}
+
+.account-menu {
+    --slds-c-button-color-background: transparent;
+    --slds-c-button-color-border: transparent;
+    --slds-c-button-shadow: none;
+    --slds-c-button-text-color: #1c1c1c;
+    --slds-c-button-text-color-hover: #0b5fa5;
+    --slds-c-button-text-color-focus: #0b5fa5;
+    --slds-c-button-sizing-border: 0;
+    --slds-c-button-radius-border: 9999px;
+    font-weight: 600;
+}
+
+.login-link {
+    background: transparent;
+    border: 0;
+    color: #1c1c1c;
+    cursor: pointer;
+    font: inherit;
+    font-weight: 600;
+    padding: 0;
+    text-decoration: underline;
+}
+
+.login-link:hover,
+.login-link:focus {
+    color: #0b5fa5;
+}

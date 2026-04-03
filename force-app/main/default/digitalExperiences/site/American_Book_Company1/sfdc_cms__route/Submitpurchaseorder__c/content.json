@@ -1,0 +1,12 @@
+{
+  "type" : "sfdc_cms__route",
+  "title" : "Submit purchase order",
+  "contentBody" : {
+    "activeViewId" : "Submit_purchase_order",
+    "configurationTags" : [ ],
+    "pageAccess" : "UseParent",
+    "routeType" : "custom-submit-a-po",
+    "urlPrefix" : "submit-a-po"
+  },
+  "urlName" : "submit-purchase-order"
+}

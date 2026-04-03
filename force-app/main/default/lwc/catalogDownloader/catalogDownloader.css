@@ -62,6 +62,13 @@
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
+.catalog-image-button {
+    padding: 0;
+    border: 0;
+    background: transparent;
+    cursor: pointer;
+}
+
 /* Text and Button Styling */
 .text-box {
     flex: 1;

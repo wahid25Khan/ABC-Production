@@ -1,151 +1,150 @@
 /* Host */
 :host {
-  --swiper-theme-color: #e53e3e;
-  --swiper-navigation-color: #374151;
-  --swiper-navigation-size: 20px;
+    --swiper-theme-color: #e53e3e;
+    --swiper-navigation-color: #374151;
+    --swiper-navigation-size: 20px;
 }
 
 /* Carousel wrapper */
 .carousel-wrapper {
-  margin: 0;
-  position: relative;
-  width: 100%;
+    margin: 0;
+    position: relative;
+    width: 100%;
 }
 
 /* Swiper base */
 .swiper {
-  padding-left: 22px;
-  padding-right: 60px;
-  padding-bottom: 20px;
-  box-sizing: border-box;
+    padding-left: 22px;
+    padding-right: 60px;
+    padding-bottom: 20px;
+    box-sizing: border-box;
 }
 
 /* Card */
 .card {
-  overflow: hidden;
-  border-radius: 1rem;
-  border: 1px solid #e5e7eb;
-  padding: 1.25rem;
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-  background-color: #fff;
-  box-sizing: border-box;
-  height: auto !important;
-  display: flex;
-  flex-direction: column;
+    overflow: hidden;
+    border-radius: 1rem;
+    border: 1px solid #e5e7eb;
+    padding: 1.25rem;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    background-color: #fff;
+    box-sizing: border-box;
+    height: auto !important;
+    display: flex;
+    flex-direction: column;
 }
 
 /* Top media section */
 .top-media-section {
-  color: #1f2937;
-  font-size: 1rem;
-  flex-grow: 1;
+    color: #1f2937;
+    font-size: 1rem;
+    flex-grow: 1;
 }
 
 .video-iframe {
-  width: 100%;
-  height: 100%;
-  min-height: 12rem;
-  border-radius: 0.5rem;
+    width: 100%;
+    height: 100%;
+    min-height: 12rem;
+    border-radius: 0.5rem;
 }
 
 .quote-text {
-  font-family: lato, sans-serif;
-  color: #1f2937;
-  line-height: 1.5;
+    font-family: lato, sans-serif;
+    color: #1f2937;
+    line-height: 1.5;
 }
 
 /* Bottom author section */
 .bottom-author-section {
-  display: flex;
-  min-height: 96px;
-  align-items: center;
-  overflow: hidden;
-  padding-top: 0.75rem;
-  margin-top: auto;
+    display: flex;
+    min-height: 96px;
+    align-items: center;
+    overflow: hidden;
+    padding-top: 0.75rem;
+    margin-top: auto;
 }
 
 .logo-container {
-  width: 3rem;
-  flex: none;
-  overflow: hidden;
-  border-radius: 9999px;
-  margin: 0.5rem;
+    width: 3rem;
+    flex: none;
+    overflow: hidden;
+    border-radius: 9999px;
+    margin: 0.5rem;
 }
 
 .logo-img {
-  width: 100%;
+    width: 100%;
 }
 
 .author-details {
-  margin-left: 0.5rem;
-  flex: 1;
-  overflow: hidden;
-  font-family: lato, sans-serif;
+    margin-left: 0.5rem;
+    flex: 1;
+    overflow: hidden;
+    font-family: lato, sans-serif;
 }
 
 .author-name {
-  font-weight: 600;
-  color: #1f2937;
-  white-space: normal;
+    font-weight: 600;
+    color: #1f2937;
+    white-space: normal;
 }
 
 .designation {
-  font-size: 0.75rem;
-  font-weight: normal;
-  color: #6b7280;
-  display: inline-block;
-  margin-left: 2px;
-  white-space: normal;
-  line-height: 1.2;
+    font-size: 0.75rem;
+    font-weight: normal;
+    color: #6b7280;
+    display: inline-block;
+    margin-left: 2px;
+    white-space: normal;
+    line-height: 1.2;
 }
 
 .school-name {
-  overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
 }
 
 .red-state-text {
-  color: #e53e3e;
-  overflow: hidden;
-  white-space: nowrap;
+    color: #e53e3e;
+    overflow: hidden;
+    white-space: nowrap;
 }
 
 /* Navigation arrows */
 .swiper-button-next,
 .swiper-button-prev {
-  background-color: #fff;
-  width: 50px;
-  height: 50px;
-  border-radius: 50%;
-  box-shadow:
-    0 4px 6px -1px rgba(0, 0, 0, 0.1),
-    0 2px 4px -1px rgba(0, 0, 0, 0.06);
-  border: 1px solid #e5e7eb;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-top: -25px;
-  cursor: pointer;
+    background-color: #fff;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+                0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    border: 1px solid #e5e7eb;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: -25px;
+    cursor: pointer;
 }
 
 .swiper-button-next::after,
 .swiper-button-prev::after {
-  font-weight: 900;
+    font-weight: 900;
 }
 
 .swiper-button-prev {
-  left: 0;
+    left: 0;
 }
 
 .swiper-button-next {
-  right: 5px;
+    right: 5px;
 }
 
 /* Empty state */
 .empty {
-  text-align: center;
-  color: #5f6368;
-  font-size: 15px;
-  padding: 26px 0;
+    text-align: center;
+    color: #5f6368;
+    font-size: 15px;
+    padding: 26px 0;
 }

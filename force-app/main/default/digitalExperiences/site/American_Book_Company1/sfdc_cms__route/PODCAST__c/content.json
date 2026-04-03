@@ -1,0 +1,12 @@
+{
+  "type" : "sfdc_cms__route",
+  "title" : "PODCAST",
+  "contentBody" : {
+    "activeViewId" : "PODCAST",
+    "configurationTags" : [ ],
+    "pageAccess" : "UseParent",
+    "routeType" : "custom-podcast",
+    "urlPrefix" : "podcast"
+  },
+  "urlName" : "podcast"
+}

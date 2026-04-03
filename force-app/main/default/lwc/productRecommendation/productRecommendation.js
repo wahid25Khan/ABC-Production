@@ -85,6 +85,8 @@ export default class ProductRecommendation extends LightningElement {
       this.currentIndex = 0;
       this.scrollToCurrentIndex('auto');
     } catch (error) {
+      // N8 fix: Log the error instead of silently discarding it
+      console.warn('ProductRecommendation: failed to load recommendations.', error?.message || error);
       this.products = [];
       this.showProducts = false;
       this.currentIndex = 0;

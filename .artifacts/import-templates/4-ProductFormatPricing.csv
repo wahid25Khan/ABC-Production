@@ -1,0 +1,16 @@
+Product__r.StockKeepingUnit,Format_Name__c,Unit_Price__c,Bulk_Price__c,Bulk_Threshold__c,Min_Quantity__c,Max_Quantity__c,Increment_Quantity__c,Sort_Order__c,Is_Active__c
+"ISBN: 641189001","Color Print + Digital",40,27.5,25,10,10000,1,1,true
+"ISBN: 641189001","B&W Print + Digital",35,22.5,25,10,10000,1,2,true
+"ISBN: 641189001","Digital Only",30,,,,10000,1,3,true
+"ISBN: 641176001","Color Print + Digital",47,31.5,25,10,10000,1,1,true
+"ISBN: 641176001","B&W Print + Digital",41,25.25,25,10,10000,1,2,true
+"ISBN: 641176001","Digital Only",38,,,,10000,1,3,true
+"ISBN: 641177001","Color Print + Digital",44,29,25,10,10000,1,1,true
+"ISBN: 641177001","B&W Print + Digital",38,24,25,10,10000,1,2,true
+"ISBN: 641177001","Digital Only",35,,,,10000,1,3,true
+"ISBN: 641178001","Color Print + Digital",34,22,25,10,10000,1,1,true
+"ISBN: 641178001","B&W Print + Digital",29,18.5,25,10,10000,1,2,true
+"ISBN: 641178001","Digital Only",25,,,,10000,1,3,true
+"ISBN: 641179001","Color Print + Digital",50,33,25,10,10000,1,1,true
+"ISBN: 641179001","B&W Print + Digital",44,28.25,25,10,10000,1,2,true
+"ISBN: 641179001","Digital Only",41,,,,10000,1,3,true

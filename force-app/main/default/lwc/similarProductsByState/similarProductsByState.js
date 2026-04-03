@@ -41,7 +41,7 @@ export default class SimilarProductsByState extends LightningElement {
 
   get normalizedSearchTerm() {
     const value = String(this.searchTerm || '').trim();
-    return value || '*';
+    return value && value !== '*' ? value : 'all';
   }
 
   get canGoLeft() {
@@ -172,7 +172,7 @@ export default class SimilarProductsByState extends LightningElement {
       return baseSearchTerm;
     }
 
-    if (baseSearchTerm === '*') {
+    if (baseSearchTerm === '*' || baseSearchTerm === 'all') {
       return state;
     }
 

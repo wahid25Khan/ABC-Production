@@ -1,0 +1,70 @@
+{
+  "type" : "sfdc_cms__view",
+  "title" : "Ordering Docs",
+  "contentBody" : {
+    "component" : {
+      "children" : [ {
+        "children" : [ {
+          "attributes" : {
+            "backgroundImageConfig" : "",
+            "backgroundImageOverlay" : "rgba(0,0,0,0)",
+            "componentSpacerSize" : "",
+            "layoutDirectionDesktop" : "row",
+            "layoutDirectionMobile" : "column",
+            "layoutDirectionTablet" : "column",
+            "maxContentWidth" : "",
+            "sectionColumnGutterWidth" : "",
+            "sectionConfig" : "{\"UUID\":\"4847c687-bc2b-4f07-813b-5b187db00a2b\",\"columns\":[{\"UUID\":\"17411b34-d499-4297-a9d5-0c2a27e39726\",\"columnName\":\"Column 1\",\"columnKey\":\"col1\",\"columnWidth\":\"12\",\"seedComponents\":[]}]}",
+            "sectionMinHeight" : "",
+            "sectionVerticalAlign" : "flex-start"
+          },
+          "children" : [ {
+            "children" : [ {
+              "attributes" : {
+                "imageInfos" : "",
+                "richTextValue" : "<div style=\"font-family: Arial, sans-serif; color: #444; max-width: 1200px; margin: 0 auto; padding: 20px;\">\n\n    <div style=\"display: flex; flex-wrap: wrap; justify-content: space-between; gap: 20px; margin-bottom: 30px;\">\n        <div style=\"flex: 1; min-width: 300px;\">\n            <h1 style=\"font-size: 26px; font-weight: bold; color: #333; margin: 0 0 15px 0;\">ABC Documents for Ordering</h1>\n            <p style=\"font-size: 13px; margin: 3px 0;\">BuyBoard #748-24</p>\n            <p style=\"font-size: 13px; margin: 3px 0;\">Vendor with North Carolina E-Procurement</p>\n            <p style=\"font-size: 13px; margin: 3px 0;\">Member of Kentucky KPC</p>\n        </div>\n        <div style=\"background-color: #f4f7f9; padding: 15px 20px; border-radius: 4px; width: 280px;\">\n            <h3 style=\"font-size: 17px; margin: 0 0 8px 0;\">Need Help Ordering?</h3>\n            <p style=\"font-size: 12px;\">Visit our <a href=\"#\">How to Order</a> or call 1-888-264-5877</p>\n        </div>\n    </div>\n\n    <h2 style=\"font-size: 18px; font-weight: bold; margin-bottom: 8px;\">Sole source letters</h2>\n    \n    <div class=\"book-grid\">\n        <a href=\"URL_HERE\"><img src=\"sfsites/c/resource/1773694703000/thumb_ALLSTATE\" style=\"width:130px; border:1px solid #ddd;\"></a>\n        <a href=\"URL_HERE\"><img src=\"sfsites/c/resource/1773694649000/thumb_AL\" style=\"width:130px; border:1px solid #ddd;\"></a>\n        <a href=\"URL_HERE\"><img src=\"sfsites/c/resource/1773694737000/thumb_AR\" style=\"width:130px; border:1px solid #ddd;\"></a>\n        <a href=\"URL_HERE\"><img src=\"sfsites/c/resource/1773694763000/thumb_GA\" style=\"width:130px; border:1px solid #ddd;\"></a>\n        <a href=\"URL_HERE\"><img src=\"sfsites/c/resource/1773694790000/thumb_KY\" style=\"width:130px; border:1px solid #ddd;\"></a>\n        <a href=\"URL_HERE\"><img src=\"sfsites/c/resource/1773694812000/thumb_LA\" style=\"width:130px; border:1px solid #ddd;\"></a>\n        \n        <div class=\"spacer-div\"></div>\n\n        <a href=\"URL_HERE\"><img src=\"sfsites/c/resource/1773694838000/thumb_MN\" style=\"width:130px; border:1px solid #ddd;\"></a>\n        <a href=\"URL_HERE\"><img src=\"sfsites/c/resource/1773694864000/thumb_NC\" style=\"width:130px; border:1px solid #ddd;\"></a>\n        <a href=\"URL_HERE\"><img src=\"sfsites/c/resource/1773694889000/thumb_NM\" style=\"width:130px; border:1px solid #ddd;\"></a>\n        <a href=\"URL_HERE\"><img src=\"sfsites/c/resource/1773694913000/thumb_OK\" style=\"width:130px; border:1px solid #ddd;\"></a>\n        <a href=\"URL_HERE\"><img src=\"sfsites/c/resource/1773694948000/thumb_SC\" style=\"width:130px; border:1px solid #ddd;\"></a>\n        <a href=\"URL_HERE\"><img src=\"sfsites/c/resource/1773694975000/thumb_TN\" style=\"width:130px; border:1px solid #ddd;\"></a>\n        <a href=\"URL_HERE\"><img src=\"sfsites/c/resource/1773695000000/thumb_VA\" style=\"width:130px; border:1px solid #ddd;\"></a>\n    </div>\n</div>"
+              },
+              "definition" : "community_builder:htmlEditor",
+              "id" : "547b0fa0-15d8-436b-85d7-8a8192f92c7f",
+              "type" : "component"
+            } ],
+            "id" : "17411b34-d499-4297-a9d5-0c2a27e39726",
+            "name" : "col1",
+            "title" : "Column 1",
+            "type" : "region"
+          } ],
+          "definition" : "community_layout:section",
+          "id" : "4847c687-bc2b-4f07-813b-5b187db00a2b",
+          "type" : "component"
+        } ],
+        "id" : "bfe8f5d8-0d2f-4f12-9f0b-2d6ca9b1b062",
+        "name" : "content",
+        "title" : "Content",
+        "type" : "region"
+      }, {
+        "children" : [ {
+          "attributes" : {
+            "customHeadTags" : "",
+            "description" : "",
+            "pageTitle" : "Ordering Docs",
+            "recordId" : "{!recordId}"
+          },
+          "definition" : "community_builder:seoAssistant",
+          "id" : "40b15792-2f40-43fe-81b0-73f3cd3b2686",
+          "type" : "component"
+        } ],
+        "id" : "ce2561a2-287c-465f-ae95-c8d6e9fe86ca",
+        "name" : "sfdcHiddenRegion",
+        "title" : "sfdcHiddenRegion",
+        "type" : "region"
+      } ],
+      "definition" : "community_layout:sldsFlexibleLayout",
+      "id" : "b4a27e84-61c3-428d-9349-fb0774ea17dc",
+      "type" : "component"
+    },
+    "dataProviders" : [ ],
+    "themeLayoutType" : "Inner",
+    "viewType" : "custom-ordering-docs"
+  },
+  "urlName" : "ordering-docs"
+}

@@ -1,0 +1,790 @@
+{
+  "type" : "sfdc_cms__view",
+  "title" : "About ABC",
+  "contentBody" : {
+    "component" : {
+      "children" : [ {
+        "children" : [ {
+          "attributes" : {
+            "backgroundImageConfig" : "",
+            "backgroundImageOverlay" : "rgb(242, 245, 249)",
+            "componentSpacerSize" : "",
+            "dxpStyle" : {
+              "margin" : {
+                "bottom" : "",
+                "left" : "",
+                "right" : "",
+                "top" : ""
+              }
+            },
+            "layoutDirectionDesktop" : "row",
+            "layoutDirectionMobile" : "column",
+            "layoutDirectionTablet" : "column",
+            "maxContentWidth" : "",
+            "sectionColumnGutterWidth" : "",
+            "sectionConfig" : "{\"UUID\":\"12df3103-6fe8-456c-b82a-209f3d50dd3e\",\"columns\":[{\"UUID\":\"e8329698-8bce-40f3-a8a6-35dd6da45432\",\"columnName\":\"Column 1\",\"columnKey\":\"col1\",\"columnWidth\":\"12\",\"seedComponents\":[]}]}",
+            "sectionMinHeight" : "",
+            "sectionVerticalAlign" : "flex-start"
+          },
+          "children" : [ {
+            "children" : [ {
+              "attributes" : {
+                "columnGutterWidth" : "",
+                "columnMinHeight" : "",
+                "columnVerticalAlign" : "flex-start",
+                "dxpStyle" : { },
+                "layoutDirectionDesktop" : "row",
+                "layoutDirectionMobile" : "column",
+                "layoutDirectionTablet" : "column",
+                "sectionConfig" : "{\"UUID\":\"ff9c1b57-6707-4a23-adff-d4c04fc10943\",\"columns\":[{\"UUID\":\"07d9211d-181b-4363-ba2f-acf6d3bff8b9\",\"columnName\":\"Column 1\",\"columnKey\":\"col1\",\"columnWidth\":\"12\",\"seedComponents\":[]}]}"
+              },
+              "children" : [ {
+                "children" : [ {
+                  "attributes" : { },
+                  "definition" : "c:aboutSection",
+                  "id" : "92f5cf27-2f1f-424d-8ad1-9a75739c8c04",
+                  "type" : "component"
+                } ],
+                "id" : "07d9211d-181b-4363-ba2f-acf6d3bff8b9",
+                "name" : "col1",
+                "title" : "Column 1",
+                "type" : "region"
+              } ],
+              "definition" : "dxp_layout:columns",
+              "id" : "ff9c1b57-6707-4a23-adff-d4c04fc10943",
+              "type" : "component"
+            } ],
+            "id" : "e8329698-8bce-40f3-a8a6-35dd6da45432",
+            "name" : "col1",
+            "title" : "Column 1",
+            "type" : "region"
+          } ],
+          "customCssClasses" : "abc-who-section",
+          "definition" : "community_layout:section",
+          "id" : "12df3103-6fe8-456c-b82a-209f3d50dd3e",
+          "scopedBrandingSetId" : "B2B_Right_Panel",
+          "type" : "component"
+        }, {
+          "attributes" : {
+            "backgroundImageConfig" : "",
+            "backgroundImageOverlay" : "rgba(0,0,0,0)",
+            "componentSpacerSize" : "",
+            "dxpStyle" : { },
+            "layoutDirectionDesktop" : "row",
+            "layoutDirectionMobile" : "column",
+            "layoutDirectionTablet" : "column",
+            "maxContentWidth" : "",
+            "sectionColumnGutterWidth" : "",
+            "sectionConfig" : "{\"UUID\":\"bfdf0026-e258-401d-9d76-a566e17b091d\",\"columns\":[{\"UUID\":\"b48bcb9f-9025-4f8b-b96b-f1a713e1f681\",\"columnName\":\"Column 1\",\"columnKey\":\"col1\",\"columnWidth\":\"12\",\"seedComponents\":[]}]}",
+            "sectionMinHeight" : "",
+            "sectionVerticalAlign" : "flex-start"
+          },
+          "children" : [ {
+            "children" : [ {
+              "attributes" : {
+                "activeTabBorderHighlightWeight" : "2px",
+                "activeTabTextAlignment" : "center",
+                "activeTabTextEmphasis" : "{\"bold\":true}",
+                "activeTabTextStyle" : "{\"textStyle\":\"paragraph1\",\"headingTag\":\"p\"}",
+                "borderColor" : "",
+                "borderRadius" : "0px",
+                "borderWeight" : "0px",
+                "dxpStyle" : { },
+                "enableOverflowMenu" : false,
+                "imageFit" : "cover",
+                "imagePosition" : "center center",
+                "overflowIconColor" : "rgb(116,116,116)",
+                "overflowIconStyle" : "right-arrow",
+                "overflowMenuLabel" : "More",
+                "tabAlignment" : "center",
+                "tabBorderColor" : "",
+                "tabBorderRadius" : "",
+                "tabBorderWeight" : "",
+                "tabHeight" : "",
+                "tabHoverBorderHighlightWeight" : "1px",
+                "tabLayout" : "horizontal",
+                "tabPadding" : "30px",
+                "tabTextStyle" : "{\"textStyle\":\"heading-small\",\"headingTag\":\"p\",\"enableOverride\":true}",
+                "tabWidth" : "",
+                "tabsetConfig" : "{\"UUID\":\"42badfeb-0d28-4426-8093-c0dd680d9214\",\"activeTab\":null,\"useOverflowMenu\":null,\"tabs\":[{\"UUID\":\"5fa7d636-ddb7-48ff-a063-f133fe946d3a\",\"tabName\":\"Our Staff\",\"tabKey\":\"tab1\",\"locked\":false,\"allowGuestUser\":false},{\"UUID\":\"21e32fc2-aa5d-4922-950f-a1d0c1d62248\",\"tabName\":\"Diversity & Culture\",\"tabKey\":\"tab2\",\"locked\":false,\"allowGuestUser\":false},{\"UUID\":\"9d41e879-c5b7-463c-b7a1-12c160efda56\",\"tabName\":\"ABC Cares\",\"tabKey\":\"tab3\",\"locked\":false,\"allowGuestUser\":false},{\"UUID\":\"a7db6673-01cd-48de-91a3-c679c33972c7\",\"tabName\":\"Environment\",\"tabKey\":\"d8bea\",\"locked\":false,\"allowGuestUser\":false},{\"UUID\":\"e07d3f70-19ce-4ab6-bdd1-2ff5ace8e4b8\",\"tabName\":\"Testimonials\",\"tabKey\":\"1db70\",\"locked\":false,\"allowGuestUser\":false}]}",
+                "width" : "100%"
+              },
+              "children" : [ {
+                "children" : [ {
+                  "attributes" : {
+                    "backgroundColor" : "",
+                    "borderColor" : "",
+                    "borderRadius" : 0,
+                    "borderWidth" : 0,
+                    "dxpStyle" : { },
+                    "hideForFewerThan" : 1,
+                    "iconBorderRadius" : 0,
+                    "iconBorderWidth" : 0,
+                    "iconPadding" : 0,
+                    "indicatorType" : "none",
+                    "layout" : "reel",
+                    "primaryNavigation" : "arrows",
+                    "width" : 100
+                  },
+                  "children" : [ {
+                    "children" : [ {
+                      "attributes" : {
+                        "backgroundColor" : "",
+                        "borderColor" : "",
+                        "borderRadius" : 0,
+                        "borderWidth" : 0,
+                        "buttonDirection" : "horizontal",
+                        "buttonGroupAlignment" : "center",
+                        "buttonGroupHeight" : 45,
+                        "buttonGroupSpacingHorizontal" : "space-evenly",
+                        "buttonGroupSpacingVertical" : "space-evenly",
+                        "buttonGroupWidth" : 75,
+                        "dxpStyle" : { },
+                        "height" : 325,
+                        "imageFit" : "contain",
+                        "imageHeight" : 60,
+                        "imageInfo" : "{\"imageInfoV1\":{\"url\":\"{!Item.body.contentBody.bannerImage.url}\",\"altText\":\"\",\"contentKey\":\"\",\"contentType\":null}}",
+                        "imagePosition" : "center center",
+                        "isLink" : false,
+                        "linkAssistiveText" : "",
+                        "showButtons" : false,
+                        "showSecondaryButton" : false,
+                        "singleButtonAlignment" : "center",
+                        "width" : 100
+                      },
+                      "children" : [ {
+                        "id" : "d3ad0178-e528-4796-8555-c3076376913a",
+                        "name" : "topContentRegion",
+                        "title" : "Content Region",
+                        "type" : "region"
+                      }, {
+                        "children" : [ {
+                          "attributes" : {
+                            "backgroundColor" : "",
+                            "dxpStyle" : { },
+                            "isLinkable" : false,
+                            "linkAssistiveText" : "",
+                            "paddingHorizontal" : "none",
+                            "paddingVertical" : "none",
+                            "text" : "{!Item.name}",
+                            "textAlign" : "center",
+                            "textDecoration" : "{\"bold\":true}",
+                            "textDisplayInfo" : "{\"textStyle\":\"heading-medium\",\"headingTag\":\"h3\",\"enableOverride\":false}"
+                          },
+                          "definition" : "dxp_base:textBlock",
+                          "id" : "c83c9e07-e3ff-42e4-b9b9-363465facda8",
+                          "type" : "component"
+                        }, {
+                          "attributes" : {
+                            "backgroundColor" : "",
+                            "dxpStyle" : { },
+                            "isLinkable" : false,
+                            "linkAssistiveText" : "",
+                            "paddingHorizontal" : "none",
+                            "paddingVertical" : "none",
+                            "text" : "{!Item.body.contentBody.excerpt}",
+                            "textAlign" : "center",
+                            "textColor" : "rgb(234, 59, 16)",
+                            "textDecoration" : "{}",
+                            "textDisplayInfo" : "{\"textStyle\":\"heading-small\",\"headingTag\":\"h4\",\"enableOverride\":false}"
+                          },
+                          "definition" : "dxp_base:textBlock",
+                          "id" : "3c7f6f6b-a6bf-42aa-92e2-6a16c224dd54",
+                          "type" : "component"
+                        } ],
+                        "id" : "03e7408a-0cde-4554-8942-f1cfd8852d72",
+                        "name" : "contentRegion",
+                        "title" : "Content Region",
+                        "type" : "region"
+                      }, {
+                        "children" : [ {
+                          "attributes" : {
+                            "alignment" : "center",
+                            "dxpStyle" : { },
+                            "size" : "standard",
+                            "stretch" : "standard",
+                            "text" : "Learn More",
+                            "type" : "primary"
+                          },
+                          "definition" : "dxp_base:button",
+                          "id" : "73dd9045-ad72-4412-85a4-f5b1cc0efb07",
+                          "type" : "component"
+                        } ],
+                        "id" : "882df335-ffa2-4aed-ba04-1f1aa98e9bb0",
+                        "name" : "tilePrimaryButton",
+                        "title" : "Primary Button Region",
+                        "type" : "region"
+                      }, {
+                        "children" : [ {
+                          "attributes" : {
+                            "alignment" : "center",
+                            "dxpStyle" : { },
+                            "size" : "standard",
+                            "stretch" : "standard",
+                            "text" : "Contact Us",
+                            "type" : "secondary"
+                          },
+                          "definition" : "dxp_base:button",
+                          "id" : "3052c4d7-5e21-48cd-a08d-b454b90e0789",
+                          "type" : "component"
+                        } ],
+                        "id" : "840af174-7063-473e-beb8-1e53e13551cd",
+                        "name" : "tileSecondaryButton",
+                        "title" : "Secondary Button Region",
+                        "type" : "region"
+                      }, {
+                        "children" : [ {
+                          "attributes" : {
+                            "dxpStyle" : { }
+                          },
+                          "definition" : "dxp_page_layout:placeHolder",
+                          "id" : "28675d22-4010-4af6-aecb-4f289963f258",
+                          "type" : "component"
+                        } ],
+                        "id" : "3b9b3a68-e602-4b6d-91c1-3920735be954",
+                        "name" : "placeholder",
+                        "title" : "placeholder",
+                        "type" : "region"
+                      } ],
+                      "definition" : "dxp_content_layout:tile2",
+                      "id" : "05796bb0-2459-4cd9-b5d2-9e1b384ffb16",
+                      "type" : "component"
+                    } ],
+                    "id" : "851b66c2-1da0-46c5-a7b4-4f5cd5986ea5",
+                    "name" : "sfdcRepeaterItem",
+                    "title" : "sfdcRepeaterItem",
+                    "type" : "region"
+                  }, {
+                    "id" : "add3ecf5-aad9-4fe6-aefd-a4f329f0c370",
+                    "name" : "carouselHeader",
+                    "title" : "carouselHeader",
+                    "type" : "region"
+                  }, {
+                    "children" : [ {
+                      "attributes" : {
+                        "dxpStyle" : { }
+                      },
+                      "definition" : "dxp_page_layout:placeHolder",
+                      "id" : "ecb1145d-17a0-4a6e-8601-3b3ba59469b4",
+                      "type" : "component"
+                    } ],
+                    "id" : "04f085c5-abc3-4564-9cd5-ad3552009a31",
+                    "name" : "placeholder",
+                    "title" : "placeholder",
+                    "type" : "region"
+                  } ],
+                  "definition" : "experience:carouselV2",
+                  "id" : "e93ab698-4ba1-4025-b6f8-7d8d041f1514",
+                  "type" : "component",
+                  "dataProviders" : [ {
+                    "definition" : "sfdc_cms__cmsCollectionDataProvider",
+                    "sfdcExpressionKey" : "Item",
+                    "attributes" : {
+                      "contentKey" : "MC4PPW3CKCVJGPDCOF64XGMP2S5A",
+                      "pageSize" : 16
+                    }
+                  } ]
+                } ],
+                "id" : "5fa7d636-ddb7-48ff-a063-f133fe946d3a",
+                "name" : "tab1",
+                "title" : "Our Staff",
+                "type" : "region"
+              }, {
+                "children" : [ {
+                  "attributes" : {
+                    "alignment" : "center",
+                    "dxpStyle" : {
+                      "margin" : {
+                        "bottom" : "0px",
+                        "left" : "0px",
+                        "right" : "0px",
+                        "top" : "20px"
+                      }
+                    },
+                    "fit" : "contain",
+                    "height" : 350,
+                    "imageInfo" : "{\"imageInfoV1\":{\"url\":\"\",\"altText\":\"\",\"contentKey\":\"MCPJXSQJGQYZBYTOFWZR3PDFJN6M\",\"contentType\":null}}",
+                    "overlayColor" : "",
+                    "position" : "center center",
+                    "width" : 80
+                  },
+                  "definition" : "dxp_base:image",
+                  "id" : "e845cf69-065b-42ae-8a2c-a5175126b75a",
+                  "type" : "component"
+                } ],
+                "id" : "21e32fc2-aa5d-4922-950f-a1d0c1d62248",
+                "name" : "tab2",
+                "title" : "Diversity & Culture",
+                "type" : "region"
+              }, {
+                "children" : [ {
+                  "attributes" : {
+                    "backgroundColor" : "",
+                    "borderColor" : "",
+                    "borderRadius" : 0,
+                    "borderWidth" : 0,
+                    "dxpStyle" : { },
+                    "hideForFewerThan" : 1,
+                    "iconBorderRadius" : 0,
+                    "iconBorderWidth" : 0,
+                    "iconPadding" : 0,
+                    "indicatorType" : "none",
+                    "layout" : "slider",
+                    "primaryNavigation" : "arrows",
+                    "width" : 100
+                  },
+                  "children" : [ {
+                    "children" : [ {
+                      "attributes" : {
+                        "alignment" : "center",
+                        "dxpStyle" : {
+                          "margin" : {
+                            "bottom" : "",
+                            "left" : "",
+                            "right" : "",
+                            "top" : "20px"
+                          }
+                        },
+                        "fit" : "contain",
+                        "height" : 350,
+                        "imageInfo" : "{\"imageInfoV1\":{\"url\":\"{!Item.body.contentBody.sfdc_cms:media.url}\",\"altText\":\"\",\"contentKey\":\"\",\"contentType\":null}}",
+                        "overlayColor" : "",
+                        "position" : "center center",
+                        "width" : 100
+                      },
+                      "definition" : "dxp_base:image",
+                      "id" : "4b4961ee-df10-43b0-b714-c602914a59a2",
+                      "type" : "component"
+                    } ],
+                    "id" : "71f4003d-c2eb-41c4-945e-d3b2f69c9300",
+                    "name" : "sfdcRepeaterItem",
+                    "title" : "sfdcRepeaterItem",
+                    "type" : "region"
+                  }, {
+                    "children" : [ {
+                      "attributes" : {
+                        "dxpStyle" : {
+                          "margin" : {
+                            "bottom" : "",
+                            "left" : "100px",
+                            "right" : "100px",
+                            "top" : ""
+                          }
+                        },
+                        "imageInfos" : "",
+                        "richTextValue" : "<h2 style=\"text-align: center;\"><strong style=\"font-size: 26px;\">ABC Cares</strong></h2><p style=\"text-align: center;\"><br></p><p style=\"text-align: center;\"><span style=\"font-size: 16px;\">ABC cares about our communities and the schools we serve. We know that curriculum is only one part of student success and that strong communities ﻿and</span></p><p style=\"text-align: center;\"><span style=\"font-size: 16px;\"> make all the difference. In our home state of Georgiaand the other states we serve, we believe in being part of those strong communities.</span></p><p style=\"text-align: center;\"><br></p><p style=\"text-align: center;\"><span style=\"font-size: 16px;\">From backpack drives to charity tournaments to helping students and teachers get back on their feet after natural disasters, we will be here to help.</span></p>"
+                      },
+                      "definition" : "community_builder:richTextEditor",
+                      "id" : "39ba7ea1-6239-411a-b5b5-0bdc9d2d7ed2",
+                      "type" : "component"
+                    } ],
+                    "id" : "486a02d2-3c20-41d1-bb23-a8bddf6e46ac",
+                    "name" : "carouselHeader",
+                    "title" : "carouselHeader",
+                    "type" : "region"
+                  }, {
+                    "children" : [ {
+                      "attributes" : {
+                        "dxpStyle" : { }
+                      },
+                      "definition" : "dxp_page_layout:placeHolder",
+                      "id" : "31bc73f4-18bf-458d-af08-cdf5cd9cc83e",
+                      "type" : "component"
+                    } ],
+                    "id" : "f831d1da-f0f5-4268-8d11-a1596975bceb",
+                    "name" : "placeholder",
+                    "title" : "placeholder",
+                    "type" : "region"
+                  } ],
+                  "definition" : "experience:carouselV2",
+                  "id" : "f7b8d126-63ca-45b3-9f23-a7c99617718b",
+                  "type" : "component",
+                  "dataProviders" : [ {
+                    "definition" : "sfdc_cms__cmsCollectionDataProvider",
+                    "sfdcExpressionKey" : "Item",
+                    "attributes" : {
+                      "contentKey" : "MCXW3JANK4WNCVHAU4A2DEPWUROY",
+                      "pageSize" : 10
+                    }
+                  } ]
+                } ],
+                "id" : "9d41e879-c5b7-463c-b7a1-12c160efda56",
+                "name" : "tab3",
+                "title" : "ABC Cares",
+                "type" : "region"
+              }, {
+                "children" : [ {
+                  "attributes" : {
+                    "backgroundColor" : "",
+                    "borderColor" : "",
+                    "borderRadius" : 0,
+                    "borderWidth" : 0,
+                    "dxpStyle" : { },
+                    "hideForFewerThan" : 1,
+                    "iconBorderRadius" : 0,
+                    "iconBorderWidth" : 0,
+                    "iconPadding" : 0,
+                    "indicatorType" : "none",
+                    "layout" : "slider",
+                    "primaryNavigation" : "arrows",
+                    "width" : 100
+                  },
+                  "children" : [ {
+                    "children" : [ {
+                      "attributes" : {
+                        "alignment" : "center",
+                        "dxpStyle" : {
+                          "margin" : {
+                            "bottom" : "",
+                            "left" : "",
+                            "right" : "",
+                            "top" : "20px"
+                          }
+                        },
+                        "fit" : "contain",
+                        "height" : 350,
+                        "imageInfo" : "{\"imageInfoV1\":{\"url\":\"{!Item.body.contentBody.sfdc_cms:media.url}\",\"altText\":\"\",\"contentKey\":\"\",\"contentType\":null}}",
+                        "overlayColor" : "",
+                        "position" : "center center",
+                        "width" : 100
+                      },
+                      "definition" : "dxp_base:image",
+                      "id" : "7aaf5bb0-5685-4224-acaa-ffc9fb1a5824",
+                      "type" : "component"
+                    } ],
+                    "id" : "6fc634f2-f396-47d2-9881-260711aeda77",
+                    "name" : "sfdcRepeaterItem",
+                    "title" : "sfdcRepeaterItem",
+                    "type" : "region"
+                  }, {
+                    "children" : [ {
+                      "attributes" : {
+                        "dxpStyle" : {
+                          "margin" : {
+                            "bottom" : "",
+                            "left" : "",
+                            "right" : "",
+                            "top" : "20px"
+                          }
+                        },
+                        "imageInfos" : "",
+                        "richTextValue" : "<h2 style=\"text-align: center;\"><strong style=\"font-size: 26px;\">Environment</strong></h2><p style=\"text-align: center;\"><br></p><p style=\"text-align: center;\"><span style=\"font-size: 16px;\">ABC cares about the impact of our manufacturing processes and we take efforts to reduce energy consumption and waste.</span></p>"
+                      },
+                      "definition" : "community_builder:richTextEditor",
+                      "id" : "bd30235d-a37e-470b-b391-2fe32bb369ae",
+                      "type" : "component"
+                    } ],
+                    "id" : "1473259c-5b06-46d4-8eb5-d9ba93549072",
+                    "name" : "carouselHeader",
+                    "title" : "carouselHeader",
+                    "type" : "region"
+                  }, {
+                    "children" : [ {
+                      "attributes" : {
+                        "dxpStyle" : { }
+                      },
+                      "definition" : "dxp_page_layout:placeHolder",
+                      "id" : "916717d9-cc49-4ba2-8927-78f11dc77e1c",
+                      "type" : "component"
+                    } ],
+                    "id" : "cbbf1852-c69a-4c9e-801c-4519ca5cf732",
+                    "name" : "placeholder",
+                    "title" : "placeholder",
+                    "type" : "region"
+                  } ],
+                  "definition" : "experience:carouselV2",
+                  "id" : "6f084e6c-0c95-4e2f-8958-63ac9f0550e7",
+                  "type" : "component",
+                  "dataProviders" : [ {
+                    "definition" : "sfdc_cms__cmsCollectionDataProvider",
+                    "sfdcExpressionKey" : "Item",
+                    "attributes" : {
+                      "contentKey" : "MCXIOCFZDOY5F5HE3UQ6JRMBCEXI",
+                      "pageSize" : 6
+                    }
+                  } ]
+                } ],
+                "id" : "a7db6673-01cd-48de-91a3-c679c33972c7",
+                "name" : "d8bea",
+                "title" : "Environment",
+                "type" : "region"
+              }, {
+                "children" : [ {
+                  "attributes" : {
+                    "columnGutterWidth" : "",
+                    "columnMinHeight" : "",
+                    "columnVerticalAlign" : "flex-start",
+                    "dxpStyle" : {
+                      "margin" : {
+                        "bottom" : "",
+                        "left" : "100px",
+                        "right" : "100px",
+                        "top" : "20px"
+                      },
+                      "padding" : {
+                        "bottom" : "50px",
+                        "left" : "50px",
+                        "right" : "50px",
+                        "top" : "50px"
+                      }
+                    },
+                    "layoutDirectionDesktop" : "row",
+                    "layoutDirectionMobile" : "column",
+                    "layoutDirectionTablet" : "column",
+                    "sectionConfig" : "{\"UUID\":\"a3ac58ce-64a2-4fed-89c3-b66f85add305\",\"columns\":[{\"UUID\":\"6c325329-1bc6-4138-a095-31265e17e5db\",\"columnName\":\"Column 1\",\"columnKey\":\"col1\",\"columnWidth\":\"4\",\"seedComponents\":[]},{\"UUID\":\"edce0dc5-7430-4154-8921-38b2858e557e\",\"columnName\":\"Column 2\",\"columnKey\":\"col2\",\"columnWidth\":\"4\",\"seedComponents\":[]},{\"UUID\":\"8785bf57-aac1-4e6e-99de-7a2448e75fb8\",\"columnName\":\"Column 3\",\"columnKey\":\"c0eac\",\"columnWidth\":\"4\",\"seedComponents\":[]}]}"
+                  },
+                  "children" : [ {
+                    "children" : [ {
+                      "attributes" : {
+                        "alignment" : "center",
+                        "aspectRatio" : "16:9",
+                        "dxpStyle" : { },
+                        "size" : 100,
+                        "videoUrl" : "https://www.youtube.com/embed/uI-hK4ZfR7I?start=10"
+                      },
+                      "definition" : "dxp_base:video",
+                      "id" : "245c1aab-57b3-4723-8c0b-d64e4ed37c40",
+                      "type" : "component"
+                    } ],
+                    "id" : "6c325329-1bc6-4138-a095-31265e17e5db",
+                    "name" : "col1",
+                    "title" : "Column 1",
+                    "type" : "region"
+                  }, {
+                    "children" : [ {
+                      "attributes" : {
+                        "alignment" : "center",
+                        "aspectRatio" : "16:9",
+                        "dxpStyle" : { },
+                        "size" : 100,
+                        "videoUrl" : "https://www.veed.io/embed/bae6cd3f-19fd-4b02-ad5d-bb5d0f3429eb"
+                      },
+                      "definition" : "dxp_base:video",
+                      "id" : "1889b53d-c272-487b-817d-b173587b92d7",
+                      "type" : "component"
+                    } ],
+                    "id" : "edce0dc5-7430-4154-8921-38b2858e557e",
+                    "name" : "col2",
+                    "title" : "Column 2",
+                    "type" : "region"
+                  }, {
+                    "children" : [ {
+                      "attributes" : {
+                        "alignment" : "center",
+                        "aspectRatio" : "16:9",
+                        "dxpStyle" : { },
+                        "size" : 100,
+                        "videoUrl" : "https://www.youtube.com/embed/01vDDRVvVes?start=6"
+                      },
+                      "definition" : "dxp_base:video",
+                      "id" : "4a3a32b0-a4d7-49fb-aeda-b7fc3d0d0471",
+                      "type" : "component"
+                    } ],
+                    "id" : "8785bf57-aac1-4e6e-99de-7a2448e75fb8",
+                    "name" : "c0eac",
+                    "title" : "Column 3",
+                    "type" : "region"
+                  } ],
+                  "customCssClasses" : "card-style",
+                  "definition" : "dxp_layout:columns",
+                  "id" : "a3ac58ce-64a2-4fed-89c3-b66f85add305",
+                  "type" : "component"
+                }, {
+                  "attributes" : {
+                    "columnGutterWidth" : "",
+                    "columnMinHeight" : "",
+                    "columnVerticalAlign" : "flex-start",
+                    "dxpStyle" : {
+                      "margin" : {
+                        "bottom" : "",
+                        "left" : "100px",
+                        "right" : "100px",
+                        "top" : "10px"
+                      },
+                      "padding" : {
+                        "bottom" : "50px",
+                        "left" : "50px",
+                        "right" : "50px",
+                        "top" : "50px"
+                      }
+                    },
+                    "layoutDirectionDesktop" : "row",
+                    "layoutDirectionMobile" : "column",
+                    "layoutDirectionTablet" : "column",
+                    "sectionConfig" : "{\"UUID\":\"d7ee153a-0610-4f8c-bb0c-7418eb7d2db1\",\"columns\":[{\"UUID\":\"e0dd6669-666b-4532-8bce-1361d55454ab\",\"columnName\":\"Column 1\",\"columnKey\":\"col1\",\"columnWidth\":\"4\",\"seedComponents\":[]},{\"UUID\":\"414555f9-3f42-414b-99f3-a19d6745df90\",\"columnName\":\"Column 2\",\"columnKey\":\"col2\",\"columnWidth\":\"4\",\"seedComponents\":[]},{\"UUID\":\"e9b07e56-70e9-40d5-a4e9-b73b02519796\",\"columnName\":\"Column 3\",\"columnKey\":\"7529d\",\"columnWidth\":\"4\",\"seedComponents\":[]}]}"
+                  },
+                  "children" : [ {
+                    "children" : [ {
+                      "attributes" : {
+                        "alignment" : "center",
+                        "aspectRatio" : "16:9",
+                        "dxpStyle" : { },
+                        "size" : 100,
+                        "videoUrl" : "https://www.youtube.com/embed/7qTvStRVl2Q?start=8"
+                      },
+                      "definition" : "dxp_base:video",
+                      "id" : "5d866e32-b2c5-4898-8777-330b6ce1e444",
+                      "type" : "component"
+                    } ],
+                    "id" : "e0dd6669-666b-4532-8bce-1361d55454ab",
+                    "name" : "col1",
+                    "title" : "Column 1",
+                    "type" : "region"
+                  }, {
+                    "children" : [ {
+                      "attributes" : {
+                        "alignment" : "center",
+                        "aspectRatio" : "16:9",
+                        "dxpStyle" : { },
+                        "size" : 100,
+                        "videoUrl" : "https://www.youtube.com/embed/2DWvE-K1vhE"
+                      },
+                      "definition" : "dxp_base:video",
+                      "id" : "69a5b4f4-ae7a-44fc-9319-e598ea5b0d74",
+                      "type" : "component"
+                    } ],
+                    "id" : "414555f9-3f42-414b-99f3-a19d6745df90",
+                    "name" : "col2",
+                    "title" : "Column 2",
+                    "type" : "region"
+                  }, {
+                    "children" : [ {
+                      "attributes" : {
+                        "alignment" : "center",
+                        "aspectRatio" : "16:9",
+                        "dxpStyle" : { },
+                        "size" : 100,
+                        "videoUrl" : "https://www.youtube.com/embed/HLsScIqBwhQ"
+                      },
+                      "definition" : "dxp_base:video",
+                      "id" : "7cf6549a-d369-4eb7-b168-a61fbf53950f",
+                      "type" : "component"
+                    } ],
+                    "id" : "e9b07e56-70e9-40d5-a4e9-b73b02519796",
+                    "name" : "7529d",
+                    "title" : "Column 3",
+                    "type" : "region"
+                  } ],
+                  "customCssClasses" : "card-style",
+                  "definition" : "dxp_layout:columns",
+                  "id" : "d7ee153a-0610-4f8c-bb0c-7418eb7d2db1",
+                  "type" : "component"
+                } ],
+                "id" : "e07d3f70-19ce-4ab6-bdd1-2ff5ace8e4b8",
+                "name" : "1db70",
+                "title" : "Testimonials",
+                "type" : "region"
+              } ],
+              "definition" : "dxp_layout:tabs",
+              "id" : "42badfeb-0d28-4426-8093-c0dd680d9214",
+              "type" : "component"
+            } ],
+            "id" : "b48bcb9f-9025-4f8b-b96b-f1a713e1f681",
+            "name" : "col1",
+            "title" : "Column 1",
+            "type" : "region"
+          } ],
+          "definition" : "community_layout:section",
+          "id" : "bfdf0026-e258-401d-9d76-a566e17b091d",
+          "type" : "component"
+        }, {
+          "attributes" : {
+            "backgroundImageConfig" : "",
+            "backgroundImageOverlay" : "rgba(0,0,0,0)",
+            "componentSpacerSize" : "",
+            "dxpStyle" : { },
+            "layoutDirectionDesktop" : "row",
+            "layoutDirectionMobile" : "column",
+            "layoutDirectionTablet" : "column",
+            "maxContentWidth" : "",
+            "sectionColumnGutterWidth" : "",
+            "sectionConfig" : "{\"UUID\":\"cf61e2eb-a91b-494f-a452-441b6f90de93\",\"columns\":[{\"UUID\":\"7f5d04ec-0da9-4a39-a3b0-8e280255edf8\",\"columnName\":\"Column 1\",\"columnKey\":\"col1\",\"columnWidth\":\"12\",\"seedComponents\":[]}]}",
+            "sectionMinHeight" : "",
+            "sectionVerticalAlign" : "flex-start"
+          },
+          "children" : [ {
+            "children" : [ {
+              "attributes" : {
+                "columnGutterWidth" : "",
+                "columnMinHeight" : "",
+                "columnVerticalAlign" : "flex-start",
+                "dxpStyle" : { },
+                "layoutDirectionDesktop" : "row",
+                "layoutDirectionMobile" : "column",
+                "layoutDirectionTablet" : "column",
+                "sectionConfig" : "{\"UUID\":\"d4b10ac0-36e8-4092-84d0-b2783a84e47f\",\"columns\":[{\"UUID\":\"d8485912-b58b-4fa2-b65c-97f7d7821cae\",\"columnName\":\"Column 1\",\"columnKey\":\"col1\",\"columnWidth\":\"12\",\"seedComponents\":[]}]}"
+              },
+              "children" : [ {
+                "children" : [ {
+                  "attributes" : {
+                    "dxpStyle" : {
+                      "margin" : {
+                        "bottom" : "",
+                        "left" : "20px",
+                        "right" : "20px",
+                        "top" : "20px"
+                      },
+                      "padding" : {
+                        "bottom" : "",
+                        "left" : "30px",
+                        "right" : "30px",
+                        "top" : "30px"
+                      }
+                    },
+                    "imageInfos" : "",
+                    "richTextValue" : "<div style=\"background:#2B85AD; padding:40px 20px; text-align:center; color:#fff; font-family:Arial, sans-serif;\">\n    <div style=\"font-size:22px; margin-bottom:15px;\">\n        \"everything the student needs... self-explanatory... wonderful books.\"\n    </div>\n    <div style=\"font-size:16px; opacity:0.95;\">\n        – Joyce Harvey, McDonough High School, Louisiana\n    </div>\n</div>"
+                  },
+                  "definition" : "community_builder:htmlEditor",
+                  "id" : "efa80990-e817-4f40-9a5f-0bf8b8bb2066",
+                  "type" : "component"
+                } ],
+                "id" : "d8485912-b58b-4fa2-b65c-97f7d7821cae",
+                "name" : "col1",
+                "title" : "Column 1",
+                "type" : "region"
+              } ],
+              "definition" : "dxp_layout:columns",
+              "id" : "d4b10ac0-36e8-4092-84d0-b2783a84e47f",
+              "type" : "component"
+            } ],
+            "id" : "7f5d04ec-0da9-4a39-a3b0-8e280255edf8",
+            "name" : "col1",
+            "title" : "Column 1",
+            "type" : "region"
+          } ],
+          "definition" : "community_layout:section",
+          "id" : "cf61e2eb-a91b-494f-a452-441b6f90de93",
+          "type" : "component"
+        } ],
+        "id" : "e8e3db73-1edf-4807-a910-5004d838159c",
+        "name" : "content",
+        "title" : "Content",
+        "type" : "region"
+      }, {
+        "children" : [ {
+          "attributes" : {
+            "customHeadTags" : "",
+            "description" : "",
+            "dxpStyle" : { },
+            "pageTitle" : "About ABC",
+            "recordId" : "{!recordId}"
+          },
+          "definition" : "community_builder:seoAssistant",
+          "id" : "ca1b3642-699f-4486-acb8-1cc2504cfb3d",
+          "type" : "component"
+        } ],
+        "id" : "98e59bd8-a8a1-423d-be3c-e4e2802862d4",
+        "name" : "sfdcHiddenRegion",
+        "title" : "sfdcHiddenRegion",
+        "type" : "region"
+      } ],
+      "definition" : "community_layout:sldsFlexibleLayout",
+      "id" : "5ba3f05a-6a79-4fd3-a138-49d7fbdc2a2e",
+      "type" : "component"
+    },
+    "dataProviders" : [ ],
+    "themeLayoutType" : "Inner",
+    "viewType" : "custom-about-abc"
+  },
+  "urlName" : "about-abc"
+}

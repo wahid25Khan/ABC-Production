@@ -1,11 +1,36 @@
 {
-  "search.exclude": {
-    "**/node_modules": true,
-    "**/bower_components": true,
-    "**/.sf": true,
-    "**/.sfdx": true
+  "files.exclude": {
+    "**/.git": true,
+    "**/.svn": true,
+    "**/.hg": true,
+    "**/CVS": true,
+    "**/.DS_Store": true,
+    "**/core/build/repository/**": true,
+    "**/core/ext/**": true,
+    "**/target/**": true,
+    "**/bin/**": true,
+    "META-INF/": true
   },
-  "xml.preferences.showSchemaDocumentationType": "none",
-  "xml.validation.schema.enabled": "never",
-  "python-envs.defaultEnvManager": "ms-python.python:system"
+  "files.watcherExclude": {
+    "**/.git/objects/**": true,
+    "**/.git/subtree-cache/**": true,
+    "**/node_modules/**": true,
+    "**/core/build/repository/**": true,
+    "**/core/ext/**": true,
+    "**/target/**": true,
+    "**/bin/**": true
+  },
+  "salesforcedx-vscode-lightning.activationMode": "always",
+  "salesforcedx-vscode-lightning.showLightningExplorer": true,
+  "salesforcedx-vscode-core.internal-development": false,
+  "eslint.workingDirectories": [
+    "/Users/mac/Development/ABC-Production"
+  ],
+  "eslint.validate": [
+    "javascript",
+    "typescript"
+  ],
+  "eslint.useFlatConfig": true,
+  "typescript.tsserver.experimental.enableProjectDiagnostics": false,
+  "xml.preferences.showSchemaDocumentationType": "none"
 }

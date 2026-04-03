@@ -1,0 +1,9 @@
+Id,Name,CatalogId,ParentCategoryId,IsNavigational,SortOrder
+0ZGWj0000002pcjOAA,Products,0ZSam000000jfLZGAY,,true,
+0ZGam000000isBBGAY,Math,0ZSam000000jfLZGAY,,true,1
+0ZGam000000isCnGAI,English,0ZSam000000jfLZGAY,,true,2
+0ZGam000000isEPGAY,Reading,0ZSam000000jfLZGAY,,true,3
+0ZGam000000isG1GAI,Social Studies,0ZSam000000jfLZGAY,,true,4
+0ZGam000000isHdGAI,Science,0ZSam000000jfLZGAY,,true,5
+0ZGam000000isJFGAY,Writing,0ZSam000000jfLZGAY,,true,6
+0ZGam000000itATGAY,Shop All,0ZSam000000jfLZGAY,,true,1

@@ -1,0 +1,581 @@
+{
+  "type" : "sfdc_cms__view",
+  "title" : "Home",
+  "contentBody" : {
+    "component" : {
+      "children" : [ {
+        "children" : [ {
+          "attributes" : {
+            "backgroundImageConfig" : "",
+            "backgroundImageOverlay" : "rgba(0,0,0,0)",
+            "componentSpacerSize" : "",
+            "dxpStyle" : {
+              "padding" : {
+                "bottom" : "0%",
+                "left" : "0%",
+                "right" : "0%",
+                "top" : "0%"
+              }
+            },
+            "layoutDirectionDesktop" : "column",
+            "layoutDirectionMobile" : "column",
+            "layoutDirectionTablet" : "column",
+            "maxContentWidth" : "none",
+            "sectionColumnGutterWidth" : "",
+            "sectionConfig" : "{\"UUID\":\"4f999df0-54c6-4f7c-a133-e8bddcd5beff\",\"columns\":[{\"UUID\":\"9d3af3b7-082b-4da9-9ac8-9d90031c743c\",\"columnName\":\"Column 1\",\"columnKey\":\"col1\",\"columnWidth\":\"12\",\"seedComponents\":null}]}",
+            "sectionMinHeight" : "",
+            "sectionVerticalAlign" : "flex-start"
+          },
+          "children" : [ {
+            "children" : [ {
+              "attributes" : {
+                "columnGutterWidth" : "",
+                "columnMinHeight" : "",
+                "columnVerticalAlign" : "center",
+                "dxpStyle" : {
+                  "margin" : {
+                    "bottom" : "",
+                    "left" : "0px",
+                    "right" : "0px",
+                    "top" : ""
+                  },
+                  "padding" : {
+                    "bottom" : "0px",
+                    "left" : "40px",
+                    "right" : "40px",
+                    "top" : "40px"
+                  }
+                },
+                "layoutDirectionDesktop" : "row",
+                "layoutDirectionMobile" : "column",
+                "layoutDirectionTablet" : "column",
+                "sectionConfig" : "{\"UUID\":\"dac44aa5-4c52-405e-9991-bd32c8f11222\",\"columns\":[{\"UUID\":\"001ad4fd-eeeb-41b8-95df-aac97ab8ea9d\",\"columnName\":\"Column 1\",\"columnKey\":\"col1\",\"columnWidth\":\"6\",\"seedComponents\":[]},{\"UUID\":\"6b513e98-bf91-4445-b9cc-dcbeda4e3e2e\",\"columnName\":\"Column 2\",\"columnKey\":\"col2\",\"columnWidth\":\"6\",\"seedComponents\":[]}]}"
+              },
+              "children" : [ {
+                "children" : [ {
+                  "attributes" : {
+                    "imageInfos" : "",
+                    "richTextValue" : "<div style=\"background:#ffffff; padding:48px 20px 64px 20px; font-family:Arial, Helvetica, sans-serif; box-sizing:border-box;\">\n  <div style=\"width:100%; max-width:640px; margin:0 auto; text-align:left;\">\n    <div style=\"font-size:42px; line-height:1.18; font-weight:500; color:#13294b; margin:0 0 24px 0;\">\n      Meeting Standards,<br>Exceeding Expectations\n    </div>\n\n    <div style=\"font-size:18px; line-height:1.62; color:#13294b; margin:0 0 26px 0;\">\n      ABC’s all-inclusive Georgia solutions meet 100% of the Georgia Standards of Excellence (GSE) as well as the new Georgia K-12 Mathematics Standards and Georgia K-12 English Language Arts Standards. Our content prepares students for the Milestones and BEACON assessments and we guarantee our products will improve student scores. All coursebooks include free access to our digital platform, CourseWave, with eBooks and CourseWave Online Testing. Join ABC’s all-inclusive print and digital solution today!\n    </div>\n\n    <a\n      href=\"https://americanbookcompany.my.site.com/AmericanBookCompany/global-search/all\"\n      style=\"display:inline-block; padding:13px 24px; border:2px solid #0a84d6; border-radius:999px; color:#0a84d6; text-decoration:none; font-size:16px; font-weight:500; background:#ffffff;\"\n    >\n      Explore Coursebooks\n    </a>\n  </div>\n</div>"
+                  },
+                  "definition" : "community_builder:htmlEditor",
+                  "id" : "557f8277-5153-463a-b842-749e880f44ff",
+                  "type" : "component"
+                } ],
+                "id" : "001ad4fd-eeeb-41b8-95df-aac97ab8ea9d",
+                "name" : "col1",
+                "title" : "Column 1",
+                "type" : "region"
+              }, {
+                "children" : [ {
+                  "attributes" : {
+                    "alignment" : "center",
+                    "dxpStyle" : {
+                      "margin" : {
+                        "bottom" : "0px",
+                        "left" : "",
+                        "right" : "0px",
+                        "top" : "0px"
+                      }
+                    },
+                    "fit" : "contain",
+                    "height" : 350,
+                    "imageInfo" : "{\"imageInfoV1\":{\"url\":\"\",\"altText\":\"\",\"contentKey\":\"MC5JM43IWAP5HRFA65UTID73IPM4\",\"contentType\":null}}",
+                    "overlayColor" : "",
+                    "position" : "center center",
+                    "width" : 100
+                  },
+                  "definition" : "dxp_base:image",
+                  "id" : "97a4c218-033f-427d-b7f9-76df1fcfefd7",
+                  "type" : "component"
+                } ],
+                "id" : "6b513e98-bf91-4445-b9cc-dcbeda4e3e2e",
+                "name" : "col2",
+                "title" : "Column 2",
+                "type" : "region"
+              } ],
+              "customCssClasses" : "back-white",
+              "definition" : "dxp_layout:columns",
+              "id" : "dac44aa5-4c52-405e-9991-bd32c8f11222",
+              "type" : "component"
+            } ],
+            "id" : "9d3af3b7-082b-4da9-9ac8-9d90031c743c",
+            "name" : "col1",
+            "title" : "Column 1",
+            "type" : "region"
+          } ],
+          "customCssClasses" : "back-white",
+          "definition" : "community_layout:section",
+          "id" : "4f999df0-54c6-4f7c-a133-e8bddcd5beff",
+          "scopedBrandingSetId" : "B2B_Home_Banner",
+          "type" : "component"
+        }, {
+          "attributes" : {
+            "backgroundImageConfig" : "",
+            "backgroundImageOverlay" : "rgb(242, 242, 242)",
+            "componentSpacerSize" : "",
+            "dxpStyle" : {
+              "margin" : {
+                "bottom" : "",
+                "left" : "",
+                "right" : "",
+                "top" : ""
+              }
+            },
+            "layoutDirectionDesktop" : "row",
+            "layoutDirectionMobile" : "column",
+            "layoutDirectionTablet" : "column",
+            "maxContentWidth" : "none",
+            "sectionColumnGutterWidth" : "",
+            "sectionConfig" : "{\"UUID\":\"91dceb1a-90be-43ee-bce2-a3ab755ce945\",\"columns\":[{\"UUID\":\"beeafe67-2ab0-46f1-9dc7-890455c9dc73\",\"columnName\":\"Column 1\",\"columnKey\":\"col1\",\"columnWidth\":\"12\",\"seedComponents\":null}]}",
+            "sectionMinHeight" : "",
+            "sectionVerticalAlign" : "flex-start"
+          },
+          "children" : [ {
+            "children" : [ {
+              "attributes" : {
+                "imageInfos" : "",
+                "richTextValue" : "<div style=\"display:flex; align-items:center; gap:16px; margin:0 0 22px;\">\n  <div style=\"flex:1; height:1px; background:#2b2b2b;\"></div>\n      <h2 style=\"font-size:1.5rem; font-weight:600; color:#111827; white-space:nowrap; text-align:center;\">What Our Customers Have to Say</h2>\n  <div style=\"flex:1; height:1px; background:#2b2b2b;\"></div>\n</div>"
+              },
+              "definition" : "community_builder:htmlEditor",
+              "id" : "6a5b0158-55fc-4bed-99ff-cb4fa375072b",
+              "type" : "component"
+            }, {
+              "attributes" : {
+                "dxpStyle" : {
+                  "margin" : {
+                    "bottom" : "",
+                    "left" : "",
+                    "right" : "",
+                    "top" : ""
+                  }
+                },
+                "mapboxAccessToken" : "pk.eyJ1IjoiYWthc2h0aGVsb2Rlc3RvbmVncm91cCIsImEiOiJjbW05bG5kaGMwMHQ1Mm9zM3lrM25ydTRwIn0.pSVyEJv1yK_Z8_U1tXKHTA",
+                "selectedState" : "Georgia",
+                "stateFips" : "",
+                "titleYear" : "2026"
+              },
+              "definition" : "c:mapPlusTestimonial",
+              "id" : "95378917-c81d-470a-a165-320be492c844",
+              "type" : "component"
+            }, {
+              "attributes" : {
+                "dxpStyle" : {
+                  "margin" : {
+                    "bottom" : "20px",
+                    "left" : "20px",
+                    "right" : "20px",
+                    "top" : "20px"
+                  },
+                  "padding" : {
+                    "bottom" : "20px",
+                    "left" : "20px",
+                    "right" : "20px",
+                    "top" : "20px"
+                  }
+                },
+                "imageInfos" : "",
+                "richTextValue" : "<div style=\"background:#f3f4f6; padding:28px 24px 42px 24px; font-family:Arial, Helvetica, sans-serif;\">\n  <!-- Heading -->\n  <div style=\"text-align:center; margin-bottom:52px;\">\n    <div style=\"line-height:1.04; color:#1f2a44; font-weight:800;\">\n      <div style=\"font-size:28px; margin:0;\">Results</div>\n      <div style=\"font-size:28px; margin:0;\">Your Hybrid Solution</div>\n    </div>\n  </div>\n\n  <!-- Cards Row -->\n  <table\n    role=\"presentation\"\n    style=\"width:100%; max-width:1500px; margin:0 auto; border-collapse:separate; border-spacing:34px 0; table-layout:fixed;\"\n  >\n    <tr>\n      <!-- Card 1 -->\n      <td style=\"width:31%; vertical-align:top; text-align:center;\">\n        <div\n          style=\"background:#ffffff; border-radius:14px; box-shadow:0 2px 8px rgba(0,0,0,0.12); padding:56px 26px 26px 26px; min-height:195px; position:relative;\"\n        >\n          <div\n            style=\"width:76px; height:76px; border-radius:50%; background:#F2B400; position:absolute; top:-30px; left:50%; transform:translateX(-50%); display:flex; align-items:center; justify-content:center;\"\n          >\n            <img\n              src=\"/sfsites/c/resource/PrintedCoursebooks\"\n              alt=\"Printed Coursebooks\"\n              style=\"width:34px; height:34px; display:block;\"\n            />\n          </div>\n\n          <div\n            style=\"font-size:17px; font-weight:700; line-height:1.3; color:#1f2a44; margin:2px 0 14px 0;\"\n          >\n            Printed Coursebooks\n          </div>\n\n          <div\n            style=\"font-size:13px; line-height:1.65; color:#334155; max-width:360px; margin:0 auto;\"\n          >\n            All ABC content maps directly to state blueprints. The questions on\n            the full-length pre and post tests simulate state assessments, and\n            are labeled with DOK level and standard for easy concept\n            identification. Your included teacher’s guide is not only the answer\n            key for all tests and quizzes, but also offers additional\n            reproducible assessments not included in the student coursebook.\n          </div>\n        </div>\n      </td>\n\n      <!-- Plus 1 -->\n      <td style=\"width:4%; text-align:center; vertical-align:middle;\">\n        <div\n          style=\"font-size:56px; line-height:1; color:#94a3b8; font-weight:300;\"\n        >\n          +\n        </div>\n      </td>\n\n      <!-- Card 2 -->\n      <td style=\"width:31%; vertical-align:top; text-align:center;\">\n        <div\n          style=\"background:#ffffff; border-radius:14px; box-shadow:0 2px 8px rgba(0,0,0,0.12); padding:56px 26px 26px 26px; min-height:195px; position:relative;\"\n        >\n          <div\n            style=\"width:76px; height:76px; border-radius:50%; background:#6D4CF5; position:absolute; top:-30px; left:50%; transform:translateX(-50%); display:flex; align-items:center; justify-content:center;\"\n          >\n            <img\n              src=\"/sfsites/c/resource/DigitalCoursebooks\"\n              alt=\"Digital Coursebooks\"\n              style=\"width:34px; height:34px; display:block;\"\n            />\n          </div>\n\n          <div\n            style=\"font-size:17px; font-weight:700; line-height:1.3; color:#1f2a44; margin:2px 0 14px 0;\"\n          >\n            Digital Coursebooks\n          </div>\n\n          <div\n            style=\"font-size:13px; line-height:1.65; color:#334155; max-width:330px; margin:0 auto;\"\n          >\n            Our eBook content matches our print coursebooks exactly, ensuring a\n            seamless experience for students whether they are in the classroom\n            or at home.\n          </div>\n        </div>\n      </td>\n\n      <!-- Plus 2 -->\n      <td style=\"width:4%; text-align:center; vertical-align:middle;\">\n        <div\n          style=\"font-size:56px; line-height:1; color:#94a3b8; font-weight:300;\"\n        >\n          +\n        </div>\n      </td>\n\n      <!-- Card 3 -->\n      <td style=\"width:31%; vertical-align:top; text-align:center;\">\n        <div\n          style=\"background:#ffffff; border-radius:14px; box-shadow:0 2px 8px rgba(0,0,0,0.12); padding:56px 26px 26px 26px; min-height:195px; position:relative;\"\n        >\n          <div\n            style=\"width:76px; height:76px; border-radius:50%; background:#2FAA5A; position:absolute; top:-30px; left:50%; transform:translateX(-50%); display:flex; align-items:center; justify-content:center;\"\n          >\n            <img\n              src=\"/sfsites/c/resource/OnlineTesting\"\n              alt=\"Online Testing\"\n              style=\"width:34px; height:34px; display:block;\"\n            />\n          </div>\n\n          <div\n            style=\"font-size:17px; font-weight:700; line-height:1.3; color:#1f2a44; margin:2px 0 14px 0;\"\n          >\n            Online Testing\n          </div>\n\n          <div\n            style=\"font-size:13px; line-height:1.65; color:#334155; max-width:360px; margin:0 auto;\"\n          >\n            Built-in analytics and instant score reporting give teachers the\n            data they need to identify learning gaps at the student or classroom\n            level while students gain familiarity and confidence with online\n            testing platforms in addition to the tested material.\n          </div>\n        </div>\n      </td>\n    </tr>\n  </table>\n\n  <!-- Button -->\n  <div style=\"text-align:center; margin-top:34px;\">\n    <a\n      href=\"https://americanbookcompany.my.site.com/AmericanBookCompany/about-abc\"\n      style=\"display:inline-block; padding:12px 26px; border:2px solid #0b86d8; border-radius:999px; color:#0b86d8; text-decoration:none; font-size:15px; font-weight:500; background:#ffffff;\"\n    >\n      Learn More About ABC\n    </a>\n  </div>\n</div>"
+              },
+              "definition" : "community_builder:htmlEditor",
+              "id" : "ea0bd0ab-cf1a-484b-a7a1-801eacd8a95c",
+              "type" : "component"
+            }, {
+              "attributes" : {
+                "columnGutterWidth" : "",
+                "columnMinHeight" : "",
+                "columnVerticalAlign" : "flex-start",
+                "dxpStyle" : {
+                  "margin" : {
+                    "bottom" : "",
+                    "left" : "",
+                    "right" : "",
+                    "top" : ""
+                  },
+                  "padding" : {
+                    "bottom" : "",
+                    "left" : "",
+                    "right" : "",
+                    "top" : "30px"
+                  }
+                },
+                "layoutDirectionDesktop" : "column",
+                "layoutDirectionMobile" : "column",
+                "layoutDirectionTablet" : "column",
+                "sectionConfig" : "{\"UUID\":\"7371ffee-a435-49e4-af16-67388918f401\",\"columns\":[{\"UUID\":\"5c00dcc3-5e9a-4ba2-96db-ab31e140cb71\",\"columnName\":\"Column 1\",\"columnKey\":\"col1\",\"columnWidth\":\"3\",\"seedComponents\":[]},{\"UUID\":\"c5335d1a-0cea-43c4-98c5-89b10b5cc08e\",\"columnName\":\"Column 2\",\"columnKey\":\"col2\",\"columnWidth\":\"3\",\"seedComponents\":[]},{\"UUID\":\"d9058ca2-9b97-4f75-bf59-37dc03a85325\",\"columnName\":\"Column 3\",\"columnKey\":\"d7428\",\"columnWidth\":\"3\",\"seedComponents\":[]},{\"UUID\":\"248a7f2c-ea32-4758-a650-54879e1b26a7\",\"columnName\":\"Column 4\",\"columnKey\":\"77174\",\"columnWidth\":\"3\",\"seedComponents\":[]}]}"
+              },
+              "children" : [ {
+                "children" : [ {
+                  "attributes" : {
+                    "dxpStyle" : {
+                      "isVisible" : false,
+                      "margin" : {
+                        "bottom" : "0px",
+                        "left" : "",
+                        "right" : "",
+                        "top" : "50px"
+                      }
+                    },
+                    "imageInfos" : "",
+                    "richTextValue" : "<div style=\"background:#f4f5f8; padding:40px 20px;\">\n\n  <!-- HEADING -->\n  <div style=\"text-align:center; margin:0 0 18px 0;\">\n    <div style=\"font-size:28px; font-weight:800; line-height:1.05; color:#152c55;\">\n      Results\n    </div>\n    <div style=\"font-size:28px; font-weight:800; line-height:1.05; color:#152c55;\">\n      Your Hybrid Solution\n    </div>\n  </div>\n\n  <!-- DESKTOP / TABLET -->\n  <div class=\"slds-hide slds-medium-block\">\n    <table role=\"presentation\" style=\"width:100%; border-collapse:separate; border-spacing:26px 0; table-layout:fixed;\">\n      <tr>\n\n        <!-- Card 1 -->\n        <td style=\"width:30%; vertical-align:top; text-align:center;\">\n          <div style=\"background:#ffffff; border-radius:14px; box-shadow:0 2px 8px rgba(0,0,0,0.12); padding:34px 22px 26px 22px; margin-top:46px; min-height:285px;\">\n            <div style=\"width:84px; height:84px; border-radius:50%; background:#F2B400; margin:-76px auto 22px auto; display:flex; align-items:center; justify-content:center;\">\n              <img src=\"/sfsites/c/resource/PrintedCoursebooks\" alt=\"Printed Coursebooks\" style=\"width:50px; height:50px; display:block;\">\n            </div>\n            <div style=\"font-size:22px; font-weight:700; line-height:1.25; color:#1f2a44; margin:0 0 18px 0;\">\n              Printed Coursebooks\n            </div>\n            <div style=\"font-size:15px; line-height:1.65; color:#2f3b52;\">\n              All ABC content maps directly to state blueprints. The questions on the full-length pre and posttests simulate state assessments, and are labeled with DOK level and standard for easy concept identification. Your included teacher’s guide is not only the answer key for all tests and quizzes, but also offers additional reproducible assessments not included in the student coursebook.\n            </div>\n          </div>\n        </td>\n\n        <!-- Plus 1 -->\n        <td style=\"width:5%; text-align:center; vertical-align:middle;\">\n          <div style=\"font-size:68px; line-height:1; color:#94A3B8; font-weight:300; margin-top:18px;\">+</div>\n        </td>\n\n        <!-- Card 2 -->\n        <td style=\"width:30%; vertical-align:top; text-align:center;\">\n          <div style=\"background:#ffffff; border-radius:14px; box-shadow:0 2px 8px rgba(0,0,0,0.12); padding:34px 22px 26px 22px; margin-top:46px; min-height:285px;\">\n            <div style=\"width:84px; height:84px; border-radius:50%; background:#6D4CF5; margin:-76px auto 22px auto; display:flex; align-items:center; justify-content:center;\">\n              <img src=\"/sfsites/c/resource/DigitalCoursebooks\" alt=\"Digital Coursebooks\" style=\"width:50px; height:50px; display:block;\">\n            </div>\n            <div style=\"font-size:22px; font-weight:700; line-height:1.25; color:#1f2a44; margin:0 0 18px 0;\">\n              Digital Coursebooks\n            </div>\n            <div style=\"font-size:15px; line-height:1.65; color:#2f3b52;\">\n              Our eBook content matches our print coursebooks exactly, ensuring a seamless experience for students whether they are in the classroom or at home.\n            </div>\n          </div>\n        </td>\n\n        <!-- Plus 2 -->\n        <td style=\"width:5%; text-align:center; vertical-align:middle;\">\n          <div style=\"font-size:68px; line-height:1; color:#94A3B8; font-weight:300; margin-top:18px;\">+</div>\n        </td>\n\n        <!-- Card 3 -->\n        <td style=\"width:30%; vertical-align:top; text-align:center;\">\n          <div style=\"background:#ffffff; border-radius:14px; box-shadow:0 2px 8px rgba(0,0,0,0.12); padding:34px 22px 26px 22px; margin-top:46px; min-height:285px;\">\n            <div style=\"width:84px; height:84px; border-radius:50%; background:#2FAA5A; margin:-76px auto 22px auto; display:flex; align-items:center; justify-content:center;\">\n              <img src=\"/sfsites/c/resource/OnlineTesting\" alt=\"Online Testing\" style=\"width:50px; height:50px; display:block;\">\n            </div>\n            <div style=\"font-size:22px; font-weight:700; line-height:1.25; color:#1f2a44; margin:0 0 18px 0;\">\n              Online Testing\n            </div>\n            <div style=\"font-size:15px; line-height:1.65; color:#2f3b52;\">\n              Built-in analytics and instant score reporting give teachers the data they need to identify learning gaps at the student or classroom level while students gain familiarity and confidence with online testing platforms in addition to the tested material.\n            </div>\n          </div>\n        </td>\n\n      </tr>\n    </table>\n\n    <!-- DESKTOP BUTTON -->\n    <div style=\"text-align:center; margin-top:34px;\">\n      <a href=\"YOUR_BUTTON_URL_HERE\" style=\"display:inline-block; padding:14px 28px; border:2px solid #0b84f3; border-radius:999px; color:#0b84f3; font-size:16px; font-weight:500; text-decoration:none; background:#f4f5f8;\">\n        Learn More About ABC\n      </a>\n    </div>\n  </div>\n\n  <!-- MOBILE -->\n  <div class=\"slds-show slds-medium-hide\">\n\n    <div style=\"max-width:340px; margin:0 auto 28px auto;\">\n      <div style=\"background:#ffffff; border-radius:14px; box-shadow:0 2px 8px rgba(0,0,0,0.12); padding:28px 18px 22px 18px; margin-top:46px; text-align:center;\">\n        <div style=\"width:84px; height:84px; border-radius:50%; background:#F2B400; margin:-70px auto 18px auto; display:flex; align-items:center; justify-content:center;\">\n          <img src=\"/sfsites/c/resource/PrintedCoursebooks\" alt=\"Printed Coursebooks\" style=\"width:50px; height:50px; display:block;\">\n        </div>\n        <div style=\"font-size:18px; font-weight:700; line-height:1.25; color:#1f2a44; margin:0 0 14px 0;\">\n          Printed Coursebooks\n        </div>\n        <div style=\"font-size:14px; line-height:1.7; color:#2f3b52;\">\n          All ABC content maps directly to state blueprints. The questions on the full-length pre and posttests simulate state assessments, and are labeled with DOK level and standard for easy concept identification. Your included teacher’s guide is not only the answer key for all tests and quizzes, but also offers additional reproducible assessments not included in the student coursebook.\n        </div>\n      </div>\n    </div>\n\n    <div style=\"max-width:340px; margin:0 auto 28px auto;\">\n      <div style=\"background:#ffffff; border-radius:14px; box-shadow:0 2px 8px rgba(0,0,0,0.12); padding:28px 18px 22px 18px; margin-top:46px; text-align:center;\">\n        <div style=\"width:84px; height:84px; border-radius:50%; background:#6D4CF5; margin:-70px auto 18px auto; display:flex; align-items:center; justify-content:center;\">\n          <img src=\"/sfsites/c/resource/DigitalCoursebooks\" alt=\"Digital Coursebooks\" style=\"width:50px; height:50px; display:block;\">\n        </div>\n        <div style=\"font-size:18px; font-weight:700; line-height:1.25; color:#1f2a44; margin:0 0 14px 0;\">\n          Digital Coursebooks\n        </div>\n        <div style=\"font-size:14px; line-height:1.7; color:#2f3b52;\">\n          Our eBook content matches our print coursebooks exactly, ensuring a seamless experience for students whether they are in the classroom or at home.\n        </div>\n      </div>\n    </div>\n\n    <div style=\"max-width:340px; margin:0 auto 28px auto;\">\n      <div style=\"background:#ffffff; border-radius:14px; box-shadow:0 2px 8px rgba(0,0,0,0.12); padding:28px 18px 22px 18px; margin-top:46px; text-align:center;\">\n        <div style=\"width:84px; height:84px; border-radius:50%; background:#2FAA5A; margin:-70px auto 18px auto; display:flex; align-items:center; justify-content:center;\">\n          <img src=\"/sfsites/c/resource/OnlineTesting\" alt=\"Online Testing\" style=\"width:50px; height:50px; display:block;\">\n        </div>\n        <div style=\"font-size:18px; font-weight:700; line-height:1.25; color:#1f2a44; margin:0 0 14px 0;\">\n          Online Testing\n        </div>\n        <div style=\"font-size:14px; line-height:1.7; color:#2f3b52;\">\n          Built-in analytics and instant score reporting give teachers the data they need to identify learning gaps at the student or classroom level while students gain familiarity and confidence with online testing platforms in addition to the tested material.\n        </div>\n      </div>\n    </div>\n\n    <!-- MOBILE BUTTON -->\n    <div style=\"text-align:center; margin-top:10px;\">\n      <a href=\"YOUR_BUTTON_URL_HERE\" style=\"display:inline-block; padding:14px 24px; border:2px solid #0b84f3; border-radius:999px; color:#0b84f3; font-size:16px; font-weight:500; text-decoration:none; background:#f4f5f8;\">\n        Learn More About ABC\n      </a>\n    </div>\n\n  </div>\n\n</div>"
+                  },
+                  "customCssClasses" : "back-grey",
+                  "definition" : "community_builder:htmlEditor",
+                  "id" : "b473d66e-2031-46e5-9ae1-63004ae0a97c",
+                  "type" : "component"
+                } ],
+                "id" : "5c00dcc3-5e9a-4ba2-96db-ab31e140cb71",
+                "name" : "col1",
+                "title" : "Column 1",
+                "type" : "region"
+              }, {
+                "children" : [ {
+                  "attributes" : {
+                    "dxpStyle" : {
+                      "margin" : {
+                        "bottom" : "0px",
+                        "left" : "0px",
+                        "right" : "0px",
+                        "top" : "0px"
+                      }
+                    },
+                    "gridColumns" : 4,
+                    "maxProducts" : 9,
+                    "refinementKey" : "State__c",
+                    "shopAllUrl" : "https://americanbookcompany.my.site.com/AmericanBookCompany/global-search/all",
+                    "storeName" : "AmericanBookCompany",
+                    "webStoreId" : "0ZEam000004dJDNGA2"
+                  },
+                  "definition" : "c:featuredStateBooks",
+                  "id" : "de8e33f0-bef8-4b92-8979-0cc3b6761806",
+                  "type" : "component"
+                } ],
+                "id" : "c5335d1a-0cea-43c4-98c5-89b10b5cc08e",
+                "name" : "col2",
+                "title" : "Column 2",
+                "type" : "region"
+              }, {
+                "id" : "d9058ca2-9b97-4f75-bf59-37dc03a85325",
+                "name" : "d7428",
+                "title" : "Column 3",
+                "type" : "region"
+              }, {
+                "id" : "248a7f2c-ea32-4758-a650-54879e1b26a7",
+                "name" : "77174",
+                "title" : "Column 4",
+                "type" : "region"
+              } ],
+              "customCssClasses" : "",
+              "definition" : "dxp_layout:columns",
+              "id" : "7371ffee-a435-49e4-af16-67388918f401",
+              "type" : "component"
+            }, {
+              "attributes" : {
+                "dxpStyle" : {
+                  "margin" : {
+                    "bottom" : "",
+                    "left" : "",
+                    "right" : "",
+                    "top" : "30px"
+                  }
+                },
+                "imageInfos" : "",
+                "richTextValue" : "<div style=\"display:flex; align-items:center; gap:16px; margin:0 0 22px;\">\n  <div style=\"flex:1; height:1px; background:#2b2b2b;\"></div>\n\n  <div style=\"font-size:32px; font-weight:600; color:#111827; white-space:nowrap; text-align:center;\">\n   <h2 style=\"font-size:1.5rem; font-weight:600; color:#111827; white-space:nowrap; text-align:center;\"> Our Latest Blog</h2>\n  </div>\n\n  <div style=\"flex:1; height:1px; background:#2b2b2b;\"></div>\n</div>"
+              },
+              "definition" : "community_builder:htmlEditor",
+              "id" : "5226a956-750c-4835-addf-b5b29e57ca80",
+              "type" : "component"
+            }, {
+              "attributes" : {
+                "columnGutterWidth" : "",
+                "columnMinHeight" : "",
+                "columnVerticalAlign" : "flex-start",
+                "dxpStyle" : {
+                  "margin" : {
+                    "bottom" : "",
+                    "left" : "",
+                    "right" : "30px",
+                    "top" : "20px"
+                  }
+                },
+                "layoutDirectionDesktop" : "row",
+                "layoutDirectionMobile" : "column",
+                "layoutDirectionTablet" : "column",
+                "sectionConfig" : "{\"UUID\":\"7b4d6ad9-8700-4dd0-a63f-3b344e78edbf\",\"columns\":[{\"UUID\":\"9527246a-53ac-47f8-ac43-eea739eedf3e\",\"columnName\":\"Column 1\",\"columnKey\":\"col1\",\"columnWidth\":\"6\",\"seedComponents\":[]},{\"UUID\":\"fafe464f-28d3-4aed-aa1b-d6c7846a4fcd\",\"columnName\":\"Column 2\",\"columnKey\":\"col2\",\"columnWidth\":\"6\",\"seedComponents\":[]}]}"
+              },
+              "children" : [ {
+                "children" : [ {
+                  "attributes" : {
+                    "alignment" : "center",
+                    "dxpStyle" : { },
+                    "fit" : "contain",
+                    "height" : 350,
+                    "imageInfo" : "{\"imageInfoV1\":{\"url\":\"/sfsites/c/cms/delivery/media/MCBHXW3X6YCNHCJL2243MHM6QBA4?lastModifiedDate=Tue Feb 17 18:49:50 GMT 2026\",\"altText\":\"\",\"contentKey\":\"MCBHXW3X6YCNHCJL2243MHM6QBA4\",\"contentType\":null}}",
+                    "overlayColor" : "",
+                    "position" : "center center",
+                    "width" : 100
+                  },
+                  "definition" : "dxp_base:image",
+                  "id" : "627bf839-4156-4771-b9b9-d5004f99712a",
+                  "type" : "component"
+                } ],
+                "id" : "9527246a-53ac-47f8-ac43-eea739eedf3e",
+                "name" : "col1",
+                "title" : "Column 1",
+                "type" : "region"
+              }, {
+                "children" : [ {
+                  "attributes" : {
+                    "imageInfos" : "",
+                    "richTextValue" : "<div style=\"width:100%; background:#ffffff; box-sizing:border-box; padding-top:72px; padding-right:28px; padding-bottom:24px; padding-left:28px;\">\n  <div style=\"max-width:680px; font-family:Lato, Arial, Helvetica, sans-serif; color:#13294b;\">\n\n    <div style=\"max-width:600px; font-size:24px; line-height:1.3; font-weight:400; margin:0 0 14px 0;\">\n      Build a Lifelong Love of Reading Over Summer Break\n    </div>\n\n    <div style=\"max-width:680px; font-size:17px; line-height:1.75; font-weight:400; color:#1f2a44; margin:0 0 26px 0; font-family:Lato, Arial, Helvetica, sans-serif;\">\n      With Summer break hurtling closer, kids everywhere are looking ahead to sunny summer vacation days, and schools are publishing summer reading lists. These are the years when children start to become lifelong readers - and educators and parents can help that process!\n    </div>\n\n    <div style=\"max-width:680px; text-align:right;\">\n      <a\n        href=\"https://americanbookcompany.my.site.com/AmericanBookCompany/news/build-a-lifelong-love-of-reading-over-summer-break-MCAHURUFL5UVHDHJ33D7XTNRD5OE\"\n        target=\"_blank\"\n        style=\"display:inline-block; padding:12px 28px; border:2px solid #97c4d8; border-radius:999px; font-size:16px; line-height:1; font-weight:600; color:#5c8faa; text-decoration:none; background:#ffffff; font-family:Lato, Arial, Helvetica, sans-serif;\"\n      >\n        Read More\n      </a>\n    </div>\n\n  </div>\n</div>"
+                  },
+                  "definition" : "community_builder:htmlEditor",
+                  "id" : "8c7fc94c-3706-44b5-8358-fe9230b356f8",
+                  "type" : "component"
+                } ],
+                "id" : "fafe464f-28d3-4aed-aa1b-d6c7846a4fcd",
+                "name" : "col2",
+                "title" : "Column 2",
+                "type" : "region"
+              } ],
+              "definition" : "dxp_layout:columns",
+              "id" : "7b4d6ad9-8700-4dd0-a63f-3b344e78edbf",
+              "type" : "component"
+            }, {
+              "attributes" : {
+                "maxProducts" : 18,
+                "storeName" : "AmericanBookCompany",
+                "visibleCount" : 6,
+                "webStoreId" : "0ZEam000004dJDNGA2"
+              },
+              "definition" : "c:productRecommendation",
+              "id" : "9a98c4a8-9f8b-4722-8372-51761cabaf53",
+              "type" : "component"
+            }, {
+              "attributes" : {
+                "alignment" : "center",
+                "color" : "rgb(40, 37, 37)",
+                "lineStyle" : "solid",
+                "size" : 1,
+                "width" : 85
+              },
+              "definition" : "dxp_base:horizontalLine",
+              "id" : "fec79c36-cd08-409b-b42c-848db801a14c",
+              "type" : "component"
+            }, {
+              "attributes" : {
+                "columnGutterWidth" : "",
+                "columnMinHeight" : "",
+                "columnVerticalAlign" : "flex-start",
+                "dxpStyle" : {
+                  "margin" : {
+                    "bottom" : "20px",
+                    "left" : "20px",
+                    "right" : "20px",
+                    "top" : "20px"
+                  }
+                },
+                "layoutDirectionDesktop" : "row",
+                "layoutDirectionMobile" : "column",
+                "layoutDirectionTablet" : "column",
+                "sectionConfig" : "{\"UUID\":\"dc417661-a30f-42ef-abf6-758c7d17388d\",\"columns\":[{\"UUID\":\"cdb14186-812c-43df-81d6-01f3d80f5a7b\",\"columnName\":\"Column 1\",\"columnKey\":\"col1\",\"columnWidth\":\"2\",\"seedComponents\":[]},{\"UUID\":\"cef0bc0b-46d6-4144-ad5e-add87fd81d82\",\"columnName\":\"Column 2\",\"columnKey\":\"col2\",\"columnWidth\":\"2\",\"seedComponents\":[]},{\"UUID\":\"1d4fc70d-ed0b-4441-a3e3-b939e339492a\",\"columnName\":\"Column 3\",\"columnKey\":\"65f3a\",\"columnWidth\":\"2\",\"seedComponents\":[]},{\"UUID\":\"fee8025c-42e2-4d86-b1b3-b15eeab8751b\",\"columnName\":\"Column 4\",\"columnKey\":\"5203c\",\"columnWidth\":\"2\",\"seedComponents\":[]},{\"UUID\":\"6c073c51-6515-49e0-9844-2a83c57c1fab\",\"columnName\":\"Column 5\",\"columnKey\":\"54e8f\",\"columnWidth\":\"2\",\"seedComponents\":[]},{\"UUID\":\"06622fe3-53d6-4124-b4e9-126e2cdacfab\",\"columnName\":\"Column 6\",\"columnKey\":\"d507c\",\"columnWidth\":\"2\",\"seedComponents\":[]}]}"
+              },
+              "children" : [ {
+                "children" : [ {
+                  "attributes" : {
+                    "dxpStyle" : { },
+                    "imageInfos" : "",
+                    "richTextValue" : "<p style=\"text-align: center;\"><a href=\"https://usfcr.com/\" rel=\"noopener noreferrer\" target=\"_blank\"><img src=\"{!cmsMedia.MCGTFZCXMRKRBMLBRRDNG7HTVCRA}\" alt=\"\"></a></p>"
+                  },
+                  "definition" : "community_builder:richTextEditor",
+                  "id" : "c6ab8326-95f2-45cd-819b-11561dfb248a",
+                  "type" : "component"
+                } ],
+                "id" : "cdb14186-812c-43df-81d6-01f3d80f5a7b",
+                "name" : "col1",
+                "title" : "Column 1",
+                "type" : "region"
+              }, {
+                "children" : [ {
+                  "attributes" : {
+                    "dxpStyle" : { },
+                    "imageInfos" : "",
+                    "richTextValue" : "<p style=\"text-align: center;\"><a href=\"https://www.gachamber.com/\" rel=\"noopener noreferrer\" target=\"_blank\"><img src=\"{!cmsMedia.MCWYNAHELJOBCFNGBVQ5ZR32NOCE}\" alt=\"\"></a></p>"
+                  },
+                  "definition" : "community_builder:richTextEditor",
+                  "id" : "5d4f5f10-8c6a-448c-af88-32605cd241e8",
+                  "type" : "component"
+                } ],
+                "id" : "cef0bc0b-46d6-4144-ad5e-add87fd81d82",
+                "name" : "col2",
+                "title" : "Column 2",
+                "type" : "region"
+              }, {
+                "children" : [ {
+                  "attributes" : {
+                    "dxpStyle" : { },
+                    "imageInfos" : "",
+                    "richTextValue" : "<p style=\"text-align: center;\"><a href=\"https://www.bbb.org/\" rel=\"noopener noreferrer\" target=\"_blank\"><img src=\"{!cmsMedia.MCLTAGGNM5PBDD5IUOJDZISAL7NM}\" alt=\"\"></a></p>"
+                  },
+                  "definition" : "community_builder:richTextEditor",
+                  "id" : "fd68cb98-40ae-41fb-a607-3371231978e3",
+                  "type" : "component"
+                } ],
+                "id" : "1d4fc70d-ed0b-4441-a3e3-b939e339492a",
+                "name" : "65f3a",
+                "title" : "Column 3",
+                "type" : "region"
+              }, {
+                "children" : [ {
+                  "attributes" : {
+                    "dxpStyle" : { },
+                    "imageInfos" : "",
+                    "richTextValue" : "<p style=\"text-align: center;\"><a href=\"https://publishers.org/\" rel=\"noopener noreferrer\" target=\"_blank\"><img src=\"{!cmsMedia.MCN4KO3OMY25F4HDGXHFQM3CYI54}\" alt=\"\"></a></p>"
+                  },
+                  "definition" : "community_builder:richTextEditor",
+                  "id" : "7937529d-ff80-42a8-8352-77812e53bd02",
+                  "type" : "component"
+                } ],
+                "id" : "fee8025c-42e2-4d86-b1b3-b15eeab8751b",
+                "name" : "5203c",
+                "title" : "Column 4",
+                "type" : "region"
+              }, {
+                "children" : [ {
+                  "attributes" : {
+                    "dxpStyle" : { },
+                    "imageInfos" : "",
+                    "richTextValue" : "<p style=\"text-align: center;\"><a href=\"https://www.wbenc.org/\" rel=\"noopener noreferrer\" target=\"_blank\"><img src=\"{!cmsMedia.MC3UK3JX6IGJC4ZOI4OJVHRO3JB4}\" alt=\"\"></a></p>"
+                  },
+                  "definition" : "community_builder:richTextEditor",
+                  "id" : "9f1a70d6-0048-4df9-9a9a-3345b5c7cdd8",
+                  "type" : "component"
+                } ],
+                "id" : "6c073c51-6515-49e0-9844-2a83c57c1fab",
+                "name" : "54e8f",
+                "title" : "Column 5",
+                "type" : "region"
+              }, {
+                "children" : [ {
+                  "attributes" : {
+                    "dxpStyle" : { },
+                    "imageInfos" : "",
+                    "richTextValue" : "<p style=\"text-align: center;\"><a href=\"https://americanbookcompany.com/documents-for-ordering#whitepapers\" rel=\"noopener noreferrer\" target=\"_blank\"><img src=\"{!cmsMedia.MCTTSY3JIFDBEMNCIKFTUHQGSHTI}\" alt=\"\"></a></p>"
+                  },
+                  "definition" : "community_builder:richTextEditor",
+                  "id" : "21962eff-7a25-4aa4-8a66-afb6264d9370",
+                  "type" : "component"
+                } ],
+                "id" : "06622fe3-53d6-4124-b4e9-126e2cdacfab",
+                "name" : "d507c",
+                "title" : "Column 6",
+                "type" : "region"
+              } ],
+              "definition" : "dxp_layout:columns",
+              "id" : "dc417661-a30f-42ef-abf6-758c7d17388d",
+              "type" : "component"
+            }, {
+              "attributes" : {
+                "columnGutterWidth" : "",
+                "columnMinHeight" : "",
+                "columnVerticalAlign" : "center",
+                "dxpStyle" : {
+                  "margin" : {
+                    "bottom" : "",
+                    "left" : "",
+                    "right" : "",
+                    "top" : ""
+                  },
+                  "padding" : {
+                    "bottom" : "0px",
+                    "left" : "",
+                    "right" : "50px",
+                    "top" : ""
+                  }
+                },
+                "layoutDirectionDesktop" : "row",
+                "layoutDirectionMobile" : "column",
+                "layoutDirectionTablet" : "column",
+                "sectionConfig" : "{\"UUID\":\"4f516946-635c-4385-960b-3a93bd89f41e\",\"columns\":[{\"UUID\":\"6df82851-cb7e-4636-a482-1995bea8f26f\",\"columnName\":\"Column 1\",\"columnKey\":\"col1\",\"columnWidth\":\"6\",\"seedComponents\":[]},{\"UUID\":\"2e7d7f33-65aa-4db7-989c-839ee015294e\",\"columnName\":\"Column 2\",\"columnKey\":\"fa147\",\"columnWidth\":\"6\",\"seedComponents\":[]}]}"
+              },
+              "children" : [ {
+                "children" : [ {
+                  "attributes" : {
+                    "dxpStyle" : {
+                      "margin" : {
+                        "bottom" : "20px",
+                        "left" : "20px",
+                        "right" : "20px",
+                        "top" : "20px"
+                      }
+                    },
+                    "imageInfos" : "",
+                    "richTextValue" : "<div style=\"width:100%; max-width:1200px; margin:0 auto; font-family: 'Segoe UI', Arial, sans-serif;\">\n  \n  <div style=\"\n      background-color:#167DA6;\n      color:white;\n      text-align:center;\n      padding:80px 20px 100px 20px;\n      position:relative;\n      overflow:hidden;\n      border-radius:4px;\n  \">\n\n    <!-- Top Right Red Shape -->\n    <div style=\"\n        position:absolute;\n        top:-120px;\n        right:-120px;\n        width:300px;\n        height:300px;\n        background:#E3171E;\n        border-radius:50%;\n    \"></div>\n\n    <!-- Bottom Left Yellow Shape -->\n    <div style=\"\n        position:absolute;\n        bottom:-150px;\n        left:-150px;\n        width:400px;\n        height:400px;\n        background:#FDB913;\n        border-radius:50%;\n    \"></div>\n\n    <!-- Content -->\n    <h1 style=\"\n        font-size:40px;\n        font-weight:600;\n        margin-bottom:25px;\n        position:relative;\n        z-index:2;\n    \">\n      Need help?\n    </h1>\n\n    <p style=\"\n              padding-top:30px;\n        font-size:18px;\n        max-width:700px;\n        margin:0 auto 35px auto;\n        line-height:1.6;\n        position:relative;\n        z-index:2;\n    \">\n      Your Georgia representatives are here to personally help you determine the best solution for you.\n    </p>\n\n    <!-- Email Button -->\n    <a href=\"mailto:contact@americanbookcompany.com\"\n       style=\"\n          display:inline-block;\n          padding:14px 30px;\n          border:2px solid #ffffff;\n          border-radius:30px;\n          color:#ffffff;\n          text-decoration:none;\n          font-size:16px;\n          font-weight:500;\n          transition:all 0.3s ease;\n          position:relative;\n          z-index:2;\n       \">\n       Email Our Sales Team\n    </a>\n\n    <!-- Phone & Fax -->\n    <div style=\"\n        margin-top:40px;\n        font-size:16px;\n        line-height:1.8;\n        position:relative;\n        z-index:2;\n    \">\n      Phone: (888) 264-5877<br>\n      Fax: (866) 827-3240\n    </div>\n\n  </div>\n</div>"
+                  },
+                  "definition" : "community_builder:htmlEditor",
+                  "id" : "5b788b7c-cb7a-4ed4-80ed-db0191339f15",
+                  "type" : "component"
+                } ],
+                "id" : "6df82851-cb7e-4636-a482-1995bea8f26f",
+                "name" : "col1",
+                "title" : "Column 1",
+                "type" : "region"
+              }, {
+                "children" : [ {
+                  "attributes" : { },
+                  "definition" : "c:stateReps",
+                  "id" : "90fa2fc9-11db-4177-8638-349dac40f500",
+                  "type" : "component"
+                } ],
+                "id" : "2e7d7f33-65aa-4db7-989c-839ee015294e",
+                "name" : "fa147",
+                "title" : "Column 2",
+                "type" : "region"
+              } ],
+              "customCssClasses" : "back-grey",
+              "definition" : "dxp_layout:columns",
+              "id" : "4f516946-635c-4385-960b-3a93bd89f41e",
+              "type" : "component"
+            } ],
+            "id" : "beeafe67-2ab0-46f1-9dc7-890455c9dc73",
+            "name" : "col1",
+            "title" : "Column 1",
+            "type" : "region"
+          } ],
+          "customCssClasses" : "back-grey",
+          "definition" : "community_layout:section",
+          "id" : "91dceb1a-90be-43ee-bce2-a3ab755ce945",
+          "scopedBrandingSetId" : "B2B_Right_Panel",
+          "type" : "component"
+        } ],
+        "id" : "44bdb39c-ddc4-4ff9-868f-8e6807b465ff",
+        "name" : "content",
+        "title" : "Content",
+        "type" : "region"
+      }, {
+        "children" : [ {
+          "attributes" : {
+            "customHeadTags" : "",
+            "description" : "",
+            "dxpStyle" : { },
+            "pageTitle" : "Home",
+            "recordId" : "{!recordId}"
+          },
+          "definition" : "community_builder:seoAssistant",
+          "id" : "b409eda1-fd18-4b26-824b-9dfd560d2d06",
+          "type" : "component"
+        } ],
+        "id" : "cd339fda-06a8-4e52-9375-e1a53b2e2b57",
+        "name" : "sfdcHiddenRegion",
+        "title" : "sfdcHiddenRegion",
+        "type" : "region"
+      } ],
+      "definition" : "community_layout:sldsFlexibleLayout",
+      "id" : "29f5a571-6b58-4187-b2b6-062bab5508f1",
+      "type" : "component"
+    },
+    "dataProviders" : [ ],
+    "themeLayoutType" : "Inner",
+    "viewType" : "home"
+  },
+  "urlName" : "home"
+}
