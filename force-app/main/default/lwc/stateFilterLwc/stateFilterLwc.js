@@ -1,13 +1,18 @@
 import { LightningElement, api, track } from "lwc";
 import isGuest from "@salesforce/user/isGuest";
+import getFavoriteState from "@salesforce/apex/WishlistController.getFavoriteState";
+import toggleFavorite from "@salesforce/apex/WishlistController.toggleFavorite";
 
 const STORAGE_KEY = "abc_selected_state";
 const CHECKOUT_STAGE_KEY = "abc_checkout_stage";
+const CART_FILLED_RECOVERY_RELOAD_KEY = "abc_cart_filled_recovery_reload";
+const DEFAULT_WEBSTORE_ID = "0ZEam000004dJDNGA2";
 const LOGIN_URL = "/AmericanBookCompany/login";
 const GUEST_LOGIN_GUARD_PATHS = new Set([
   "/AmericanBookCompany/mylists",
   "/AmericanBookCompany/my-orders"
 ]);
+const CART_PRODUCT_DETAIL_PATTERN = /\/product\/detail\/([A-Za-z0-9]+)/;
 
 const STATE_ABBREVIATIONS = {
   Alabama: "AL",
@@ -148,6 +153,8 @@ export default class StateFilterLwc extends LightningElement {
   _cleanT2;
   _searchInputWatchId;
   _cartPatchId;
+  cartWishlistStates = new Map();
+  cartWishlistPendingProductIds = new Set();
 
   connectedCallback() {
     if (this.redirectGuestAccountPageToLogin()) {
@@ -413,11 +420,16 @@ export default class StateFilterLwc extends LightningElement {
       this.normalizeCartHeading();
       this.normalizeCartSummaryHeading();
 
-      const cartBody = document.querySelector('section[data-automation="cartBody"]');
-      const emptyHeading = this.findElementByExactText(
-        ["h1", "h2", "p", "div", "span"],
-        "Your cart is empty"
+      const cartBody = document.querySelector(
+        'section[data-automation="cartBody"]'
       );
+      const emptyHeadingSelectors = ["h1", "h2", "p", "div", "span"];
+      const emptyHeading =
+        this.findElementByExactText(
+          emptyHeadingSelectors,
+          "Your cart is empty"
+        ) ||
+        this.findElementByExactText(emptyHeadingSelectors, "No items in cart");
 
       if (cartBody && emptyHeading) {
         document.body.dataset.abcCartEmpty = "true";
@@ -426,12 +438,20 @@ export default class StateFilterLwc extends LightningElement {
       }
 
       delete document.body.dataset.abcCartEmpty;
+
+      if (this.shouldRecoverFilledCart(cartBody)) {
+        this.recoverFilledCart();
+        return;
+      }
+
+      this.clearFilledCartRecoveryFlag();
       this.restoreFilledCartMainColumn();
       this.normalizeFilledCartHeading();
       this.hideCartChromeForFilledState();
       this.renameDeleteActions();
       this.normalizeCartItemTitles();
       this.normalizeCartActionArea();
+      this.syncCartWishlistActions();
     } catch {
       // ignore
     }
@@ -451,7 +471,10 @@ export default class StateFilterLwc extends LightningElement {
     document.body.dataset.abcCheckoutStage = currentStage;
 
     if (currentStage === "gate") {
-      const guestButton = this.findElementByExactText(["button"], "Continue as Guest");
+      const guestButton = this.findElementByExactText(
+        ["button"],
+        "Continue as Guest"
+      );
       const signInButton = this.findElementByExactText(["button"], "Sign In");
 
       this.bindCheckoutStageAdvance(guestButton);
@@ -539,7 +562,9 @@ export default class StateFilterLwc extends LightningElement {
   }
 
   normalizeCartHeading() {
-    const cartHeadingCandidates = Array.from(document.querySelectorAll("h1, p"));
+    const cartHeadingCandidates = Array.from(
+      document.querySelectorAll("h1, p")
+    );
 
     cartHeadingCandidates.forEach((el) => {
       const text = (el.textContent || "").trim();
@@ -550,7 +575,10 @@ export default class StateFilterLwc extends LightningElement {
   }
 
   normalizeCartSummaryHeading() {
-    const summaryHeading = this.findElementByExactText(["h1", "h2", "p", "div", "span"], "Summary");
+    const summaryHeading = this.findElementByExactText(
+      ["h1", "h2", "p", "div", "span"],
+      "Summary"
+    );
     if (summaryHeading) {
       summaryHeading.textContent = "Order Summary";
     }
@@ -601,12 +629,16 @@ export default class StateFilterLwc extends LightningElement {
       }
     });
 
-    const pagination = document.querySelector("commerce_cart-managed-contents nav");
+    const pagination = document.querySelector(
+      "commerce_cart-managed-contents nav"
+    );
     if (pagination) {
       pagination.style.display = "none";
     }
 
-    const sortControl = document.querySelector("commerce_cart-header lightning-combobox");
+    const sortControl = document.querySelector(
+      "commerce_cart-header lightning-combobox"
+    );
     if (sortControl) {
       const wrapper = sortControl.closest("div");
       if (wrapper) {
@@ -619,7 +651,10 @@ export default class StateFilterLwc extends LightningElement {
       clearCart.style.display = "none";
     }
 
-    const couponLink = this.findElementByExactText(["a", "button"], "Enter a Coupon Code");
+    const couponLink = this.findElementByExactText(
+      ["a", "button"],
+      "Enter a Coupon Code"
+    );
     if (couponLink) {
       couponLink.style.display = "none";
     }
@@ -644,7 +679,11 @@ export default class StateFilterLwc extends LightningElement {
   }
 
   normalizeCartItemTitles() {
-    const itemLinks = Array.from(document.querySelectorAll("commerce_cart-managed-contents a, commerce_cart-managed-contents p"));
+    const itemLinks = Array.from(
+      document.querySelectorAll(
+        "commerce_cart-managed-contents a, commerce_cart-managed-contents p"
+      )
+    );
     itemLinks.forEach((el) => {
       const text = (el.textContent || "").trim();
       if (text.endsWith(" - Color Print + Digital")) {
@@ -654,21 +693,62 @@ export default class StateFilterLwc extends LightningElement {
   }
 
   restoreFilledCartMainColumn() {
-    const mainColumn = document.querySelector(
-      'community_layout-column.col-large-size_7-of-12'
-    );
-    const content = mainColumn?.querySelector(':scope > div.column-content');
+    const { mainColumn, spacerColumn, summaryColumn } =
+      this.getCartLayoutColumns();
+    const contentNodes = mainColumn
+      ? Array.from(mainColumn.querySelectorAll(".column-content"))
+      : [];
 
-    if (content) {
+    if (mainColumn) {
+      mainColumn.style.removeProperty("flex");
+      mainColumn.style.removeProperty("max-width");
+    }
+
+    if (spacerColumn) {
+      spacerColumn.style.removeProperty("display");
+    }
+
+    if (summaryColumn) {
+      summaryColumn.style.removeProperty("display");
+    }
+
+    contentNodes.forEach((content) => {
       content.style.setProperty("display", "block", "important");
       content.style.setProperty("width", "100%", "important");
-    }
+    });
+  }
+
+  getCartLayoutColumns() {
+    const cartSection = document
+      .querySelector('section[data-automation="cartBody"]')
+      ?.closest("community_layout-section");
+
+    return {
+      mainColumn: cartSection?.querySelector(
+        "community_layout-column.col-large-size_7-of-12"
+      ),
+      spacerColumn: cartSection?.querySelector(
+        "community_layout-column.col-large-size_1-of-12"
+      ),
+      summaryColumn: cartSection?.querySelector(
+        "community_layout-column.col-large-size_4-of-12"
+      )
+    };
   }
 
   normalizeCartActionArea() {
-    const downloadButton = this.findElementByExactText(["button", "a"], "Download a Quote");
-    const checkoutButton = this.findElementByExactText(["button", "a"], "Proceed to Checkout");
-    const poLink = this.findElementByExactText(["button", "a"], "Need to submit a PO?");
+    const downloadButton = this.findElementByExactText(
+      ["button", "a"],
+      "Download a Quote"
+    );
+    const checkoutButton = this.findElementByExactText(
+      ["button", "a"],
+      "Proceed to Checkout"
+    );
+    const poLink = this.findElementByExactText(
+      ["button", "a"],
+      "Need to submit a PO?"
+    );
 
     if (downloadButton) {
       this.applyButtonStyle(downloadButton, {
@@ -703,6 +783,134 @@ export default class StateFilterLwc extends LightningElement {
     }
   }
 
+  syncCartWishlistActions() {
+    const cartItems = Array.from(
+      document.querySelectorAll("commerce_cart-managed-contents article")
+    );
+
+    cartItems.forEach((article) => {
+      const productId = this.resolveCartProductId(article);
+      const actionArea = article.querySelector(".item-actions");
+
+      if (!productId || !actionArea) {
+        return;
+      }
+
+      const button = this.ensureCartWishlistButton(actionArea, productId);
+      const isPending = this.cartWishlistPendingProductIds.has(productId);
+      const isFavorite = this.cartWishlistStates.get(productId);
+      let label = "Add to Wishlist";
+
+      if (isPending) {
+        label = "Updating...";
+      } else if (isFavorite) {
+        label = "Remove from Wishlist";
+      }
+
+      button.textContent = label;
+      button.disabled = isPending;
+      button.setAttribute("aria-label", label);
+      button.setAttribute("title", label);
+
+      if (!isGuest && isFavorite === undefined && !isPending) {
+        this.loadCartWishlistState(productId);
+      }
+    });
+  }
+
+  ensureCartWishlistButton(actionArea, productId) {
+    let button = actionArea.querySelector(".abc-cart-wishlist-button");
+
+    if (!button) {
+      button = document.createElement("button");
+      button.type = "button";
+      button.className = "abc-cart-wishlist-button";
+      button.addEventListener("click", (event) => {
+        this.handleCartWishlistClick(event);
+      });
+      actionArea.insertBefore(button, actionArea.firstChild);
+    }
+
+    button.dataset.productId = productId;
+    return button;
+  }
+
+  resolveCartProductId(article) {
+    const productLink = article.querySelector(
+      '.item-name a[href*="/product/detail/"], a[href*="/product/detail/"]'
+    );
+
+    return this.extractProductIdFromHref(
+      productLink?.getAttribute("href") || ""
+    );
+  }
+
+  extractProductIdFromHref(href) {
+    const match = CART_PRODUCT_DETAIL_PATTERN.exec(String(href || ""));
+    return match?.[1] || "";
+  }
+
+  async loadCartWishlistState(productId) {
+    if (!productId || this.cartWishlistPendingProductIds.has(productId)) {
+      return;
+    }
+
+    this.cartWishlistPendingProductIds.add(productId);
+    this.syncCartWishlistActions();
+
+    try {
+      const result = await getFavoriteState({
+        productId,
+        webStoreId: DEFAULT_WEBSTORE_ID
+      });
+      this.cartWishlistStates.set(productId, Boolean(result?.favorite));
+    } catch {
+      this.cartWishlistStates.set(productId, false);
+    } finally {
+      this.cartWishlistPendingProductIds.delete(productId);
+      this.syncCartWishlistActions();
+    }
+  }
+
+  async handleCartWishlistClick(event) {
+    const productId = event.currentTarget?.dataset?.productId || "";
+
+    if (!productId || this.cartWishlistPendingProductIds.has(productId)) {
+      return;
+    }
+
+    if (isGuest) {
+      const startUrl = `${globalThis.location.pathname}${globalThis.location.search}${globalThis.location.hash}`;
+      globalThis.location.assign(
+        `${LOGIN_URL}?startURL=${encodeURIComponent(startUrl)}`
+      );
+      return;
+    }
+
+    const previousState = this.cartWishlistStates.get(productId) === true;
+    this.cartWishlistPendingProductIds.add(productId);
+    this.syncCartWishlistActions();
+
+    try {
+      const result = await toggleFavorite({
+        productId,
+        webStoreId: DEFAULT_WEBSTORE_ID
+      });
+
+      if (result?.success === false) {
+        this.cartWishlistStates.set(productId, previousState);
+        return;
+      }
+
+      this.cartWishlistStates.set(productId, Boolean(result?.favorite));
+    } catch {
+      this.cartWishlistStates.set(productId, previousState);
+    } finally {
+      this.cartWishlistPendingProductIds.delete(productId);
+      this.syncCartWishlistActions();
+    }
+  }
+
   applyButtonStyle(element, options) {
     element.style.display = "flex";
     element.style.alignItems = "center";
@@ -721,60 +929,93 @@ export default class StateFilterLwc extends LightningElement {
     element.style.border = options.border;
   }
 
-  applyEmptyCartPatch(cartBody) {
+  applyEmptyCartPatch() {
     this.normalizeCartHeading();
-
-    if (!cartBody.querySelector(".abc-cart-empty-state")) {
-      cartBody.innerHTML = [
-        '<div class="abc-cart-empty-state">',
-        '<p class="abc-cart-empty-message">No items in cart</p>',
-        '<img class="abc-cart-empty-image" src="https://americanbookcompany.com/images/need-to-download-a-quote-wide.svg" alt="Need to download a quote? Add items to your cart to begin.">',
-        "</div>"
-      ].join("");
-    }
 
     const clearCart = document.querySelector('[data-automation="clearCart"]');
     if (clearCart) {
       clearCart.style.display = "none";
     }
 
-    const checkoutButton = this.findElementByExactText(["button", "a"], "Checkout");
+    const checkoutButton = this.findElementByExactText(
+      ["button", "a"],
+      "Checkout"
+    );
     if (checkoutButton) {
       checkoutButton.style.display = "none";
     }
 
-    const continueShopping = this.findElementByExactText(["a", "button"], "Continue Shopping");
+    const continueShopping = this.findElementByExactText(
+      ["a", "button"],
+      "Continue Shopping"
+    );
     if (continueShopping) {
       continueShopping.style.display = "none";
     }
 
-    const mainColumn = document.querySelector(
-      'community_layout-section[data-component-id="section-5592"] community_layout-column.col-large-size_7-of-12'
-    );
+    const { mainColumn, spacerColumn, summaryColumn } =
+      this.getCartLayoutColumns();
+
     if (mainColumn) {
       mainColumn.style.flex = "0 0 100%";
       mainColumn.style.maxWidth = "100%";
     }
 
-    const spacerColumn = document.querySelector(
-      'community_layout-section[data-component-id="section-5592"] community_layout-column.col-large-size_1-of-12'
-    );
     if (spacerColumn) {
       spacerColumn.style.display = "none";
     }
 
-    const summaryColumn = document.querySelector(
-      'community_layout-section[data-component-id="section-5592"] community_layout-column.col-large-size_4-of-12'
-    );
     if (summaryColumn) {
       summaryColumn.style.display = "none";
+    }
+  }
+
+  shouldRecoverFilledCart(cartBody) {
+    return Boolean(
+      cartBody?.querySelector(":scope > .abc-cart-empty-state") &&
+      !cartBody.querySelector("article") &&
+      !this.hasFilledCartRecoveryRun()
+    );
+  }
+
+  recoverFilledCart() {
+    try {
+      globalThis.sessionStorage?.setItem(
+        CART_FILLED_RECOVERY_RELOAD_KEY,
+        "true"
+      );
+    } catch {
+      // ignore
+    }
+
+    globalThis.location.reload();
+  }
+
+  hasFilledCartRecoveryRun() {
+    try {
+      return (
+        globalThis.sessionStorage?.getItem(CART_FILLED_RECOVERY_RELOAD_KEY) ===
+        "true"
+      );
+    } catch {
+      return false;
+    }
+  }
+
+  clearFilledCartRecoveryFlag() {
+    try {
+      globalThis.sessionStorage?.removeItem(CART_FILLED_RECOVERY_RELOAD_KEY);
+    } catch {
+      // ignore
     }
   }
 
   findElementByExactText(selectors, text) {
     for (const selector of selectors) {
       const candidates = Array.from(document.querySelectorAll(selector));
-      const match = candidates.find((el) => (el.textContent || "").trim() === text);
+      const match = candidates.find(
+        (el) => (el.textContent || "").trim() === text
+      );
       if (match) {
         return match;
       }
@@ -1036,7 +1277,11 @@ export default class StateFilterLwc extends LightningElement {
       }
 
       if (urlObj.hash) {
-        globalThis.history.replaceState({}, "", urlObj.pathname + urlObj.search);
+        globalThis.history.replaceState(
+          {},
+          "",
+          urlObj.pathname + urlObj.search
+        );
         this._lastHref = globalThis.location.href;
       }
     } catch {

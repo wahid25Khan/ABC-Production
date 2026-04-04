@@ -1,40 +1,60 @@
-import { LightningElement, api } from 'lwc';
+import { LightningElement, api } from "lwc";
+import {
+  readStateFromStorage,
+  getCurrentProductId,
+  normalizeProduct,
+  extractProductList,
+  buildProductDetailPath,
+  scrollCarouselToIndex,
+  DEFAULT_STORE_NAME
+} from "c/utils";
 
-const DEFAULT_STORE_NAME = 'AmericanBookCompany';
-const DEFAULT_WEBSTORE_ID = '0ZEam000004dJDNGA2';
-const STATE_STORAGE_KEY = 'abc_selected_state';
-const PRODUCT_ID_PATTERN = /01t[a-zA-Z0-9]{12,15}/;
+const DEFAULT_WEBSTORE_ID = "0ZEam000004dJDNGA2";
+const RESIZE_DEBOUNCE_MS = 150;
 
 export default class SimilarProductsBySubject extends LightningElement {
   @api storeName = DEFAULT_STORE_NAME;
   @api webStoreId = DEFAULT_WEBSTORE_ID;
   @api maxProducts = 18;
   @api visibleCount = 6;
-  @api refinementKey = 'State__c';
-  @api searchTerm = '';
+  @api refinementKey = "State__c";
+  @api searchTerm = "";
 
   products = [];
 
   loading = false;
   showProducts = false;
   currentIndex = 0;
-  currentProductId = '';
-  selectedState = '';
-  selectedSubject = '';
+  currentProductId = "";
+  selectedState = "";
+  selectedSubject = "";
   _effectiveVisible = 6;
   _resizeHandler = null;
+  _resizeTimerId = null;
 
   connectedCallback() {
     this._updateEffectiveVisible();
-    this._resizeHandler = () => this._updateEffectiveVisible();
-    globalThis.addEventListener('resize', this._resizeHandler);
+    this._resizeHandler = () => {
+      if (this._resizeTimerId) {
+        clearTimeout(this._resizeTimerId);
+      }
+      this._resizeTimerId = setTimeout(() => {
+        this._updateEffectiveVisible();
+        this._resizeTimerId = null;
+      }, RESIZE_DEBOUNCE_MS);
+    };
+    globalThis.addEventListener("resize", this._resizeHandler);
     this.initialize();
   }
 
   disconnectedCallback() {
     if (this._resizeHandler) {
-      globalThis.removeEventListener('resize', this._resizeHandler);
+      globalThis.removeEventListener("resize", this._resizeHandler);
       this._resizeHandler = null;
+    }
+    if (this._resizeTimerId) {
+      clearTimeout(this._resizeTimerId);
+      this._resizeTimerId = null;
     }
   }
 
@@ -53,8 +73,8 @@ export default class SimilarProductsBySubject extends LightningElement {
   }
 
   get baseSearchTerm() {
-    const value = String(this.searchTerm || '').trim();
-    return value || '*';
+    const value = String(this.searchTerm || "").trim();
+    return value || "*";
   }
 
   get canGoLeft() {
@@ -92,15 +112,15 @@ export default class SimilarProductsBySubject extends LightningElement {
   }
 
   get headingText() {
-    return 'You might also like';
+    return "You might also like";
   }
 
   async initialize() {
     this.loading = true;
 
     try {
-      this.currentProductId = this.getCurrentProductId();
-      this.selectedState = this.getSelectedState();
+      this.currentProductId = getCurrentProductId();
+      this.selectedState = readStateFromStorage();
       this.selectedSubject = this.getSelectedSubject();
 
       if (!this.selectedSubject) {
@@ -110,7 +130,7 @@ export default class SimilarProductsBySubject extends LightningElement {
 
       const fetchedProducts = await this.fetchProducts();
       this.products = fetchedProducts
-        .map((item) => this.normalizeProduct(item))
+        .map((item) => normalizeProduct(item))
         .filter(Boolean)
         .filter((item) => !this.isCurrentProduct(item))
         .filter((item) => this.matchesSubject(item))
@@ -118,7 +138,7 @@ export default class SimilarProductsBySubject extends LightningElement {
 
       this.showProducts = this.products.length > 0;
       this.currentIndex = 0;
-      this.scrollToCurrentIndex('auto');
+      this.scrollToCurrentIndex("auto");
     } catch {
       this.resetProducts();
     } finally {
@@ -135,8 +155,8 @@ export default class SimilarProductsBySubject extends LightningElement {
   async fetchProducts() {
     try {
       const response = await fetch(this.buildSearchEndpoint(), {
-        method: 'GET',
-        credentials: 'include'
+        method: "GET",
+        credentials: "include"
       });
 
       if (!response.ok) {
@@ -144,40 +164,28 @@ export default class SimilarProductsBySubject extends LightningElement {
       }
 
       const data = await response.json();
-      return this.extractProductList(data);
+      return extractProductList(data);
     } catch {
       return [];
     }
-  }
-
-  extractProductList(data) {
-    // N7 fix: Check all 5 API response shapes (matching customResults/similarProductsByState)
-    const list =
-      data?.productsPage?.products ||
-      data?.productPage?.products ||
-      data?.productSearchResult?.products ||
-      data?.searchProductResult?.products ||
-      data?.products;
-
-    return Array.isArray(list) ? list : [];
   }
 
   buildSearchEndpoint() {
     const storeName = this.storeName || DEFAULT_STORE_NAME;
     const webStoreId = this.webStoreId || DEFAULT_WEBSTORE_ID;
     const base = `/${storeName}/webruntime/api/services/data/v66.0/commerce/webstores/${webStoreId}/search/products`;
-    const state = String(this.selectedState || '').trim();
+    const state = String(this.selectedState || "").trim();
 
     const params = new URLSearchParams({
-      language: 'en-US',
-      asGuest: 'true',
+      language: "en-US",
+      asGuest: "true",
       searchTerm: this.buildSearchTermWithStateAndSubject(),
-      page: '0',
+      page: "0",
       pageSize: String(this.normalizedMaxProducts + this.normalizedVisibleCount)
     });
 
     if (state) {
-      params.set('refinement', `${this.refinementKey}:${state}`);
+      params.set("refinement", `${this.refinementKey}:${state}`);
     }
 
     return `${base}?${params.toString()}`;
@@ -186,10 +194,10 @@ export default class SimilarProductsBySubject extends LightningElement {
   buildSearchTermWithStateAndSubject() {
     const terms = [];
     const base = this.baseSearchTerm;
-    const state = String(this.selectedState || '').trim();
-    const subject = String(this.selectedSubject || '').trim();
+    const state = String(this.selectedState || "").trim();
+    const subject = String(this.selectedSubject || "").trim();
 
-    if (base && base !== '*') {
+    if (base && base !== "*") {
       terms.push(base);
     }
 
@@ -212,46 +220,40 @@ export default class SimilarProductsBySubject extends LightningElement {
       }
     }
 
-    if (deduped.length) return deduped.join(' ');
-    const fallback = String(this.searchTerm || '').trim();
-    return fallback && fallback !== '*' ? fallback : 'all';
-  }
-
-  getSelectedState() {
-    try {
-      return (globalThis.localStorage.getItem(STATE_STORAGE_KEY) || '').trim();
-    } catch {
-      return '';
-    }
+    if (deduped.length) return deduped.join(" ");
+    const fallback = String(this.searchTerm || "").trim();
+    return fallback && fallback !== "*" ? fallback : "all";
   }
 
   getSelectedSubject() {
     const slug = this.getProductSlugFromPath();
     const match = /-grade-\d+-(.+)$/i.exec(slug);
-    const subjectSlug = match?.[1] ?? '';
+    const subjectSlug = match?.[1] ?? "";
 
     if (!subjectSlug) {
-      return '';
+      return "";
     }
 
     return subjectSlug
-      .split('-')
+      .split("-")
       .filter(Boolean)
       .map((part) => part.charAt(0).toUpperCase() + part.slice(1).toLowerCase())
-      .join(' ')
+      .join(" ")
       .trim();
   }
 
   getProductSlugFromPath() {
     if (!globalThis.location?.pathname) {
-      return '';
+      return "";
     }
 
-    const parts = globalThis.location.pathname.split('/').filter(Boolean);
-    const productIndex = parts.findIndex((segment) => segment.toLowerCase() === 'product');
+    const parts = globalThis.location.pathname.split("/").filter(Boolean);
+    const productIndex = parts.findIndex(
+      (segment) => segment.toLowerCase() === "product"
+    );
 
     if (productIndex === -1 || productIndex + 1 >= parts.length) {
-      return '';
+      return "";
     }
 
     try {
@@ -261,49 +263,13 @@ export default class SimilarProductsBySubject extends LightningElement {
     }
   }
 
-  getCurrentProductId() {
-    if (!globalThis.location?.href) {
-      return '';
-    }
-
-    const fromQuery = new URLSearchParams(globalThis.location.search || '').get('pid');
-    if (fromQuery) {
-      return fromQuery;
-    }
-
-    const fullUrl = globalThis.location.href;
-    const sfProductId = PRODUCT_ID_PATTERN.exec(fullUrl);
-    if (sfProductId?.[0]) {
-      return sfProductId[0];
-    }
-
-    const parts = (globalThis.location?.pathname ?? '').split('/').filter(Boolean);
-    const lastSegment = parts.length ? decodeURIComponent(parts.at(-1)) : '';
-    return PRODUCT_ID_PATTERN.test(lastSegment) ? lastSegment : '';
-  }
-
-  normalizeProduct(item) {
-    const id = String(item?.id || '').trim();
-    if (!id) {
-      return null;
-    }
-
-    const name = String(item.name || '').trim() || 'Untitled';
-    const imageUrl = this.resolveProductImageUrl(item);
-    const urlName = String(item.urlName || item.slug || '').trim();
-
-    return {
-      ...item,
-      id,
-      name,
-      imageUrl,
-      urlName
-    };
-  }
-
   isCurrentProduct(product) {
-    const currentId = String(this.currentProductId || '').trim().toLowerCase();
-    const productId = String(product?.id || '').trim().toLowerCase();
+    const currentId = String(this.currentProductId || "")
+      .trim()
+      .toLowerCase();
+    const productId = String(product?.id || "")
+      .trim()
+      .toLowerCase();
 
     if (!currentId || !productId) {
       return false;
@@ -313,28 +279,15 @@ export default class SimilarProductsBySubject extends LightningElement {
   }
 
   matchesSubject(product) {
-    const subject = String(this.selectedSubject || '').trim().toLowerCase();
+    const subject = String(this.selectedSubject || "")
+      .trim()
+      .toLowerCase();
     if (!subject) {
       return true;
     }
 
-    const name = String(product?.name || '').toLowerCase();
+    const name = String(product?.name || "").toLowerCase();
     return name.includes(subject);
-  }
-
-  resolveProductImageUrl(item) {
-    const imageUrl = item?.defaultImage?.url || item?.image?.url || item?.imageUrl || '';
-    return typeof imageUrl === 'string' ? imageUrl.trim() : '';
-  }
-
-  buildProductDetailPath(product) {
-    const nameSource = product.urlName || product.name || 'detail';
-    const recordName = String(nameSource)
-      .toLowerCase()
-      .replaceAll(/[^a-z0-9]+/g, '-')
-      .replaceAll(/^-+|-+$/g, '');
-
-    return `/${this.storeName || DEFAULT_STORE_NAME}/product/${recordName || 'detail'}/${product.id}`;
   }
 
   handleClickProduct(event) {
@@ -348,7 +301,7 @@ export default class SimilarProductsBySubject extends LightningElement {
       return;
     }
 
-    globalThis.location.href = this.buildProductDetailPath(product);
+    globalThis.location.href = buildProductDetailPath(product, this.storeName);
   }
 
   handlePrev() {
@@ -357,7 +310,7 @@ export default class SimilarProductsBySubject extends LightningElement {
     }
 
     this.currentIndex = Math.max(0, this.currentIndex - 1);
-    this.scrollToCurrentIndex('smooth');
+    this.scrollToCurrentIndex("smooth");
   }
 
   handleNext() {
@@ -367,29 +320,10 @@ export default class SimilarProductsBySubject extends LightningElement {
 
     const maxStart = Math.max(0, this.products.length - this._effectiveVisible);
     this.currentIndex = Math.min(maxStart, this.currentIndex + 1);
-    this.scrollToCurrentIndex('smooth');
+    this.scrollToCurrentIndex("smooth");
   }
 
-  scrollToCurrentIndex(behavior = 'smooth') {
-    globalThis.requestAnimationFrame(() => {
-      const viewport = this.template.querySelector('.products-viewport');
-      const track = this.template.querySelector('.products-track');
-      const firstCard = this.template.querySelector('.product-card');
-
-      if (!viewport || !track || !firstCard) {
-        return;
-      }
-
-      const style = globalThis.getComputedStyle(track);
-      const gapValue = style.columnGap || style.gap || '0';
-      const gap = Number.parseFloat(gapValue) || 0;
-      const cardWidth = firstCard.getBoundingClientRect().width;
-      const left = Math.max(0, this.currentIndex * (cardWidth + gap));
-
-      viewport.scrollTo({
-        left,
-        behavior
-      });
-    });
+  scrollToCurrentIndex(behavior = "smooth") {
+    scrollCarouselToIndex(this.template, this.currentIndex, behavior);
   }
 }

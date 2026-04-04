@@ -1,13 +1,13 @@
-import { LightningElement, api } from 'lwc';
+import { LightningElement, api } from "lwc";
 
-const DEFAULT_STORE_NAME = 'AmericanBookCompany';
-const DEFAULT_WEBSTORE_ID = '0ZEam000004dJDNGA2';
+const DEFAULT_STORE_NAME = "AmericanBookCompany";
+const DEFAULT_WEBSTORE_ID = "0ZEam000004dJDNGA2";
 
 export default class ProductRecommendation extends LightningElement {
   @api storeName = DEFAULT_STORE_NAME;
   @api webStoreId = DEFAULT_WEBSTORE_ID;
-  @api recommender = 'RecentlyViewed';
-  @api anchorValues = '';
+  @api recommender = "RecentlyViewed";
+  @api anchorValues = "";
   @api maxProducts = 18;
   @api visibleCount = 6;
 
@@ -21,7 +21,7 @@ export default class ProductRecommendation extends LightningElement {
   }
 
   get headingText() {
-    return 'Recently Viewed';
+    return "Recently Viewed";
   }
 
   get normalizedMaxProducts() {
@@ -43,7 +43,9 @@ export default class ProductRecommendation extends LightningElement {
   }
 
   get canGoRight() {
-    return this.currentIndex + this.normalizedVisibleCount < this.products.length;
+    return (
+      this.currentIndex + this.normalizedVisibleCount < this.products.length
+    );
   }
 
   get disablePrev() {
@@ -65,8 +67,8 @@ export default class ProductRecommendation extends LightningElement {
       const endpoint = this.buildEndpoint();
 
       const response = await fetch(endpoint, {
-        method: 'GET',
-        credentials: 'include'
+        method: "GET",
+        credentials: "include"
       });
 
       if (!response.ok) {
@@ -78,15 +80,18 @@ export default class ProductRecommendation extends LightningElement {
 
       this.products = fetchedProducts
         .map((item) => this.normalizeProduct(item))
-        .filter((item) => Boolean(item))
+        .filter(Boolean)
         .slice(0, this.normalizedMaxProducts);
 
       this.showProducts = this.products.length > 0;
       this.currentIndex = 0;
-      this.scrollToCurrentIndex('auto');
+      this.scrollToCurrentIndex("auto");
     } catch (error) {
       // N8 fix: Log the error instead of silently discarding it
-      console.warn('ProductRecommendation: failed to load recommendations.', error?.message || error);
+      console.warn(
+        "ProductRecommendation: failed to load recommendations.",
+        error?.message || error
+      );
       this.products = [];
       this.showProducts = false;
       this.currentIndex = 0;
@@ -107,13 +112,13 @@ export default class ProductRecommendation extends LightningElement {
   }
 
   normalizeProduct(item) {
-    const id = String(item?.id || '').trim();
+    const id = String(item?.id || "").trim();
     if (!id) {
       return null;
     }
 
-    const name = String(item.name || '').trim() || 'Untitled';
-    const urlName = String(item.urlName || item.slug || '').trim();
+    const name = String(item.name || "").trim() || "Untitled";
+    const urlName = String(item.urlName || item.slug || "").trim();
     const imageUrl = this.resolveProductImageUrl(item);
 
     return {
@@ -126,8 +131,9 @@ export default class ProductRecommendation extends LightningElement {
   }
 
   resolveProductImageUrl(item) {
-    const imageUrl = item?.defaultImage?.url || item?.image?.url || item?.imageUrl || '';
-    return typeof imageUrl === 'string' ? imageUrl.trim() : '';
+    const imageUrl =
+      item?.defaultImage?.url || item?.image?.url || item?.imageUrl || "";
+    return typeof imageUrl === "string" ? imageUrl.trim() : "";
   }
 
   handleClickProduct(event) {
@@ -141,17 +147,17 @@ export default class ProductRecommendation extends LightningElement {
       return;
     }
 
-    window.location.href = this.buildProductDetailPath(product);
+    globalThis.location.href = this.buildProductDetailPath(product);
   }
 
   buildProductDetailPath(product) {
-    const nameSource = product.urlName || product.name || 'detail';
+    const nameSource = product.urlName || product.name || "detail";
     const recordName = String(nameSource)
       .toLowerCase()
-      .replace(/[^a-z0-9]+/g, '-')
-      .replace(/^-+|-+$/g, '');
+      .replaceAll(/[^a-z0-9]+/g, "-")
+      .replaceAll(/^-+|-+$/g, "");
 
-    return `/${this.storeName || DEFAULT_STORE_NAME}/product/${recordName || 'detail'}/${product.id}`;
+    return `/${this.storeName || DEFAULT_STORE_NAME}/product/${recordName || "detail"}/${product.id}`;
   }
 
   handlePrev() {
@@ -160,7 +166,7 @@ export default class ProductRecommendation extends LightningElement {
     }
 
     this.currentIndex = Math.max(0, this.currentIndex - 1);
-    this.scrollToCurrentIndex('smooth');
+    this.scrollToCurrentIndex("smooth");
   }
 
   handleNext() {
@@ -168,23 +174,26 @@ export default class ProductRecommendation extends LightningElement {
       return;
     }
 
-    const maxStart = Math.max(0, this.products.length - this.normalizedVisibleCount);
+    const maxStart = Math.max(
+      0,
+      this.products.length - this.normalizedVisibleCount
+    );
     this.currentIndex = Math.min(maxStart, this.currentIndex + 1);
-    this.scrollToCurrentIndex('smooth');
+    this.scrollToCurrentIndex("smooth");
   }
 
-  scrollToCurrentIndex(behavior = 'smooth') {
-    window.requestAnimationFrame(() => {
-      const viewport = this.template.querySelector('.products-viewport');
-      const track = this.template.querySelector('.products-track');
-      const firstCard = this.template.querySelector('.product-card');
+  scrollToCurrentIndex(behavior = "smooth") {
+    globalThis.requestAnimationFrame(() => {
+      const viewport = this.template.querySelector(".products-viewport");
+      const track = this.template.querySelector(".products-track");
+      const firstCard = this.template.querySelector(".product-card");
 
       if (!viewport || !track || !firstCard) {
         return;
       }
 
-      const style = window.getComputedStyle(track);
-      const gapValue = style.columnGap || style.gap || '0';
+      const style = globalThis.getComputedStyle(track);
+      const gapValue = style.columnGap || style.gap || "0";
       const gap = Number.parseFloat(gapValue) || 0;
       const cardWidth = firstCard.getBoundingClientRect().width;
       const left = Math.max(0, this.currentIndex * (cardWidth + gap));
@@ -200,15 +209,15 @@ export default class ProductRecommendation extends LightningElement {
     const storeName = this.storeName || DEFAULT_STORE_NAME;
     const webStoreId = this.webStoreId || DEFAULT_WEBSTORE_ID;
     const baseUrl = `/${storeName}/webruntime/api/services/data/v66.0/commerce/webstores/${webStoreId}/ai/recommendations`;
-    const recommendersToSend = this.recommender || 'RecentlyViewed';
+    const recommendersToSend = this.recommender || "RecentlyViewed";
     const params = new URLSearchParams({
-      language: 'en-US',
-      asGuest: 'true',
+      language: "en-US",
+      asGuest: "true",
       recommender: recommendersToSend
     });
 
     if (this.anchorValues) {
-      params.append('anchorValues', this.anchorValues);
+      params.append("anchorValues", this.anchorValues);
     }
 
     return `${baseUrl}?${params.toString()}`;

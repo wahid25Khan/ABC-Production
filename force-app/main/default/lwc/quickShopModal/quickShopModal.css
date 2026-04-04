@@ -197,6 +197,17 @@ button.slds-backdrop {
   margin: 6px 0 10px;
 }
 
+.pricing-error {
+  margin: 0 0 12px;
+  padding: 10px 12px;
+  border: 1px solid #fecaca;
+  border-radius: 8px;
+  background: #fff1f2;
+  color: #991b1b;
+  font-size: 14px;
+  line-height: 1.4;
+}
+
 .row-split {
   display: grid;
   grid-template-columns: auto 1fr;
@@ -407,6 +418,15 @@ button.slds-backdrop {
   padding: 0.5em;
   border: none;
 }
+
+.btn-add:disabled,
+.btn-trial:disabled,
+.details-btn:disabled,
+.heart-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
 .heart-btn {
   margin-left: auto;
   border: none;
@@ -440,6 +460,10 @@ button.slds-backdrop {
 
 .details-btn:hover {
   background: rgba(11, 116, 184, 0.06);
+}
+
+.details-btn:disabled:hover {
+  background: #fff;
 }
 
 @media (max-width: 900px) {

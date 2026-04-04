@@ -13,6 +13,9 @@
       "typescript"
     ],
     "eslint.useFlatConfig": true,
+    "salesforcedx-vscode-slds.enabled": false,
+    "salesforcedx-vscode-slds.file.scopeWithInSFDX": true,
+    "salesforcedx-vscode-slds.basic.override": false,
     "typescript.tsserver.experimental.enableProjectDiagnostics": false
   }
 }

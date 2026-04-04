@@ -23,7 +23,7 @@
 
       <!-- Body -->
       <div class="modal-body">
-        <template if:true={isLoading}>
+        <template if:true={showLoadingOverlay}>
           <div class="loader-overlay">
             <lightning-spinner
               alternative-text="Loading"
@@ -72,11 +72,18 @@
                     onclick={handleTabClick}
                     data-index={v.index}
                     role="tab"
-                    aria-selected={v.ariaSelected}
+                    tabindex={v.tabIndex}
                   >
                     {v.label}
                   </button>
                 </template>
+              </div>
+            </template>
+
+            <template if:true={showPricingError}>
+              <div class="pricing-error" role="alert">
+                Quick shop pricing is unavailable right now. You can still open
+                the full product page.
               </div>
             </template>
 
@@ -177,7 +184,7 @@
                     class="btn-add"
                     type="button"
                     onclick={handleAddToCart}
-                    disabled={isLoading}
+                    disabled={disableAddToCart}
                   >
                     Add to Cart
                   </button>
@@ -187,7 +194,7 @@
                     class="btn-trial"
                     type="button"
                     onclick={handleTrial}
-                    disabled={isLoading}
+                    disabled={disableViewDetails}
                   >
                     FREE Two-Week Trial!
                   </button>
@@ -198,7 +205,7 @@
                   title="Save to favorites"
                   aria-label="Save to favorites"
                   disabled={isFavoriteDisabled}
-                  onclick={toggleFavorite}
+                  onclick={handleToggleFavorite}
                 >
                   <lightning-icon
                     icon-name={heartIcon}
@@ -212,7 +219,12 @@
 
         <!-- Bottom full-width button -->
         <div class="footer-cta">
-          <button class="details-btn" type="button" onclick={handleViewDetails}>
+          <button
+            class="details-btn"
+            type="button"
+            onclick={handleViewDetails}
+            disabled={disableViewDetails}
+          >
             See Full Product Details
           </button>
         </div>

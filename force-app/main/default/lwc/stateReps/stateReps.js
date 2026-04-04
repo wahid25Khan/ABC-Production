@@ -67,11 +67,11 @@ const FOLDER_OVERRIDES = {
 
 function stateToFolder(stateName) {
   if (FOLDER_OVERRIDES[stateName]) return FOLDER_OVERRIDES[stateName];
-  return (stateName || "").toLowerCase().trim().replace(/\s+/g, "-");
+  return (stateName || "").toLowerCase().trim().replaceAll(/\s+/g, "-");
 }
 
 function toTelHref(phone) {
-  const digits = (phone || "").replace(/[^\d+]/g, "");
+  const digits = (phone || "").replaceAll(/[^\d+]/g, "");
   return digits ? `tel:${digits}` : "#";
 }
 
@@ -339,11 +339,11 @@ export default class StateReps extends LightningElement {
   _lastHref = "";
 
   connectedCallback() {
-    this._lastHref = window.location.href;
+    this._lastHref = globalThis.location.href;
     this.updateFromUrl();
 
-    this._watchId = window.setInterval(() => {
-      const href = window.location.href;
+    this._watchId = globalThis.setInterval(() => {
+      const href = globalThis.location.href;
       if (href !== this._lastHref) {
         this._lastHref = href;
         this.updateFromUrl();
@@ -352,7 +352,7 @@ export default class StateReps extends LightningElement {
   }
 
   disconnectedCallback() {
-    window.clearInterval(this._watchId);
+    globalThis.clearInterval(this._watchId);
     this._watchId = null;
   }
 
@@ -362,7 +362,7 @@ export default class StateReps extends LightningElement {
 
   getStoredState() {
     try {
-      const v = window.localStorage.getItem(STORAGE_KEY) || "";
+      const v = globalThis.localStorage.getItem(STORAGE_KEY) || "";
       return STATES.has(v) ? v : "";
     } catch {
       return "";
@@ -375,7 +375,7 @@ export default class StateReps extends LightningElement {
   }
 
   updateFromUrl() {
-    const url = new URL(window.location.href);
+    const url = new URL(globalThis.location.href);
     const state = this.resolveState(url);
     this.selectedState = state;
     this.reps = this.buildReps(state);
@@ -420,7 +420,7 @@ export default class StateReps extends LightningElement {
         const jsonStr = decodeDeep(refinementsRaw);
         const list = JSON.parse(jsonStr);
         const entry = Array.isArray(list)
-          ? list.find((r) => r && r.nameOrId === "State__c")
+          ? list.find((r) => r?.nameOrId === "State__c")
           : null;
         if (entry && Array.isArray(entry.values) && entry.values.length) {
           const v = entry.values[0];
@@ -429,13 +429,10 @@ export default class StateReps extends LightningElement {
       }
 
       const singleRef = url.searchParams.get("refinement");
-      if (singleRef) {
-        const decoded = decodeDeep(singleRef);
-        const prefix = "State__c:";
-        if (decoded.startsWith(prefix)) {
-          const v = decoded.substring(prefix.length);
-          return STATES.has(v) ? v : "";
-        }
+      const decoded = singleRef ? decodeDeep(singleRef) : "";
+      if (decoded.startsWith("State__c:")) {
+        const v = decoded.substring("State__c:".length);
+        return STATES.has(v) ? v : "";
       }
     } catch {
       // ignore
@@ -448,10 +445,9 @@ export default class StateReps extends LightningElement {
 
     const folder = stateToFolder(state);
 
-    const list =
-      REPS_BY_STATE[state] && REPS_BY_STATE[state].length
-        ? REPS_BY_STATE[state]
-        : defaultTeamRep();
+    const list = REPS_BY_STATE[state]?.length
+      ? REPS_BY_STATE[state]
+      : defaultTeamRep();
 
     return list.map((r) => {
       const forceShared = !!r.forceShared;

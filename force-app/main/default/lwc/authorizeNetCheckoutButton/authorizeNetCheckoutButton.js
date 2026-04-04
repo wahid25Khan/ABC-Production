@@ -7,7 +7,7 @@ export default class AuthorizeNetCheckoutButton extends LightningElement {
   @api buttonLabel = "Checkout";
   @api webstoreId = "0ZEam000004dJDNGA2";
   @api cartIdOrActive = "current";
-  @api paymentFormAction = "https://test.authorize.net/payment/payment";
+  @api paymentFormAction = "https://accept.authorize.net/payment/payment";
   @api transactionType = "authCaptureTransaction";
   @api returnUrl;
   @api cancelUrl;
@@ -126,42 +126,6 @@ export default class AuthorizeNetCheckoutButton extends LightningElement {
       );
     } catch {
       // Non-fatal — proceed even if the pre-clear fails.
-    }
-  }
-
-  async getActiveCheckout(webstoreId) {
-    try {
-      const response = await fetch(
-        `/AmericanBookCompany/webruntime/api/services/data/${API_VERSION}/commerce/webstores/${webstoreId}/checkouts/active`,
-        {
-          method: "GET",
-          headers: {
-            Accept: "application/json"
-          }
-        }
-      );
-
-      // If response is not ok (404 or other error), it means no active checkout exists
-      if (!response.ok) {
-        console.log("No active checkout found.");
-        return null;
-      }
-
-      const checkoutData = await response.text();
-      let parsed = {};
-
-      try {
-        parsed = checkoutData ? JSON.parse(checkoutData) : {};
-      } catch (parseError) {
-        console.warn("Failed to parse active checkout response.", parseError);
-        return null;
-      }
-
-      // N1 fix: Do not log checkout response — may contain business-sensitive data.
-      return parsed;
-    } catch (error) {
-      console.warn("Error checking for active checkout:", error.message);
-      return null;
     }
   }
 

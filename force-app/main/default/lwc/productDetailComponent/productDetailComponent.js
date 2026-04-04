@@ -12,7 +12,7 @@ const PRODUCT_DETAIL_FIELDS = [
   "Name",
   "purchaseQuantityRule"
 ];
-const CART_REQUEST_PARAMS = Object.freeze({
+const STOREFRONT_REQUEST_PARAMS = Object.freeze({
   language: "en-US",
   asGuest: "true",
   htmlEncode: "false"
@@ -91,7 +91,7 @@ export default class ProductDetailComponent extends LightningElement {
       index: i,
       label: v.format || "Standard",
       tabClass: `plan-option ${this.selectedVariationIndex === i ? "active" : ""}`,
-      ariaSelected: this.selectedVariationIndex === i
+      isSelected: this.selectedVariationIndex === i
     }));
   }
 
@@ -311,6 +311,9 @@ export default class ProductDetailComponent extends LightningElement {
     });
 
     params.set("fields", PRODUCT_DETAIL_FIELDS.join(","));
+    Object.entries(STOREFRONT_REQUEST_PARAMS).forEach(([key, value]) => {
+      params.set(key, value);
+    });
 
     return `${base}?${params.toString()}`;
   }
@@ -367,6 +370,10 @@ export default class ProductDetailComponent extends LightningElement {
     const base = `/${this.storeName || DEFAULT_STORE_NAME}/webruntime/api/services/data/v66.0/commerce/webstores/${this.webStoreId || DEFAULT_WEBSTORE_ID}/pricing/products`;
     const params = new URLSearchParams({
       productIds: productIds.join(",")
+    });
+
+    Object.entries(STOREFRONT_REQUEST_PARAMS).forEach(([key, value]) => {
+      params.set(key, value);
     });
 
     return `${base}?${params.toString()}`;
@@ -703,7 +710,7 @@ export default class ProductDetailComponent extends LightningElement {
 
   buildAddToCartEndpoint(cartStateOrId) {
     const targetCart = String(cartStateOrId || "current").trim() || "current";
-    const params = new URLSearchParams(CART_REQUEST_PARAMS);
+    const params = new URLSearchParams(STOREFRONT_REQUEST_PARAMS);
 
     return `/${this.storeName || DEFAULT_STORE_NAME}/webruntime/api/services/data/v66.0/commerce/webstores/${this.webStoreId || DEFAULT_WEBSTORE_ID}/carts/${targetCart}/cart-items?${params.toString()}`;
   }

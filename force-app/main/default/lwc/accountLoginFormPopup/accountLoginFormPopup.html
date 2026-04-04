@@ -1,82 +1,16 @@
 <template>
-    <div class="login-form-shell">
-        <template if:true={errorMessage}>
-            <div class="login-alert" role="alert">{errorMessage}</div>
-        </template>
-
-        <div class="login-field">
-            <label for="username">{usernameLabel}</label>
-            <input
-                id="username"
-                type="email"
-                value={username}
-                placeholder="Email Address"
-                oninput={handleUsernameChange}
-                autocomplete="username"
-            />
-        </div>
-
-        <div class="login-field">
-            <div class="login-password-row">
-                <label for="password">{passwordLabel}</label>
-                <a href={forgotPasswordUrl}>{forgotPasswordLabel}</a>
-            </div>
-            <input
-                id="password"
-                type="password"
-                value={password}
-                placeholder="Password"
-                oninput={handlePasswordChange}
-                onkeydown={handlePasswordKeydown}
-                autocomplete="current-password"
-            />
-        </div>
-
-        <div class="login-links-row">
-            <span>{selfRegisterLabel}</span>
-            <a href={selfRegisterUrl}>Create Account</a>
-        </div>
-
-        <button class="login-submit" type="button" onclick={handleLogin} disabled={isSubmitting}>
-            {buttonLabel}
-        </button>
-
-        <template if:true={hasSocialOptions}>
-            <p class="login-divider">
-                <span class="login-divider-line" aria-hidden="true"></span>
-                <span>Or continue with</span>
-                <span class="login-divider-line" aria-hidden="true"></span>
-            </p>
-
-            <div class="social-actions">
-                <template if:true={googleAuthUrl}>
-                    <button class="social-button" type="button" onclick={handleGoogleClick}>
-                        <span class="social-icon social-icon_google" aria-hidden="true">
-                            <svg viewBox="0 0 24 24" focusable="false" aria-hidden="true">
-                                <path fill="#EA4335" d="M12.24 10.285V14.4h5.88c-.26 1.33-1.8 3.9-5.88 3.9-3.54 0-6.42-2.93-6.42-6.54s2.88-6.54 6.42-6.54c2.02 0 3.37.86 4.15 1.6l2.83-2.74C17.41 2.4 15.08 1.5 12.24 1.5 6.96 1.5 2.7 5.78 2.7 11.06s4.26 9.56 9.54 9.56c5.5 0 9.15-3.86 9.15-9.29 0-.63-.07-1.1-.15-1.57Z"></path>
-                                <path fill="#34A853" d="M2.7 6.81 6.08 9.3c.91-2.7 3.42-4.63 6.16-4.63 2.02 0 3.37.86 4.15 1.6l2.83-2.74C17.41 2.4 15.08 1.5 12.24 1.5 8.08 1.5 4.47 3.88 2.7 6.81Z"></path>
-                                <path fill="#FBBC05" d="M12.24 20.62c2.77 0 5.09-.91 6.79-2.47l-3.3-2.7c-.88.62-2.05 1.05-3.49 1.05-4.01 0-5.57-2.71-5.82-3.98L3.06 15.1c1.75 3.47 5.34 5.52 9.18 5.52Z"></path>
-                                <path fill="#4285F4" d="M21.39 11.33c0-.63-.07-1.1-.15-1.57h-9v4.12h5.88c-.28 1.4-1.12 2.59-2.39 3.4l3.3 2.7c1.92-1.77 3.36-4.38 3.36-8.65Z"></path>
-                            </svg>
-                        </span>
-                        <span class="social-label">Google Sign-In</span>
-                    </button>
-                </template>
-
-                <template if:true={microsoftAuthUrl}>
-                    <button class="social-button" type="button" onclick={handleMicrosoftClick}>
-                        <span class="social-icon social-icon_microsoft" aria-hidden="true">
-                            <svg viewBox="0 0 24 24" focusable="false" aria-hidden="true">
-                                <rect x="2" y="2" width="9" height="9" fill="#F25022"></rect>
-                                <rect x="13" y="2" width="9" height="9" fill="#7FBA00"></rect>
-                                <rect x="2" y="13" width="9" height="9" fill="#00A4EF"></rect>
-                                <rect x="13" y="13" width="9" height="9" fill="#FFB900"></rect>
-                            </svg>
-                        </span>
-                        <span class="social-label">Microsoft Sign-In</span>
-                    </button>
-                </template>
-            </div>
-        </template>
-    </div>
+  <!-- Deprecated: delegates to c-account-login-form-popup-flow -->
+  <c-account-login-form-popup-flow
+    forgot-password-label={forgotPasswordLabel}
+    forgot-password-url={forgotPasswordUrl}
+    google-auth-url={googleAuthUrl}
+    login-button-label={loginButtonLabel}
+    login-action-url={loginActionUrl}
+    microsoft-auth-url={microsoftAuthUrl}
+    password-label={passwordLabel}
+    self-register-label={selfRegisterLabel}
+    self-register-url={selfRegisterUrl}
+    username-label={usernameLabel}
+    default-start-url={defaultStartUrl}
+  ></c-account-login-form-popup-flow>
 </template>

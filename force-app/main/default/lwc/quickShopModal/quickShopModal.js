@@ -7,25 +7,57 @@ const DEFAULT_WEBSTORE_ID = "0ZEam000004dJDNGA2";
 export default class QuickShopModal extends LightningElement {
   @api title = "";
   @api isbn = "";
+  @api productId = "";
   @api bookImageUrl;
-  @api variationPricing;
   @api webStoreId = DEFAULT_WEBSTORE_ID;
   @api currencyIsoCode = "USD";
   @api minimumQuantity = 10;
   @api maximumQuantity = 50;
   @api incrementQuantity = 1;
+  @api pricingLoading = false;
+  @api pricingError = false;
+
+  _variationPricing;
 
   // default selected variation
   selectedVariationIndex = 0;
   quantity = 10;
 
   isFavorite = false;
-  isOpen = true;
   favoritePending = false;
   favoriteProductId = "";
 
-  get isLoading() {
-    return !this.title || !this.variationPricing;
+  @api
+  get variationPricing() {
+    return this._variationPricing;
+  }
+
+  set variationPricing(value) {
+    this._variationPricing = value;
+    this.selectedVariationIndex = 0;
+    this.quantity = this.normalizeQuantity(this.quantity || this.minQty);
+    this.favoriteProductId = "";
+  }
+
+  get showLoadingOverlay() {
+    return (
+      this.pricingLoading ||
+      (!this.pricingError && (!this.title || !this.variationPricing))
+    );
+  }
+
+  get showPricingError() {
+    return Boolean(this.pricingError);
+  }
+
+  get disableAddToCart() {
+    return (
+      this.showLoadingOverlay || this.pricingError || !this.selectedProductId
+    );
+  }
+
+  get disableViewDetails() {
+    return !this.title && !this.productId;
   }
 
   // features layout as screenshot
@@ -35,7 +67,7 @@ export default class QuickShopModal extends LightningElement {
   // ─── Variation getters ──────────────────────────────────────────────────
 
   get variationsList() {
-    return this.variationPricing?.variations ?? [];
+    return this._variationPricing?.variations ?? [];
   }
 
   get hasMultipleVariations() {
@@ -48,7 +80,7 @@ export default class QuickShopModal extends LightningElement {
       index: i,
       label: v.format || "Standard",
       tabClass: `plan-option ${this.selectedVariationIndex === i ? "active" : ""}`,
-      ariaSelected: this.selectedVariationIndex === i
+      tabIndex: this.selectedVariationIndex === i ? 0 : -1
     }));
   }
 
@@ -86,7 +118,7 @@ export default class QuickShopModal extends LightningElement {
   }
 
   get selectedProductId() {
-    return this.selectedVariation?.productId ?? null;
+    return this.selectedVariation?.productId ?? this.productId ?? null;
   }
 
   get minQty() {
@@ -182,12 +214,7 @@ export default class QuickShopModal extends LightningElement {
 
   // ---------- open/close ----------
 
-  @api open() {
-    this.isOpen = true;
-  }
-
   @api close() {
-    this.isOpen = false;
     this.dispatchEvent(new CustomEvent("close"));
   }
 
@@ -208,7 +235,7 @@ export default class QuickShopModal extends LightningElement {
       index < this.variationsList.length
     ) {
       this.selectedVariationIndex = index;
-      this.quantity = this.minQty;
+      this.quantity = this.normalizeQuantity(this.minQty);
       const variation = this.variationsList[index];
       this.dispatchEvent(
         new CustomEvent("planchange", {
@@ -228,41 +255,24 @@ export default class QuickShopModal extends LightningElement {
   }
 
   handleQtyChange(e) {
-    let val = Number.parseInt(e.target.value, 10);
-    if (Number.isNaN(val)) val = this.minQty;
-
-    const min = this.minQty;
-    const max = this.maxQty;
-    const inc = this.incrementQty;
-
-    if (val < min) val = min;
-    if (val > max) val = max;
-
-    // Snap to nearest valid increment step
-    if (inc > 1) {
-      const steps = Math.round((val - min) / inc);
-      val = min + steps * inc;
-      if (val > max) val = min + Math.floor((max - min) / inc) * inc;
-      if (val < min) val = min;
-    }
-
-    this.quantity = val;
-    e.target.value = String(val); // force-sync when clamped value equals current quantity
+    this.quantity = this.normalizeQuantity(e.target.value);
+    e.target.value = String(this.quantity);
   }
 
   handleQtyDecrement() {
     const next = this.quantity - this.incrementQty;
-    this.quantity = Math.max(next, this.minQty);
+    this.quantity = this.normalizeQuantity(next);
   }
 
   handleQtyIncrement() {
     const next = this.quantity + this.incrementQty;
-    this.quantity = Math.min(next, this.maxQty);
+    this.quantity = this.normalizeQuantity(next);
   }
 
   // ---------- actions ----------
   handleAddToCart() {
-    if (!this.selectedProductId) return;
+    if (this.disableAddToCart) return;
+
     this.dispatchEvent(
       new CustomEvent("addtocart", {
         detail: {
@@ -282,6 +292,7 @@ export default class QuickShopModal extends LightningElement {
     this.dispatchEvent(
       new CustomEvent("trial", {
         detail: {
+          productId: this.selectedProductId,
           format: this.selectedVariation?.format,
           isbn: this.isbn,
           title: this.title
@@ -291,15 +302,19 @@ export default class QuickShopModal extends LightningElement {
   }
 
   handleViewDetails() {
+    if (this.disableViewDetails) {
+      return;
+    }
+
     this.dispatchEvent(
       new CustomEvent("viewdetails", {
-        detail: { isbn: this.isbn, title: this.title }
+        detail: {
+          productId: this.selectedProductId,
+          isbn: this.isbn,
+          title: this.title
+        }
       })
     );
-  }
-
-  toggleFavorite() {
-    this.handleToggleFavorite();
   }
 
   renderedCallback() {
@@ -383,9 +398,9 @@ export default class QuickShopModal extends LightningElement {
 
   // ESC close
   connectedCallback() {
-    this.quantity = this.minQty;
+    this.quantity = this.normalizeQuantity(this.minQty);
     this._handleKeydown = (evt) => {
-      if (this.isOpen && evt.key === "Escape") this.close();
+      if (evt.key === "Escape") this.close();
     };
     globalThis.window.addEventListener("keydown", this._handleKeydown);
   }
@@ -420,6 +435,29 @@ export default class QuickShopModal extends LightningElement {
   parsePositiveInteger(value) {
     const parsed = Number.parseInt(value, 10);
     return Number.isFinite(parsed) && parsed > 0 ? parsed : null;
+  }
+
+  normalizeQuantity(value) {
+    let normalized = this.parsePositiveInteger(value) ?? this.minQty;
+    const min = this.minQty;
+    const max = this.maxQty;
+    const increment = this.incrementQty;
+
+    if (normalized < min) normalized = min;
+    if (normalized > max) normalized = max;
+
+    if (increment > 1) {
+      const steps = Math.round((normalized - min) / increment);
+      normalized = min + steps * increment;
+      if (normalized > max) {
+        normalized = min + Math.floor((max - min) / increment) * increment;
+      }
+      if (normalized < min) {
+        normalized = min;
+      }
+    }
+
+    return normalized;
   }
 
   resolveUnitPriceForQuantity(quantity) {

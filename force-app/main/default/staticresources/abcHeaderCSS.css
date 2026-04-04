@@ -95,6 +95,29 @@ commerce_cart-managed-contents .item-actions button {
   color: #2e609c !important;
   font-size: 14px !important;
 }
+commerce_cart-managed-contents .item-actions {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: flex-start !important;
+  gap: 8px !important;
+}
+commerce_cart-managed-contents .item-actions .abc-cart-wishlist-button {
+  background: transparent !important;
+  border: 0 !important;
+  padding: 0 !important;
+  color: #2e609c !important;
+  font-size: 14px !important;
+  line-height: 1.3 !important;
+  cursor: pointer !important;
+}
+commerce_cart-managed-contents .item-actions .abc-cart-wishlist-button:hover {
+  text-decoration: underline !important;
+}
+commerce_cart-managed-contents .item-actions .abc-cart-wishlist-button[disabled] {
+  opacity: 0.65 !important;
+  cursor: default !important;
+  text-decoration: none !important;
+}
 commerce_builder-cart-summary > div {
   background: #f4f7fa !important;
   padding: 20px !important;
@@ -137,28 +160,41 @@ body[data-abc-cart-empty="true"] [data-automation="clearCart"] {
   display: none !important;
 }
 
+body[data-abc-cart-empty="true"] section[data-automation="cartBody"] > svg {
+  display: none !important;
+}
+
 body[data-abc-cart-empty="true"] .abc-cart-empty-state {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 24px;
+  gap: 72px;
   max-width: 1320px;
   margin: 0 auto;
-  padding: 8px 0 48px;
+  padding: 0 0 48px;
 }
 
 body[data-abc-cart-empty="true"] .abc-cart-empty-message {
   margin: 0;
-  font-size: 20px;
+  width: auto;
+  font-size: 16px;
   line-height: 1.5;
   text-align: center;
-  color: #1f2937;
+  color: #57534e;
 }
 
 body[data-abc-cart-empty="true"] .abc-cart-empty-image {
   display: block;
-  width: min(1320px, 100%);
+  width: min(960px, 100%);
+  max-width: 960px;
   height: auto;
+}
+
+body:not([data-abc-cart-empty="true"])
+  community_layout-column.col-large-size_7-of-12
+  > .column-content:has(> commerce_builder-b2b-cart-contents) {
+  display: block !important;
+  width: 100% !important;
 }
 
 

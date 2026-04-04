@@ -32,6 +32,8 @@ export default class FeaturedStateBooks extends LightningElement {
   modalProduct = null;
   modalVariationPricing = null;
   isAddingToCart = false;
+  isModalPricingLoading = false;
+  modalPricingLoadError = false;
 
   scoreGuaranteeLogo = SCORE_GUARANTEE;
 
@@ -74,6 +76,10 @@ export default class FeaturedStateBooks extends LightningElement {
 
   get modalTitle() {
     return this.modalProduct ? this.modalProduct.name : "";
+  }
+
+  get modalProductId() {
+    return this.modalProduct?.id || "";
   }
 
   get modalIsbn() {
@@ -160,8 +166,7 @@ export default class FeaturedStateBooks extends LightningElement {
   readStateFromStorage() {
     try {
       return (globalThis.localStorage.getItem(STATE_STORAGE_KEY) || "").trim();
-    } catch (error) {
-      console.debug("localStorage unavailable.", error);
+    } catch {
       return "";
     }
   }
@@ -182,8 +187,7 @@ export default class FeaturedStateBooks extends LightningElement {
 
     try {
       return decodeURIComponent(firstSegment).trim();
-    } catch (error) {
-      console.debug("Failed to decode path segment.", error);
+    } catch {
       return firstSegment.trim();
     }
   }
@@ -201,8 +205,7 @@ export default class FeaturedStateBooks extends LightningElement {
 
       const data = await response.json();
       return this.extractProductList(data);
-    } catch (error) {
-      console.debug("Failed to fetch products by state.", error);
+    } catch {
       return [];
     }
   }
@@ -253,8 +256,7 @@ export default class FeaturedStateBooks extends LightningElement {
 
       const data = await response.json();
       return this.extractPricingMap(data);
-    } catch (error) {
-      console.debug("Failed to fetch pricing.", error);
+    } catch {
       return new Map();
     }
   }
@@ -518,14 +520,9 @@ export default class FeaturedStateBooks extends LightningElement {
 
     this.modalProduct = product;
     this.modalVariationPricing = null;
+    this.modalPricingLoadError = false;
+    this.isModalPricingLoading = true;
     this.isModalOpen = true;
-
-    Promise.resolve().then(() => {
-      const modal = this.template.querySelector("c-quick-shop-modal");
-      if (modal && typeof modal.open === "function") {
-        modal.open();
-      }
-    });
 
     this.loadVariationPricing(productId);
   }
@@ -539,6 +536,10 @@ export default class FeaturedStateBooks extends LightningElement {
       this.modalVariationPricing = result;
     } catch (error) {
       console.warn("Failed to load variation pricing.", error);
+      this.modalVariationPricing = null;
+      this.modalPricingLoadError = true;
+    } finally {
+      this.isModalPricingLoading = false;
     }
   }
 
@@ -546,22 +547,26 @@ export default class FeaturedStateBooks extends LightningElement {
     this.isModalOpen = false;
     this.modalProduct = null;
     this.modalVariationPricing = null;
+    this.isModalPricingLoading = false;
+    this.modalPricingLoadError = false;
+  }
+
+  openModalProductDetails() {
+    if (!this.modalProduct) {
+      return;
+    }
+
+    const targetPath = this.buildProductDetailPath(this.modalProduct);
+    this.handleModalClose();
+    globalThis.location.href = targetPath;
   }
 
   handleViewDetails() {
-    if (!this.modalProduct) {
-      return;
-    }
-
-    globalThis.location.href = this.buildProductDetailPath(this.modalProduct);
+    this.openModalProductDetails();
   }
 
   handleTrial() {
-    if (!this.modalProduct) {
-      return;
-    }
-
-    globalThis.location.href = this.buildProductDetailPath(this.modalProduct);
+    this.openModalProductDetails();
   }
 
   async handleAddToCart(event) {
@@ -612,8 +617,8 @@ export default class FeaturedStateBooks extends LightningElement {
       if (response.ok) {
         return true;
       }
-    } catch (error) {
-      console.debug("Failed to add product to cart.", error);
+    } catch {
+      // Silently fail — UI already shows fallback.
     }
 
     return false;

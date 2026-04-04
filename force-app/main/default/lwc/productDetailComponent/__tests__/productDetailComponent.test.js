@@ -379,6 +379,31 @@ describe("c-product-detail-component", () => {
     expect(body.type).toBe("Product");
   });
 
+  it("calls products and pricing APIs with guest storefront parameters", async () => {
+    await createInitialized();
+
+    const productsCall = globalThis.fetch.mock.calls.find(
+      ([url]) =>
+        url.includes("/products?") && !url.includes("/pricing/products")
+    );
+    const pricingCall = globalThis.fetch.mock.calls.find(([url]) =>
+      url.includes("/pricing/products")
+    );
+
+    expect(productsCall).toBeDefined();
+    expect(pricingCall).toBeDefined();
+
+    const productsUrl = new URL(productsCall[0], "https://example.com");
+    const pricingUrl = new URL(pricingCall[0], "https://example.com");
+
+    expect(productsUrl.searchParams.get("asGuest")).toBe("true");
+    expect(productsUrl.searchParams.get("language")).toBe("en-US");
+    expect(productsUrl.searchParams.get("htmlEncode")).toBe("false");
+    expect(pricingUrl.searchParams.get("asGuest")).toBe("true");
+    expect(pricingUrl.searchParams.get("language")).toBe("en-US");
+    expect(pricingUrl.searchParams.get("htmlEncode")).toBe("false");
+  });
+
   it("dispatches addtocart event with correct productId, quantity and unitPrice", async () => {
     const el = await createInitialized();
     const handler = jest.fn();

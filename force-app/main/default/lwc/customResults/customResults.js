@@ -219,6 +219,8 @@ export default class CustomResults extends LightningElement {
   isAddingToCart = false;
   @track modalProduct = null;
   @track modalVariationPricing = null;
+  @track isModalPricingLoading = false;
+  @track modalPricingLoadError = false;
 
   @track isStateDropdownOpen = false;
   @track isSortDropdownOpen = false;
@@ -333,6 +335,10 @@ export default class CustomResults extends LightningElement {
 
   get modalTitle() {
     return this.modalProduct ? this.modalProduct.name : "";
+  }
+
+  get modalProductId() {
+    return this.modalProduct?.id || "";
   }
 
   get modalIsbn() {
@@ -1652,14 +1658,9 @@ export default class CustomResults extends LightningElement {
 
     this.modalProduct = product;
     this.modalVariationPricing = null;
+    this.modalPricingLoadError = false;
+    this.isModalPricingLoading = true;
     this.isModalOpen = true;
-
-    globalThis.window.requestAnimationFrame(() => {
-      const modal = this.template.querySelector("c-quick-shop-modal");
-      if (modal && typeof modal.open === "function") {
-        modal.open();
-      }
-    });
 
     this.loadVariationPricing(productId);
   }
@@ -1672,6 +1673,10 @@ export default class CustomResults extends LightningElement {
       });
     } catch (error) {
       console.warn("Failed to load variation pricing.", error);
+      this.modalVariationPricing = null;
+      this.modalPricingLoadError = true;
+    } finally {
+      this.isModalPricingLoading = false;
     }
   }
 
@@ -1679,20 +1684,25 @@ export default class CustomResults extends LightningElement {
     this.isModalOpen = false;
     this.modalProduct = null;
     this.modalVariationPricing = null;
+    this.isModalPricingLoading = false;
+    this.modalPricingLoadError = false;
+  }
+
+  openModalProductDetails() {
+    if (!this.modalProduct) return;
+
+    this.handleModalClose();
+    globalThis.window.location.href = this.buildProductDetailPath(
+      this.modalProduct
+    );
   }
 
   handleViewDetails() {
-    if (!this.modalProduct) return;
-    globalThis.window.location.href = this.buildProductDetailPath(
-      this.modalProduct
-    );
+    this.openModalProductDetails();
   }
 
   handleTrial() {
-    if (!this.modalProduct) return;
-    globalThis.window.location.href = this.buildProductDetailPath(
-      this.modalProduct
-    );
+    this.openModalProductDetails();
   }
 
   async handleAddToCart(event) {

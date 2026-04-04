@@ -1,7 +1,11 @@
 {
   "files.exclude": {
     "**/.git": true,
+    "**/.artifacts": true,
+    "**/.sf": true,
+    "**/.sfdx": true,
     "**/.svn": true,
+    "**/.venv": true,
     "**/.hg": true,
     "**/CVS": true,
     "**/.DS_Store": true,
@@ -9,11 +13,25 @@
     "**/core/ext/**": true,
     "**/target/**": true,
     "**/bin/**": true,
+    "**/coverage": true,
     "META-INF/": true
+  },
+  "search.exclude": {
+    "**/.artifacts/**": true,
+    "**/.sf/**": true,
+    "**/.sfdx/**": true,
+    "**/.venv/**": true,
+    "**/coverage/**": true,
+    "**/node_modules/**": true
   },
   "files.watcherExclude": {
     "**/.git/objects/**": true,
     "**/.git/subtree-cache/**": true,
+    "**/.artifacts/**": true,
+    "**/.sf/**": true,
+    "**/.sfdx/**": true,
+    "**/.venv/**": true,
+    "**/coverage/**": true,
     "**/node_modules/**": true,
     "**/core/build/repository/**": true,
     "**/core/ext/**": true,
@@ -31,6 +49,9 @@
     "typescript"
   ],
   "eslint.useFlatConfig": true,
+  "salesforcedx-vscode-slds.enabled": false,
+  "salesforcedx-vscode-slds.file.scopeWithInSFDX": true,
+  "salesforcedx-vscode-slds.basic.override": false,
   "typescript.tsserver.experimental.enableProjectDiagnostics": false,
   "xml.preferences.showSchemaDocumentationType": "none"
 }

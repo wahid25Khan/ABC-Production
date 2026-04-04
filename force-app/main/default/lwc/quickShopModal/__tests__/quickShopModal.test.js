@@ -121,9 +121,26 @@ describe("c-quick-shop-modal", () => {
   });
 
   it("hides loading spinner when both title and variationPricing are provided", async () => {
-    const el = createModal({ title: "Test Book", variationPricing: SINGLE_VARIATION });
+    const el = createModal({
+      title: "Test Book",
+      variationPricing: SINGLE_VARIATION
+    });
     await flushPromises();
     expect(el.shadowRoot.querySelector("lightning-spinner")).toBeNull();
+  });
+
+  it("shows pricing error state without trapping the user in loading", async () => {
+    const el = createModal({
+      title: "Test Book",
+      productId: "01tERROR000001",
+      pricingError: true
+    });
+    await flushPromises();
+
+    expect(el.shadowRoot.querySelector("lightning-spinner")).toBeNull();
+    expect(el.shadowRoot.querySelector(".pricing-error")).not.toBeNull();
+    expect(el.shadowRoot.querySelector(".btn-add").disabled).toBe(true);
+    expect(el.shadowRoot.querySelector(".details-btn").disabled).toBe(false);
   });
 
   // ── Rendering ─────────────────────────────────────────────────────────────
@@ -489,6 +506,22 @@ describe("c-quick-shop-modal", () => {
     el.addEventListener("viewdetails", handler);
     el.shadowRoot.querySelector(".details-btn").click();
     expect(handler).toHaveBeenCalledTimes(1);
+  });
+
+  it("dispatches viewdetails with fallback productId when pricing is unavailable", async () => {
+    const el = createModal({
+      title: "Test Book",
+      productId: "01tDETAILS0001",
+      pricingError: true
+    });
+    await flushPromises();
+    const handler = jest.fn();
+    el.addEventListener("viewdetails", handler);
+
+    el.shadowRoot.querySelector(".details-btn").click();
+
+    expect(handler).toHaveBeenCalledTimes(1);
+    expect(handler.mock.calls[0][0].detail.productId).toBe("01tDETAILS0001");
   });
 
   // ── open/close API ───────────────────────────────────────────────────────

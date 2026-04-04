@@ -192,22 +192,25 @@ export default class MapPlusTestimonial extends LightningElement {
     this._boundStateEventHandler = (event) =>
       this.handleExternalStateChange(event);
     this._boundKeyDownHandler = (event) => this.handleWindowKeyDown(event);
-    window.addEventListener("abcstatechange", this._boundStateEventHandler);
-    window.addEventListener("statechange", this._boundStateEventHandler);
-    window.addEventListener("keydown", this._boundKeyDownHandler);
+    globalThis.addEventListener("abcstatechange", this._boundStateEventHandler);
+    globalThis.addEventListener("statechange", this._boundStateEventHandler);
+    globalThis.addEventListener("keydown", this._boundKeyDownHandler);
   }
 
   disconnectedCallback() {
     this.stopHashWatcher();
     if (this._boundStateEventHandler) {
-      window.removeEventListener(
+      globalThis.removeEventListener(
         "abcstatechange",
         this._boundStateEventHandler
       );
-      window.removeEventListener("statechange", this._boundStateEventHandler);
+      globalThis.removeEventListener(
+        "statechange",
+        this._boundStateEventHandler
+      );
     }
     if (this._boundKeyDownHandler) {
-      window.removeEventListener("keydown", this._boundKeyDownHandler);
+      globalThis.removeEventListener("keydown", this._boundKeyDownHandler);
     }
     if (this.swiperInstance) {
       this.swiperInstance.destroy(true, true);
@@ -306,7 +309,7 @@ export default class MapPlusTestimonial extends LightningElement {
 
   applySelectedStateFromContext() {
     const urlState = this.getSelectedStateFromUrl();
-    const storedState = window.localStorage.getItem(STORAGE_KEY);
+    const storedState = globalThis.localStorage.getItem(STORAGE_KEY);
     const resolved = this.getValidStateName(
       urlState || storedState || this._selectedState
     );
@@ -439,7 +442,7 @@ export default class MapPlusTestimonial extends LightningElement {
       return;
     }
 
-    window.requestAnimationFrame(() => {
+    globalThis.requestAnimationFrame(() => {
       map.resize();
       this.hideMapboxBranding(map);
       if (this.lastFeatureCollection?.features?.length) {
@@ -645,7 +648,7 @@ export default class MapPlusTestimonial extends LightningElement {
         return {
           ...feature,
           properties: {
-            ...(feature.properties || {}),
+            ...feature.properties,
             countyName,
             metricValue: value
           }
@@ -1046,11 +1049,11 @@ export default class MapPlusTestimonial extends LightningElement {
 
   escapeHtml(value) {
     return String(value || "")
-      .replace(/&/g, "&amp;")
-      .replace(/</g, "&lt;")
-      .replace(/>/g, "&gt;")
-      .replace(/"/g, "&quot;")
-      .replace(/'/g, "&#039;");
+      .replaceAll("&", "&amp;")
+      .replaceAll("<", "&lt;")
+      .replaceAll(">", "&gt;")
+      .replaceAll('"', "&quot;")
+      .replaceAll("'", "&#039;");
   }
 
   fitToFeatures(map, features, role) {
@@ -1168,12 +1171,12 @@ export default class MapPlusTestimonial extends LightningElement {
   toTitleCase(value) {
     return String(value || "")
       .toLowerCase()
-      .replace(/\b\w/g, (character) => character.toUpperCase());
+      .replaceAll(/\b\w/g, (character) => character.toUpperCase());
   }
 
   getSelectedStateFromUrl() {
     try {
-      const url = new URL(window.location.href);
+      const url = new URL(globalThis.location.href);
 
       const pathState = this.getSelectedStateFromPath(url.pathname);
       if (pathState) {
@@ -1224,7 +1227,7 @@ export default class MapPlusTestimonial extends LightningElement {
       return "";
     }
 
-    return decodeURIComponent(rawState).replace(/\+/g, " ");
+    return decodeURIComponent(rawState).replaceAll("+", " ");
   }
 
   decodeDeep(value) {
@@ -1303,14 +1306,14 @@ export default class MapPlusTestimonial extends LightningElement {
       })
       .finally(() => {
         this.isLoading = false;
-        window.setTimeout(() => {
+        globalThis.setTimeout(() => {
           this.setupOrUpdateSwiper();
         }, 300);
       });
   }
 
   setupOrUpdateSwiper() {
-    if (!window.Swiper) {
+    if (!globalThis.Swiper) {
       Promise.all([
         loadScript(this, `${SWIPER}/SwiperJS/swiper-bundle.min.js`),
         loadStyle(this, `${SWIPER}/SwiperJS/swiper-bundle.min.css`)
@@ -1324,14 +1327,14 @@ export default class MapPlusTestimonial extends LightningElement {
       return;
     }
 
-    window.setTimeout(() => {
+    globalThis.setTimeout(() => {
       this.initSwiper();
     }, 0);
   }
 
   initSwiper() {
     const swiperContainer = this.template.querySelector(".swiper");
-    if (!swiperContainer || !window.Swiper) {
+    if (!swiperContainer || !globalThis.Swiper) {
       return;
     }
 
@@ -1340,7 +1343,7 @@ export default class MapPlusTestimonial extends LightningElement {
     }
 
     this.swiperInitialized = true;
-    this.swiperInstance = new window.Swiper(swiperContainer, {
+    this.swiperInstance = new globalThis.Swiper(swiperContainer, {
       slidesPerView: 1,
       spaceBetween: 15,
       loop: false,
@@ -1354,7 +1357,7 @@ export default class MapPlusTestimonial extends LightningElement {
       },
       on: {
         init: () => {
-          window.setTimeout(async () => {
+          globalThis.setTimeout(async () => {
             await this.syncMapInstances();
             this.refreshRenderedMaps();
           }, 500);
@@ -1369,7 +1372,7 @@ export default class MapPlusTestimonial extends LightningElement {
   updateStateFromUrlOrStorage() {
     let hashState = this.getStateFromHash();
     if (!hashState) {
-      hashState = window.localStorage.getItem(STORAGE_KEY);
+      hashState = globalThis.localStorage.getItem(STORAGE_KEY);
     }
 
     if (hashState) {
@@ -1380,7 +1383,7 @@ export default class MapPlusTestimonial extends LightningElement {
 
   getStateFromHash() {
     try {
-      const hashValue = String(window.location.hash || "")
+      const hashValue = String(globalThis.location.hash || "")
         .replace(/^#/, "")
         .trim();
       if (!hashValue) {
@@ -1393,10 +1396,10 @@ export default class MapPlusTestimonial extends LightningElement {
   }
 
   startHashWatcher() {
-    this._lastHash = window.location.hash;
+    this._lastHash = globalThis.location.hash;
 
-    this._watchId = window.setInterval(() => {
-      const currentHash = window.location.hash;
+    this._watchId = globalThis.setInterval(() => {
+      const currentHash = globalThis.location.hash;
       if (currentHash === this._lastHash) {
         return;
       }
@@ -1413,7 +1416,7 @@ export default class MapPlusTestimonial extends LightningElement {
 
   stopHashWatcher() {
     if (this._watchId) {
-      window.clearInterval(this._watchId);
+      globalThis.clearInterval(this._watchId);
       this._watchId = null;
     }
   }

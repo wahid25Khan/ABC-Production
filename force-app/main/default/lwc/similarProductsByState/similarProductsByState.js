@@ -1,9 +1,15 @@
 import { LightningElement, api, track } from "lwc";
+import {
+  readStateFromStorage,
+  getCurrentProductId,
+  normalizeProduct,
+  extractProductList,
+  buildProductDetailPath,
+  scrollCarouselToIndex,
+  DEFAULT_STORE_NAME
+} from "c/utils";
 
-const DEFAULT_STORE_NAME = "AmericanBookCompany";
 const DEFAULT_WEBSTORE_ID = "0ZEam000004dJDNGA2";
-const STATE_STORAGE_KEY = "abc_selected_state";
-const PRODUCT_ID_PATTERN = /01t[a-zA-Z0-9]{12,15}/;
 
 export default class SimilarProductsByState extends LightningElement {
   @api storeName = DEFAULT_STORE_NAME;
@@ -77,7 +83,7 @@ export default class SimilarProductsByState extends LightningElement {
     this.loading = true;
 
     try {
-      this.currentProductId = this.getCurrentProductId();
+      this.currentProductId = getCurrentProductId();
       this.selectedState = this.resolveSelectedState();
 
       if (!this.selectedState) {
@@ -89,7 +95,7 @@ export default class SimilarProductsByState extends LightningElement {
         this.selectedState
       );
       this.products = fetchedProducts
-        .map((item) => this.normalizeProduct(item))
+        .map((item) => normalizeProduct(item))
         .filter(Boolean)
         .filter((item) => !this.isCurrentProduct(item))
         .slice(0, this.normalizedMaxProducts);
@@ -97,8 +103,7 @@ export default class SimilarProductsByState extends LightningElement {
       this.showProducts = this.products.length > 0;
       this.currentIndex = 0;
       this.scrollToCurrentIndex("auto");
-    } catch (error) {
-      console.debug("initialize failed", error);
+    } catch {
       this.resetProducts();
     } finally {
       this.loading = false;
@@ -112,7 +117,7 @@ export default class SimilarProductsByState extends LightningElement {
   }
 
   resolveSelectedState() {
-    const fromStorage = this.readStateFromStorage();
+    const fromStorage = readStateFromStorage();
     if (fromStorage) {
       return fromStorage;
     }
@@ -132,26 +137,10 @@ export default class SimilarProductsByState extends LightningElement {
       }
 
       const data = await response.json();
-      return this.extractProductList(data);
-    } catch (e) {
-      console.debug("fetchProductsByState failed", e);
+      return extractProductList(data);
+    } catch {
       return [];
     }
-  }
-
-  extractProductList(data) {
-    if (!data || typeof data !== "object") {
-      return [];
-    }
-
-    const list =
-      data.productsPage?.products ||
-      data.productPage?.products ||
-      data.productSearchResult?.products ||
-      data.searchProductResult?.products ||
-      data.products;
-
-    return Array.isArray(list) ? list : [];
   }
 
   buildSearchEndpoint(stateValue) {
@@ -191,15 +180,6 @@ export default class SimilarProductsByState extends LightningElement {
     return `${baseSearchTerm} ${state}`;
   }
 
-  readStateFromStorage() {
-    try {
-      return (globalThis.localStorage.getItem(STATE_STORAGE_KEY) || "").trim();
-    } catch (e) {
-      console.debug("readStateFromStorage failed", e);
-      return "";
-    }
-  }
-
   getStateFromPath() {
     if (typeof globalThis === "undefined" || !globalThis.location?.pathname) {
       return "";
@@ -222,54 +202,9 @@ export default class SimilarProductsByState extends LightningElement {
 
     try {
       return decodeURIComponent(firstSegment).trim();
-    } catch (e) {
-      console.debug("decodeURIComponent failed", e);
+    } catch {
       return firstSegment.trim();
     }
-  }
-
-  getCurrentProductId() {
-    if (typeof globalThis === "undefined" || !globalThis.location?.href) {
-      return "";
-    }
-
-    const fromQuery = new URLSearchParams(globalThis.location.search || "").get(
-      "pid"
-    );
-    if (fromQuery) {
-      return fromQuery;
-    }
-
-    const fullUrl = globalThis.location.href;
-    const sfProductId = PRODUCT_ID_PATTERN.exec(fullUrl);
-    if (sfProductId?.[0]) {
-      return sfProductId[0];
-    }
-
-    const parts = (globalThis.location.pathname || "")
-      .split("/")
-      .filter(Boolean);
-    const lastSegment = parts.length ? decodeURIComponent(parts.at(-1)) : "";
-    return PRODUCT_ID_PATTERN.test(lastSegment) ? lastSegment : "";
-  }
-
-  normalizeProduct(item) {
-    const id = String(item.id || "").trim();
-    if (!id) {
-      return null;
-    }
-
-    const name = String(item.name || "").trim() || "Untitled";
-    const imageUrl = this.resolveProductImageUrl(item);
-    const urlName = String(item.urlName || item.slug || "").trim();
-
-    return {
-      ...item,
-      id,
-      name,
-      imageUrl,
-      urlName
-    };
   }
 
   isCurrentProduct(product) {
@@ -287,57 +222,6 @@ export default class SimilarProductsByState extends LightningElement {
     return currentId === productId;
   }
 
-  resolveProductImageUrl(item) {
-    const directUrl = this.findDirectImageUrl(item);
-    if (directUrl) {
-      return directUrl;
-    }
-
-    return this.findMediaGroupImageUrl(item);
-  }
-
-  findDirectImageUrl(item) {
-    const directCandidates = [
-      item.defaultImage?.url,
-      item.image?.url,
-      item.imageUrl
-    ];
-
-    for (const value of directCandidates) {
-      if (typeof value === "string" && value.trim()) {
-        return value.trim();
-      }
-    }
-
-    return "";
-  }
-
-  findMediaGroupImageUrl(item) {
-    const mediaGroups = Array.isArray(item.mediaGroups) ? item.mediaGroups : [];
-    for (const group of mediaGroups) {
-      const mediaItems =
-        group && Array.isArray(group.mediaItems) ? group.mediaItems : [];
-      for (const media of mediaItems) {
-        const url = media && (media.url || media.image?.url);
-        if (typeof url === "string" && url.trim()) {
-          return url.trim();
-        }
-      }
-    }
-
-    return "";
-  }
-
-  buildProductDetailPath(product) {
-    const nameSource = product.urlName || product.name || "detail";
-    const recordName = String(nameSource)
-      .toLowerCase()
-      .replaceAll(/[^a-z0-9]+/g, "-")
-      .replaceAll(/^-+|-+$/g, "");
-
-    return `/${this.storeName || DEFAULT_STORE_NAME}/product/${recordName || "detail"}/${product.id}`;
-  }
-
   handleClickProduct(event) {
     const productId = event.currentTarget.dataset.pid;
     if (!productId) {
@@ -349,7 +233,7 @@ export default class SimilarProductsByState extends LightningElement {
       return;
     }
 
-    globalThis.location.href = this.buildProductDetailPath(product);
+    globalThis.location.href = buildProductDetailPath(product, this.storeName);
   }
 
   handlePrev() {
@@ -375,25 +259,6 @@ export default class SimilarProductsByState extends LightningElement {
   }
 
   scrollToCurrentIndex(behavior = "smooth") {
-    globalThis.requestAnimationFrame(() => {
-      const viewport = this.template.querySelector(".products-viewport");
-      const trackElement = this.template.querySelector(".products-track");
-      const firstCard = this.template.querySelector(".product-card");
-
-      if (!viewport || !trackElement || !firstCard) {
-        return;
-      }
-
-      const style = globalThis.getComputedStyle(trackElement);
-      const gapValue = style.columnGap || style.gap || "0";
-      const gap = Number.parseFloat(gapValue) || 0;
-      const cardWidth = firstCard.getBoundingClientRect().width;
-      const left = Math.max(0, this.currentIndex * (cardWidth + gap));
-
-      viewport.scrollTo({
-        left,
-        behavior
-      });
-    });
+    scrollCarouselToIndex(this.template, this.currentIndex, behavior);
   }
 }

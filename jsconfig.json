@@ -1,0 +1,24 @@
+{
+  "compilerOptions": {
+    "experimentalDecorators": true,
+    "ignoreDeprecations": "6.0",
+    "baseUrl": ".",
+    "paths": {
+      "lwc": ["node_modules/@lwc/engine-dom"],
+      "c/*": ["force-app/main/default/lwc/*"],
+      "@salesforce/apex/*": [""],
+      "@salesforce/label/*": [""],
+      "@salesforce/resourceUrl/*": [""],
+      "@salesforce/schema/*": [""],
+      "@salesforce/user/*": [""],
+      "@salesforce/featureFlag/*": [""],
+      "@salesforce/community/*": [""],
+      "@commerce/cartApi": [""],
+      "@commerce/orderApi": [""],
+      "lightning/*": [
+        "node_modules/@salesforce/sfdx-lwc-jest/src/lightning-stubs/*"
+      ]
+    }
+  },
+  "exclude": ["node_modules", "**/__tests__/**"]
+}
