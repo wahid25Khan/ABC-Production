@@ -3,6 +3,10 @@ import isGuestUser from "@salesforce/user/isGuest";
 import logoResource from "@salesforce/resourceUrl/ABCLogo";
 import getCartItemCount from "@salesforce/apex/CustomHeaderController.getCartItemCount";
 
+// Module-level flag: ensures Lato <link> is injected only once per page lifetime
+// (avoids document.querySelector which is forbidden by @lwc/lwc/no-document-query)
+let _latoFontInjected = false;
+
 // ─────────────────────────────────────────────────────────────────
 //  Constants
 // ─────────────────────────────────────────────────────────────────
@@ -18,6 +22,7 @@ const FACETS_PARAM = "facets";
 const RESULTS_PATH_RE = /\/global-search(\/|$)/;
 const HOME_PATH_RE = /\/AmericanBookCompany\/?$/;
 
+// 7 nav links matching live site (no CERTIFICATION, no ORDERING DOCS)
 const NAV_LINKS = [
   { id: "shop", label: "SHOP ALL", url: RESULTS_ALL, target: "_self", rel: "" },
   {
@@ -40,20 +45,6 @@ const NAV_LINKS = [
     url: "https://coursewave.com/",
     target: "_blank",
     rel: "noopener noreferrer"
-  },
-  {
-    id: "certification",
-    label: "CERTIFICATION",
-    url: `${BASE}/certification`,
-    target: "_self",
-    rel: ""
-  },
-  {
-    id: "ordering",
-    label: "ORDERING DOCS",
-    url: `${BASE}/ordering-docs`,
-    target: "_self",
-    rel: ""
   },
   { id: "blog", label: "BLOG", url: `${BASE}/blog`, target: "_self", rel: "" },
   {
@@ -119,60 +110,6 @@ const ALL_STATES = [
   "Wyoming"
 ];
 
-const STATE_ABBREVIATIONS = {
-  Alabama: "AL",
-  Alaska: "AK",
-  Arizona: "AZ",
-  Arkansas: "AR",
-  California: "CA",
-  Colorado: "CO",
-  Connecticut: "CT",
-  Delaware: "DE",
-  "District of Columbia": "DC",
-  Florida: "FL",
-  Georgia: "GA",
-  Hawaii: "HI",
-  Idaho: "ID",
-  Illinois: "IL",
-  Indiana: "IN",
-  Iowa: "IA",
-  Kansas: "KS",
-  Kentucky: "KY",
-  Louisiana: "LA",
-  Maine: "ME",
-  Maryland: "MD",
-  Massachusetts: "MA",
-  Michigan: "MI",
-  Minnesota: "MN",
-  Mississippi: "MS",
-  Missouri: "MO",
-  Montana: "MT",
-  Nebraska: "NE",
-  Nevada: "NV",
-  "New Hampshire": "NH",
-  "New Jersey": "NJ",
-  "New Mexico": "NM",
-  "New York": "NY",
-  "North Carolina": "NC",
-  "North Dakota": "ND",
-  Ohio: "OH",
-  Oklahoma: "OK",
-  Oregon: "OR",
-  Pennsylvania: "PA",
-  "Rhode Island": "RI",
-  "South Carolina": "SC",
-  "South Dakota": "SD",
-  Tennessee: "TN",
-  Texas: "TX",
-  Utah: "UT",
-  Vermont: "VT",
-  Virginia: "VA",
-  Washington: "WA",
-  "West Virginia": "WV",
-  Wisconsin: "WI",
-  Wyoming: "WY"
-};
-
 const DEFAULT_STATE = "Georgia";
 
 // ─────────────────────────────────────────────────────────────────
@@ -193,7 +130,6 @@ export default class CustomHeader extends LightningElement {
 
   // ── Reactive state ──
   @track selectedState = DEFAULT_STATE;
-  @track stateMenuOpen = false;
   @track accountMenuOpen = false;
   @track mobileMenuOpen = false;
   @track searchTerm = "";
@@ -223,6 +159,17 @@ export default class CustomHeader extends LightningElement {
         });
     }
 
+    // Inject Lato font once per page (LWC CSS cannot use @import url()
+    // and @lwc/lwc/no-document-query forbids document.querySelector)
+    if (!_latoFontInjected) {
+      const link = document.createElement("link");
+      link.rel = "stylesheet";
+      link.href =
+        "https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap";
+      document.head.appendChild(link);
+      _latoFontInjected = true;
+    }
+
     // Global outside-click handler to collapse open dropdowns
     this._closeDropdowns = this._closeDropdowns.bind(this);
     document.addEventListener("click", this._closeDropdowns);
@@ -235,21 +182,19 @@ export default class CustomHeader extends LightningElement {
   // ─────────────────────────────────────────────────────────────
   //  Getters (template bindings)
   // ─────────────────────────────────────────────────────────────
-  get displayState() {
-    return (
-      STATE_ABBREVIATIONS[this.selectedState] ||
-      this.selectedState.slice(0, 2).toUpperCase()
-    );
-  }
-
   get stateOptions() {
     return ALL_STATES.map((name) => ({
       name,
-      className:
-        name === this.selectedState
-          ? "abc-state-option abc-state-option--selected"
-          : "abc-state-option"
+      selected: name === this.selectedState
     }));
+  }
+
+  get showCartBadge() {
+    return this.cartCount > 0;
+  }
+
+  get cartAriaLabel() {
+    return this.cartCount > 0 ? `Cart: ${this.cartCount} items` : "Cart";
   }
 
   get mobileMenuAriaLabel() {
@@ -260,8 +205,8 @@ export default class CustomHeader extends LightningElement {
 
   get mobileDrawerClass() {
     return this.mobileMenuOpen
-      ? "abc-mob-drawer abc-mob-drawer--open"
-      : "abc-mob-drawer";
+      ? "abc-mobile-drawer abc-mobile-drawer--open"
+      : "abc-mobile-drawer";
   }
 
   get hamburgerClass() {
@@ -270,33 +215,14 @@ export default class CustomHeader extends LightningElement {
       : "abc-hamburger";
   }
 
-  get hasCartItems() {
-    return this.cartCount > 0;
-  }
-
-  get cartAriaLabel() {
-    return this.cartCount > 0 ? `Cart: ${this.cartCount} items` : "Cart";
-  }
-
   // ─────────────────────────────────────────────────────────────
-  //  State filter
+  //  State filter — native <select> onchange handler
   // ─────────────────────────────────────────────────────────────
-  toggleStateMenu(event) {
-    event.stopPropagation();
-    this.stateMenuOpen = !this.stateMenuOpen;
-    if (this.stateMenuOpen) {
-      this.accountMenuOpen = false;
-      this.mobileMenuOpen = false;
-    }
-  }
-
-  handleStateSelect(event) {
-    event.stopPropagation();
-    const value = event.currentTarget.dataset.value || "";
+  handleStateChange(event) {
+    const value = event.target.value;
     if (!value || !ALL_STATES.includes(value)) return;
 
     this.selectedState = value;
-    this.stateMenuOpen = false;
 
     // Persist selection
     if (typeof localStorage !== "undefined") {
@@ -362,9 +288,12 @@ export default class CustomHeader extends LightningElement {
     event.stopPropagation();
     this.accountMenuOpen = !this.accountMenuOpen;
     if (this.accountMenuOpen) {
-      this.stateMenuOpen = false;
       this.mobileMenuOpen = false;
     }
+  }
+
+  closeAccountMenu() {
+    this.accountMenuOpen = false;
   }
 
   handleLogout() {
@@ -372,12 +301,6 @@ export default class CustomHeader extends LightningElement {
     globalThis.location.assign(
       `/AmericanBookCompany/secur/logout.jsp?retUrl=${retUrl}`
     );
-  }
-
-  closeAll(event) {
-    if (event) event.stopPropagation();
-    this.stateMenuOpen = false;
-    this.accountMenuOpen = false;
   }
 
   // ─────────────────────────────────────────────────────────────
@@ -404,7 +327,6 @@ export default class CustomHeader extends LightningElement {
     event.stopPropagation();
     this.mobileMenuOpen = !this.mobileMenuOpen;
     if (this.mobileMenuOpen) {
-      this.stateMenuOpen = false;
       this.accountMenuOpen = false;
     }
   }
@@ -419,7 +341,6 @@ export default class CustomHeader extends LightningElement {
   _closeDropdowns(event) {
     // If the click origin is inside this component's DOM, skip
     if (this.template.host.contains(event.target)) return;
-    this.stateMenuOpen = false;
     this.accountMenuOpen = false;
     // Leave mobileMenuOpen alone — it has its own toggle button
   }
