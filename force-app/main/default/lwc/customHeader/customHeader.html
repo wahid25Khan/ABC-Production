@@ -1,0 +1,264 @@
+<template>
+  <header class="abc-hdr" aria-label="Site header">
+    <!-- ═══════════════════════════════════════════
+         ROW 1 — Logo + Navigation + Account
+         ═══════════════════════════════════════════ -->
+    <div class="abc-nav-row">
+      <!-- Logo -->
+      <a
+        href="/AmericanBookCompany/"
+        class="abc-logo-link"
+        aria-label="American Book Company home"
+      >
+        <img src={logoUrl} alt="American Book Company" class="abc-logo" />
+      </a>
+
+      <!-- Desktop / Tablet navigation -->
+      <nav class="abc-main-nav" aria-label="Main navigation">
+        <ul class="abc-nav-list">
+          <template for:each={navLinks} for:item="link">
+            <li key={link.id} class="abc-nav-item">
+              <a
+                href={link.url}
+                class="abc-nav-link"
+                target={link.target}
+                rel={link.rel}
+              >
+                {link.label}
+              </a>
+            </li>
+          </template>
+        </ul>
+      </nav>
+
+      <!-- My Account (desktop / tablet) -->
+      <div class="abc-account-wrap">
+        <template if:true={isGuest}>
+          <a href={loginUrl} class="abc-account-btn">Log In</a>
+        </template>
+        <template if:false={isGuest}>
+          <button
+            class="abc-account-btn"
+            type="button"
+            onclick={toggleAccountMenu}
+            aria-haspopup="true"
+            aria-expanded={accountMenuOpen}
+          >
+            My&nbsp;ACCOUNT
+            <span class="abc-chev-down" aria-hidden="true"></span>
+          </button>
+          <!-- Account dropdown -->
+          <template if:true={accountMenuOpen}>
+            <div class="abc-account-dd" role="menu" aria-label="Account menu">
+              <a
+                href={accountUrl}
+                class="abc-dd-item"
+                role="menuitem"
+                onclick={closeAll}
+                >My Account</a
+              >
+              <a
+                href={ordersUrl}
+                class="abc-dd-item"
+                role="menuitem"
+                onclick={closeAll}
+                >My Orders</a
+              >
+              <a
+                href={wishlistUrl}
+                class="abc-dd-item"
+                role="menuitem"
+                onclick={closeAll}
+                >My Wishlist</a
+              >
+              <button
+                class="abc-dd-item abc-dd-logout"
+                type="button"
+                role="menuitem"
+                onclick={handleLogout}
+              >
+                Log Out
+              </button>
+            </div>
+          </template>
+        </template>
+      </div>
+
+      <!-- Hamburger (mobile only) -->
+      <button
+        class={hamburgerClass}
+        type="button"
+        onclick={toggleMobileMenu}
+        aria-label={mobileMenuAriaLabel}
+        aria-expanded={mobileMenuOpen}
+      >
+        <span class="abc-bar abc-bar-top"></span>
+        <span class="abc-bar abc-bar-mid"></span>
+        <span class="abc-bar abc-bar-bot"></span>
+      </button>
+    </div>
+    <!-- /abc-nav-row -->
+
+    <!-- ═══════════════════════════════════════════
+         ROW 2 — State Filter + Search + Cart
+         ═══════════════════════════════════════════ -->
+    <div class="abc-util-row">
+      <!-- State Filter -->
+      <div class="abc-state-wrap">
+        <button
+          class="abc-state-btn"
+          type="button"
+          onclick={toggleStateMenu}
+          aria-haspopup="true"
+          aria-expanded={stateMenuOpen}
+          aria-label="Select State"
+        >
+          <span class="abc-pin" aria-hidden="true">
+            <svg
+              viewBox="0 0 24 24"
+              class="abc-pin-icon"
+              aria-hidden="true"
+              focusable="false"
+            >
+              <path
+                d="M12 2.5c-3.86 0-7 3.14-7 7 0 5.16 5.95 11.26 6.2 11.52a1.13 1.13 0 0 0 1.6 0C13.05 20.76 19 14.66 19 9.5c0-3.86-3.14-7-7-7Zm0 9.5a2.5 2.5 0 1 1 0-5 2.5 2.5 0 0 1 0 5Z"
+              />
+            </svg>
+          </span>
+          <span class="abc-state-abbr">{displayState}</span>
+          <span class="abc-chev" aria-hidden="true"></span>
+        </button>
+
+        <!-- State dropdown -->
+        <template if:true={stateMenuOpen}>
+          <div class="abc-state-dd" aria-label="Select a state">
+            <div class="abc-state-dd-inner">
+              <template for:each={stateOptions} for:item="opt">
+                <button
+                  key={opt.name}
+                  type="button"
+                  class={opt.className}
+                  data-value={opt.name}
+                  onclick={handleStateSelect}
+                >
+                  {opt.name}
+                </button>
+              </template>
+            </div>
+          </div>
+        </template>
+      </div>
+
+      <!-- Search -->
+      <div class="abc-search-wrap">
+        <span class="abc-search-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" class="abc-search-svg" focusable="false">
+            <path
+              d="M15.5 14h-.79l-.28-.27A6.47 6.47 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"
+            />
+          </svg>
+        </span>
+        <input
+          type="search"
+          class="abc-search-input"
+          placeholder="Search throughout the site."
+          value={searchTerm}
+          oninput={handleSearchInput}
+          onkeydown={handleSearchKeyDown}
+          aria-label="Search throughout the site."
+        />
+      </div>
+
+      <!-- Cart -->
+      <a href={cartUrl} class="abc-cart-link" aria-label={cartAriaLabel}>
+        <svg
+          viewBox="0 0 24 24"
+          class="abc-cart-icon"
+          aria-hidden="true"
+          focusable="false"
+        >
+          <path
+            d="M7 18c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59L5.25 14c-.16.28-.25.61-.25.96C5 16.1 5.9 17 7 17h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12.9-1.63H19c.75 0 1.41-.41 1.75-1.03l3.58-6.49A1 1 0 0 0 23.25 5H5.21l-.94-2H1zm16 16c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"
+          />
+        </svg>
+        <template if:true={hasCartItems}>
+          <span class="abc-cart-badge" aria-hidden="true">{cartCount}</span>
+        </template>
+      </a>
+    </div>
+    <!-- /abc-util-row -->
+
+    <!-- ═══════════════════════════════════════════
+         MOBILE NAVIGATION DRAWER
+         ═══════════════════════════════════════════ -->
+    <div class={mobileDrawerClass}>
+      <ul class="abc-mob-nav-list">
+        <!-- Nav links -->
+        <template for:each={navLinks} for:item="link">
+          <li key={link.id} class="abc-mob-nav-item">
+            <a
+              href={link.url}
+              class="abc-mob-nav-link"
+              target={link.target}
+              rel={link.rel}
+              onclick={closeMobileMenu}
+            >
+              {link.label}
+            </a>
+          </li>
+        </template>
+
+        <!-- Divider -->
+        <hr class="abc-mob-divider" />
+
+        <!-- Account links -->
+        <template if:true={isGuest}>
+          <li class="abc-mob-nav-item">
+            <a
+              href={loginUrl}
+              class="abc-mob-nav-link"
+              onclick={closeMobileMenu}
+              >Log In</a
+            >
+          </li>
+        </template>
+        <template if:false={isGuest}>
+          <li class="abc-mob-nav-item">
+            <a
+              href={accountUrl}
+              class="abc-mob-nav-link"
+              onclick={closeMobileMenu}
+              >My Account</a
+            >
+          </li>
+          <li class="abc-mob-nav-item">
+            <a
+              href={ordersUrl}
+              class="abc-mob-nav-link"
+              onclick={closeMobileMenu}
+              >My Orders</a
+            >
+          </li>
+          <li class="abc-mob-nav-item">
+            <a
+              href={wishlistUrl}
+              class="abc-mob-nav-link"
+              onclick={closeMobileMenu}
+              >My Wishlist</a
+            >
+          </li>
+          <li class="abc-mob-nav-item">
+            <button
+              class="abc-mob-nav-link abc-mob-logout"
+              type="button"
+              onclick={handleLogout}
+            >
+              Log Out
+            </button>
+          </li>
+        </template>
+      </ul>
+    </div>
+    <!-- /mobile drawer -->
+  </header>
+</template>

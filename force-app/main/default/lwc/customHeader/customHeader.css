@@ -1,0 +1,636 @@
+/* ═══════════════════════════════════════════════════════════════════
+   CUSTOM HEADER LWC  — c-custom-header  v1.0
+   Matches americanbookcompany.my.site.com live header:
+     Row 1 (.abc-nav-row):    Logo | Nav links | My Account
+     Row 2 (.abc-util-row):   [spacer] | State | Search | Cart
+   Responsive: desktop (≥1024px) → tablet (768–1023px) → mobile (<768px)
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* ─────────────────────────────────────────────────────────────────
+   HOST
+   ───────────────────────────────────────────────────────────────── */
+:host {
+  display: block;
+  background: #fff;
+  border-bottom: 1px solid #e5e7eb;
+  font-family: inherit;
+  /* z-index handled by Experience Builder header region */
+}
+
+/* ─────────────────────────────────────────────────────────────────
+   BACKDROP  (shared by state dropdown + account dropdown)
+   ───────────────────────────────────────────────────────────────── */
+.abc-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+}
+.abc-backdrop--clear {
+  background: transparent;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   ROW 1 — Navigation
+   ═══════════════════════════════════════════════════════════════════ */
+.abc-nav-row {
+  display: flex;
+  align-items: center;
+  padding: 0 24px;
+  min-height: 60px;
+  position: relative;
+}
+
+/* ── Logo ── */
+.abc-logo-link {
+  display: inline-flex;
+  align-items: center;
+  flex: 0 0 auto;
+  margin-right: 20px;
+  text-decoration: none;
+}
+.abc-logo {
+  display: block;
+  height: 64px;
+  width: auto;
+}
+
+/* ── Main Nav ── */
+.abc-main-nav {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+}
+.abc-nav-list {
+  display: flex;
+  align-items: center;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  flex-wrap: nowrap;
+  gap: 2px;
+}
+.abc-nav-item {
+  flex: 0 0 auto;
+}
+.abc-nav-link {
+  display: block;
+  padding: 8px 9px;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #1e2a3a;
+  text-decoration: none;
+  white-space: nowrap;
+  border-radius: 4px;
+  transition: color 0.15s;
+}
+.abc-nav-link:hover,
+.abc-nav-link:focus-visible {
+  color: #2e609c;
+  outline: none;
+}
+
+/* ── Account Wrap ── */
+.abc-account-wrap {
+  flex: 0 0 auto;
+  margin-left: auto;
+  position: relative;
+  z-index: 100;
+}
+.abc-account-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 10px;
+  border: none;
+  background: transparent;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #1e2a3a;
+  cursor: pointer;
+  white-space: nowrap;
+  text-decoration: none;
+  border-radius: 4px;
+  line-height: 1.3;
+  transition: color 0.15s;
+}
+.abc-account-btn:hover,
+.abc-account-btn:focus-visible {
+  color: #2e609c;
+  outline: none;
+}
+.abc-chev-down {
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  border-right: 2px solid currentColor;
+  border-bottom: 2px solid currentColor;
+  transform: rotate(45deg) translateY(-2px);
+  flex: 0 0 auto;
+}
+
+/* Account dropdown */
+.abc-account-dd {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 4px);
+  background: #fff;
+  border: 1px solid #d8dde6;
+  border-radius: 6px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.13);
+  min-width: 168px;
+  z-index: 100;
+  overflow: hidden;
+}
+.abc-dd-item {
+  display: block;
+  width: 100%;
+  padding: 10px 16px;
+  font-size: 13px;
+  color: #1e2a3a;
+  text-decoration: none;
+  text-align: left;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  white-space: nowrap;
+  transition:
+    background 0.12s,
+    color 0.12s;
+  line-height: 1.4;
+}
+.abc-dd-item:hover {
+  background: #f4f7fa;
+  color: #2e609c;
+}
+.abc-dd-logout {
+  border-top: 1px solid #e5e7eb;
+  color: #c23b22;
+}
+.abc-dd-logout:hover {
+  background: #fff5f5;
+  color: #a02f1b;
+}
+
+/* ── Hamburger (mobile only) ── */
+.abc-hamburger {
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+  width: 40px;
+  height: 40px;
+  flex: 0 0 40px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  padding: 0;
+  margin-left: auto;
+  border-radius: 4px;
+}
+.abc-bar {
+  display: block;
+  width: 22px;
+  height: 2px;
+  background: #1e2a3a;
+  border-radius: 2px;
+  transition:
+    transform 0.22s ease,
+    opacity 0.22s ease;
+  transform-origin: center;
+}
+/* X state when menu open */
+.abc-hamburger--open .abc-bar-top {
+  transform: translateY(7px) rotate(45deg);
+}
+.abc-hamburger--open .abc-bar-mid {
+  opacity: 0;
+  transform: scaleX(0);
+}
+.abc-hamburger--open .abc-bar-bot {
+  transform: translateY(-7px) rotate(-45deg);
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   ROW 2 — Utility (State + Search + Cart)
+   ═══════════════════════════════════════════════════════════════════ */
+.abc-util-row {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end; /* push group to the right, matching live site */
+  padding: 6px 24px 8px;
+  gap: 12px;
+  background: #fff;
+}
+
+/* ── State Filter ── */
+.abc-state-wrap {
+  position: relative;
+  z-index: 100;
+  flex: 0 0 auto;
+}
+.abc-state-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 40px;
+  border: 1px solid #d8dde6;
+  border-radius: 999px;
+  background: #fff;
+  padding: 0 34px 0 12px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #1f1f1f;
+  cursor: pointer;
+  position: relative;
+  white-space: nowrap;
+  min-width: 96px;
+  transition:
+    border-color 0.15s,
+    box-shadow 0.15s;
+}
+.abc-state-btn:hover {
+  border-color: #b0b9c5;
+}
+.abc-state-btn:focus,
+.abc-state-btn:focus-visible {
+  outline: none;
+  border-color: #1b96ff;
+  box-shadow: 0 0 0 3px rgba(27, 150, 255, 0.15);
+}
+.abc-pin {
+  display: inline-flex;
+  align-items: center;
+  color: #2b3442;
+  flex: 0 0 auto;
+}
+.abc-pin-icon {
+  width: 18px;
+  height: 18px;
+  fill: currentColor;
+}
+.abc-state-abbr {
+  font-size: 14px;
+  font-weight: 600;
+  color: #1f1f1f;
+}
+.abc-chev {
+  position: absolute;
+  right: 13px;
+  top: 50%;
+  width: 7px;
+  height: 7px;
+  border-right: 2px solid #1f1f1f;
+  border-bottom: 2px solid #1f1f1f;
+  transform: translateY(-65%) rotate(45deg);
+}
+
+/* State dropdown */
+.abc-state-dd {
+  position: absolute;
+  left: 0;
+  top: calc(100% + 6px);
+  min-width: 190px;
+  border: 1px solid #d8dde6;
+  border-radius: 8px;
+  background: #fff;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.11);
+  z-index: 100;
+  overflow: hidden;
+}
+.abc-state-dd-inner {
+  max-height: 276px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  scrollbar-width: thin;
+}
+.abc-state-dd-inner::-webkit-scrollbar {
+  width: 4px;
+}
+.abc-state-dd-inner::-webkit-scrollbar-thumb {
+  background: #d0d5dd;
+  border-radius: 4px;
+}
+.abc-state-option {
+  display: block;
+  width: 100%;
+  padding: 9px 16px;
+  text-align: left;
+  font-size: 13px;
+  color: #1e2a3a;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  white-space: nowrap;
+  transition:
+    background 0.1s,
+    color 0.1s;
+  line-height: 1.4;
+}
+.abc-state-option:hover {
+  background: #f0f4f9;
+  color: #2e609c;
+}
+.abc-state-option--selected {
+  background: #eaf2ff;
+  color: #2e609c;
+  font-weight: 700;
+}
+.abc-state-option--selected:hover {
+  background: #d9eaff;
+}
+
+/* ── Search ── */
+.abc-search-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+  flex: 0 0 280px;
+  width: 280px;
+}
+.abc-search-icon {
+  position: absolute;
+  left: 13px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  color: #8a8f98;
+  pointer-events: none;
+}
+.abc-search-svg {
+  width: 17px;
+  height: 17px;
+  fill: currentColor;
+}
+.abc-search-input {
+  width: 100%;
+  height: 40px;
+  border: 1px solid #d5dbe3;
+  border-radius: 999px;
+  background: #fff;
+  padding: 0 16px 0 38px;
+  font-size: 14px;
+  color: #1e2a3a;
+  outline: none;
+  transition:
+    border-color 0.15s,
+    box-shadow 0.15s;
+  appearance: none;
+  -webkit-appearance: none;
+}
+.abc-search-input::placeholder {
+  color: #9ea5b2;
+}
+.abc-search-input:focus {
+  border-color: #1b96ff;
+  box-shadow: 0 0 0 3px rgba(27, 150, 255, 0.15);
+}
+.abc-search-input::-webkit-search-cancel-button {
+  -webkit-appearance: none;
+  display: none;
+}
+
+/* ── Cart ── */
+.abc-cart-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  width: 44px;
+  height: 44px;
+  color: #1e2a3a;
+  text-decoration: none;
+  flex: 0 0 44px;
+  border-radius: 4px;
+  transition: color 0.15s;
+}
+.abc-cart-link:hover {
+  color: #2e609c;
+}
+.abc-cart-icon {
+  width: 26px;
+  height: 26px;
+  fill: currentColor;
+}
+.abc-cart-badge {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 4px;
+  background: #c23b22;
+  color: #fff;
+  font-size: 10px;
+  font-weight: 700;
+  border-radius: 9999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  box-sizing: border-box;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   MOBILE NAVIGATION DRAWER
+   ═══════════════════════════════════════════════════════════════════ */
+.abc-mob-drawer {
+  display: none;
+  background: #fff;
+  border-top: 1px solid #e5e7eb;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.09);
+  z-index: 80;
+  position: relative;
+}
+.abc-mob-drawer--open {
+  display: block;
+}
+.abc-mob-nav-list {
+  list-style: none;
+  margin: 0;
+  padding: 8px 0 16px;
+}
+.abc-mob-nav-item {
+  display: block;
+}
+.abc-mob-nav-link {
+  display: block;
+  width: 100%;
+  padding: 12px 20px;
+  font-size: 14px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #1e2a3a;
+  text-decoration: none;
+  background: transparent;
+  border: none;
+  text-align: left;
+  cursor: pointer;
+  transition:
+    background 0.12s,
+    color 0.12s;
+  line-height: 1.4;
+  white-space: nowrap;
+}
+.abc-mob-nav-link:hover {
+  background: #f4f7fa;
+  color: #2e609c;
+}
+.abc-mob-divider {
+  height: 1px;
+  background: #e5e7eb;
+  margin: 8px 16px;
+  list-style: none;
+}
+.abc-mob-logout {
+  color: #c23b22 !important;
+}
+.abc-mob-logout:hover {
+  background: #fff5f5 !important;
+  color: #a02f1b !important;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   TABLET  (768px – 1023px)
+   ═══════════════════════════════════════════════════════════════════ */
+@media only screen and (min-width: 48em) and (max-width: 63.9375em) {
+  .abc-nav-row {
+    padding: 0 16px;
+    min-height: 54px;
+  }
+  .abc-logo {
+    height: 52px;
+  }
+  .abc-logo-link {
+    margin-right: 12px;
+  }
+  .abc-main-nav {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .abc-main-nav::-webkit-scrollbar {
+    display: none;
+  }
+  .abc-nav-list {
+    flex-wrap: nowrap;
+  }
+  .abc-nav-link {
+    font-size: 11px;
+    padding: 6px 7px;
+  }
+  .abc-account-btn {
+    font-size: 11px;
+    padding: 6px 8px;
+  }
+
+  .abc-util-row {
+    padding: 5px 16px 7px;
+    gap: 10px;
+  }
+  .abc-search-wrap {
+    flex: 0 0 210px;
+    width: 210px;
+  }
+
+  /* Hamburger always hidden on tablet+ */
+  .abc-hamburger {
+    display: none !important;
+  }
+  /* Mobile drawer always hidden on tablet+ */
+  .abc-mob-drawer {
+    display: none !important;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   DESKTOP  (≥ 1024px)
+   ═══════════════════════════════════════════════════════════════════ */
+@media only screen and (min-width: 64em) {
+  .abc-nav-row {
+    padding: 0 24px;
+    min-height: 60px;
+  }
+  .abc-logo {
+    height: 64px;
+  }
+  .abc-util-row {
+    padding: 6px 24px 8px;
+    gap: 12px;
+  }
+  .abc-search-wrap {
+    flex: 0 0 280px;
+    width: 280px;
+  }
+
+  /* Hamburger always hidden on desktop */
+  .abc-hamburger {
+    display: none !important;
+  }
+  /* Mobile drawer always hidden on desktop */
+  .abc-mob-drawer {
+    display: none !important;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   MOBILE  (< 768px)
+   ═══════════════════════════════════════════════════════════════════ */
+@media only screen and (max-width: 47.9375em) {
+  /* Nav row: logo left + hamburger right */
+  .abc-nav-row {
+    padding: 6px 12px;
+    min-height: 52px;
+  }
+  .abc-logo {
+    height: 44px;
+  }
+  .abc-logo-link {
+    margin-right: 0;
+  }
+
+  /* Hide nav + account button on mobile (in hamburger instead) */
+  .abc-main-nav,
+  .abc-account-wrap {
+    display: none !important;
+  }
+
+  /* Show hamburger */
+  .abc-hamburger {
+    display: inline-flex;
+  }
+
+  /* Utility row: State (left) + Cart (right) in row 1;
+                  Search (full width) in row 2              */
+  .abc-util-row {
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    padding: 4px 12px 8px;
+    gap: 0;
+    row-gap: 8px;
+  }
+  .abc-state-wrap {
+    flex: 1 1 auto;
+    order: 1;
+  }
+  .abc-cart-link {
+    flex: 0 0 auto;
+    order: 2;
+    margin-left: auto;
+  }
+  .abc-search-wrap {
+    order: 3;
+    flex: 0 0 100%;
+    width: 100%;
+  }
+  .abc-search-input {
+    width: 100%;
+  }
+}

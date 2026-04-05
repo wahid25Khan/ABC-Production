@@ -1,4 +1,19 @@
 /* ═══════════════════════════════════════════════════════════════════
+   CUSTOM HEADER — hide legacy OOB header rows
+   After the c-custom-header LWC is placed in Experience Builder,
+   the old nav row and utility row must be hidden so only the custom
+   header is visible.  The legacy rows are kept in the page layout
+   (not deleted) so c-state-filter-lwc continues to run its cart
+   DOM patching logic in the background.
+   ═══════════════════════════════════════════════════════════════════ */
+
+[data-layout-site-region="header"] .abc-header-nav-row,
+[data-layout-site-region="header"] .abc-header-utility-row {
+  display: none !important;
+}
+
+
+/* ═══════════════════════════════════════════════════════════════════
    ABC HEADER – responsive overrides  v7
    Matches americanbookcompany.com 2-row layout:
      Row 1 (.abc-header-nav-row):      Logo (auto) + drilldownNav (fills)
@@ -81,6 +96,11 @@ commerce_cart-managed-contents .product-sku {
   font-size: 13px !important;
   color: #76716b !important;
 }
+/* Hide the Quantity Help (ⓘ) popover button in the cart quantity selector */
+commerce-quantity-selector-popover {
+  display: none !important;
+}
+
 commerce_cart-managed-contents .item-unit-price {
   font-size: 16px !important;
   font-weight: 700 !important;
@@ -97,9 +117,10 @@ commerce_cart-managed-contents .item-actions button {
 }
 commerce_cart-managed-contents .item-actions {
   display: flex !important;
-  flex-direction: column !important;
-  align-items: flex-start !important;
-  gap: 8px !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  flex-wrap: wrap !important;
+  gap: 4px 12px !important;
 }
 commerce_cart-managed-contents .item-actions .abc-cart-wishlist-button {
   background: transparent !important;
