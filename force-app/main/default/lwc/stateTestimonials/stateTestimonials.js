@@ -1,9 +1,10 @@
 import { LightningElement, track } from "lwc";
 import { loadScript, loadStyle } from "lightning/platformResourceLoader";
-import { STATE_STORAGE_KEY } from "c/utils";
 import getCarouselData from "@salesforce/apex/TestimonialCarouselController.getCarouselData";
 import LOGO_URL from "@salesforce/resourceUrl/testimonialsLogo";
 import SWIPER from "@salesforce/resourceUrl/SwiperJS";
+
+const STORAGE_KEY = "abc_selected_state";
 
 export default class TestimonialCarousel extends LightningElement {
   logoUrl = LOGO_URL;
@@ -12,6 +13,7 @@ export default class TestimonialCarousel extends LightningElement {
   @track formattedSlides = [];
   @track isLoading = true;
 
+  swiperInitialized = false;
   swiperInstance = null;
 
   _watchId;
@@ -39,7 +41,7 @@ export default class TestimonialCarousel extends LightningElement {
     let hashState = this.getStateFromHash();
 
     if (!hashState) {
-      hashState = globalThis.localStorage.getItem(STATE_STORAGE_KEY);
+      hashState = window.localStorage.getItem(STORAGE_KEY);
     }
 
     if (hashState) {
@@ -49,7 +51,7 @@ export default class TestimonialCarousel extends LightningElement {
 
   getStateFromHash() {
     try {
-      const h = (globalThis.location.hash || "").replace(/^#/, "").trim();
+      const h = (window.location.hash || "").replace(/^#/, "").trim();
       if (!h) return "";
       return decodeURIComponent(h);
     } catch {
@@ -60,10 +62,10 @@ export default class TestimonialCarousel extends LightningElement {
   // --- Hash Watcher ---
 
   startHashWatcher() {
-    this._lastHash = globalThis.location.hash;
+    this._lastHash = window.location.hash;
 
-    this._watchId = globalThis.setInterval(() => {
-      const currentHash = globalThis.location.hash;
+    this._watchId = window.setInterval(() => {
+      const currentHash = window.location.hash;
       if (currentHash !== this._lastHash) {
         this._lastHash = currentHash;
 
@@ -78,7 +80,7 @@ export default class TestimonialCarousel extends LightningElement {
 
   stopHashWatcher() {
     if (this._watchId) {
-      globalThis.clearInterval(this._watchId);
+      window.clearInterval(this._watchId);
       this._watchId = null;
     }
   }
@@ -100,13 +102,14 @@ export default class TestimonialCarousel extends LightningElement {
           this.formattedSlides = [];
         }
       })
-      .catch(() => {
+      .catch((error) => {
+        console.error("Error fetching carousel data: ", error);
         this.formattedSlides = [];
       })
       .finally(() => {
         this.isLoading = false;
 
-        globalThis.setTimeout(() => {
+        setTimeout(() => {
           this.setupOrUpdateSwiper();
         }, 0);
       });
@@ -115,32 +118,34 @@ export default class TestimonialCarousel extends LightningElement {
   // --- Swiper Initialization & Update ---
 
   setupOrUpdateSwiper() {
-    if (globalThis.Swiper) {
+    if (!window.Swiper) {
+      Promise.all([
+        loadScript(this, SWIPER + "/SwiperJS/swiper-bundle.min.js"),
+        loadStyle(this, SWIPER + "/SwiperJS/swiper-bundle.min.css")
+      ])
+        .then(() => {
+          this.initSwiper();
+        })
+        .catch((error) => {
+          console.error("Error loading Swiper files: ", error);
+        });
+    } else {
       setTimeout(() => {
         this.initSwiper();
       }, 0);
-      return;
     }
-
-    Promise.all([
-      loadScript(this, SWIPER + "/SwiperJS/swiper-bundle.min.js"),
-      loadStyle(this, SWIPER + "/SwiperJS/swiper-bundle.min.css")
-    ])
-      .then(() => {
-        this.initSwiper();
-      })
-      .catch(() => {});
   }
 
   initSwiper() {
     const swiperContainer = this.template.querySelector(".swiper");
 
-    if (swiperContainer && globalThis.Swiper) {
+    if (swiperContainer && window.Swiper) {
       if (this.swiperInstance) {
         this.swiperInstance.destroy(true, true);
       }
 
-      this.swiperInstance = new globalThis.Swiper(swiperContainer, {
+      this.swiperInitialized = true;
+      this.swiperInstance = new window.Swiper(swiperContainer, {
         slidesPerView: 1,
         spaceBetween: 15,
         navigation: {
