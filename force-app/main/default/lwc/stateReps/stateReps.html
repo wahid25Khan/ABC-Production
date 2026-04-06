@@ -13,7 +13,7 @@
               data-forceshared={rep.forceShared}
               data-try="0"
               onerror={handleImgError}
-            />
+            /><!-- NOSONAR S6847 — onerror is a resource event, not a user interaction -->
             <div class="name">{rep.name}</div>
             <div class="role">{rep.title}</div>
 

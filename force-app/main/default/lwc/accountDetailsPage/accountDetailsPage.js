@@ -1,4 +1,4 @@
-import { LightningElement, api, track } from 'lwc';
+import { LightningElement, api } from 'lwc';
 import isGuest from '@salesforce/user/isGuest';
 import getAccountDetails from '@salesforce/apex/AccountDetailsController.getAccountDetails';
 import updateAboutYou from '@salesforce/apex/AccountDetailsController.updateAboutYou';
@@ -15,12 +15,12 @@ export default class AccountDetailsPage extends LightningElement {
         'Manage your contact information, jump to key account tasks, and keep ordering details current for your school or district.';
     @api ordersUrl = '/AmericanBookCompany/my-orders';
     @api submitPoUrl = '/AmericanBookCompany/submit-a-po';
-    @api wishlistUrl = 'https://americanbookcompany.com/account/my-wishlist';
+    @api wishlistUrl = '/AmericanBookCompany/mylists';
 
-    @track details;
-    @track aboutForm = { firstName: '', lastName: '', email: '', phone: '' };
-    @track organizationForm = { organizationName: '' };
-    @track passwordForm = { currentPassword: '', newPassword: '', confirmPassword: '' };
+    details;
+    aboutForm = { firstName: '', lastName: '', email: '', phone: '' };
+    organizationForm = { organizationName: '' };
+    passwordForm = { currentPassword: '', newPassword: '', confirmPassword: '' };
 
     isLoading = true;
     isSavingAbout = false;
@@ -124,9 +124,8 @@ export default class AccountDetailsPage extends LightningElement {
             const result = await getAccountDetails();
             this.applyDetails(result);
             this.clearStatus();
-        } catch (error) {
+        } catch {
             this.setStatus('Unable to load account details right now.', 'error');
-            console.error('Failed to load account details.', error);
         } finally {
             this.isLoading = false;
         }
@@ -189,9 +188,8 @@ export default class AccountDetailsPage extends LightningElement {
             this.handleActionResult(result, () => {
                 this.isEditingAbout = false;
             });
-        } catch (error) {
+        } catch {
             this.setStatus('Unable to update your details right now.', 'error');
-            console.error('Failed to update account details.', error);
         } finally {
             this.isSavingAbout = false;
         }
@@ -224,9 +222,8 @@ export default class AccountDetailsPage extends LightningElement {
             this.handleActionResult(result, () => {
                 this.isEditingOrganization = false;
             });
-        } catch (error) {
+        } catch {
             this.setStatus('Unable to update organization details right now.', 'error');
-            console.error('Failed to update organization.', error);
         } finally {
             this.isSavingOrganization = false;
         }
@@ -262,9 +259,8 @@ export default class AccountDetailsPage extends LightningElement {
                     confirmPassword: ''
                 };
             });
-        } catch (error) {
+        } catch {
             this.setStatus('Unable to update your password right now.', 'error');
-            console.error('Failed to update password.', error);
         } finally {
             this.isSavingPassword = false;
         }

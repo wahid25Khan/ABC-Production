@@ -229,6 +229,7 @@ export default class SubmitPurchaseOrderForm extends LightningElement {
         phone: this.form.phone,
         organizationName: this.form.organizationName,
         street: this.form.street,
+        street2: this.form.street2,
         city: this.form.city,
         state: this.form.state,
         zipCode: this.form.zipCode,

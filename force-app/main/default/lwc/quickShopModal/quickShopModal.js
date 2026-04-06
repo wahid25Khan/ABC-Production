@@ -1,8 +1,13 @@
 import { LightningElement, api } from "lwc";
-import getFavoriteState from "@salesforce/apex/WishlistController.getFavoriteState";
-import toggleFavorite from "@salesforce/apex/WishlistController.toggleFavorite";
-
-const DEFAULT_WEBSTORE_ID = "0ZEam000004dJDNGA2";
+import {
+  toNumber,
+  parsePositiveInteger,
+  formatCurrency,
+  resolveUnitPriceForQuantity,
+  syncFavoriteState,
+  doToggleFavorite,
+  DEFAULT_WEBSTORE_ID
+} from "c/utils";
 
 export default class QuickShopModal extends LightningElement {
   @api title = "";
@@ -95,7 +100,7 @@ export default class QuickShopModal extends LightningElement {
   }
 
   get selectedUnitPrice() {
-    return this.resolveUnitPriceForQuantity(this.quantity);
+    return resolveUnitPriceForQuantity(this.selectedVariation, this.quantity, this.minQty);
   }
 
   get displayTiers() {
@@ -108,7 +113,7 @@ export default class QuickShopModal extends LightningElement {
           ? `${tier.lowerBound}+`
           : `${tier.lowerBound}\u2013${tier.upperBound}`,
 
-      formattedPrice: this.formatPrice(tier.price),
+      formattedPrice: formatCurrency(toNumber(tier.price), this.currencyIsoCode || "USD"),
       priceClass: `td price${index > 0 ? " price-red" : ""}`
     }));
   }
@@ -122,14 +127,14 @@ export default class QuickShopModal extends LightningElement {
   }
 
   get minQty() {
-    const variationMin = this.parsePositiveInteger(
+    const variationMin = parsePositiveInteger(
       this.selectedVariation?.minimumQuantity
     );
     if (variationMin !== null) {
       return variationMin;
     }
 
-    const parsed = this.parsePositiveInteger(this.minimumQuantity);
+    const parsed = parsePositiveInteger(this.minimumQuantity);
     if (parsed === null) {
       return 10;
     }
@@ -138,26 +143,26 @@ export default class QuickShopModal extends LightningElement {
   }
 
   get maxQty() {
-    const variationMax = this.parsePositiveInteger(
+    const variationMax = parsePositiveInteger(
       this.selectedVariation?.maximumQuantity
     );
     if (variationMax !== null && variationMax <= 9999) {
       return variationMax;
     }
 
-    const parsed = this.parsePositiveInteger(this.maximumQuantity);
+    const parsed = parsePositiveInteger(this.maximumQuantity);
     return parsed !== null && parsed <= 9999 ? parsed : 50;
   }
 
   get incrementQty() {
-    const variationIncrement = this.parsePositiveInteger(
+    const variationIncrement = parsePositiveInteger(
       this.selectedVariation?.incrementQuantity
     );
     if (variationIncrement !== null) {
       return variationIncrement;
     }
 
-    const parsed = this.parsePositiveInteger(this.incrementQuantity);
+    const parsed = parsePositiveInteger(this.incrementQuantity);
     if (parsed === null) {
       return 1;
     }
@@ -166,34 +171,7 @@ export default class QuickShopModal extends LightningElement {
   }
 
   get formattedUnitPrice() {
-    return this.formatPrice(this.selectedUnitPrice);
-  }
-
-  get formattedBulkPrice() {
-    const tiers = this.selectedVariation?.tiers;
-    if (!tiers || tiers.length < 2) return "—";
-    return this.formatPrice(tiers[tiers.length - 1].price);
-  }
-
-  get hasBulkPrice() {
-    const tiers = this.selectedVariation?.tiers;
-    return tiers && tiers.length > 1;
-  }
-
-  get bulkThreshold() {
-    const tiers = this.selectedVariation?.tiers;
-    if (!tiers || tiers.length < 2) return 25;
-    return tiers[tiers.length - 1].lowerBound || 25;
-  }
-
-  get standardQtyRange() {
-    const min = this.minQty;
-    if (!this.hasBulkPrice) return `${min}+`;
-    return `${min}-${this.bulkThreshold - 1}`;
-  }
-
-  get bulkQtyLabel() {
-    return `${this.bulkThreshold}+`;
+    return formatCurrency(this.selectedUnitPrice, this.currencyIsoCode || "USD");
   }
 
   get heartIcon() {
@@ -209,7 +187,7 @@ export default class QuickShopModal extends LightningElement {
     const unit = this.selectedUnitPrice;
     const qty = Number(this.quantity) || this.minQty;
     if (!unit || !qty) return "";
-    return this.formatPrice(unit * qty);
+    return formatCurrency(unit * qty, this.currencyIsoCode || "USD");
   }
 
   // ---------- open/close ----------
@@ -327,73 +305,11 @@ export default class QuickShopModal extends LightningElement {
       return;
     }
 
-    this.syncFavoriteState(productId);
+    syncFavoriteState(this, productId, this.webStoreId || DEFAULT_WEBSTORE_ID);
   }
 
-  async syncFavoriteState(productId) {
-    if (!productId) {
-      this.isFavorite = false;
-      this.favoriteProductId = "";
-      return;
-    }
-
-    try {
-      const result = await getFavoriteState({
-        productId,
-        webStoreId: this.webStoreId || DEFAULT_WEBSTORE_ID
-      });
-
-      if (this.selectedProductId !== productId) {
-        return;
-      }
-
-      this.isFavorite = Boolean(result?.favorite);
-      this.favoriteProductId = productId;
-    } catch (error) {
-      console.warn("Failed to load wishlist state.", error);
-      this.isFavorite = false;
-      this.favoriteProductId = productId;
-    }
-  }
-
-  async handleToggleFavorite() {
-    const productId = this.selectedProductId;
-    if (!productId || this.favoritePending) {
-      return;
-    }
-
-    this.favoritePending = true;
-    const previous = this.isFavorite;
-
-    try {
-      const result = await toggleFavorite({
-        productId,
-        webStoreId: this.webStoreId || DEFAULT_WEBSTORE_ID
-      });
-
-      if (result?.success === false) {
-        this.isFavorite = previous;
-        return;
-      }
-
-      this.isFavorite = Boolean(result?.favorite);
-      this.favoriteProductId = productId;
-      this.dispatchEvent(
-        new CustomEvent("favoritechange", {
-          detail: {
-            favorite: this.isFavorite,
-            productId,
-            wishlistId: result?.wishlistId || null,
-            wishlistItemId: result?.wishlistItemId || null
-          }
-        })
-      );
-    } catch (error) {
-      console.warn("Failed to update wishlist state.", error);
-      this.isFavorite = previous;
-    } finally {
-      this.favoritePending = false;
-    }
+  handleToggleFavorite() {
+    doToggleFavorite(this, this.selectedProductId, this.webStoreId || DEFAULT_WEBSTORE_ID);
   }
 
   // ESC close
@@ -409,36 +325,8 @@ export default class QuickShopModal extends LightningElement {
     globalThis.window.removeEventListener("keydown", this._handleKeydown);
   }
 
-  toNumber(value) {
-    if (value === null || value === undefined || value === "") {
-      return null;
-    }
-
-    if (typeof value === "number") {
-      return Number.isFinite(value) ? value : null;
-    }
-
-    if (typeof value === "object") {
-      if (typeof value.amount === "number" && Number.isFinite(value.amount)) {
-        return value.amount;
-      }
-
-      if (typeof value.value === "number" && Number.isFinite(value.value)) {
-        return value.value;
-      }
-    }
-
-    const normalized = Number(String(value).replaceAll(/[^0-9.-]/g, ""));
-    return Number.isFinite(normalized) ? normalized : null;
-  }
-
-  parsePositiveInteger(value) {
-    const parsed = Number.parseInt(value, 10);
-    return Number.isFinite(parsed) && parsed > 0 ? parsed : null;
-  }
-
   normalizeQuantity(value) {
-    let normalized = this.parsePositiveInteger(value) ?? this.minQty;
+    let normalized = parsePositiveInteger(value) ?? this.minQty;
     const min = this.minQty;
     const max = this.maxQty;
     const increment = this.incrementQty;
@@ -458,50 +346,5 @@ export default class QuickShopModal extends LightningElement {
     }
 
     return normalized;
-  }
-
-  resolveUnitPriceForQuantity(quantity) {
-    const variation = this.selectedVariation;
-    if (!variation) {
-      return null;
-    }
-
-    const tiers = variation.tiers;
-    const fallbackPrice = this.toNumber(variation.unitPrice);
-    if (!tiers?.length) {
-      return fallbackPrice;
-    }
-
-    const qty = this.parsePositiveInteger(quantity) ?? this.minQty;
-    for (const tier of tiers) {
-      const lower = this.toNumber(tier?.lowerBound);
-      const upper = this.toNumber(tier?.upperBound);
-      const price = this.toNumber(tier?.price);
-
-      if (price === null || lower === null) {
-        continue;
-      }
-
-      if (qty >= lower && (upper === null || qty <= upper)) {
-        return price;
-      }
-    }
-
-    return fallbackPrice;
-  }
-
-  formatPrice(value) {
-    const normalized = this.toNumber(value);
-    if (normalized === null) {
-      return "—";
-    }
-
-    const currency = this.currencyIsoCode || "USD";
-    return new Intl.NumberFormat("en-US", {
-      style: "currency",
-      currency,
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2
-    }).format(normalized);
   }
 }

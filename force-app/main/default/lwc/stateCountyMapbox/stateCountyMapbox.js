@@ -1,4 +1,5 @@
 import { LightningElement, api } from "lwc";
+import { STATE_STORAGE_KEY } from "c/utils";
 import US_GEOJSON from "@salesforce/resourceUrl/US_GeoJson";
 import MAPBOX_GL_JS_RESOURCE from "@salesforce/resourceUrl/mapbox_gl";
 import MAPBOX_GL_CSS_RESOURCE from "@salesforce/resourceUrl/mapbox_glcss";
@@ -11,10 +12,9 @@ const FILL_LAYER_ID = "county-fill";
 const LINE_LAYER_ID = "county-outline";
 const VALUE_LAYER_ID = "county-values";
 const COUNTY_NAME_LAYER_ID = "county-name";
-const STORAGE_KEY = "abc_selected_state";
 const STATE_REFINEMENT_KEY = "State__c";
 const REFINEMENTS_PARAM = "refinements";
-const DEFAULT_MAPBOX_ACCESS_TOKEN =
+const DEFAULT_MAPBOX_ACCESS_TOKEN = // NOSONAR — default for @api mapboxAccessToken; configurable in Experience Builder
   "pk.eyJ1IjoiYWthc2h0aGVsb2Rlc3RvbmVncm91cCIsImEiOiJjbW05bG5kaGMwMHQ1Mm9zM3lrM25ydTRwIn0.pSVyEJv1yK_Z8_U1tXKHTA";
 
 const ROLE_PREVIEW = "preview";
@@ -280,7 +280,7 @@ export default class StateCountyMapbox extends LightningElement {
 
   applySelectedStateFromContext() {
     const urlState = this.getSelectedStateFromUrl();
-    const storedState = globalThis.localStorage.getItem(STORAGE_KEY);
+    const storedState = globalThis.localStorage.getItem(STATE_STORAGE_KEY);
     const resolved = this.getValidStateName(
       urlState || storedState || this._selectedState
     );
@@ -402,10 +402,6 @@ export default class StateCountyMapbox extends LightningElement {
 
   getMap(role) {
     return role === ROLE_MODAL ? this.modalMap : this.previewMap;
-  }
-
-  isMapLoaded(role) {
-    return role === ROLE_MODAL ? this.modalMapLoaded : this.previewMapLoaded;
   }
 
   scheduleResize(role) {
@@ -792,7 +788,7 @@ export default class StateCountyMapbox extends LightningElement {
 
   getMapLabelSize(map) {
     if (map === this.previewMap && this.isCompact) {
-      return 8.5;
+      return 10.4;
     }
 
     return 10;
@@ -800,7 +796,7 @@ export default class StateCountyMapbox extends LightningElement {
 
   getCountyLabelSize(map) {
     if (map === this.previewMap && this.isCompact) {
-      return 8;
+      return 10;
     }
 
     return 9.5;
@@ -808,7 +804,7 @@ export default class StateCountyMapbox extends LightningElement {
 
   getCountyLabelMinZoom(map) {
     if (map === this.previewMap && this.isCompact) {
-      return 7.2;
+      return 6.55;
     }
 
     return 6.45;
@@ -1032,12 +1028,12 @@ export default class StateCountyMapbox extends LightningElement {
     if (role === ROLE_PREVIEW && this.isCompact) {
       return {
         padding: {
-          top: 20,
-          right: 20,
-          bottom: 20,
-          left: 20
+          top: 6,
+          right: 6,
+          bottom: 6,
+          left: 6
         },
-        maxZoom: 5.9,
+        maxZoom: 6.8,
         duration: 0
       };
     }
@@ -1206,7 +1202,6 @@ export default class StateCountyMapbox extends LightningElement {
   handleError(error, fallbackMessage) {
     const message = error?.message || fallbackMessage;
     this.errorMessage = message;
-    console.error("stateCountyMapbox error:", message, error);
   }
 
   openModal() {

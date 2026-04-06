@@ -34,48 +34,54 @@
 
             <!-- My Account (last item — no right-border separator) -->
             <li class="abc-nav-item abc-nav-item--account">
-              <template if:true={isGuest}>
-                <a href={loginUrl} class="abc-nav-link abc-nav-link--account"
-                  >My Account</a
+              <button
+                class="abc-nav-link abc-nav-link--account"
+                type="button"
+                onclick={toggleAccountMenu}
+                aria-haspopup="true"
+              >
+                My Account
+                <svg
+                  class="abc-chev-svg"
+                  viewBox="0 0 12 8"
+                  aria-hidden="true"
+                  focusable="false"
                 >
-              </template>
-              <template if:false={isGuest}>
-                <button
-                  class="abc-nav-link abc-nav-link--account"
-                  type="button"
-                  onclick={toggleAccountMenu}
-                  aria-haspopup="true"
-                  aria-expanded={accountMenuOpen}
-                >
-                  My Account
-                  <svg
-                    class="abc-chev-svg"
-                    viewBox="0 0 12 8"
-                    aria-hidden="true"
-                    focusable="false"
-                  >
-                    <path
-                      d="M1 1l5 5 5-5"
-                      stroke="currentColor"
-                      stroke-width="1.5"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      fill="none"
-                    />
-                  </svg>
-                </button>
-                <template if:true={accountMenuOpen}>
-                  <div
-                    class="abc-account-dd"
-                    role="menu"
-                    aria-label="Account menu"
-                  >
+                  <path
+                    d="M1 1l5 5 5-5"
+                    stroke="currentColor"
+                    stroke-width="1.5"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    fill="none"
+                  />
+                </svg>
+              </button>
+              <template if:true={accountMenuOpen}>
+                <div class="abc-account-dd" role="menu" aria-label="Account menu">
+                  <template if:true={isGuest}>
+                    <a
+                      href={loginUrl}
+                      class="abc-dd-item"
+                      role="menuitem"
+                      onclick={closeAccountMenu}
+                      >Login</a
+                    >
+                    <a
+                      href={createAccountUrl}
+                      class="abc-dd-item"
+                      role="menuitem"
+                      onclick={closeAccountMenu}
+                      >Create Account</a
+                    >
+                  </template>
+                  <template if:false={isGuest}>
                     <a
                       href={accountUrl}
                       class="abc-dd-item"
                       role="menuitem"
                       onclick={closeAccountMenu}
-                      >My Account</a
+                      >Account Details</a
                     >
                     <a
                       href={ordersUrl}
@@ -91,6 +97,13 @@
                       onclick={closeAccountMenu}
                       >My Wishlist</a
                     >
+                    <a
+                      href={submitPurchaseOrderUrl}
+                      class="abc-dd-item"
+                      role="menuitem"
+                      onclick={closeAccountMenu}
+                      >Submit a PO</a
+                    >
                     <button
                       class="abc-dd-item abc-dd-logout"
                       type="button"
@@ -99,8 +112,8 @@
                     >
                       Log Out
                     </button>
-                  </div>
-                </template>
+                  </template>
+                </div>
               </template>
             </li>
           </ul>
@@ -217,7 +230,6 @@
             type="button"
             onclick={toggleMobileMenu}
             aria-label={mobileMenuAriaLabel}
-            aria-expanded={mobileMenuOpen}
           >
             <span class="abc-bar abc-bar-top"></span>
             <span class="abc-bar abc-bar-mid"></span>
@@ -292,6 +304,14 @@
                 >Log In</a
               >
             </li>
+            <li class="abc-mob-nav-item">
+              <a
+                href={createAccountUrl}
+                class="abc-mob-nav-link"
+                onclick={closeMobileMenu}
+                >Create Account</a
+              >
+            </li>
           </template>
           <template if:false={isGuest}>
             <li class="abc-mob-nav-item">
@@ -299,7 +319,7 @@
                 href={accountUrl}
                 class="abc-mob-nav-link"
                 onclick={closeMobileMenu}
-                >My Account</a
+                >Account Details</a
               >
             </li>
             <li class="abc-mob-nav-item">
@@ -316,6 +336,14 @@
                 class="abc-mob-nav-link"
                 onclick={closeMobileMenu}
                 >My Wishlist</a
+              >
+            </li>
+            <li class="abc-mob-nav-item">
+              <a
+                href={submitPurchaseOrderUrl}
+                class="abc-mob-nav-link"
+                onclick={closeMobileMenu}
+                >Submit a PO</a
               >
             </li>
             <li class="abc-mob-nav-item">

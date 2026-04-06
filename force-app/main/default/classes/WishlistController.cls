@@ -22,6 +22,80 @@ public with sharing class WishlistController {
         public String message;
     }
 
+    /** Lightweight item data for the dedicated wishlist page. */
+    public class WishlistPageItem {
+        @AuraEnabled
+        public Id wishlistItemId;
+
+        @AuraEnabled
+        public Id productId;
+
+        @AuraEnabled
+        public String productName;
+
+        @AuraEnabled
+        public String stockKeepingUnit;
+    }
+
+    /** Wrapper returned to the wishlist page. */
+    public class WishlistPageResult {
+        @AuraEnabled
+        public Boolean success;
+
+        @AuraEnabled
+        public String message;
+
+        @AuraEnabled
+        public List<WishlistPageItem> items;
+    }
+
+    /**
+     * Returns the current buyer's wishlist contents for the storefront account page.
+     *
+     * @param webStoreId The active web store identifier.
+     * @return Wrapper containing wishlist items or an explanatory message.
+     */
+    @AuraEnabled(cacheable=true)
+    public static WishlistPageResult getWishlistPage(String webStoreId) {
+        WishlistPageResult result = new WishlistPageResult();
+        result.success = true;
+        result.items = new List<WishlistPageItem>();
+
+        if (String.isBlank(webStoreId)) {
+            result.success = false;
+            result.message = 'A web store is required.';
+            return result;
+        }
+
+        Id buyerAccountId = resolveBuyerAccountId();
+        if (buyerAccountId == null) {
+            result.success = false;
+            result.message = 'No buyer account is associated with the current user.';
+            return result;
+        }
+
+        Wishlist wishlist = findWishlist(buyerAccountId, webStoreId);
+        if (wishlist == null) {
+            return result;
+        }
+
+        for (WishlistItem item : [
+            SELECT Id, Product2Id, Product2.Name, Product2.StockKeepingUnit
+            FROM WishlistItem
+            WHERE WishlistId = :wishlist.Id
+            ORDER BY CreatedDate DESC
+        ]) {
+            WishlistPageItem pageItem = new WishlistPageItem();
+            pageItem.wishlistItemId = item.Id;
+            pageItem.productId = item.Product2Id;
+            pageItem.productName = item.Product2 != null ? item.Product2.Name : 'Untitled';
+            pageItem.stockKeepingUnit = item.Product2 != null ? item.Product2.StockKeepingUnit : null;
+            result.items.add(pageItem);
+        }
+
+        return result;
+    }
+
     /**
      * Returns whether the current buyer has already favorited a product.
      *

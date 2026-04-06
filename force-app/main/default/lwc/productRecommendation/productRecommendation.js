@@ -1,7 +1,12 @@
 import { LightningElement, api } from "lwc";
-
-const DEFAULT_STORE_NAME = "AmericanBookCompany";
-const DEFAULT_WEBSTORE_ID = "0ZEam000004dJDNGA2";
+import {
+  normalizeProduct,
+  extractProductList,
+  buildProductDetailPath,
+  scrollCarouselToIndex,
+  DEFAULT_WEBSTORE_ID,
+  DEFAULT_STORE_NAME
+} from "c/utils";
 
 export default class ProductRecommendation extends LightningElement {
   @api storeName = DEFAULT_STORE_NAME;
@@ -76,64 +81,23 @@ export default class ProductRecommendation extends LightningElement {
       }
 
       const data = await response.json();
-      const fetchedProducts = this.extractProductList(data);
+      const fetchedProducts = extractProductList(data);
 
       this.products = fetchedProducts
-        .map((item) => this.normalizeProduct(item))
+        .map((item) => normalizeProduct(item))
         .filter(Boolean)
         .slice(0, this.normalizedMaxProducts);
 
       this.showProducts = this.products.length > 0;
       this.currentIndex = 0;
-      this.scrollToCurrentIndex("auto");
-    } catch (error) {
-      // N8 fix: Log the error instead of silently discarding it
-      console.warn(
-        "ProductRecommendation: failed to load recommendations.",
-        error?.message || error
-      );
+      scrollCarouselToIndex(this.template, this.currentIndex, "auto");
+    } catch {
       this.products = [];
       this.showProducts = false;
       this.currentIndex = 0;
     } finally {
       this.loading = false;
     }
-  }
-
-  extractProductList(data) {
-    const list =
-      data?.productsPage?.products ||
-      data?.productPage?.products ||
-      data?.productSearchResult?.products ||
-      data?.searchProductResult?.products ||
-      data?.products;
-
-    return Array.isArray(list) ? list : [];
-  }
-
-  normalizeProduct(item) {
-    const id = String(item?.id || "").trim();
-    if (!id) {
-      return null;
-    }
-
-    const name = String(item.name || "").trim() || "Untitled";
-    const urlName = String(item.urlName || item.slug || "").trim();
-    const imageUrl = this.resolveProductImageUrl(item);
-
-    return {
-      ...item,
-      id,
-      name,
-      urlName,
-      imageUrl
-    };
-  }
-
-  resolveProductImageUrl(item) {
-    const imageUrl =
-      item?.defaultImage?.url || item?.image?.url || item?.imageUrl || "";
-    return typeof imageUrl === "string" ? imageUrl.trim() : "";
   }
 
   handleClickProduct(event) {
@@ -147,17 +111,7 @@ export default class ProductRecommendation extends LightningElement {
       return;
     }
 
-    globalThis.location.href = this.buildProductDetailPath(product);
-  }
-
-  buildProductDetailPath(product) {
-    const nameSource = product.urlName || product.name || "detail";
-    const recordName = String(nameSource)
-      .toLowerCase()
-      .replaceAll(/[^a-z0-9]+/g, "-")
-      .replaceAll(/^-+|-+$/g, "");
-
-    return `/${this.storeName || DEFAULT_STORE_NAME}/product/${recordName || "detail"}/${product.id}`;
+    globalThis.location.href = buildProductDetailPath(product, this.storeName || DEFAULT_STORE_NAME);
   }
 
   handlePrev() {
@@ -166,7 +120,7 @@ export default class ProductRecommendation extends LightningElement {
     }
 
     this.currentIndex = Math.max(0, this.currentIndex - 1);
-    this.scrollToCurrentIndex("smooth");
+    scrollCarouselToIndex(this.template, this.currentIndex, "smooth");
   }
 
   handleNext() {
@@ -179,30 +133,7 @@ export default class ProductRecommendation extends LightningElement {
       this.products.length - this.normalizedVisibleCount
     );
     this.currentIndex = Math.min(maxStart, this.currentIndex + 1);
-    this.scrollToCurrentIndex("smooth");
-  }
-
-  scrollToCurrentIndex(behavior = "smooth") {
-    globalThis.requestAnimationFrame(() => {
-      const viewport = this.template.querySelector(".products-viewport");
-      const track = this.template.querySelector(".products-track");
-      const firstCard = this.template.querySelector(".product-card");
-
-      if (!viewport || !track || !firstCard) {
-        return;
-      }
-
-      const style = globalThis.getComputedStyle(track);
-      const gapValue = style.columnGap || style.gap || "0";
-      const gap = Number.parseFloat(gapValue) || 0;
-      const cardWidth = firstCard.getBoundingClientRect().width;
-      const left = Math.max(0, this.currentIndex * (cardWidth + gap));
-
-      viewport.scrollTo({
-        left,
-        behavior
-      });
-    });
+    scrollCarouselToIndex(this.template, this.currentIndex, "smooth");
   }
 
   buildEndpoint() {

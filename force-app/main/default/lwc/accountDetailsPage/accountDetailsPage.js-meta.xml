@@ -13,7 +13,7 @@
             <property default="Manage your contact information, jump to key account tasks, and keep ordering details current for your school or district." label="Hero Description" name="heroDescription" type="String" />
             <property default="/AmericanBookCompany/my-orders" label="Orders URL" name="ordersUrl" type="String" />
             <property default="/AmericanBookCompany/submit-a-po" label="Submit PO URL" name="submitPoUrl" type="String" />
-            <property default="https://americanbookcompany.com/account/my-wishlist" label="Wishlist URL" name="wishlistUrl" type="String" />
+            <property default="/AmericanBookCompany/mylists" label="Wishlist URL" name="wishlistUrl" type="String" />
         </targetConfig>
     </targetConfigs>
 </LightningComponentBundle>

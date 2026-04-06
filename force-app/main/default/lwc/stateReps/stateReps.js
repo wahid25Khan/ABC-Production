@@ -1,7 +1,7 @@
 import { LightningElement, track } from "lwc";
+import { STATE_STORAGE_KEY } from "c/utils";
 import repsAssets from "@salesforce/resourceUrl/abc_reps";
 
-const STORAGE_KEY = "abc_selected_state";
 const ZIP_ROOT_FOLDER = "abc_reps";
 const RESULTS_SEG = "/global-search";
 
@@ -362,7 +362,7 @@ export default class StateReps extends LightningElement {
 
   getStoredState() {
     try {
-      const v = globalThis.localStorage.getItem(STORAGE_KEY) || "";
+      const v = globalThis.localStorage.getItem(STATE_STORAGE_KEY) || "";
       return STATES.has(v) ? v : "";
     } catch {
       return "";
@@ -401,16 +401,6 @@ export default class StateReps extends LightningElement {
     }
 
     return storedState || validHashState || "Georgia";
-  }
-
-  getResultsKeyword(url) {
-    const idx = (url.pathname || "").indexOf(RESULTS_SEG);
-    if (idx === -1) return "";
-    const after = (url.pathname || "")
-      .slice(idx + RESULTS_SEG.length)
-      .replace(/^\/+/, "");
-    const seg = (after.split("/")[0] || "").trim();
-    return decodeURIComponent(seg);
   }
 
   getStateFromParams(url) {

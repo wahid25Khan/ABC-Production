@@ -1,19 +1,31 @@
-import { LightningElement, api, track } from "lwc";
+import { LightningElement, api } from "lwc";
 import getVariationPricing from "@salesforce/apex/ProductVariationController.getVariationPricing";
+import {
+  readStateFromStorage,
+  writeStateToStorage,
+  resolveByPath,
+  firstString,
+  resolvePrice,
+  extractPricingMap as sharedExtractPricingMap,
+  formatCurrency as sharedFormatCurrency,
+  normalizeImageUrl as sharedNormalizeImageUrl,
+  resolveProductImageUrl as sharedResolveProductImageUrl,
+  normalizeProduct as sharedNormalizeProduct,
+  extractProductList as sharedExtractProductList,
+  buildProductDetailPath as sharedBuildProductDetailPath,
+  resolveStockKeepingUnit as sharedResolveStockKeepingUnit,
+  resolveCurrencyIsoCode as sharedResolveCurrencyIsoCode,
+  applyStorefrontGuestParams,
+  ALL_STATES,
+  DEFAULT_WEBSTORE_ID,
+  DEFAULT_STORE_NAME,
+  STATE_STORAGE_KEY
+} from "c/utils";
 
-const DEFAULT_STORE_NAME = "AmericanBookCompany";
-const DEFAULT_WEBSTORE_ID = "0ZEam000004dJDNGA2";
-const DEFAULT_STATE_STORAGE_KEY = "abc_selected_state";
 const DEFAULT_PAGE_SIZE = 20;
 const SEARCH_MARKER = "/global-search/";
 const URL_WATCH_INTERVAL_MS = 250;
 const URL_WATCH_DEBOUNCE_MS = 120;
-const CART_REQUEST_PARAMS = Object.freeze({
-  language: "en-US",
-  asGuest: "true",
-  htmlEncode: "false"
-});
-
 const SEARCH_FIELDS = ["StockKeepingUnit"];
 
 const PRODUCT_DETAIL_FIELDS = [
@@ -94,60 +106,6 @@ const SERIES_FILTER_VALUES = [
   "SOL"
 ];
 
-const US_STATES = [
-  "Alabama",
-  "Alaska",
-  "Arizona",
-  "Arkansas",
-  "California",
-  "Colorado",
-  "Connecticut",
-  "Delaware",
-  "District of Columbia",
-  "Florida",
-  "Georgia",
-  "Hawaii",
-  "Idaho",
-  "Illinois",
-  "Indiana",
-  "Iowa",
-  "Kansas",
-  "Kentucky",
-  "Louisiana",
-  "Maine",
-  "Maryland",
-  "Massachusetts",
-  "Michigan",
-  "Minnesota",
-  "Mississippi",
-  "Missouri",
-  "Montana",
-  "Nebraska",
-  "Nevada",
-  "New Hampshire",
-  "New Jersey",
-  "New Mexico",
-  "New York",
-  "North Carolina",
-  "North Dakota",
-  "Ohio",
-  "Oklahoma",
-  "Oregon",
-  "Pennsylvania",
-  "Rhode Island",
-  "South Carolina",
-  "South Dakota",
-  "Tennessee",
-  "Texas",
-  "Utah",
-  "Vermont",
-  "Virginia",
-  "Washington",
-  "West Virginia",
-  "Wisconsin",
-  "Wyoming"
-];
-
 function parseCsv(value) {
   return String(value || "")
     .split(",")
@@ -185,11 +143,11 @@ export default class CustomResults extends LightningElement {
   @api storeName = DEFAULT_STORE_NAME;
   @api webStoreId = DEFAULT_WEBSTORE_ID;
   @api defaultSearchTerm = "";
-  @api stateStorageKey = DEFAULT_STATE_STORAGE_KEY;
+  @api stateStorageKey = STATE_STORAGE_KEY;
 
   @api stateFieldApiName = "State__c";
   @api filterFieldApiNames = "Grade_Level__c,Category__c,Series__c";
-  @api filterFieldLabels = "Grade Level,Subject";
+  @api filterFieldLabels = "Grade Level,Subject,Series";
   @api searchFieldApiNames = SEARCH_FIELDS.join(",");
 
   @api pageSizeOptions = "20,40,60";
@@ -198,34 +156,33 @@ export default class CustomResults extends LightningElement {
   @api maxFetchPages = 8;
   @api cartStateOrId = "current";
 
-  @track loading = false;
-  @track products = [];
-  @track visibleProducts = [];
-  @track filterGroups = [];
-  @track stateOptions = [];
+  loading = false;
+  products = [];
+  visibleProducts = [];
+  filterGroups = [];
 
-  @track selectedState = "";
-  @track searchText = "";
-  @track sortValue = "relevance";
-  @track pageSizeValue = DEFAULT_PAGE_SIZE;
-  @track currentPage = 1;
-  @track totalResults = 0;
-  @track totalPages = 1;
-  @track showingStart = 0;
-  @track showingEnd = 0;
-  @track viewMode = "grid";
+  selectedState = "";
+  searchText = "";
+  sortValue = "relevance";
+  pageSizeValue = DEFAULT_PAGE_SIZE;
+  currentPage = 1;
+  totalResults = 0;
+  totalPages = 1;
+  showingStart = 0;
+  showingEnd = 0;
+  viewMode = "grid";
 
-  @track isModalOpen = false;
+  isModalOpen = false;
   isAddingToCart = false;
-  @track modalProduct = null;
-  @track modalVariationPricing = null;
-  @track isModalPricingLoading = false;
-  @track modalPricingLoadError = false;
+  modalProduct = null;
+  modalVariationPricing = null;
+  isModalPricingLoading = false;
+  modalPricingLoadError = false;
 
-  @track isStateDropdownOpen = false;
-  @track isSortDropdownOpen = false;
-  @track isPageSizeDropdownOpen = false;
-  @track isMobileFiltersOpen = false;
+  isStateDropdownOpen = false;
+  isSortDropdownOpen = false;
+  isPageSizeDropdownOpen = false;
+  isMobileFiltersOpen = false;
 
   stateProducts = [];
   selectedFiltersByField = {};
@@ -306,14 +263,6 @@ export default class CustomResults extends LightningElement {
     return this.viewMode === "list";
   }
 
-  get ariaGridPressed() {
-    return this.isGridView;
-  }
-
-  get ariaListPressed() {
-    return this.isListView;
-  }
-
   get sortOptions() {
     return [
       { label: "Most Relevant", value: "relevance" },
@@ -343,10 +292,10 @@ export default class CustomResults extends LightningElement {
 
   get modalIsbn() {
     if (!this.modalProduct) return "";
-    return this.firstString([
+    return firstString([
       this.modalProduct.sku,
       this.modalProduct.isbn,
-      this.resolveByPath(this.modalProduct, "fields.StockKeepingUnit")
+      resolveByPath(this.modalProduct, "fields.StockKeepingUnit")
     ]);
   }
 
@@ -424,12 +373,8 @@ export default class CustomResults extends LightningElement {
       : "filters-column";
   }
 
-  get mobileFilterPanelClass() {
-    return "mobile-filter-panel";
-  }
-
   get stateOptionsForUi() {
-    return US_STATES.map((value) => ({
+    return ALL_STATES.map((value) => ({
       label: value,
       value,
       className:
@@ -464,11 +409,7 @@ export default class CustomResults extends LightningElement {
     try {
       this.filterDefinitions = this.buildFilterDefinitions();
       this.pageSizeValue = this.resolveInitialPageSize();
-      this.stateOptions = [
-        { label: "All States", value: "" },
-        ...US_STATES.map((value) => ({ label: value, value }))
-      ];
-      this.selectedState = this.readStateFromStorage();
+      this.selectedState = readStateFromStorage();
 
       const initialResponse = await this.loadStateProducts();
       this.stateProducts = initialResponse.products;
@@ -530,7 +471,7 @@ export default class CustomResults extends LightningElement {
       if (facetKey !== fieldKey) return;
 
       toArray(facet?.values).forEach((entry) => {
-        const value = this.firstString([entry?.displayName, entry?.nameOrId]);
+        const value = firstString([entry?.displayName, entry?.nameOrId]);
         const count = Number.parseInt(entry?.productCount, 10);
         if (!value) return;
         counts.set(value, Number.isFinite(count) && count > 0 ? count : 0);
@@ -551,7 +492,7 @@ export default class CustomResults extends LightningElement {
     for (let page = 0; page < maxPages; page += 1) {
       // eslint-disable-next-line no-await-in-loop
       const data = await this.fetchSearchResponse(criteria, page, pageSize);
-      const pageProducts = this.extractProductList(data);
+      const pageProducts = sharedExtractProductList(data);
 
       if (page === 0) facets = this.extractFacetList(data);
       if (!pageProducts.length) break;
@@ -612,14 +553,6 @@ export default class CustomResults extends LightningElement {
     }
   }
 
-  async enrichProductsWithPricing(products) {
-    const productIds = products.map((item) => item.id).filter(Boolean);
-    if (!productIds.length) return products;
-
-    const pricingMap = await this.fetchPricingForProducts(productIds);
-    return this.applyPricingMapToProducts(products, pricingMap);
-  }
-
   applyPricingMapToProducts(products, pricingMap) {
     if (!pricingMap?.size) return products;
 
@@ -660,7 +593,7 @@ export default class CustomResults extends LightningElement {
 
           if (!response.ok) return new Map();
           const data = await response.json();
-          return this.extractPricingMap(data);
+          return sharedExtractPricingMap(data);
         } catch {
           return new Map();
         }
@@ -676,7 +609,9 @@ export default class CustomResults extends LightningElement {
 
   buildPricingEndpoint(productIds) {
     const base = `/${this.storeName || DEFAULT_STORE_NAME}/webruntime/api/services/data/v66.0/commerce/webstores/${this.webStoreId || DEFAULT_WEBSTORE_ID}/pricing/products`;
-    const params = new URLSearchParams({ productIds: productIds.join(",") });
+    const params = applyStorefrontGuestParams(
+      new URLSearchParams({ productIds: productIds.join(",") })
+    );
     return `${base}?${params.toString()}`;
   }
 
@@ -784,9 +719,11 @@ export default class CustomResults extends LightningElement {
 
   buildProductsEndpoint(productIds, idParamName) {
     const base = `/${this.storeName || DEFAULT_STORE_NAME}/webruntime/api/services/data/v66.0/commerce/webstores/${this.webStoreId || DEFAULT_WEBSTORE_ID}/products`;
-    const params = new URLSearchParams({
-      [idParamName]: productIds.join(",")
-    });
+    const params = applyStorefrontGuestParams(
+      new URLSearchParams({
+        [idParamName]: productIds.join(",")
+      })
+    );
 
     params.set("fields", PRODUCT_DETAIL_FIELDS.join(","));
     return `${base}?${params.toString()}`;
@@ -795,13 +732,13 @@ export default class CustomResults extends LightningElement {
   buildSearchEndpoint(criteria, page, pageSize) {
     const base = `/${this.storeName || DEFAULT_STORE_NAME}/webruntime/api/services/data/v66.0/commerce/webstores/${this.webStoreId || DEFAULT_WEBSTORE_ID}/search/products`;
 
-    const params = new URLSearchParams({
-      language: "en-US",
-      asGuest: "true",
-      searchTerm: criteria.searchTerm,
-      page: String(page),
-      pageSize: String(pageSize)
-    });
+    const params = applyStorefrontGuestParams(
+      new URLSearchParams({
+        searchTerm: criteria.searchTerm,
+        page: String(page),
+        pageSize: String(pageSize)
+      })
+    );
 
     this.applyRefinementsToParams(params, criteria.refinements);
 
@@ -934,7 +871,7 @@ export default class CustomResults extends LightningElement {
     this.urlWatchDebounceId = null;
   }
 
-  async handleObservedUrlChange() {
+  handleObservedUrlChange() {
     const nextPathSearchToken = this.getPathSearchToken();
     if (nextPathSearchToken === this.currentPathSearchToken) return;
 
@@ -967,17 +904,6 @@ export default class CustomResults extends LightningElement {
     });
   }
 
-  extractProductList(data) {
-    const list =
-      data?.productsPage?.products ||
-      data?.productPage?.products ||
-      data?.productSearchResult?.products ||
-      data?.searchProductResult?.products ||
-      data?.products;
-
-    return toArray(list);
-  }
-
   extractFacetList(data) {
     return toArray(data?.facets);
   }
@@ -993,27 +919,26 @@ export default class CustomResults extends LightningElement {
   }
 
   normalizeProduct(item) {
-    const id = String(item?.id || "").trim();
-    if (!id) return null;
+    const base = sharedNormalizeProduct(item);
+    if (!base) return null;
 
-    const name = String(item?.name || "").trim() || "Untitled";
     const imageUrl = this.resolveProductImageUrl(item);
-    const sku = this.resolveStockKeepingUnit(item);
-    const currencyIsoCode = this.resolveCurrencyIsoCode(item);
+    const sku = sharedResolveStockKeepingUnit(item);
+    const currencyIsoCode = sharedResolveCurrencyIsoCode(item);
 
-    const listPrice = this.resolvePrice(item, [
+    const listPrice = resolvePrice(item, [
       "prices.listPrice",
       "prices.pricebookPrice",
       "fields.Price__c",
       "price"
     ]);
-    const salesPrice = this.resolvePrice(item, [
+    const salesPrice = resolvePrice(item, [
       "prices.salesPrice",
       "prices.unitPrice",
       "prices.unitAdjustedPrice",
       "price"
     ]);
-    const negotiatedPrice = this.resolvePrice(item, [
+    const negotiatedPrice = resolvePrice(item, [
       "prices.negotiatedPrice",
       "prices.unitPrice",
       "prices.salesPrice"
@@ -1026,13 +951,10 @@ export default class CustomResults extends LightningElement {
     });
 
     return {
-      ...item,
-      id,
-      name,
+      ...base,
+      imageUrl,
       sku,
       isbn: sku,
-      urlName: String(item?.urlName || item?.slug || "").trim(),
-      imageUrl,
       currencyIsoCode,
       listPrice,
       startingPrice,
@@ -1054,7 +976,7 @@ export default class CustomResults extends LightningElement {
   resolveProductTextValues(item, paths) {
     const values = [];
     paths.forEach((path) =>
-      this.collectResolvedText(this.resolveByPath(item, path), values)
+      this.collectResolvedText(resolveByPath(item, path), values)
     );
     return [...new Set(values)];
   }
@@ -1089,24 +1011,6 @@ export default class CustomResults extends LightningElement {
     });
   }
 
-  resolveCurrencyIsoCode(item) {
-    const resolved = this.firstString([
-      this.resolveByPath(item, "prices.currencyIsoCode"),
-      this.resolveByPath(item, "fields.CurrencyIsoCode"),
-      item?.currencyIsoCode
-    ]);
-
-    return resolved || "USD";
-  }
-
-  resolveStockKeepingUnit(item) {
-    return this.firstString([
-      item?.sku,
-      item?.stockKeepingUnit,
-      this.resolveByPath(item, "fields.StockKeepingUnit")
-    ]);
-  }
-
   buildProductSearchTerms(item, context = {}) {
     const parts = [];
     const filterValues = context?.filterValues || {};
@@ -1115,8 +1019,8 @@ export default class CustomResults extends LightningElement {
     this.collectSearchText(item?.name, parts);
     this.collectSearchText(context?.sku, parts);
     this.collectSearchText(item?.urlName, parts);
-    this.collectSearchText(this.resolveByPath(item, "fields.Name"), parts);
-    this.collectSearchText(this.resolveByPath(item, "fields.State__c"), parts);
+    this.collectSearchText(resolveByPath(item, "fields.Name"), parts);
+    this.collectSearchText(resolveByPath(item, "fields.State__c"), parts);
     this.collectSearchText(filterValues.Grade_Level__c, parts);
     this.collectSearchText(categoryValues, parts);
     this.collectSearchText(filterValues.Series__c, parts);
@@ -1399,11 +1303,7 @@ export default class CustomResults extends LightningElement {
     const filterValues = product?.filterValues || {};
 
     if (state) {
-      const stateValues = Array.isArray(
-        this.resolveProductTextValues(product, ["fields.State__c"])
-      )
-        ? this.resolveProductTextValues(product, ["fields.State__c"])
-        : [];
+      const stateValues = this.resolveProductTextValues(product, ["fields.State__c"]);
 
       if (stateValues.includes(state)) {
         score += 100;
@@ -1469,8 +1369,8 @@ export default class CustomResults extends LightningElement {
 
     this.visibleProducts = sorted.slice(start, end).map((product) => ({
       ...product,
-      productUrl: this.buildProductDetailPath(product),
-      priceLabel: this.formatCurrency(
+      productUrl: sharedBuildProductDetailPath(product, this.storeName),
+      priceLabel: sharedFormatCurrency(
         product.startingPrice,
         product.currencyIsoCode
       ),
@@ -1556,7 +1456,7 @@ export default class CustomResults extends LightningElement {
 
   async handleStateChange(event) {
     this.selectedState = String(event?.detail?.value || "").trim();
-    this.writeStateToStorage(this.selectedState);
+    writeStateToStorage(this.selectedState);
     this.updateResultsUrlForState(this.selectedState);
     this.clearSelectedFilters();
     this.currentPage = 1;
@@ -1671,8 +1571,7 @@ export default class CustomResults extends LightningElement {
         productId,
         webStoreId: this.webStoreId || DEFAULT_WEBSTORE_ID
       });
-    } catch (error) {
-      console.warn("Failed to load variation pricing.", error);
+    } catch {
       this.modalVariationPricing = null;
       this.modalPricingLoadError = true;
     } finally {
@@ -1692,8 +1591,9 @@ export default class CustomResults extends LightningElement {
     if (!this.modalProduct) return;
 
     this.handleModalClose();
-    globalThis.window.location.href = this.buildProductDetailPath(
-      this.modalProduct
+    globalThis.window.location.href = sharedBuildProductDetailPath(
+      this.modalProduct,
+      this.storeName
     );
   }
 
@@ -1748,79 +1648,14 @@ export default class CustomResults extends LightningElement {
 
   buildAddToCartEndpoint(cartStateOrId) {
     const targetCart = String(cartStateOrId || "current").trim() || "current";
-    const params = new URLSearchParams(CART_REQUEST_PARAMS);
+    const params = applyStorefrontGuestParams(new URLSearchParams());
 
     return `/${this.storeName || DEFAULT_STORE_NAME}/webruntime/api/services/data/v66.0/commerce/webstores/${this.webStoreId || DEFAULT_WEBSTORE_ID}/carts/${targetCart}/cart-items?${params.toString()}`;
   }
 
   resolveProductImageUrl(item) {
-    const candidates = [
-      item?.defaultImage?.url,
-      item?.image?.url,
-      item?.imageUrl
-    ];
-
-    for (const candidate of candidates) {
-      if (typeof candidate === "string" && candidate.trim()) {
-        return this.normalizeImageUrl(candidate.trim());
-      }
-    }
-
-    const groups = toArray(item?.mediaGroups);
-    for (const group of groups) {
-      const mediaItems = toArray(group?.mediaItems);
-      for (const mediaItem of mediaItems) {
-        const url = mediaItem?.url || mediaItem?.image?.url;
-        if (typeof url === "string" && url.trim()) {
-          return this.normalizeImageUrl(url.trim());
-        }
-      }
-    }
-
-    return "";
-  }
-
-  normalizeImageUrl(url) {
-    const value = String(url || "")
-      .trim()
-      .replaceAll(/\s/g, "%20");
-    if (!value) return "";
-
-    if (/^(https?:|data:)/i.test(value)) return value;
-    if (value.startsWith("//")) return `https:${value}`;
-
-    if (globalThis.window?.location?.origin) {
-      if (value.startsWith("/")) {
-        return `${globalThis.window.location.origin}${value}`;
-      }
-      return `${globalThis.window.location.origin}/${value.replace(/^\/+/, "")}`;
-    }
-
-    return value;
-  }
-
-  readStateFromStorage() {
-    try {
-      const value = String(
-        globalThis.window.localStorage.getItem(
-          this.stateStorageKey || DEFAULT_STATE_STORAGE_KEY
-        ) || ""
-      ).trim();
-      return US_STATES.includes(value) ? value : "";
-    } catch {
-      return "";
-    }
-  }
-
-  writeStateToStorage(value) {
-    try {
-      globalThis.window.localStorage.setItem(
-        this.stateStorageKey || DEFAULT_STATE_STORAGE_KEY,
-        value || ""
-      );
-    } catch {
-      // ignore
-    }
+    const url = sharedResolveProductImageUrl(item);
+    return url ? sharedNormalizeImageUrl(url) : "";
   }
 
   updateResultsUrlForState(stateValue) {
@@ -1848,32 +1683,6 @@ export default class CustomResults extends LightningElement {
     globalThis.window.history.pushState({}, "", nextPath);
     this.currentPathSearchToken = nextToken === "all" ? "" : nextToken;
     this.lastObservedHref = this.getCurrentHref();
-  }
-
-  buildProductDetailPath(product) {
-    const productIdForUrl = product?.id;
-    const source = product?.urlName || product?.name || "detail";
-    const slug = String(source)
-      .toLowerCase()
-      .replaceAll(/[^a-z0-9]+/g, "-")
-      .replaceAll(/^-+|-+$/g, "");
-
-    return `/${this.storeName || DEFAULT_STORE_NAME}/product/${slug || "detail"}/${productIdForUrl}`;
-  }
-
-  formatCurrency(amount, currencyIsoCode) {
-    if (!Number.isFinite(amount)) return "—";
-
-    try {
-      return new Intl.NumberFormat("en-US", {
-        style: "currency",
-        currency: currencyIsoCode || "USD",
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2
-      }).format(amount);
-    } catch {
-      return `$${amount.toFixed(2)}`;
-    }
   }
 
   getPageSizeValues() {
@@ -1915,107 +1724,6 @@ export default class CustomResults extends LightningElement {
       .trim()
       .toLowerCase()
       .replaceAll(/[^a-z0-9]/g, "");
-  }
-
-  extractPricingMap(data) {
-    const root = data && typeof data === "object" ? data : {};
-    let rows = [];
-    if (Array.isArray(root.pricingLineItemResults)) {
-      rows = root.pricingLineItemResults;
-    } else if (Array.isArray(root.pricingResults)) {
-      rows = root.pricingResults;
-    }
-
-    const pricingByProductId = new Map();
-
-    for (const row of rows) {
-      const productId = String(
-        row?.productId ||
-          row?.pricingLineItem?.productId ||
-          row?.product?.id ||
-          row?.product?.productId ||
-          ""
-      ).trim();
-
-      if (!productId) continue;
-
-      pricingByProductId.set(productId, {
-        currencyIsoCode:
-          this.firstString([row?.currencyIsoCode, root?.currencyIsoCode]) ||
-          "USD",
-        listPrice: this.resolvePrice(row, [
-          "listPrice",
-          "pricebookPrice",
-          "listUnitPrice"
-        ]),
-        salesPrice: this.resolvePrice(row, [
-          "salesPrice",
-          "unitPrice",
-          "unitAdjustedPrice",
-          "price"
-        ]),
-        negotiatedPrice: this.resolvePrice(row, ["negotiatedPrice"]),
-        unitPrice: this.resolvePrice(row, [
-          "unitPrice",
-          "salesPrice",
-          "unitAdjustedPrice",
-          "price"
-        ])
-      });
-    }
-
-    return pricingByProductId;
-  }
-
-  resolvePrice(source, paths) {
-    for (const path of paths) {
-      const value = this.resolveByPath(source, path);
-      const normalized = this.toNumber(value);
-      if (normalized !== null) return normalized;
-    }
-    return null;
-  }
-
-  resolveByPath(source, path) {
-    if (!source || !path) return undefined;
-
-    return path.split(".").reduce((acc, key) => {
-      if (acc && typeof acc === "object" && key in acc) return acc[key];
-      return undefined;
-    }, source);
-  }
-
-  toNumber(value) {
-    if (value === null || value === undefined || value === "") return null;
-
-    if (typeof value === "number") {
-      return Number.isFinite(value) ? value : null;
-    }
-
-    if (typeof value === "object") {
-      if (typeof value.amount === "number" && Number.isFinite(value.amount))
-        return value.amount;
-      if (typeof value.value === "number" && Number.isFinite(value.value))
-        return value.value;
-    }
-
-    const parsed = Number(String(value).replaceAll(/[^0-9.-]/g, ""));
-    return Number.isFinite(parsed) ? parsed : null;
-  }
-
-  firstString(values) {
-    for (const value of values || []) {
-      if (typeof value === "string" && value.trim()) return value.trim();
-
-      if (value && typeof value === "object") {
-        if (typeof value.value === "string" && value.value.trim())
-          return value.value.trim();
-        if (typeof value.displayValue === "string" && value.displayValue.trim())
-          return value.displayValue.trim();
-      }
-    }
-
-    return "";
   }
 
   closeAllDropdowns() {

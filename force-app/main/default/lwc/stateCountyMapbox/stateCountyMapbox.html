@@ -17,14 +17,38 @@
                     <div class="error error--card">{errorMessage}</div>
                 </template>
 
+                <div class="header header--compact">
+                    <div class="marker-block marker-block--compact">
+                        <span class="marker yellow"></span>
+                        <span class="marker red"></span>
+                        <span class="marker gray"></span>
+                    </div>
+                    <div class="title-wrap title-wrap--compact">
+                        <div class="title title--compact">{compactTitle}</div>
+                        <div class="subtitle subtitle--compact">based on 3 years</div>
+                    </div>
+                </div>
+
                 <div class="map map--card" data-map-role="preview" lwc:dom="manual"></div>
+
+                <div class="state-watermark state-watermark--compact">{stateAbbreviation}</div>
+
+                <div class="legend legend--compact">
+                    <div class="legend-title legend-title--compact">① N° District Total</div>
+                    <template for:each={legendRows} for:item="entry">
+                        <div class="legend-row legend-row--compact" key={entry.key}>
+                            <span class="swatch" style={entry.swatchStyle}></span>
+                            <span>{entry.rangeLabel}</span>
+                        </div>
+                    </template>
+                </div>
             </div>
 
             <div class="map-card__caption">{compactTitle}</div>
         </article>
 
         <template if:true={isModalOpen}>
-            <section class="map-modal" role="dialog" aria-modal="true" aria-label={modalTitle}>
+            <dialog class="map-modal" aria-label={modalTitle}>
                 <button class="map-modal__backdrop" type="button" onclick={closeModal} aria-label="Close map modal"></button>
 
                 <div class="map-modal__panel">
@@ -67,7 +91,7 @@
                         <img src={logoUrl} alt="ABC Logo" class="abc-logo" />
                     </div>
                 </div>
-            </section>
+            </dialog>
         </template>
     </template>
 

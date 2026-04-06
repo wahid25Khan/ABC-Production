@@ -1,10 +1,9 @@
 import { LightningElement, track } from "lwc";
 import { loadScript, loadStyle } from "lightning/platformResourceLoader";
+import { STATE_STORAGE_KEY } from "c/utils";
 import getCarouselData from "@salesforce/apex/TestimonialCarouselController.getCarouselData";
 import LOGO_URL from "@salesforce/resourceUrl/testimonialsLogo";
 import SWIPER from "@salesforce/resourceUrl/SwiperJS";
-
-const STORAGE_KEY = "abc_selected_state";
 
 export default class TestimonialCarousel extends LightningElement {
   logoUrl = LOGO_URL;
@@ -13,7 +12,6 @@ export default class TestimonialCarousel extends LightningElement {
   @track formattedSlides = [];
   @track isLoading = true;
 
-  swiperInitialized = false;
   swiperInstance = null;
 
   _watchId;
@@ -41,7 +39,7 @@ export default class TestimonialCarousel extends LightningElement {
     let hashState = this.getStateFromHash();
 
     if (!hashState) {
-      hashState = globalThis.localStorage.getItem(STORAGE_KEY);
+      hashState = globalThis.localStorage.getItem(STATE_STORAGE_KEY);
     }
 
     if (hashState) {
@@ -102,14 +100,13 @@ export default class TestimonialCarousel extends LightningElement {
           this.formattedSlides = [];
         }
       })
-      .catch((error) => {
-        console.error("Error fetching carousel data: ", error);
+      .catch(() => {
         this.formattedSlides = [];
       })
       .finally(() => {
         this.isLoading = false;
 
-        setTimeout(() => {
+        globalThis.setTimeout(() => {
           this.setupOrUpdateSwiper();
         }, 0);
       });
@@ -132,9 +129,7 @@ export default class TestimonialCarousel extends LightningElement {
       .then(() => {
         this.initSwiper();
       })
-      .catch((error) => {
-        console.error("Error loading Swiper files: ", error);
-      });
+      .catch(() => {});
   }
 
   initSwiper() {
@@ -145,7 +140,6 @@ export default class TestimonialCarousel extends LightningElement {
         this.swiperInstance.destroy(true, true);
       }
 
-      this.swiperInitialized = true;
       this.swiperInstance = new globalThis.Swiper(swiperContainer, {
         slidesPerView: 1,
         spaceBetween: 15,

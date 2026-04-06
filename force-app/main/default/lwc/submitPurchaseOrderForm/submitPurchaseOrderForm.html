@@ -189,11 +189,16 @@
             </div>
 
             <div class="field full-width">
+              <label class="field-label" for="street2"
+                >Street 2</label
+              >
               <input
+                id="street2"
                 class="field-input"
                 type="text"
                 name="street2"
                 value={form.street2}
+                placeholder="Apartment, suite, etc."
                 oninput={handleChange}
               />
             </div>
@@ -219,7 +224,6 @@
                 id="state"
                 class="field-input field-select"
                 name="state"
-                value={form.state}
                 data-required="true"
                 onchange={handleChange}
               >
@@ -274,9 +278,8 @@
                 id="notes"
                 class="field-input field-textarea"
                 name="notes"
-                value={form.notes}
                 oninput={handleChange}
-              ></textarea>
+              >{form.notes}</textarea>
             </div>
           </div>
         </section>
@@ -307,9 +310,8 @@
                 id="comments"
                 class="field-input field-textarea"
                 name="comments"
-                value={form.comments}
                 oninput={handleChange}
-              ></textarea>
+              >{form.comments}</textarea>
             </div>
           </div>
         </section>

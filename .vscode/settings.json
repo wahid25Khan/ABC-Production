@@ -53,5 +53,12 @@
   "salesforcedx-vscode-slds.file.scopeWithInSFDX": true,
   "salesforcedx-vscode-slds.basic.override": false,
   "typescript.tsserver.experimental.enableProjectDiagnostics": false,
-  "xml.preferences.showSchemaDocumentationType": "none"
+  "xml.preferences.showSchemaDocumentationType": "none",
+  "xml.validation.enabled": true,
+  "xml.validation.filters": [
+    {
+      "pattern": "**/*.flow-meta.xml",
+      "enabled": false
+    }
+  ]
 }

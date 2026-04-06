@@ -119,7 +119,7 @@ export default class CheckoutLoginGate extends NavigationMixin(LightningElement)
             form.appendChild(startUrlInput);
             ownerDocument.body.appendChild(form);
             form.submit();
-        } catch (error) {
+        } catch {
             // N3 fix: Remove the form from DOM on error to prevent credential leakage
             const ownerDocument = this.template.host.ownerDocument;
             const staleForms = ownerDocument.body.getElementsByTagName('form');
@@ -128,7 +128,6 @@ export default class CheckoutLoginGate extends NavigationMixin(LightningElement)
                     staleForm.remove();
                 }
             }
-            console.warn('Sign-in navigation failed.', error);
             this.loginError = 'Unable to sign in. Please check your credentials and try again.';
             this.isLoggingIn = false;
         }
@@ -157,16 +156,14 @@ export default class CheckoutLoginGate extends NavigationMixin(LightningElement)
                 this.email = savedEmail;
                 this.rememberMe = true;
             }
-        } catch (error) {
-            console.warn('Unable to restore remembered checkout email.', error);
+        } catch {
         }
     }
 
     getCheckoutStage() {
         try {
             return globalThis.sessionStorage?.getItem(this.checkoutStageStorageKey) || 'gate';
-        } catch (error) {
-            console.warn('Unable to read checkout stage.', error);
+        } catch {
             return 'gate';
         }
     }
@@ -174,8 +171,7 @@ export default class CheckoutLoginGate extends NavigationMixin(LightningElement)
     setCheckoutStage(stage) {
         try {
             globalThis.sessionStorage?.setItem(this.checkoutStageStorageKey, stage);
-        } catch (error) {
-            console.warn('Unable to store checkout stage.', error);
+        } catch {
         }
     }
 
@@ -395,16 +391,14 @@ export default class CheckoutLoginGate extends NavigationMixin(LightningElement)
     storeRememberedEmail(emailAddress) {
         try {
             globalThis.localStorage?.setItem(this.rememberedEmailStorageKey, emailAddress);
-        } catch (error) {
-            console.warn('Unable to store remembered checkout email.', error);
+        } catch {
         }
     }
 
     clearRememberedEmail() {
         try {
             globalThis.localStorage?.removeItem(this.rememberedEmailStorageKey);
-        } catch (error) {
-            console.warn('Unable to clear remembered checkout email.', error);
+        } catch {
         }
     }
 

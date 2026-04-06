@@ -5,7 +5,7 @@ private class WishlistControllerTest {
     static void setupData() {
         insert new Account(Name = 'Wishlist Test School');
         insert new WebStore(Name = 'Wishlist Test Store');
-        insert new Product2(Name = 'Wishlist Test Product', IsActive = true);
+        insert new Product2(Name = 'Wishlist Test Product', IsActive = true, StockKeepingUnit = '978-0-000-00000-0');
     }
 
     @IsTest
@@ -152,6 +152,65 @@ private class WishlistControllerTest {
 
             System.assertEquals(false, result.success);
             System.assertEquals('A product and web store are required.', result.message);
+        }
+    }
+
+    @IsTest
+    static void getWishlistPageReturnsEmptyWhenWishlistDoesNotExist() {
+        User runAsUser = createRunAsUser();
+
+        System.runAs(runAsUser) {
+            Account account = [SELECT Id FROM Account LIMIT 1];
+            WebStore store = [SELECT Id FROM WebStore LIMIT 1];
+
+            WishlistController.resetTestState();
+            WishlistController.buyerAccountIdOverride = account.Id;
+
+            Test.startTest();
+            WishlistController.WishlistPageResult result = WishlistController.getWishlistPage(store.Id);
+            Test.stopTest();
+
+            System.assertEquals(true, result.success);
+            System.assertEquals(0, result.items.size());
+        }
+    }
+
+    @IsTest
+    static void getWishlistPageReturnsItemsWhenWishlistExists() {
+        User runAsUser = createRunAsUser();
+
+        System.runAs(runAsUser) {
+            Account account = [SELECT Id FROM Account LIMIT 1];
+            WebStore store = [SELECT Id FROM WebStore LIMIT 1];
+            Product2 product = [SELECT Id, Name, StockKeepingUnit FROM Product2 LIMIT 1];
+
+            Wishlist wishlist = new Wishlist(
+                AccountId = account.Id,
+                Name = 'My Wishlist',
+                WebStoreId = store.Id
+            );
+            insert wishlist;
+
+            WishlistItem item = new WishlistItem(
+                Name = 'My Wishlist',
+                Product2Id = product.Id,
+                WishlistId = wishlist.Id
+            );
+            insert item;
+
+            WishlistController.resetTestState();
+            WishlistController.buyerAccountIdOverride = account.Id;
+
+            Test.startTest();
+            WishlistController.WishlistPageResult result = WishlistController.getWishlistPage(store.Id);
+            Test.stopTest();
+
+            System.assertEquals(true, result.success);
+            System.assertEquals(1, result.items.size());
+            System.assertEquals(item.Id, result.items[0].wishlistItemId);
+            System.assertEquals(product.Id, result.items[0].productId);
+            System.assertEquals(product.Name, result.items[0].productName);
+            System.assertEquals('978-0-000-00000-0', result.items[0].stockKeepingUnit);
         }
     }
 

@@ -181,7 +181,7 @@
                                 "showRemoveItem": true,
                                 "showSeeConfiguration": false,
                                 "showSku": true,
-                                "showTotalPrices": true,
+                                "showTotalPrices": false,
                                 "skuLabel": "SKU# {0}",
                                 "viewBundleLabel": "View Bundle"
                               },

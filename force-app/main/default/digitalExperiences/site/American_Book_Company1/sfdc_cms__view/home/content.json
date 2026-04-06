@@ -158,6 +158,9 @@
                     },
                     {
                       "attributes": {
+                        "columnGutterWidth": "",
+                        "columnMinHeight": "",
+                        "columnVerticalAlign": "flex-start",
                         "dxpStyle": {
                           "margin": {
                             "bottom": "",
@@ -166,13 +169,48 @@
                             "top": ""
                           }
                         },
-                        "mapboxAccessToken": "pk.eyJ1IjoiYWthc2h0aGVsb2Rlc3RvbmVncm91cCIsImEiOiJjbW05bG5kaGMwMHQ1Mm9zM3lrM25ydTRwIn0.pSVyEJv1yK_Z8_U1tXKHTA",
-                        "selectedState": "Georgia",
-                        "stateFips": "",
-                        "titleYear": "2026"
+                        "layoutDirectionDesktop": "row",
+                        "layoutDirectionMobile": "column",
+                        "layoutDirectionTablet": "column",
+                        "sectionConfig": "{\"UUID\":\"20ca83f0-b89f-4bb2-9804-d21ca90a8c50\",\"columns\":[{\"UUID\":\"b9c6f604-3266-4b56-a0d2-4a59dfbb4fb3\",\"columnName\":\"Column 1\",\"columnKey\":\"col1\",\"columnWidth\":\"5\",\"seedComponents\":[]},{\"UUID\":\"2e1c4ebf-1d20-417b-a651-19a951a4f965\",\"columnName\":\"Column 2\",\"columnKey\":\"col2\",\"columnWidth\":\"7\",\"seedComponents\":[]}]}"
                       },
-                      "definition": "c:mapPlusTestimonial",
-                      "id": "95378917-c81d-470a-a165-320be492c844",
+                      "children": [
+                        {
+                          "children": [
+                            {
+                              "attributes": {
+                                "mapboxAccessToken": "pk.eyJ1IjoiYWthc2h0aGVsb2Rlc3RvbmVncm91cCIsImEiOiJjbW05bG5kaGMwMHQ1Mm9zM3lrM25ydTRwIn0.pSVyEJv1yK_Z8_U1tXKHTA",
+                                "selectedState": "Georgia",
+                                "stateFips": "",
+                                "titleYear": "2026"
+                              },
+                              "definition": "c:stateCountyMapbox",
+                              "id": "ea254241-c519-49f7-b918-8ebd0a815a8a",
+                              "type": "component"
+                            }
+                          ],
+                          "id": "b9c6f604-3266-4b56-a0d2-4a59dfbb4fb3",
+                          "name": "col1",
+                          "title": "Column 1",
+                          "type": "region"
+                        },
+                        {
+                          "children": [
+                            {
+                              "attributes": {},
+                              "definition": "c:stateTestimonials",
+                              "id": "e8b67084-cfa2-448d-a8c2-f7904bbbcf9a",
+                              "type": "component"
+                            }
+                          ],
+                          "id": "2e1c4ebf-1d20-417b-a651-19a951a4f965",
+                          "name": "col2",
+                          "title": "Column 2",
+                          "type": "region"
+                        }
+                      ],
+                      "definition": "dxp_layout:columns",
+                      "id": "20ca83f0-b89f-4bb2-9804-d21ca90a8c50",
                       "type": "component"
                     },
                     {

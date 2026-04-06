@@ -34,7 +34,7 @@ export default class AuthorizeNetCheckoutButton extends LightningElement {
         this.cartIdOrActive
       );
       this.currentCartId = cartData?.cartId || null;
-      this.currentReferenceId = this.buildReferenceId(this.currentCartId);
+      this.currentReferenceId = this.currentCartId || null;
       const amount = this.extractCartTotal(cartData);
       const currencyCode =
         cartData?.currencyIsoCode || this.currencyIsoCode || "USD";
@@ -153,8 +153,7 @@ export default class AuthorizeNetCheckoutButton extends LightningElement {
 
     try {
       parsed = rawText ? JSON.parse(rawText) : {};
-    } catch (parseError) {
-      console.warn(defaultMessage, parseError);
+    } catch {
       throw new Error(defaultMessage);
     }
 
@@ -241,13 +240,6 @@ export default class AuthorizeNetCheckoutButton extends LightningElement {
       return `${origin}/`;
     }
     return `${origin}/${pathParts[0]}/`;
-  }
-
-  buildReferenceId(cartId) {
-    if (!cartId) {
-      return null;
-    }
-    return cartId;
   }
 
   dispatchError(error) {

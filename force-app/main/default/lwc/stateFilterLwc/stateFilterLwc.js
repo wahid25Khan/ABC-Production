@@ -1,72 +1,24 @@
-import { LightningElement, api, track } from "lwc";
+import { LightningElement, api } from "lwc";
 import isGuest from "@salesforce/user/isGuest";
 import getFavoriteState from "@salesforce/apex/WishlistController.getFavoriteState";
 import toggleFavorite from "@salesforce/apex/WishlistController.toggleFavorite";
+import {
+  ALL_STATES,
+  STATE_ABBREVIATIONS,
+  readStateFromStorage,
+  writeStateToStorage,
+  decodeUrlValue,
+  DEFAULT_WEBSTORE_ID
+} from "c/utils";
 
-const STORAGE_KEY = "abc_selected_state";
 const CHECKOUT_STAGE_KEY = "abc_checkout_stage";
 const CART_FILLED_RECOVERY_RELOAD_KEY = "abc_cart_filled_recovery_reload";
-const DEFAULT_WEBSTORE_ID = "0ZEam000004dJDNGA2";
 const LOGIN_URL = "/AmericanBookCompany/login";
 const GUEST_LOGIN_GUARD_PATHS = new Set([
   "/AmericanBookCompany/mylists",
   "/AmericanBookCompany/my-orders"
 ]);
-const CART_PRODUCT_DETAIL_PATTERN = /\/product\/detail\/([A-Za-z0-9]+)/;
-
-const STATE_ABBREVIATIONS = {
-  Alabama: "AL",
-  Alaska: "AK",
-  Arizona: "AZ",
-  Arkansas: "AR",
-  California: "CA",
-  Colorado: "CO",
-  Connecticut: "CT",
-  Delaware: "DE",
-  "District of Columbia": "DC",
-  Florida: "FL",
-  Georgia: "GA",
-  Hawaii: "HI",
-  Idaho: "ID",
-  Illinois: "IL",
-  Indiana: "IN",
-  Iowa: "IA",
-  Kansas: "KS",
-  Kentucky: "KY",
-  Louisiana: "LA",
-  Maine: "ME",
-  Maryland: "MD",
-  Massachusetts: "MA",
-  Michigan: "MI",
-  Minnesota: "MN",
-  Mississippi: "MS",
-  Missouri: "MO",
-  Montana: "MT",
-  Nebraska: "NE",
-  Nevada: "NV",
-  "New Hampshire": "NH",
-  "New Jersey": "NJ",
-  "New Mexico": "NM",
-  "New York": "NY",
-  "North Carolina": "NC",
-  "North Dakota": "ND",
-  Ohio: "OH",
-  Oklahoma: "OK",
-  Oregon: "OR",
-  Pennsylvania: "PA",
-  "Rhode Island": "RI",
-  "South Carolina": "SC",
-  "South Dakota": "SD",
-  Tennessee: "TN",
-  Texas: "TX",
-  Utah: "UT",
-  Vermont: "VT",
-  Virginia: "VA",
-  Washington: "WA",
-  "West Virginia": "WV",
-  Wisconsin: "WI",
-  Wyoming: "WY"
-};
+const CART_PRODUCT_DETAIL_PATTERN = /\/product\/[^/]+\/([A-Za-z0-9]{15,18})(?:[?#]|$)/;
 
 export default class StateFilterLwc extends LightningElement {
   @api refinementKey = "State__c";
@@ -88,62 +40,10 @@ export default class StateFilterLwc extends LightningElement {
   watchDebounceMs = 120;
   searchInputWatchMs = 300;
 
-  @track selectedValue = "";
-  @track isOpen = false;
+  selectedValue = "";
+  isOpen = false;
 
-  states = [
-    "Alabama",
-    "Alaska",
-    "Arizona",
-    "Arkansas",
-    "California",
-    "Colorado",
-    "Connecticut",
-    "Delaware",
-    "District of Columbia",
-    "Florida",
-    "Georgia",
-    "Hawaii",
-    "Idaho",
-    "Illinois",
-    "Indiana",
-    "Iowa",
-    "Kansas",
-    "Kentucky",
-    "Louisiana",
-    "Maine",
-    "Maryland",
-    "Massachusetts",
-    "Michigan",
-    "Minnesota",
-    "Mississippi",
-    "Missouri",
-    "Montana",
-    "Nebraska",
-    "Nevada",
-    "New Hampshire",
-    "New Jersey",
-    "New Mexico",
-    "New York",
-    "North Carolina",
-    "North Dakota",
-    "Ohio",
-    "Oklahoma",
-    "Oregon",
-    "Pennsylvania",
-    "Rhode Island",
-    "South Carolina",
-    "South Dakota",
-    "Tennessee",
-    "Texas",
-    "Utah",
-    "Vermont",
-    "Virginia",
-    "Washington",
-    "West Virginia",
-    "Wisconsin",
-    "Wyoming"
-  ];
+  states = [...ALL_STATES];
 
   _docClickHandler;
   _watchId;
@@ -168,7 +68,7 @@ export default class StateFilterLwc extends LightningElement {
 
       const st = this.getStateFromResults(url) || this.defaultState;
       this.selectedValue = st;
-      this.safeSetStorage(STORAGE_KEY, st);
+      writeStateToStorage(st);
 
       const refreshedUrl = new URL(globalThis.location.href);
       if (refreshedUrl.search && refreshedUrl.search.length > 1) {
@@ -177,7 +77,7 @@ export default class StateFilterLwc extends LightningElement {
     } else {
       const st = this.resolveStandardPageState(url);
       this.selectedValue = st;
-      this.safeSetStorage(STORAGE_KEY, st);
+      writeStateToStorage(st);
 
       if (this.isHomePage(url)) {
         this.ensureHomeHash(st);
@@ -250,10 +150,6 @@ export default class StateFilterLwc extends LightningElement {
     globalThis.clearTimeout(this._cleanT2);
   }
 
-  get displayValue() {
-    return this.selectedValue || "Select State";
-  }
-
   get displayShortValue() {
     const selected = this.selectedValue || this.defaultState || "";
     return this.toStateAbbreviation(selected);
@@ -281,7 +177,7 @@ export default class StateFilterLwc extends LightningElement {
     const val = event.currentTarget.dataset.value || "";
     this.selectedValue = val;
     this.isOpen = false;
-    this.safeSetStorage(STORAGE_KEY, val);
+    writeStateToStorage(val);
     this.applyToUrl(val);
   }
 
@@ -447,9 +343,12 @@ export default class StateFilterLwc extends LightningElement {
       this.clearFilledCartRecoveryFlag();
       this.restoreFilledCartMainColumn();
       this.normalizeFilledCartHeading();
+      this.alignCartSummaryWithFirstItem();
       this.hideCartChromeForFilledState();
       this.renameDeleteActions();
       this.normalizeCartItemTitles();
+      this.normalizeCartItemPrices();
+      this.relayoutCartItems();
       this.normalizeCartActionArea();
       this.syncCartWishlistActions();
     } catch {
@@ -620,7 +519,7 @@ export default class StateFilterLwc extends LightningElement {
       this.findElementByExactText(["button"], "Skip to Top"),
       this.findElementByExactText(["button"], "Previous"),
       this.findElementByExactText(["button"], "Next"),
-      this.findElementByExactText(["button"], "Quantity Help")
+      this.findElementByExactText(["button"], "Quantity Help"),
     ];
 
     elementsToHide.forEach((el) => {
@@ -628,6 +527,13 @@ export default class StateFilterLwc extends LightningElement {
         el.style.display = "none";
       }
     });
+
+    // Hide the "Quantity Help" (ⓘ) popover element inside the qty selector
+    document
+      .querySelectorAll("commerce-quantity-selector-popover")
+      .forEach((el) => {
+        el.style.setProperty("display", "none", "important");
+      });
 
     const pagination = document.querySelector(
       "commerce_cart-managed-contents nav"
@@ -679,17 +585,194 @@ export default class StateFilterLwc extends LightningElement {
   }
 
   normalizeCartItemTitles() {
-    const itemLinks = Array.from(
-      document.querySelectorAll(
-        "commerce_cart-managed-contents a, commerce_cart-managed-contents p"
-      )
-    );
-    itemLinks.forEach((el) => {
-      const text = (el.textContent || "").trim();
-      if (text.endsWith(" - Color Print + Digital")) {
-        el.textContent = text.replace(/\s+-\s+Color Print \+ Digital$/, "");
-      }
-    });
+    document
+      .querySelectorAll("commerce_cart-managed-contents article")
+      .forEach((article) => {
+        // Capture the format/variant suffix (e.g. "Color Print + Digital") from
+        // the product name before stripping it. Pattern: "{name} - {format}".
+        const nameLink = article.querySelector(".item-name a");
+        if (!nameLink) return;
+        const text = (nameLink.textContent || "").trim();
+        const match = /^(.+?)\s+-\s+(.+)$/.exec(text);
+        if (match) {
+          if (!article.dataset.abcFormat) {
+            article.dataset.abcFormat = match[2]; // e.g. "Color Print + Digital"
+          }
+          // Strip suffix from every text node in the name area
+          article.querySelectorAll(".item-name a, .item-name p").forEach((el) => {
+            const t = (el.textContent || "").trim();
+            if (t.includes(" - ")) {
+              el.textContent = t.replace(/\s+-\s+.+$/, "");
+            }
+          });
+        }
+      });
+  }
+
+  normalizeCartItemPrices() {
+    // Bold the per-item unit price and prepend "Unit Price:" label
+    document
+      .querySelectorAll("commerce_cart-managed-contents .unitPrice")
+      .forEach((el) => {
+        el.style.setProperty("font-weight", "700", "important");
+        el.style.setProperty("color", "#1e2a3a", "important");
+        // Transform visible span: "$41.00/item" → "Unit Price: $41.00"
+        const visibleSpan = el.querySelector("span:not(.slds-assistive-text)");
+        if (visibleSpan && !visibleSpan.dataset.abcNormalized) {
+          const raw = visibleSpan.textContent.trim();
+          const price = raw.replace(/\/item$/, "").trim();
+          visibleSpan.textContent = "Unit Price: " + price;
+          visibleSpan.style.setProperty("display", "block", "important");
+          visibleSpan.dataset.abcNormalized = "1";
+        }
+      });
+  }
+
+  relayoutCartItems() {
+    const BULK_THRESHOLD = 25; // volume pricing kicks in at 25+ units
+    document
+      .querySelectorAll("commerce_cart-managed-contents article")
+      .forEach((article) => {
+        const container = article.querySelector(".container.image");
+        if (!container) return;
+        this._applyCartItemGridStyles(container);
+        this._ensureCartIncludesEl(container, article);
+        const col3Wrap = this._ensureCartCol3Wrap(container);
+        this._updateCartCol3Contents(col3Wrap, container, article, BULK_THRESHOLD);
+      });
+  }
+
+  _applyCartItemGridStyles(container) {
+    // 3 rows: row1=name, row2=includes, row3=actions
+    container.style.setProperty("grid-template-columns", "160px 1fr 210px", "important");
+    container.style.setProperty("grid-template-rows", "auto auto auto", "important");
+    container.style.setProperty("grid-template-areas", "none", "important");
+    container.style.setProperty("column-gap", "24px", "important");
+    container.style.setProperty("row-gap", "8px", "important");
+    container.style.setProperty("align-items", "start", "important");
+
+    const imgDiv = container.querySelector(".item-image");
+    if (imgDiv) {
+      imgDiv.style.setProperty("grid-column", "1", "important");
+      imgDiv.style.setProperty("grid-row", "1 / span 3", "important");
+    }
+    const nameDiv = container.querySelector(".item-name");
+    if (nameDiv) {
+      nameDiv.style.setProperty("grid-column", "2", "important");
+      nameDiv.style.setProperty("grid-row", "1", "important");
+      nameDiv.style.setProperty("align-self", "start", "important");
+      nameDiv.style.setProperty("width", "100%", "important");
+    }
+    // Actions are placed in row 3 — includes occupies row 2 (set in _ensureCartIncludesEl)
+    const actionsDiv = container.querySelector(".item-actions");
+    if (actionsDiv) {
+      actionsDiv.style.setProperty("grid-column", "2", "important");
+      actionsDiv.style.setProperty("grid-row", "3", "important");
+      actionsDiv.style.setProperty("align-self", "start", "important");
+    }
+    const pricesDiv = container.querySelector(".item-prices");
+    if (pricesDiv) {
+      pricesDiv.style.setProperty("display", "none", "important");
+    }
+  }
+
+  _ensureCartIncludesEl(container, article) {
+    const format = article.dataset.abcFormat;
+    let includesEl = container.querySelector(".abc-cart-includes");
+    if (!format) {
+      if (includesEl) includesEl.style.setProperty("display", "none", "important");
+      return;
+    }
+    if (!includesEl) {
+      includesEl = document.createElement("div");
+      includesEl.className = "abc-cart-includes";
+      // Insert after .item-name in the DOM so grid ordering stays correct
+      const nameDiv = container.querySelector(".item-name");
+      nameDiv ? nameDiv.after(includesEl) : container.appendChild(includesEl);
+    }
+    includesEl.innerHTML = `<span style="font-size:12px;color:#6b7785;font-weight:600;display:block;margin-bottom:2px">Includes:</span><span style="font-size:13px;color:#1e2a3a">${format}</span>`;
+    includesEl.style.setProperty("grid-column", "2", "important");
+    includesEl.style.setProperty("grid-row", "2", "important");
+    includesEl.style.setProperty("align-self", "start", "important");
+    includesEl.style.setProperty("display", "block", "important");
+  }
+
+  _ensureCartCol3Wrap(container) {
+    let col3Wrap = container.querySelector(".abc-cart-col3-wrap");
+    if (!col3Wrap) {
+      col3Wrap = document.createElement("div");
+      col3Wrap.className = "abc-cart-col3-wrap";
+      container.appendChild(col3Wrap);
+    }
+    col3Wrap.style.setProperty("grid-column", "3", "important");
+    col3Wrap.style.setProperty("grid-row", "1 / span 3", "important");
+    col3Wrap.style.setProperty("display", "flex", "important");
+    col3Wrap.style.setProperty("flex-direction", "column", "important");
+    col3Wrap.style.setProperty("align-items", "flex-end", "important");
+    col3Wrap.style.setProperty("gap", "6px", "important");
+    return col3Wrap;
+  }
+
+  _updateCartCol3Contents(col3Wrap, container, article, bulkThreshold) {
+    const unitPriceDiv = container.querySelector(".item-unit-price");
+    if (unitPriceDiv && unitPriceDiv.parentElement !== col3Wrap) {
+      col3Wrap.insertBefore(unitPriceDiv, col3Wrap.firstChild);
+    }
+    if (unitPriceDiv) {
+      unitPriceDiv.style.setProperty("text-align", "right", "important");
+      unitPriceDiv.style.setProperty("width", "100%", "important");
+    }
+
+    const qtyInput = article.querySelector("input.slds-input");
+    const currentQty = qtyInput ? Number.parseInt(qtyInput.value, 10) : 0;
+    this._updateCartUpsell(col3Wrap, unitPriceDiv, currentQty, bulkThreshold);
+
+    const descP = article.querySelector("p[class*='slds-p-top']");
+    const minMatch = descP?.innerText?.trim().match(/between (\d+) and/);
+    this._updateCartQtyLabel(col3Wrap, minMatch ? minMatch[1] : null);
+
+    const qtySelector = article.querySelector("commerce-quantity-selector");
+    if (qtySelector && qtySelector.parentElement !== col3Wrap) {
+      col3Wrap.appendChild(qtySelector);
+    }
+    qtySelector?.style.setProperty("width", "100%", "important");
+  }
+
+  _updateCartUpsell(col3Wrap, unitPriceDiv, currentQty, bulkThreshold) {
+    let upsellEl = col3Wrap.querySelector(".abc-cart-upsell");
+    if (!upsellEl) {
+      upsellEl = document.createElement("div");
+      upsellEl.className = "abc-cart-upsell";
+      upsellEl.style.setProperty("font-size", "12px", "important");
+      upsellEl.style.setProperty("color", "#c25700", "important");
+      upsellEl.style.setProperty("font-weight", "600", "important");
+      upsellEl.style.setProperty("text-align", "right", "important");
+      upsellEl.style.setProperty("line-height", "1.3", "important");
+      unitPriceDiv?.nextSibling?.before(upsellEl) ?? col3Wrap.appendChild(upsellEl);
+    }
+    if (currentQty > 0 && currentQty < bulkThreshold) {
+      upsellEl.textContent = `+${bulkThreshold - currentQty} copies for volume discounts`;
+      upsellEl.style.setProperty("display", "block", "important");
+    } else {
+      upsellEl.style.setProperty("display", "none", "important");
+    }
+  }
+
+  _updateCartQtyLabel(col3Wrap, minQty) {
+    let qtyLabelEl = col3Wrap.querySelector(".abc-cart-qty-label");
+    if (!qtyLabelEl) {
+      qtyLabelEl = document.createElement("div");
+      qtyLabelEl.className = "abc-cart-qty-label";
+      qtyLabelEl.style.setProperty("font-size", "12px", "important");
+      qtyLabelEl.style.setProperty("color", "#6b7785", "important");
+      qtyLabelEl.style.setProperty("text-align", "right", "important");
+      qtyLabelEl.style.setProperty("margin-top", "4px", "important");
+      qtyLabelEl.style.setProperty("width", "100%", "important");
+      col3Wrap.appendChild(qtyLabelEl);
+    }
+    if (minQty) {
+      qtyLabelEl.textContent = `Quantity (min ${minQty})`;
+    }
   }
 
   restoreFilledCartMainColumn() {
@@ -715,7 +798,38 @@ export default class StateFilterLwc extends LightningElement {
     contentNodes.forEach((content) => {
       content.style.setProperty("display", "block", "important");
       content.style.setProperty("width", "100%", "important");
+      content.style.removeProperty("margin-top");
     });
+  }
+
+  alignCartSummaryWithFirstItem() {
+    const { summaryColumn } = this.getCartLayoutColumns();
+    const summaryContent = summaryColumn?.querySelector(".column-content");
+
+    // Align with the product image inside the first cart item, not the article
+    // top, so the Order Summary card starts at the same row as the book cover.
+    const firstCartImage = document.querySelector(
+      "commerce_cart-managed-contents article .item-image img, " +
+        "commerce_cart-managed-contents article img"
+    );
+
+    if (!summaryContent) {
+      return;
+    }
+
+    summaryContent.style.removeProperty("margin-top");
+
+    if (!firstCartImage || globalThis.innerWidth < 1024) {
+      return;
+    }
+
+    const firstImageTop = firstCartImage.getBoundingClientRect().top;
+    const summaryTop = summaryContent.getBoundingClientRect().top;
+    const offset = Math.round(firstImageTop - summaryTop);
+
+    if (offset > 0) {
+      summaryContent.style.setProperty("margin-top", `${offset}px`, "important");
+    }
   }
 
   getCartLayoutColumns() {
@@ -799,7 +913,7 @@ export default class StateFilterLwc extends LightningElement {
       const button = this.ensureCartWishlistButton(actionArea, productId);
       const isPending = this.cartWishlistPendingProductIds.has(productId);
       const isFavorite = this.cartWishlistStates.get(productId);
-      let label = "Add to Wishlist";
+      let label = "Move to Wishlist";
 
       if (isPending) {
         label = "Updating...";
@@ -837,7 +951,7 @@ export default class StateFilterLwc extends LightningElement {
 
   resolveCartProductId(article) {
     const productLink = article.querySelector(
-      '.item-name a[href*="/product/detail/"], a[href*="/product/detail/"]'
+      '.item-name a[href*="/product/"], a[href*="/product/"]'
     );
 
     return this.extractProductIdFromHref(
@@ -1084,7 +1198,7 @@ export default class StateFilterLwc extends LightningElement {
 
         const st = this.getStateFromResults(url) || this.defaultState;
         this.selectedValue = st;
-        this.safeSetStorage(STORAGE_KEY, st);
+        writeStateToStorage(st);
 
         if (url.search && url.search.length > 1) {
           this.cleanUrlAfterDelay();
@@ -1092,7 +1206,7 @@ export default class StateFilterLwc extends LightningElement {
       } else {
         const st = this.resolveStandardPageState(url);
         this.selectedValue = st;
-        this.safeSetStorage(STORAGE_KEY, st);
+        writeStateToStorage(st);
 
         if (this.isHomePage(url)) {
           this.ensureHomeHash(st);
@@ -1124,15 +1238,6 @@ export default class StateFilterLwc extends LightningElement {
     return parts.length <= 1;
   }
 
-  getStoredState() {
-    try {
-      const v = globalThis.localStorage.getItem(STORAGE_KEY) || "";
-      return this.states.includes(v) ? v : "";
-    } catch {
-      return "";
-    }
-  }
-
   resolveStandardPageState(urlObj) {
     const hashState = this.getStateFromHash(urlObj);
 
@@ -1140,31 +1245,8 @@ export default class StateFilterLwc extends LightningElement {
       return hashState || this.defaultState;
     }
 
-    const storedState = this.getStoredState();
+    const storedState = readStateFromStorage();
     return storedState || hashState || this.defaultState;
-  }
-
-  safeSetStorage(key, val) {
-    try {
-      globalThis.localStorage.setItem(key, val);
-    } catch {
-      // ignore
-    }
-  }
-
-  decodeDeep(str) {
-    if (!str) return "";
-    let out = str;
-    for (let i = 0; i < 3; i += 1) {
-      try {
-        const dec = decodeURIComponent(out);
-        if (dec === out) break;
-        out = dec;
-      } catch {
-        break;
-      }
-    }
-    return out;
   }
 
   getStateFromHash(urlObj) {
@@ -1213,7 +1295,7 @@ export default class StateFilterLwc extends LightningElement {
     try {
       const refinementsRaw = urlObj.searchParams.get(this.refinementsParam);
       if (refinementsRaw) {
-        const jsonStr = this.decodeDeep(refinementsRaw);
+        const jsonStr = decodeUrlValue(refinementsRaw);
         const list = JSON.parse(jsonStr);
         const stateEntry = Array.isArray(list)
           ? list.find((r) => r?.nameOrId === this.refinementKey)
@@ -1230,7 +1312,7 @@ export default class StateFilterLwc extends LightningElement {
 
       const singleRef = urlObj.searchParams.get(this.refinementParam);
       if (singleRef) {
-        const decoded = this.decodeDeep(singleRef);
+        const decoded = decodeUrlValue(singleRef);
         const prefix = `${this.refinementKey}:`;
         if (decoded.startsWith(prefix)) {
           return decoded.substring(prefix.length);
@@ -1253,7 +1335,7 @@ export default class StateFilterLwc extends LightningElement {
       return fromPath;
     }
 
-    const storedState = this.getStoredState();
+    const storedState = readStateFromStorage();
     if (storedState) {
       return storedState;
     }

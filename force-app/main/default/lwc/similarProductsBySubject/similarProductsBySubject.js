@@ -1,15 +1,16 @@
 import { LightningElement, api } from "lwc";
 import {
+  STATE_CHANGE_EVENT_NAMES,
   readStateFromStorage,
   getCurrentProductId,
   normalizeProduct,
   extractProductList,
   buildProductDetailPath,
   scrollCarouselToIndex,
-  DEFAULT_STORE_NAME
+  applyStorefrontGuestParams,
+  DEFAULT_STORE_NAME,
+  DEFAULT_WEBSTORE_ID
 } from "c/utils";
-
-const DEFAULT_WEBSTORE_ID = "0ZEam000004dJDNGA2";
 const RESIZE_DEBOUNCE_MS = 150;
 
 export default class SimilarProductsBySubject extends LightningElement {
@@ -31,6 +32,7 @@ export default class SimilarProductsBySubject extends LightningElement {
   _effectiveVisible = 6;
   _resizeHandler = null;
   _resizeTimerId = null;
+  _boundStateSyncHandler = null;
 
   connectedCallback() {
     this._updateEffectiveVisible();
@@ -44,6 +46,14 @@ export default class SimilarProductsBySubject extends LightningElement {
       }, RESIZE_DEBOUNCE_MS);
     };
     globalThis.addEventListener("resize", this._resizeHandler);
+    this._boundStateSyncHandler = () => {
+      this.handleSharedStateUpdate();
+    };
+    STATE_CHANGE_EVENT_NAMES.forEach((eventName) => {
+      globalThis.addEventListener(eventName, this._boundStateSyncHandler);
+    });
+    globalThis.addEventListener("hashchange", this._boundStateSyncHandler);
+    globalThis.addEventListener("popstate", this._boundStateSyncHandler);
     this.initialize();
   }
 
@@ -56,6 +66,11 @@ export default class SimilarProductsBySubject extends LightningElement {
       clearTimeout(this._resizeTimerId);
       this._resizeTimerId = null;
     }
+    STATE_CHANGE_EVENT_NAMES.forEach((eventName) => {
+      globalThis.removeEventListener(eventName, this._boundStateSyncHandler);
+    });
+    globalThis.removeEventListener("hashchange", this._boundStateSyncHandler);
+    globalThis.removeEventListener("popstate", this._boundStateSyncHandler);
   }
 
   get normalizedMaxProducts() {
@@ -146,6 +161,15 @@ export default class SimilarProductsBySubject extends LightningElement {
     }
   }
 
+  async handleSharedStateUpdate() {
+    const nextState = readStateFromStorage();
+    if (nextState === this.selectedState && this.showProducts) {
+      return;
+    }
+
+    await this.initialize();
+  }
+
   resetProducts() {
     this.products = [];
     this.showProducts = false;
@@ -176,13 +200,15 @@ export default class SimilarProductsBySubject extends LightningElement {
     const base = `/${storeName}/webruntime/api/services/data/v66.0/commerce/webstores/${webStoreId}/search/products`;
     const state = String(this.selectedState || "").trim();
 
-    const params = new URLSearchParams({
-      language: "en-US",
-      asGuest: "true",
-      searchTerm: this.buildSearchTermWithStateAndSubject(),
-      page: "0",
-      pageSize: String(this.normalizedMaxProducts + this.normalizedVisibleCount)
-    });
+    const params = applyStorefrontGuestParams(
+      new URLSearchParams({
+        searchTerm: this.buildSearchTermWithStateAndSubject(),
+        page: "0",
+        pageSize: String(
+          this.normalizedMaxProducts + this.normalizedVisibleCount
+        )
+      })
+    );
 
     if (state) {
       params.set("refinement", `${this.refinementKey}:${state}`);

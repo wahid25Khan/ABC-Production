@@ -295,10 +295,6 @@ button.slds-backdrop {
   padding: 8px 14px;
 }
 
-.qty-block {
-  width: 240px;
-}
-
 .qty-wrap {
   width: 240px;
 }
@@ -364,25 +360,6 @@ button.slds-backdrop {
 .qty-input::-webkit-inner-spin-button {
   -webkit-appearance: none;
   margin: 0;
-}
-
-.unit-price-display {
-  display: flex;
-  align-items: baseline;
-  gap: 0;
-  padding: 10px 14px;
-}
-
-.unit-price-label {
-  font-size: 16px;
-  font-weight: 600;
-  color: #111827;
-}
-
-.unit-price-value {
-  font-size: 16px;
-  font-weight: 700;
-  color: #111827;
 }
 
 .order-total-line {

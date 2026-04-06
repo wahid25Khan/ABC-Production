@@ -1,7 +1,8 @@
-import { LightningElement, track } from 'lwc';
+import { LightningElement } from 'lwc';
+import { STATE_STORAGE_KEY } from 'c/utils';
 
 export default class CatalogDownloader extends LightningElement {
-    @track selectedStateData;
+    selectedStateData;
 
     catalogData = [
         { value: 'al', label: 'Alabama', imageUrl: 'https://cms-assets.americanbookcompany.com/catalogs/cover-images/al-catalog-thumb.jpg', pdfUrl: 'https://cms-assets.americanbookcompany.com/catalogs/pdfs/al-catalog-spring-022426v1-web.pdf?c=0.5998403046006126' },
@@ -59,7 +60,7 @@ export default class CatalogDownloader extends LightningElement {
 
     connectedCallback() {
         // B4 fix: Read selected state from localStorage before falling back to first entry
-        const savedState = globalThis.localStorage.getItem('abc_selected_state');
+        const savedState = globalThis.localStorage.getItem(STATE_STORAGE_KEY);
         if (savedState) {
             const match = this.catalogData.find(
                 c => c.label.toLowerCase() === savedState.toLowerCase()
@@ -71,7 +72,7 @@ export default class CatalogDownloader extends LightningElement {
 
         // Listen for state changes from stateFilterLwc
         this._handleStateChange = (event) => {
-            const newState = event.detail?.state || globalThis.localStorage.getItem('abc_selected_state');
+            const newState = event.detail?.state || globalThis.localStorage.getItem(STATE_STORAGE_KEY);
             if (newState) {
                 const match = this.catalogData.find(
                     c => c.label.toLowerCase() === newState.toLowerCase()

@@ -1,15 +1,16 @@
-import { LightningElement, api, track } from "lwc";
+import { LightningElement, api } from "lwc";
 import {
+  STATE_CHANGE_EVENT_NAMES,
   readStateFromStorage,
   getCurrentProductId,
   normalizeProduct,
   extractProductList,
   buildProductDetailPath,
   scrollCarouselToIndex,
-  DEFAULT_STORE_NAME
+  applyStorefrontGuestParams,
+  DEFAULT_STORE_NAME,
+  DEFAULT_WEBSTORE_ID
 } from "c/utils";
-
-const DEFAULT_WEBSTORE_ID = "0ZEam000004dJDNGA2";
 
 export default class SimilarProductsByState extends LightningElement {
   @api storeName = DEFAULT_STORE_NAME;
@@ -19,16 +20,33 @@ export default class SimilarProductsByState extends LightningElement {
   @api refinementKey = "State__c";
   @api searchTerm = "";
 
-  @track products = [];
+  products = [];
 
   loading = false;
   showProducts = false;
   currentIndex = 0;
   currentProductId = "";
   selectedState = "";
+  _boundStateSyncHandler = null;
 
   connectedCallback() {
+    this._boundStateSyncHandler = () => {
+      this.handleSharedStateUpdate();
+    };
+    STATE_CHANGE_EVENT_NAMES.forEach((eventName) => {
+      globalThis.addEventListener(eventName, this._boundStateSyncHandler);
+    });
+    globalThis.addEventListener("hashchange", this._boundStateSyncHandler);
+    globalThis.addEventListener("popstate", this._boundStateSyncHandler);
     this.initialize();
+  }
+
+  disconnectedCallback() {
+    STATE_CHANGE_EVENT_NAMES.forEach((eventName) => {
+      globalThis.removeEventListener(eventName, this._boundStateSyncHandler);
+    });
+    globalThis.removeEventListener("hashchange", this._boundStateSyncHandler);
+    globalThis.removeEventListener("popstate", this._boundStateSyncHandler);
   }
 
   get normalizedMaxProducts() {
@@ -110,6 +128,15 @@ export default class SimilarProductsByState extends LightningElement {
     }
   }
 
+  async handleSharedStateUpdate() {
+    const nextState = this.resolveSelectedState();
+    if (nextState === this.selectedState && this.showProducts) {
+      return;
+    }
+
+    await this.initialize();
+  }
+
   resetProducts() {
     this.products = [];
     this.showProducts = false;
@@ -147,16 +174,16 @@ export default class SimilarProductsByState extends LightningElement {
     const storeName = this.storeName || DEFAULT_STORE_NAME;
     const webStoreId = this.webStoreId || DEFAULT_WEBSTORE_ID;
     const base = `/${storeName}/webruntime/api/services/data/v66.0/commerce/webstores/${webStoreId}/search/products`;
-    const params = new URLSearchParams({
-      language: "en-US",
-      asGuest: "true",
-      searchTerm: this.buildSearchTermWithState(stateValue),
-      page: "0",
-      pageSize: String(
-        this.normalizedMaxProducts + this.normalizedVisibleCount
-      ),
-      refinement: `${this.refinementKey}:${stateValue}`
-    });
+    const params = applyStorefrontGuestParams(
+      new URLSearchParams({
+        searchTerm: this.buildSearchTermWithState(stateValue),
+        page: "0",
+        pageSize: String(
+          this.normalizedMaxProducts + this.normalizedVisibleCount
+        ),
+        refinement: `${this.refinementKey}:${stateValue}`
+      })
+    );
 
     return `${base}?${params.toString()}`;
   }

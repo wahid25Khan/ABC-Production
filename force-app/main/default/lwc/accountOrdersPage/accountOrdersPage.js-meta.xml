@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>66.0</apiVersion>
+    <isExposed>true</isExposed>
+    <masterLabel>Account Orders Page</masterLabel>
+    <targets>
+        <target>lightningCommunity__Page</target>
+        <target>lightningCommunity__Default</target>
+    </targets>
+    <targetConfigs>
+        <targetConfig targets="lightningCommunity__Default">
+            <property default="My Orders" label="Heading" name="heading" type="String" />
+            <property default="AmericanBookCompany" label="Store Name" name="storeName" type="String" />
+        </targetConfig>
+    </targetConfigs>
+</LightningComponentBundle>

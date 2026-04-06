@@ -195,10 +195,6 @@
   border-color: #b8c3d1;
 }
 
-.custom-select-trigger.placeholder {
-  color: #6b7280;
-}
-
 .custom-select-menu {
   position: absolute;
   top: calc(100% + 6px);

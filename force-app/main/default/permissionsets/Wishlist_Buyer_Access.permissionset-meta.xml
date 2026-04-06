@@ -1,7 +1,14 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8"?>
 <PermissionSet xmlns="http://soap.sforce.com/2006/04/metadata">
-    <description
-  >Grants buyer/shopper users full access to Wishlist and WishlistItem objects for the My Wishlist page</description>
+    <classAccesses>
+        <apexClass>OrderHistoryController</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
+        <apexClass>WishlistController</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <description>Grants buyer/shopper users full access to Wishlist and WishlistItem objects for the My Wishlist page</description>
     <hasActivationRequired>false</hasActivationRequired>
     <label>Wishlist Buyer Access</label>
     <objectPermissions>
@@ -31,16 +38,6 @@
         <allowRead>true</allowRead>
         <modifyAllRecords>false</modifyAllRecords>
         <object>Wishlist</object>
-        <viewAllFields>false</viewAllFields>
-        <viewAllRecords>false</viewAllRecords>
-    </objectPermissions>
-    <objectPermissions>
-        <allowCreate>true</allowCreate>
-        <allowDelete>true</allowDelete>
-        <allowEdit>true</allowEdit>
-        <allowRead>true</allowRead>
-        <modifyAllRecords>false</modifyAllRecords>
-        <object>WishlistItem</object>
         <viewAllFields>false</viewAllFields>
         <viewAllRecords>false</viewAllRecords>
     </objectPermissions>
