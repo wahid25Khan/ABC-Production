@@ -16,9 +16,11 @@ const CART_FILLED_RECOVERY_RELOAD_KEY = "abc_cart_filled_recovery_reload";
 const LOGIN_URL = "/AmericanBookCompany/login";
 const GUEST_LOGIN_GUARD_PATHS = new Set([
   "/AmericanBookCompany/mylists",
+  "/AmericanBookCompany/native-mylists",
   "/AmericanBookCompany/my-orders"
 ]);
-const CART_PRODUCT_DETAIL_PATTERN = /\/product\/[^/]+\/([A-Za-z0-9]{15,18})(?:[?#]|$)/;
+const CART_PRODUCT_DETAIL_PATTERN =
+  /\/product\/[^/]+\/([A-Za-z0-9]{15,18})(?:[?#]|$)/;
 
 export default class StateFilterLwc extends LightningElement {
   @api refinementKey = "State__c";
@@ -519,7 +521,7 @@ export default class StateFilterLwc extends LightningElement {
       this.findElementByExactText(["button"], "Skip to Top"),
       this.findElementByExactText(["button"], "Previous"),
       this.findElementByExactText(["button"], "Next"),
-      this.findElementByExactText(["button"], "Quantity Help"),
+      this.findElementByExactText(["button"], "Quantity Help")
     ];
 
     elementsToHide.forEach((el) => {
@@ -599,12 +601,14 @@ export default class StateFilterLwc extends LightningElement {
             article.dataset.abcFormat = match[2]; // e.g. "Color Print + Digital"
           }
           // Strip suffix from every text node in the name area
-          article.querySelectorAll(".item-name a, .item-name p").forEach((el) => {
-            const t = (el.textContent || "").trim();
-            if (t.includes(" - ")) {
-              el.textContent = t.replace(/\s+-\s+.+$/, "");
-            }
-          });
+          article
+            .querySelectorAll(".item-name a, .item-name p")
+            .forEach((el) => {
+              const t = (el.textContent || "").trim();
+              if (t.includes(" - ")) {
+                el.textContent = t.replace(/\s+-\s+.+$/, "");
+              }
+            });
         }
       });
   }
@@ -636,16 +640,31 @@ export default class StateFilterLwc extends LightningElement {
         const container = article.querySelector(".container.image");
         if (!container) return;
         this._applyCartItemGridStyles(container);
-        this._ensureCartIncludesEl(container, article);
+        const includesEl = this._ensureCartIncludesEl(container, article);
+        this._attachCartActionsToIncludes(container, includesEl);
         const col3Wrap = this._ensureCartCol3Wrap(container);
-        this._updateCartCol3Contents(col3Wrap, container, article, BULK_THRESHOLD);
+        this._updateCartCol3Contents(
+          col3Wrap,
+          container,
+          article,
+          BULK_THRESHOLD
+        );
       });
   }
 
   _applyCartItemGridStyles(container) {
-    // 3 rows: row1=name, row2=includes, row3=actions
-    container.style.setProperty("grid-template-columns", "160px 1fr 210px", "important");
-    container.style.setProperty("grid-template-rows", "auto auto auto", "important");
+    const isDesktop = globalThis.innerWidth >= 1024;
+
+    container.style.setProperty(
+      "grid-template-columns",
+      isDesktop ? "160px minmax(0, 1fr) 220px" : "80px minmax(0, 1fr)",
+      "important"
+    );
+    container.style.setProperty(
+      "grid-template-rows",
+      isDesktop ? "auto auto" : "auto auto auto",
+      "important"
+    );
     container.style.setProperty("grid-template-areas", "none", "important");
     container.style.setProperty("column-gap", "24px", "important");
     container.style.setProperty("row-gap", "8px", "important");
@@ -654,7 +673,16 @@ export default class StateFilterLwc extends LightningElement {
     const imgDiv = container.querySelector(".item-image");
     if (imgDiv) {
       imgDiv.style.setProperty("grid-column", "1", "important");
-      imgDiv.style.setProperty("grid-row", "1 / span 3", "important");
+      imgDiv.style.setProperty(
+        "grid-row",
+        isDesktop ? "1 / span 2" : "1 / span 3",
+        "important"
+      );
+      imgDiv.style.setProperty(
+        "width",
+        isDesktop ? "160px" : "80px",
+        "important"
+      );
     }
     const nameDiv = container.querySelector(".item-name");
     if (nameDiv) {
@@ -663,12 +691,15 @@ export default class StateFilterLwc extends LightningElement {
       nameDiv.style.setProperty("align-self", "start", "important");
       nameDiv.style.setProperty("width", "100%", "important");
     }
-    // Actions are placed in row 3 — includes occupies row 2 (set in _ensureCartIncludesEl)
     const actionsDiv = container.querySelector(".item-actions");
     if (actionsDiv) {
       actionsDiv.style.setProperty("grid-column", "2", "important");
-      actionsDiv.style.setProperty("grid-row", "3", "important");
+      actionsDiv.style.setProperty("grid-row", "2", "important");
       actionsDiv.style.setProperty("align-self", "start", "important");
+      actionsDiv.style.setProperty("display", "flex", "important");
+      actionsDiv.style.setProperty("flex-wrap", "wrap", "important");
+      actionsDiv.style.setProperty("gap", "24px", "important");
+      actionsDiv.style.setProperty("margin-top", "18px", "important");
     }
     const pricesDiv = container.querySelector(".item-prices");
     if (pricesDiv) {
@@ -680,47 +711,122 @@ export default class StateFilterLwc extends LightningElement {
     const format = article.dataset.abcFormat;
     let includesEl = container.querySelector(".abc-cart-includes");
     if (!format) {
-      if (includesEl) includesEl.style.setProperty("display", "none", "important");
-      return;
+      if (includesEl)
+        includesEl.style.setProperty("display", "none", "important");
+      return null;
     }
     if (!includesEl) {
       includesEl = document.createElement("div");
       includesEl.className = "abc-cart-includes";
       // Insert after .item-name in the DOM so grid ordering stays correct
       const nameDiv = container.querySelector(".item-name");
-      nameDiv ? nameDiv.after(includesEl) : container.appendChild(includesEl);
+      if (nameDiv) {
+        nameDiv.after(includesEl);
+      } else {
+        container.appendChild(includesEl);
+      }
     }
-    includesEl.innerHTML = `<span style="font-size:12px;color:#6b7785;font-weight:600;display:block;margin-bottom:2px">Includes:</span><span style="font-size:13px;color:#1e2a3a">${format}</span>`;
+    const displayFormat = format
+      .split("+")
+      .map((part) => part.trim())
+      .filter(Boolean)
+      .join("\n");
+    includesEl.innerHTML = `<span style="font-size:12px;color:#6b7785;font-weight:600;display:block;margin-bottom:8px">Includes:</span><span style="font-size:13px;line-height:1.45;color:#1e2a3a;display:block;white-space:pre-line">${displayFormat}</span>`;
     includesEl.style.setProperty("grid-column", "2", "important");
     includesEl.style.setProperty("grid-row", "2", "important");
     includesEl.style.setProperty("align-self", "start", "important");
     includesEl.style.setProperty("display", "block", "important");
+    includesEl.style.setProperty("border", "1px solid #d6dde6", "important");
+    includesEl.style.setProperty("border-radius", "4px", "important");
+    includesEl.style.setProperty("padding", "12px 16px 14px", "important");
+    includesEl.style.setProperty("max-width", "390px", "important");
+    includesEl.style.setProperty("background", "#ffffff", "important");
+    return includesEl;
+  }
+
+  _attachCartActionsToIncludes(container, includesEl) {
+    const actionArea = container.querySelector(".item-actions");
+
+    if (!actionArea || !includesEl) {
+      return;
+    }
+
+    const existingHost = includesEl.querySelector(".abc-cart-action-host");
+    if (existingHost) {
+      existingHost.remove();
+    }
+
+    const host = document.createElement("div");
+    host.className = "abc-cart-action-host";
+    host.style.setProperty("display", "block", "important");
+    host.style.setProperty("width", "100%", "important");
+    includesEl.appendChild(host);
+    host.appendChild(actionArea);
+
+    actionArea.querySelectorAll("button, a").forEach((element) => {
+      element.style.setProperty("background", "transparent", "important");
+      element.style.setProperty("border", "none", "important");
+      element.style.setProperty("padding", "0", "important");
+      element.style.setProperty("color", "#2e609c", "important");
+      element.style.setProperty("font-size", "14px", "important");
+      element.style.setProperty("font-weight", "400", "important");
+      element.style.setProperty("text-decoration", "none", "important");
+      element.style.setProperty("box-shadow", "none", "important");
+      element.style.setProperty("min-height", "auto", "important");
+      element.style.setProperty("width", "auto", "important");
+    });
   }
 
   _ensureCartCol3Wrap(container) {
     let col3Wrap = container.querySelector(".abc-cart-col3-wrap");
+    const isDesktop = globalThis.innerWidth >= 1024;
+
     if (!col3Wrap) {
       col3Wrap = document.createElement("div");
       col3Wrap.className = "abc-cart-col3-wrap";
       container.appendChild(col3Wrap);
     }
-    col3Wrap.style.setProperty("grid-column", "3", "important");
-    col3Wrap.style.setProperty("grid-row", "1 / span 3", "important");
+    col3Wrap.style.setProperty(
+      "grid-column",
+      isDesktop ? "3" : "2",
+      "important"
+    );
+    col3Wrap.style.setProperty(
+      "grid-row",
+      isDesktop ? "1 / span 2" : "3",
+      "important"
+    );
     col3Wrap.style.setProperty("display", "flex", "important");
     col3Wrap.style.setProperty("flex-direction", "column", "important");
-    col3Wrap.style.setProperty("align-items", "flex-end", "important");
+    col3Wrap.style.setProperty(
+      "align-items",
+      isDesktop ? "flex-end" : "stretch",
+      "important"
+    );
     col3Wrap.style.setProperty("gap", "6px", "important");
+    col3Wrap.style.setProperty("width", "100%", "important");
+    col3Wrap.style.setProperty("border", "1px solid #d6dde6", "important");
+    col3Wrap.style.setProperty("border-radius", "4px", "important");
+    col3Wrap.style.setProperty("padding", "12px 16px 14px", "important");
+    col3Wrap.style.setProperty("background", "#ffffff", "important");
     return col3Wrap;
   }
 
   _updateCartCol3Contents(col3Wrap, container, article, bulkThreshold) {
+    const isDesktop = globalThis.innerWidth >= 1024;
     const unitPriceDiv = container.querySelector(".item-unit-price");
     if (unitPriceDiv && unitPriceDiv.parentElement !== col3Wrap) {
       col3Wrap.insertBefore(unitPriceDiv, col3Wrap.firstChild);
     }
     if (unitPriceDiv) {
-      unitPriceDiv.style.setProperty("text-align", "right", "important");
+      unitPriceDiv.style.setProperty(
+        "text-align",
+        isDesktop ? "right" : "left",
+        "important"
+      );
       unitPriceDiv.style.setProperty("width", "100%", "important");
+      unitPriceDiv.style.setProperty("font-size", "16px", "important");
+      unitPriceDiv.style.setProperty("line-height", "1.3", "important");
     }
 
     const qtyInput = article.querySelector("input.slds-input");
@@ -735,23 +841,50 @@ export default class StateFilterLwc extends LightningElement {
     if (qtySelector && qtySelector.parentElement !== col3Wrap) {
       col3Wrap.appendChild(qtySelector);
     }
-    qtySelector?.style.setProperty("width", "100%", "important");
+    if (qtySelector) {
+      qtySelector.style.setProperty("width", "100%", "important");
+      qtySelector.style.setProperty("max-width", "144px", "important");
+      qtySelector.style.setProperty(
+        "align-self",
+        isDesktop ? "flex-end" : "flex-start",
+        "important"
+      );
+    }
   }
 
   _updateCartUpsell(col3Wrap, unitPriceDiv, currentQty, bulkThreshold) {
     let upsellEl = col3Wrap.querySelector(".abc-cart-upsell");
+    const isDesktop = globalThis.innerWidth >= 1024;
     if (!upsellEl) {
       upsellEl = document.createElement("div");
       upsellEl.className = "abc-cart-upsell";
       upsellEl.style.setProperty("font-size", "12px", "important");
       upsellEl.style.setProperty("color", "#c25700", "important");
       upsellEl.style.setProperty("font-weight", "600", "important");
-      upsellEl.style.setProperty("text-align", "right", "important");
+      upsellEl.style.setProperty(
+        "text-align",
+        isDesktop ? "right" : "left",
+        "important"
+      );
       upsellEl.style.setProperty("line-height", "1.3", "important");
-      unitPriceDiv?.nextSibling?.before(upsellEl) ?? col3Wrap.appendChild(upsellEl);
+      if (unitPriceDiv?.nextSibling) {
+        unitPriceDiv.nextSibling.before(upsellEl);
+      } else {
+        col3Wrap.appendChild(upsellEl);
+      }
     }
+    upsellEl.style.setProperty(
+      "text-align",
+      isDesktop ? "right" : "left",
+      "important"
+    );
     if (currentQty > 0 && currentQty < bulkThreshold) {
       upsellEl.textContent = `+${bulkThreshold - currentQty} copies for volume discounts`;
+      upsellEl.style.setProperty("color", "#c25700", "important");
+      upsellEl.style.setProperty("display", "block", "important");
+    } else if (currentQty >= bulkThreshold) {
+      upsellEl.textContent = "Bulk Pricing Applied";
+      upsellEl.style.setProperty("color", "#2e844a", "important");
       upsellEl.style.setProperty("display", "block", "important");
     } else {
       upsellEl.style.setProperty("display", "none", "important");
@@ -760,18 +893,32 @@ export default class StateFilterLwc extends LightningElement {
 
   _updateCartQtyLabel(col3Wrap, minQty) {
     let qtyLabelEl = col3Wrap.querySelector(".abc-cart-qty-label");
+    const isDesktop = globalThis.innerWidth >= 1024;
     if (!qtyLabelEl) {
       qtyLabelEl = document.createElement("div");
       qtyLabelEl.className = "abc-cart-qty-label";
       qtyLabelEl.style.setProperty("font-size", "12px", "important");
       qtyLabelEl.style.setProperty("color", "#6b7785", "important");
-      qtyLabelEl.style.setProperty("text-align", "right", "important");
+      qtyLabelEl.style.setProperty(
+        "text-align",
+        isDesktop ? "right" : "left",
+        "important"
+      );
       qtyLabelEl.style.setProperty("margin-top", "4px", "important");
       qtyLabelEl.style.setProperty("width", "100%", "important");
       col3Wrap.appendChild(qtyLabelEl);
     }
+    qtyLabelEl.style.setProperty(
+      "text-align",
+      isDesktop ? "right" : "left",
+      "important"
+    );
     if (minQty) {
       qtyLabelEl.textContent = `Quantity (min ${minQty})`;
+      qtyLabelEl.style.setProperty("display", "block", "important");
+    } else {
+      qtyLabelEl.textContent = "";
+      qtyLabelEl.style.setProperty("display", "none", "important");
     }
   }
 
@@ -828,7 +975,11 @@ export default class StateFilterLwc extends LightningElement {
     const offset = Math.round(firstImageTop - summaryTop);
 
     if (offset > 0) {
-      summaryContent.style.setProperty("margin-top", `${offset}px`, "important");
+      summaryContent.style.setProperty(
+        "margin-top",
+        `${offset}px`,
+        "important"
+      );
     }
   }
 
@@ -851,18 +1002,13 @@ export default class StateFilterLwc extends LightningElement {
   }
 
   normalizeCartActionArea() {
-    const downloadButton = this.findElementByExactText(
-      ["button", "a"],
-      "Download a Quote"
-    );
-    const checkoutButton = this.findElementByExactText(
-      ["button", "a"],
-      "Proceed to Checkout"
-    );
-    const poLink = this.findElementByExactText(
-      ["button", "a"],
-      "Need to submit a PO?"
-    );
+    const { actionPanel, downloadButton, checkoutButton, poLink } =
+      this.getCartActionElements();
+
+    if (actionPanel) {
+      actionPanel.style.setProperty("display", "flex", "important");
+      actionPanel.style.setProperty("flex-direction", "column", "important");
+    }
 
     if (downloadButton) {
       this.applyButtonStyle(downloadButton, {
@@ -895,6 +1041,28 @@ export default class StateFilterLwc extends LightningElement {
       poLink.style.maxWidth = "100%";
       poLink.style.borderRadius = "0";
     }
+  }
+
+  getCartActionElements() {
+    const downloadButton = this.findElementByExactText(
+      ["button", "a"],
+      "Download a Quote"
+    );
+    const checkoutButton = this.findElementByExactText(
+      ["button", "a"],
+      "Proceed to Checkout"
+    );
+    const poLink = this.findElementByExactText(
+      ["button", "a"],
+      "Need to submit a PO?"
+    );
+    const actionPanel =
+      downloadButton?.closest(".actions-panel") ||
+      checkoutButton?.closest(".actions-panel") ||
+      poLink?.closest(".actions-panel") ||
+      null;
+
+    return { actionPanel, downloadButton, checkoutButton, poLink };
   }
 
   syncCartWishlistActions() {
@@ -1066,6 +1234,28 @@ export default class StateFilterLwc extends LightningElement {
     if (continueShopping) {
       continueShopping.style.display = "none";
     }
+
+    const cartActionComponent = document.querySelector("c-cart-action-buttons");
+    if (cartActionComponent) {
+      cartActionComponent.style.setProperty("display", "none", "important");
+    }
+
+    const {
+      actionPanel,
+      downloadButton,
+      checkoutButton: proceedToCheckoutButton,
+      poLink
+    } = this.getCartActionElements();
+
+    if (actionPanel) {
+      actionPanel.style.setProperty("display", "none", "important");
+    }
+
+    [downloadButton, proceedToCheckoutButton, poLink].forEach((element) => {
+      if (element) {
+        element.style.setProperty("display", "none", "important");
+      }
+    });
 
     const { mainColumn, spacerColumn, summaryColumn } =
       this.getCartLayoutColumns();

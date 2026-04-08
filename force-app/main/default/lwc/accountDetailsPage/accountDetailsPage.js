@@ -1,304 +1,317 @@
-import { LightningElement, api } from 'lwc';
-import isGuest from '@salesforce/user/isGuest';
-import getAccountDetails from '@salesforce/apex/AccountDetailsController.getAccountDetails';
-import updateAboutYou from '@salesforce/apex/AccountDetailsController.updateAboutYou';
-import updateOrganization from '@salesforce/apex/AccountDetailsController.updateOrganization';
-import changePassword from '@salesforce/apex/AccountDetailsController.changePassword';
+import { LightningElement, api } from "lwc";
+import isGuest from "@salesforce/user/isGuest";
+import getAccountDetails from "@salesforce/apex/AccountDetailsController.getAccountDetails";
+import updateAboutYou from "@salesforce/apex/AccountDetailsController.updateAboutYou";
+import updateOrganization from "@salesforce/apex/AccountDetailsController.updateOrganization";
+import changePassword from "@salesforce/apex/AccountDetailsController.changePassword";
 
-const ADDRESS_FORM_URL = '/AmericanBookCompany/addressForm';
-const LOGIN_URL = '/AmericanBookCompany/login';
-const PAYMENT_METHOD_URL = '/AmericanBookCompany/add-payment-methods';
+const ADDRESS_FORM_URL = "/AmericanBookCompany/addressForm";
+const LOGIN_URL = "/AmericanBookCompany/login";
+const PAYMENT_METHOD_URL = "/AmericanBookCompany/add-payment-methods";
 
 export default class AccountDetailsPage extends LightningElement {
-    @api heroTitle = 'Account Details';
-    @api heroDescription =
-        'Manage your contact information, jump to key account tasks, and keep ordering details current for your school or district.';
-    @api ordersUrl = '/AmericanBookCompany/my-orders';
-    @api submitPoUrl = '/AmericanBookCompany/submit-a-po';
-    @api wishlistUrl = '/AmericanBookCompany/mylists';
+  @api heroTitle = "Account Details";
+  @api heroDescription =
+    "Manage your contact information, jump to key account tasks, and keep ordering details current for your school or district.";
+  @api ordersUrl = "/AmericanBookCompany/my-orders";
+  @api submitPoUrl = "/AmericanBookCompany/submit-a-po";
+  @api wishlistUrl = "/AmericanBookCompany/native-mylists";
 
-    details;
-    aboutForm = { firstName: '', lastName: '', email: '', phone: '' };
-    organizationForm = { organizationName: '' };
-    passwordForm = { currentPassword: '', newPassword: '', confirmPassword: '' };
+  details;
+  aboutForm = { firstName: "", lastName: "", email: "", phone: "" };
+  organizationForm = { organizationName: "" };
+  passwordForm = { currentPassword: "", newPassword: "", confirmPassword: "" };
 
-    isLoading = true;
-    isSavingAbout = false;
-    isSavingOrganization = false;
-    isSavingPassword = false;
-    isEditingAbout = false;
-    isEditingOrganization = false;
-    activeSection = 'about-you';
-    statusMessage = '';
-    statusVariant = 'info';
+  isLoading = true;
+  isSavingAbout = false;
+  isSavingOrganization = false;
+  isSavingPassword = false;
+  isEditingAbout = false;
+  isEditingOrganization = false;
+  activeSection = "about-you";
+  statusMessage = "";
+  statusVariant = "info";
 
-    connectedCallback() {
-        if (isGuest) {
-            this.redirectToLogin();
-            return;
-        }
-
-        this.loadDetails();
+  connectedCallback() {
+    if (isGuest) {
+      this.redirectToLogin();
+      return;
     }
 
-    get sectionTabs() {
-        return [
-            { id: 'about-you', label: 'About You' },
-            { id: 'password-security', label: 'Password & Security' },
-            { id: 'organization-details', label: 'Organization' },
-            { id: 'shipping-address', label: 'Shipping' },
-            { id: 'payment-methods', label: 'Payment' }
-        ].map((tab) => ({
-            ...tab,
-            className: `section-tab${this.activeSection === tab.id ? ' active' : ''}`
-        }));
+    this.loadDetails();
+  }
+
+  get sectionTabs() {
+    return [
+      { id: "about-you", label: "About You" },
+      { id: "password-security", label: "Password & Security" },
+      { id: "organization-details", label: "Organization" },
+      { id: "shipping-address", label: "Shipping" },
+      { id: "payment-methods", label: "Payment" }
+    ].map((tab) => ({
+      ...tab,
+      className: `section-tab${this.activeSection === tab.id ? " active" : ""}`
+    }));
+  }
+
+  get displayName() {
+    return this.details?.fullName || "Not added yet";
+  }
+
+  get displayEmail() {
+    return this.details?.email || "Not added yet";
+  }
+
+  get displayPhone() {
+    return this.details?.phone || "Not added yet";
+  }
+
+  get displayOrganization() {
+    return this.details?.organizationName || "No organization on file.";
+  }
+
+  get displayShippingAddress() {
+    return (
+      this.details?.shippingAddress ||
+      "No shipping address on file. Please enter a US shipping address."
+    );
+  }
+
+  get displayPaymentSummary() {
+    return this.details?.paymentSummary || "No payment on file.";
+  }
+
+  get organizationButtonLabel() {
+    return this.details?.hasOrganization
+      ? "Edit Organization"
+      : "Enter Organization";
+  }
+
+  get shippingButtonLabel() {
+    return this.details?.hasShippingAddress
+      ? "Manage Shipping"
+      : "Enter Shipping";
+  }
+
+  get passwordRequirements() {
+    const password = this.passwordForm.newPassword || "";
+    return [
+      { label: "At least 8 characters", met: password.length >= 8 },
+      { label: "Contain lower case letters", met: /[a-z]/.test(password) },
+      {
+        label: "At least one symbol (#@$%,etc)",
+        met: /[^A-Za-z0-9]/.test(password)
+      },
+      { label: "Contain upper case letters", met: /[A-Z]/.test(password) },
+      { label: "At least one number", met: /\d/.test(password) }
+    ].map((requirement) => ({
+      ...requirement,
+      className: requirement.met ? "met" : "unmet"
+    }));
+  }
+
+  get isPasswordSubmitDisabled() {
+    return !this.canSubmitPassword || this.isSavingPassword;
+  }
+
+  get statusClass() {
+    return `status-banner ${this.statusVariant}`;
+  }
+
+  get canSubmitPassword() {
+    return (
+      this.passwordForm.currentPassword &&
+      this.passwordForm.newPassword &&
+      this.passwordForm.confirmPassword &&
+      this.passwordForm.newPassword === this.passwordForm.confirmPassword &&
+      this.passwordRequirements.every((requirement) => requirement.met)
+    );
+  }
+
+  async loadDetails() {
+    this.isLoading = true;
+    try {
+      const result = await getAccountDetails();
+      this.applyDetails(result);
+      this.clearStatus();
+    } catch {
+      this.setStatus("Unable to load account details right now.", "error");
+    } finally {
+      this.isLoading = false;
+    }
+  }
+
+  applyDetails(result) {
+    this.details = result;
+    this.aboutForm = {
+      firstName: result?.firstName || "",
+      lastName: result?.lastName || "",
+      email: result?.email || "",
+      phone: result?.phone || ""
+    };
+    this.organizationForm = {
+      organizationName: result?.organizationName || ""
+    };
+  }
+
+  handleTabClick(event) {
+    const target = event.currentTarget.dataset.target;
+    if (!target) {
+      return;
     }
 
-    get displayName() {
-        return this.details?.fullName || 'Not added yet';
+    this.activeSection = target;
+    const section = this.template.querySelector(`[data-section="${target}"]`);
+    section?.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+
+  handleEditAbout() {
+    this.isEditingAbout = true;
+    this.clearStatus();
+  }
+
+  handleCancelAbout() {
+    this.isEditingAbout = false;
+    this.aboutForm = {
+      firstName: this.details?.firstName || "",
+      lastName: this.details?.lastName || "",
+      email: this.details?.email || "",
+      phone: this.details?.phone || ""
+    };
+  }
+
+  handleAboutInput(event) {
+    const { field } = event.target.dataset;
+    if (!field) {
+      return;
     }
+    this.aboutForm = {
+      ...this.aboutForm,
+      [field]: event.target.value
+    };
+  }
 
-    get displayEmail() {
-        return this.details?.email || 'Not added yet';
-    }
-
-    get displayPhone() {
-        return this.details?.phone || 'Not added yet';
-    }
-
-    get displayOrganization() {
-        return this.details?.organizationName || 'No organization on file.';
-    }
-
-    get displayShippingAddress() {
-        return this.details?.shippingAddress || 'No shipping address on file. Please enter a US shipping address.';
-    }
-
-    get displayPaymentSummary() {
-        return this.details?.paymentSummary || 'No payment on file.';
-    }
-
-    get organizationButtonLabel() {
-        return this.details?.hasOrganization ? 'Edit Organization' : 'Enter Organization';
-    }
-
-    get shippingButtonLabel() {
-        return this.details?.hasShippingAddress ? 'Manage Shipping' : 'Enter Shipping';
-    }
-
-    get passwordRequirements() {
-        const password = this.passwordForm.newPassword || '';
-        return [
-            { label: 'At least 8 characters', met: password.length >= 8 },
-            { label: 'Contain lower case letters', met: /[a-z]/.test(password) },
-            { label: 'At least one symbol (#@$%,etc)', met: /[^A-Za-z0-9]/.test(password) },
-            { label: 'Contain upper case letters', met: /[A-Z]/.test(password) },
-            { label: 'At least one number', met: /\d/.test(password) }
-        ].map((requirement) => ({
-            ...requirement,
-            className: requirement.met ? 'met' : 'unmet'
-        }));
-    }
-
-    get isPasswordSubmitDisabled() {
-        return !this.canSubmitPassword || this.isSavingPassword;
-    }
-
-    get statusClass() {
-        return `status-banner ${this.statusVariant}`;
-    }
-
-    get canSubmitPassword() {
-        return (
-            this.passwordForm.currentPassword &&
-            this.passwordForm.newPassword &&
-            this.passwordForm.confirmPassword &&
-            this.passwordForm.newPassword === this.passwordForm.confirmPassword &&
-            this.passwordRequirements.every((requirement) => requirement.met)
-        );
-    }
-
-    async loadDetails() {
-        this.isLoading = true;
-        try {
-            const result = await getAccountDetails();
-            this.applyDetails(result);
-            this.clearStatus();
-        } catch {
-            this.setStatus('Unable to load account details right now.', 'error');
-        } finally {
-            this.isLoading = false;
-        }
-    }
-
-    applyDetails(result) {
-        this.details = result;
-        this.aboutForm = {
-            firstName: result?.firstName || '',
-            lastName: result?.lastName || '',
-            email: result?.email || '',
-            phone: result?.phone || ''
-        };
-        this.organizationForm = {
-            organizationName: result?.organizationName || ''
-        };
-    }
-
-    handleTabClick(event) {
-        const target = event.currentTarget.dataset.target;
-        if (!target) {
-            return;
-        }
-
-        this.activeSection = target;
-        const section = this.template.querySelector(`[data-section="${target}"]`);
-        section?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }
-
-    handleEditAbout() {
-        this.isEditingAbout = true;
-        this.clearStatus();
-    }
-
-    handleCancelAbout() {
+  async handleSaveAbout() {
+    this.isSavingAbout = true;
+    try {
+      const result = await updateAboutYou({ ...this.aboutForm });
+      this.handleActionResult(result, () => {
         this.isEditingAbout = false;
-        this.aboutForm = {
-            firstName: this.details?.firstName || '',
-            lastName: this.details?.lastName || '',
-            email: this.details?.email || '',
-            phone: this.details?.phone || ''
-        };
+      });
+    } catch {
+      this.setStatus("Unable to update your details right now.", "error");
+    } finally {
+      this.isSavingAbout = false;
     }
+  }
 
-    handleAboutInput(event) {
-        const { field } = event.target.dataset;
-        if (!field) {
-            return;
-        }
-        this.aboutForm = {
-            ...this.aboutForm,
-            [field]: event.target.value
-        };
-    }
+  handleEditOrganization() {
+    this.isEditingOrganization = true;
+    this.clearStatus();
+  }
 
-    async handleSaveAbout() {
-        this.isSavingAbout = true;
-        try {
-            const result = await updateAboutYou({ ...this.aboutForm });
-            this.handleActionResult(result, () => {
-                this.isEditingAbout = false;
-            });
-        } catch {
-            this.setStatus('Unable to update your details right now.', 'error');
-        } finally {
-            this.isSavingAbout = false;
-        }
-    }
+  handleOrganizationInput(event) {
+    this.organizationForm = {
+      organizationName: event.target.value
+    };
+  }
 
-    handleEditOrganization() {
-        this.isEditingOrganization = true;
-        this.clearStatus();
-    }
+  handleCancelOrganization() {
+    this.isEditingOrganization = false;
+    this.organizationForm = {
+      organizationName: this.details?.organizationName || ""
+    };
+  }
 
-    handleOrganizationInput(event) {
-        this.organizationForm = {
-            organizationName: event.target.value
-        };
-    }
-
-    handleCancelOrganization() {
+  async handleSaveOrganization() {
+    this.isSavingOrganization = true;
+    try {
+      const result = await updateOrganization({
+        organizationName: this.organizationForm.organizationName
+      });
+      this.handleActionResult(result, () => {
         this.isEditingOrganization = false;
-        this.organizationForm = {
-            organizationName: this.details?.organizationName || ''
-        };
+      });
+    } catch {
+      this.setStatus(
+        "Unable to update organization details right now.",
+        "error"
+      );
+    } finally {
+      this.isSavingOrganization = false;
+    }
+  }
+
+  handlePasswordInput(event) {
+    const { field } = event.target.dataset;
+    if (!field) {
+      return;
+    }
+    this.passwordForm = {
+      ...this.passwordForm,
+      [field]: event.target.value
+    };
+  }
+
+  async handleSavePassword() {
+    if (!this.canSubmitPassword) {
+      return;
     }
 
-    async handleSaveOrganization() {
-        this.isSavingOrganization = true;
-        try {
-            const result = await updateOrganization({
-                organizationName: this.organizationForm.organizationName
-            });
-            this.handleActionResult(result, () => {
-                this.isEditingOrganization = false;
-            });
-        } catch {
-            this.setStatus('Unable to update organization details right now.', 'error');
-        } finally {
-            this.isSavingOrganization = false;
-        }
-    }
-
-    handlePasswordInput(event) {
-        const { field } = event.target.dataset;
-        if (!field) {
-            return;
-        }
+    this.isSavingPassword = true;
+    try {
+      const result = await changePassword({
+        currentPassword: this.passwordForm.currentPassword,
+        newPassword: this.passwordForm.newPassword,
+        confirmPassword: this.passwordForm.confirmPassword
+      });
+      this.handleActionResult(result, () => {
         this.passwordForm = {
-            ...this.passwordForm,
-            [field]: event.target.value
+          currentPassword: "",
+          newPassword: "",
+          confirmPassword: ""
         };
+      });
+    } catch {
+      this.setStatus("Unable to update your password right now.", "error");
+    } finally {
+      this.isSavingPassword = false;
+    }
+  }
+
+  handleManageShipping() {
+    globalThis.location.assign(ADDRESS_FORM_URL);
+  }
+
+  handleManagePayment() {
+    globalThis.location.assign(PAYMENT_METHOD_URL);
+  }
+
+  handleActionResult(result, onSuccess) {
+    if (!result?.success) {
+      this.applyDetails(result?.details || this.details);
+      this.setStatus(result?.message || "Something went wrong.", "error");
+      return;
     }
 
-    async handleSavePassword() {
-        if (!this.canSubmitPassword) {
-            return;
-        }
+    this.applyDetails(result.details);
+    this.setStatus(result.message, "success");
+    onSuccess?.();
+  }
 
-        this.isSavingPassword = true;
-        try {
-            const result = await changePassword({
-                currentPassword: this.passwordForm.currentPassword,
-                newPassword: this.passwordForm.newPassword,
-                confirmPassword: this.passwordForm.confirmPassword
-            });
-            this.handleActionResult(result, () => {
-                this.passwordForm = {
-                    currentPassword: '',
-                    newPassword: '',
-                    confirmPassword: ''
-                };
-            });
-        } catch {
-            this.setStatus('Unable to update your password right now.', 'error');
-        } finally {
-            this.isSavingPassword = false;
-        }
-    }
+  setStatus(message, variant) {
+    this.statusMessage = message;
+    this.statusVariant = variant;
+  }
 
-    handleManageShipping() {
-        globalThis.location.assign(ADDRESS_FORM_URL);
-    }
+  clearStatus() {
+    this.statusMessage = "";
+    this.statusVariant = "info";
+  }
 
-    handleManagePayment() {
-        globalThis.location.assign(PAYMENT_METHOD_URL);
-    }
-
-    handleActionResult(result, onSuccess) {
-        if (!result?.success) {
-            this.applyDetails(result?.details || this.details);
-            this.setStatus(result?.message || 'Something went wrong.', 'error');
-            return;
-        }
-
-        this.applyDetails(result.details);
-        this.setStatus(result.message, 'success');
-        onSuccess?.();
-    }
-
-    setStatus(message, variant) {
-        this.statusMessage = message;
-        this.statusVariant = variant;
-    }
-
-    clearStatus() {
-        this.statusMessage = '';
-        this.statusVariant = 'info';
-    }
-
-    redirectToLogin() {
-        const currentPath = `${globalThis.location?.pathname || '/AmericanBookCompany/myprofile'}${globalThis.location?.search || ''}${globalThis.location?.hash || ''}`;
-        const redirectUrl = `${LOGIN_URL}?startURL=${encodeURIComponent(currentPath)}`;
-        globalThis.location.replace(redirectUrl);
-    }
+  redirectToLogin() {
+    const currentPath = `${globalThis.location?.pathname || "/AmericanBookCompany/myprofile"}${globalThis.location?.search || ""}${globalThis.location?.hash || ""}`;
+    const redirectUrl = `${LOGIN_URL}?startURL=${encodeURIComponent(currentPath)}`;
+    globalThis.location.replace(redirectUrl);
+  }
 }

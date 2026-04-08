@@ -1,37 +1,32 @@
 <template>
-    <div class="actions-panel">
-        <!-- Download a Quote -->
-        <button class="btn-outline" onclick={handleDownloadQuote} disabled={isDownloading}>
-            <template lwc:if={isDownloading}>
-                <lightning-spinner alternative-text="Generating quote" size="small" variant="inverse"></lightning-spinner>
-            </template>
-            <template lwc:else>
-                <svg class="btn-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                    <path d="M12 3v12m0 0l-4-4m4 4l4-4M5 17v2a2 2 0 002 2h10a2 2 0 002-2v-2"
-                          stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
-                Download a Quote
-            </template>
-        </button>
+  <div class="actions-panel">
+    <button
+      class="btn-outline"
+      onclick={handleDownloadQuote}
+      disabled={isDownloading}
+    >
+      <template lwc:if={isDownloading}>
+        <lightning-spinner
+          alternative-text="Generating quote"
+          size="small"
+        ></lightning-spinner>
+      </template>
+      <template lwc:else> Download a Quote </template>
+    </button>
 
-        <!-- Proceed to Checkout -->
-        <button class="btn-primary" onclick={handleProceedToCheckout}>
-            <svg class="btn-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                <path d="M9 5l7 7-7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-            Proceed to Checkout
-        </button>
+    <button class="btn-primary" onclick={handleProceedToCheckout}>
+      Proceed to Checkout
+    </button>
 
-        <!-- Need to submit a PO? -->
-        <button class="po-link" onclick={handleSubmitPO}>
-            Need to submit a PO?
-        </button>
+    <button class="po-link" onclick={handleSubmitPO}>
+      Need to submit a PO?
+    </button>
 
-        <template lwc:if={errorMessage}>
-            <div class="error-banner" role="alert">{errorMessage}</div>
-        </template>
-        <template lwc:if={downloadSuccess}>
-            <output class="success-banner">Quote downloaded successfully.</output>
-        </template>
-    </div>
+    <template lwc:if={errorMessage}>
+      <div class="error-banner" role="alert">{errorMessage}</div>
+    </template>
+    <template lwc:if={downloadSuccess}>
+      <output class="success-banner">Quote downloaded successfully.</output>
+    </template>
+  </div>
 </template>

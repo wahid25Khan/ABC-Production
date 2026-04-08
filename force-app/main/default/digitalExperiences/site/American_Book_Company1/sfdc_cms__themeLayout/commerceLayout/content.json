@@ -8,7 +8,9 @@
         {
           "children": [
             {
-              "attributes": {},
+              "attributes": {
+                "dxpStyle": {}
+              },
               "definition": "c:customHeader",
               "id": "1e8850e0-48cd-41fc-9fd1-3c6b2626140d",
               "type": "component"
@@ -125,7 +127,7 @@
                               "attributes": {
                                 "dxpStyle": {},
                                 "imageInfos": "",
-                                "richTextValue": "<h2><strong style=\"color: rgb(187, 187, 187);\">ACCOUNT LINKS</strong></h2><p><a href=\"https://americanbookcompany.my.site.com/AmericanBookCompany/login?ec=302&amp;startURL=%2FAmericanBookCompany%2Fmyprofile\" rel=\"noopener noreferrer\" target=\"_self\" style=\"color: rgb(187, 187, 187); font-size: 12px;\">My Account</a></p><p><a href=\"https://americanbookcompany.my.site.com/AmericanBookCompany/mylists\" rel=\"noopener noreferrer\" target=\"_self\" style=\"color: rgb(187, 187, 187); font-size: 12px;\">My Wishlist</a></p><p><a href=\"https://coursewave.com/\" rel=\"noopener noreferrer\" target=\"_blank\" style=\"color: rgb(187, 187, 187); font-size: 12px;\">CourseWave</a></p>"
+                                "richTextValue": "<h2><strong style=\"color: rgb(187, 187, 187);\">ACCOUNT LINKS</strong></h2><p><a href=\"https://americanbookcompany.my.site.com/AmericanBookCompany/login?ec=302&amp;startURL=%2FAmericanBookCompany%2Fmyprofile\" rel=\"noopener noreferrer\" target=\"_self\" style=\"color: rgb(187, 187, 187); font-size: 12px;\">My Account</a></p><p><a href=\"https://americanbookcompany.my.site.com/AmericanBookCompany/native-mylists\" rel=\"noopener noreferrer\" target=\"_self\" style=\"color: rgb(187, 187, 187); font-size: 12px;\">My Wishlist</a></p><p><a href=\"https://coursewave.com/\" rel=\"noopener noreferrer\" target=\"_blank\" style=\"color: rgb(187, 187, 187); font-size: 12px;\">CourseWave</a></p>"
                               },
                               "definition": "community_builder:richTextEditor",
                               "id": "669bf180-1465-4133-9295-65b90f462c1a",

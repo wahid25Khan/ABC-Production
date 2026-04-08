@@ -48,25 +48,24 @@ export default class CartActionButtons extends NavigationMixin(
       }
 
       // Decode base64 to binary and trigger browser download
-      const byteCharacters = atob(result.pdfBase64);
+      const byteCharacters = globalThis.atob(result.pdfBase64);
       const byteNumbers = new Uint8Array(byteCharacters.length);
       for (let i = 0; i < byteCharacters.length; i++) {
         byteNumbers[i] = byteCharacters.codePointAt(i);
       }
       const blob = new Blob([byteNumbers], { type: "application/pdf" });
 
-      const url = URL.createObjectURL(blob);
+      const url = globalThis.URL.createObjectURL(blob);
       const link = document.createElement("a");
       link.href = url;
       link.download = `ABC-Quote-${result.quoteNumber}.pdf`;
       document.body.appendChild(link);
       link.click();
       link.remove();
-      URL.revokeObjectURL(url);
+      globalThis.URL.revokeObjectURL(url);
 
       this.downloadSuccess = true;
-      // eslint-disable-next-line @lwc/lwc/no-async-operation
-      setTimeout(() => {
+      globalThis.setTimeout(() => {
         this.downloadSuccess = false;
       }, 4000);
     } catch (error) {

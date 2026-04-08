@@ -1,7 +1,7 @@
-import { LightningElement } from "lwc";
+import { LightningElement, wire } from "lwc";
 import isGuestUser from "@salesforce/user/isGuest";
 import logoResource from "@salesforce/resourceUrl/ABCLogo";
-import getCartItemCount from "@salesforce/apex/CustomHeaderController.getCartItemCount";
+import { CartSummaryAdapter, refreshCartSummary } from "commerce/cartApi";
 import {
   decodeUrlValue,
   dispatchStateChange,
@@ -10,7 +10,8 @@ import {
   ALL_STATES,
   STATE_STORAGE_KEY,
   DEFAULT_WEBSTORE_ID,
-  DEFAULT_STORE_NAME
+  DEFAULT_STORE_NAME,
+  CART_UPDATED_EVENT_NAME
 } from "c/utils";
 
 // Module-level flag: ensures Lato <link> is injected only once per page lifetime
@@ -29,16 +30,11 @@ const REFINEMENTS_PARAM = "refinements";
 const FACETS_PARAM = "facets";
 const PAGE_PARAM = "page";
 const CLEAN_URL_DELAY_MS = 250;
-const API_VERSION = "v66.0";
-const CART_REQUEST_PARAMS = Object.freeze({
-  language: "en-US",
-  htmlEncode: "false"
-});
 
 const RESULTS_PATH_RE = /\/global-search(\/|$)/;
 const HOME_PATH_RE = /\/AmericanBookCompany\/?$/;
 
-// 7 nav links matching live site (no CERTIFICATION, no ORDERING DOCS)
+// 8 nav links matching standard navigation menu
 const NAV_LINKS = [
   { id: "shop", label: "SHOP ALL", url: RESULTS_ALL, target: "_self", rel: "" },
   {
@@ -61,6 +57,20 @@ const NAV_LINKS = [
     url: "https://coursewave.com/",
     target: "_blank",
     rel: "noopener noreferrer"
+  },
+  {
+    id: "certification",
+    label: "CERTIFICATION",
+    url: `${BASE}/certification`,
+    target: "_self",
+    rel: ""
+  },
+  {
+    id: "ordering-docs",
+    label: "ORDERING DOCS",
+    url: `${BASE}/ordering-docs`,
+    target: "_self",
+    rel: ""
   },
   { id: "blog", label: "BLOG", url: `${BASE}/blog`, target: "_self", rel: "" },
   {
@@ -114,7 +124,6 @@ export default class CustomHeader extends LightningElement {
   connectedCallback() {
     this.syncSelectedStateFromUrl();
     this.scheduleUrlCleanupIfNeeded();
-    this.refreshCartCount();
 
     // Inject Lato font once per page (LWC CSS cannot use @import url()
     // and @lwc/lwc/no-document-query forbids document.querySelector)
@@ -141,7 +150,10 @@ export default class CustomHeader extends LightningElement {
       this.refreshCartCount();
     };
     document.addEventListener("click", this._boundCloseDropdowns);
-    document.addEventListener("visibilitychange", this._boundCartRefreshHandler);
+    document.addEventListener(
+      "visibilitychange",
+      this._boundCartRefreshHandler
+    );
     globalThis.addEventListener(
       "abcstatechange",
       this._boundExternalStateHandler
@@ -152,6 +164,10 @@ export default class CustomHeader extends LightningElement {
     globalThis.addEventListener("popstate", this._boundUrlHandler);
     globalThis.addEventListener("focus", this._boundCartRefreshHandler);
     globalThis.addEventListener("pageshow", this._boundCartRefreshHandler);
+    globalThis.addEventListener(
+      CART_UPDATED_EVENT_NAME,
+      this._boundCartRefreshHandler
+    );
   }
 
   disconnectedCallback() {
@@ -164,12 +180,19 @@ export default class CustomHeader extends LightningElement {
       "abcstatechange",
       this._boundExternalStateHandler
     );
-    globalThis.removeEventListener("statechange", this._boundExternalStateHandler);
+    globalThis.removeEventListener(
+      "statechange",
+      this._boundExternalStateHandler
+    );
     globalThis.removeEventListener("storage", this._boundStorageHandler);
     globalThis.removeEventListener("hashchange", this._boundUrlHandler);
     globalThis.removeEventListener("popstate", this._boundUrlHandler);
     globalThis.removeEventListener("focus", this._boundCartRefreshHandler);
     globalThis.removeEventListener("pageshow", this._boundCartRefreshHandler);
+    globalThis.removeEventListener(
+      CART_UPDATED_EVENT_NAME,
+      this._boundCartRefreshHandler
+    );
     globalThis.clearTimeout(this._cleanupTimerId);
   }
 
@@ -208,63 +231,17 @@ export default class CustomHeader extends LightningElement {
       : "abc-mobile-drawer";
   }
 
+  @wire(CartSummaryAdapter)
+  wiredCartSummary({ data }) {
+    this.cartCount = this.extractCartCount(data);
+  }
+
   async refreshCartCount() {
     try {
-      const cartData = await this.fetchCartSummary();
-      this.cartCount = this.extractCartCount(cartData);
-      return;
+      await refreshCartSummary();
     } catch {
-      // Fall back to Apex for authenticated sessions if the storefront
-      // cart API is unavailable.
+      this.cartCount = 0;
     }
-
-    if (!this.isGuest) {
-      this.cartCount = await this.fetchCartCountFromApex();
-      return;
-    }
-
-    this.cartCount = 0;
-  }
-
-  async fetchCartSummary() {
-    const params = new URLSearchParams(CART_REQUEST_PARAMS);
-    if (this.isGuest) {
-      params.set("asGuest", "true");
-    }
-
-    const response = await fetch(
-      `${this.getCartEndpoint()}?${params.toString()}`,
-      {
-        method: "GET",
-        credentials: "include",
-        headers: {
-          Accept: "application/json"
-        }
-      }
-    );
-
-    if (response.status === 404 || response.status === 204) {
-      return null;
-    }
-
-    if (!response.ok) {
-      throw new Error(`Cart request failed with status ${response.status}`);
-    }
-
-    return response.json();
-  }
-
-  async fetchCartCountFromApex() {
-    try {
-      const count = await getCartItemCount();
-      return this.normalizeCartCount(count);
-    } catch {
-      return 0;
-    }
-  }
-
-  getCartEndpoint() {
-    return `/${this.storeName || DEFAULT_STORE_NAME}/webruntime/api/services/data/${API_VERSION}/commerce/webstores/${this.webStoreId || DEFAULT_WEBSTORE_ID}/carts/current`;
   }
 
   extractCartCount(cartData) {
@@ -284,7 +261,9 @@ export default class CustomHeader extends LightningElement {
     }
 
     const cartItems =
-      cartData?.cartItems || cartData?.items || cartData?.cartSummary?.cartItems;
+      cartData?.cartItems ||
+      cartData?.items ||
+      cartData?.cartSummary?.cartItems;
     if (Array.isArray(cartItems)) {
       return cartItems.reduce((total, item) => {
         const quantity = this.normalizeCartCount(

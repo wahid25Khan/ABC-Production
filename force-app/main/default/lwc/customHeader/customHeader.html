@@ -58,21 +58,25 @@
                 </svg>
               </button>
               <template if:true={accountMenuOpen}>
-                <div class="abc-account-dd" role="menu" aria-label="Account menu">
+                <div
+                  class="abc-account-dd"
+                  role="menu"
+                  aria-label="Account menu"
+                >
                   <template if:true={isGuest}>
                     <a
                       href={loginUrl}
                       class="abc-dd-item"
                       role="menuitem"
                       onclick={closeAccountMenu}
-                      >Login</a
+                      >LOGIN</a
                     >
                     <a
                       href={createAccountUrl}
                       class="abc-dd-item"
                       role="menuitem"
                       onclick={closeAccountMenu}
-                      >Create Account</a
+                      >CREATE ACCOUNT</a
                     >
                   </template>
                   <template if:false={isGuest}>
