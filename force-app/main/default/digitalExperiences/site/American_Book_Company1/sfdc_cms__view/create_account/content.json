@@ -1,74 +1,85 @@
 {
-  "type" : "sfdc_cms__view",
-  "title" : "Create Account",
-  "contentBody" : {
-    "component" : {
-      "children" : [ {
-        "children" : [ {
-          "attributes" : {
-            "backgroundImageConfig" : "",
-            "backgroundImageOverlay" : "rgba(0,0,0,0)",
-            "componentSpacerSize" : "",
-            "dxpStyle" : { },
-            "layoutDirectionDesktop" : "row",
-            "layoutDirectionMobile" : "column",
-            "layoutDirectionTablet" : "column",
-            "maxContentWidth" : "",
-            "sectionColumnGutterWidth" : "",
-            "sectionConfig" : "{\"UUID\":\"4b88ef7b-53a3-4a3d-9c1d-8f4df24c154d\",\"columns\":[{\"UUID\":\"9c8f40bc-5226-446f-8135-c2fa6c769f96\",\"columnName\":\"Column 1\",\"columnKey\":\"col1\",\"columnWidth\":\"12\",\"seedComponents\":[]}]}",
-            "sectionMinHeight" : "",
-            "sectionVerticalAlign" : "flex-start"
-          },
-          "children" : [ {
-            "children" : [ {
-              "attributes" : {
-                "googleAuthUrl" : "https://americanbookcompany.my.site.com/services/auth/sso/Google_Login?site=https%3A%2F%2Famericanbookcompany.my.site.com%2FAmericanBookCompanyvforcesite&startURL=%2FAmericanBookCompany%2Fmyprofile",
-                "microsoftAuthUrl" : "https://americanbookcompany.my.site.com/services/auth/sso/Microsoft_Login?site=https%3A%2F%2Famericanbookcompany.my.site.com%2FAmericanBookCompanyvforcesite&startURL=%2FAmericanBookCompany%2Fmyprofile",
-                "loginActionUrl" : "/AmericanBookCompany/login",
-                "defaultStartUrl" : "/myprofile"
+  "type": "sfdc_cms__view",
+  "title": "Create Account",
+  "contentBody": {
+    "component": {
+      "children": [
+        {
+          "children": [
+            {
+              "attributes": {
+                "backgroundImageConfig": "",
+                "backgroundImageOverlay": "rgba(0,0,0,0)",
+                "componentSpacerSize": "",
+                "dxpStyle": {},
+                "layoutDirectionDesktop": "row",
+                "layoutDirectionMobile": "column",
+                "layoutDirectionTablet": "column",
+                "maxContentWidth": "",
+                "sectionColumnGutterWidth": "",
+                "sectionConfig": "{\"UUID\":\"4b88ef7b-53a3-4a3d-9c1d-8f4df24c154d\",\"columns\":[{\"UUID\":\"9c8f40bc-5226-446f-8135-c2fa6c769f96\",\"columnName\":\"Column 1\",\"columnKey\":\"col1\",\"columnWidth\":\"12\",\"seedComponents\":[]}]}",
+                "sectionMinHeight": "",
+                "sectionVerticalAlign": "flex-start"
               },
-              "definition" : "c:createAccountRegistration",
-              "id" : "7f37a8e5-1c60-4128-a955-fd81c1ea9b6e",
-              "type" : "component"
-            } ],
-            "id" : "9c8f40bc-5226-446f-8135-c2fa6c769f96",
-            "name" : "col1",
-            "title" : "Column 1",
-            "type" : "region"
-          } ],
-          "definition" : "community_layout:section",
-          "id" : "4b88ef7b-53a3-4a3d-9c1d-8f4df24c154d",
-          "type" : "component"
-        } ],
-        "id" : "58ec2e4f-119d-42dc-9405-91fecc751688",
-        "name" : "content",
-        "title" : "Content",
-        "type" : "region"
-      }, {
-        "children" : [ {
-          "attributes" : {
-            "customHeadTags" : "",
-            "description" : "",
-            "dxpStyle" : { },
-            "pageTitle" : "Create Account",
-            "recordId" : "{!recordId}"
-          },
-          "definition" : "community_builder:seoAssistant",
-          "id" : "cb3116a1-a974-47f1-a14c-1710e2efa356",
-          "type" : "component"
-        } ],
-        "id" : "2a80366e-e090-42b7-8513-867f3f1e5d64",
-        "name" : "sfdcHiddenRegion",
-        "title" : "sfdcHiddenRegion",
-        "type" : "region"
-      } ],
-      "definition" : "community_layout:sldsFlexibleLayout",
-      "id" : "455f6423-ecbc-4812-9237-db1321daebde",
-      "type" : "component"
+              "children": [
+                {
+                  "children": [
+                    {
+                      "attributes": {
+                        "googleAuthUrl": "/services/auth/sso/Google_Login",
+                        "microsoftAuthUrl": "/services/auth/sso/Microsoft_Login",
+                        "loginActionUrl": "/AmericanBookCompany/login",
+                        "defaultStartUrl": "/myprofile"
+                      },
+                      "definition": "c:createAccountRegistration",
+                      "id": "7f37a8e5-1c60-4128-a955-fd81c1ea9b6e",
+                      "type": "component"
+                    }
+                  ],
+                  "id": "9c8f40bc-5226-446f-8135-c2fa6c769f96",
+                  "name": "col1",
+                  "title": "Column 1",
+                  "type": "region"
+                }
+              ],
+              "definition": "community_layout:section",
+              "id": "4b88ef7b-53a3-4a3d-9c1d-8f4df24c154d",
+              "type": "component"
+            }
+          ],
+          "id": "58ec2e4f-119d-42dc-9405-91fecc751688",
+          "name": "content",
+          "title": "Content",
+          "type": "region"
+        },
+        {
+          "children": [
+            {
+              "attributes": {
+                "customHeadTags": "",
+                "description": "",
+                "dxpStyle": {},
+                "pageTitle": "Create Account",
+                "recordId": "{!recordId}"
+              },
+              "definition": "community_builder:seoAssistant",
+              "id": "cb3116a1-a974-47f1-a14c-1710e2efa356",
+              "type": "component"
+            }
+          ],
+          "id": "2a80366e-e090-42b7-8513-867f3f1e5d64",
+          "name": "sfdcHiddenRegion",
+          "title": "sfdcHiddenRegion",
+          "type": "region"
+        }
+      ],
+      "definition": "community_layout:sldsFlexibleLayout",
+      "id": "455f6423-ecbc-4812-9237-db1321daebde",
+      "type": "component"
     },
-    "dataProviders" : [ ],
-    "themeLayoutType" : "Inner",
-    "viewType" : "custom-createaccount"
+    "dataProviders": [],
+    "themeLayoutType": "Inner",
+    "viewType": "custom-createaccount"
   },
-  "urlName" : "create-account"
+  "urlName": "create-account"
 }

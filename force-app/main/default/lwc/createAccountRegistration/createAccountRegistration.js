@@ -8,10 +8,8 @@ import {
   appendHiddenInput
 } from "c/utils";
 
-const DEFAULT_GOOGLE_AUTH_URL =
-  "https://americanbookcompany.my.site.com/services/auth/sso/Google_Login?site=https%3A%2F%2Famericanbookcompany.my.site.com%2FAmericanBookCompanyvforcesite&startURL=%2FAmericanBookCompany%2Fmyprofile";
-const DEFAULT_MICROSOFT_AUTH_URL =
-  "https://americanbookcompany.my.site.com/services/auth/sso/Microsoft_Login?site=https%3A%2F%2Famericanbookcompany.my.site.com%2FAmericanBookCompanyvforcesite&startURL=%2FAmericanBookCompany%2Fmyprofile";
+const DEFAULT_GOOGLE_AUTH_URL = "/services/auth/sso/Google_Login";
+const DEFAULT_MICROSOFT_AUTH_URL = "/services/auth/sso/Microsoft_Login";
 const DEFAULT_LOGIN_ACTION_URL = "/AmericanBookCompany/login";
 const DEFAULT_START_URL = "/myprofile";
 
@@ -216,7 +214,7 @@ export default class CreateAccountRegistration extends LightningElement {
         const resolvedUrl = resolveAbsoluteUrl(rawUrl);
         if (!resolvedUrl) return "";
         try {
-          const authUrl = new URL(resolvedUrl);
+          const authUrl = new URL(resolvedUrl, globalThis.location.origin);
           authUrl.searchParams.set(
             "startURL",
             this.resolveRelativeUrl(this.defaultStartUrl, DEFAULT_START_URL)

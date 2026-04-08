@@ -1,17 +1,13 @@
 import { LightningElement, api } from "lwc";
 import isGuest from "@salesforce/user/isGuest";
 import {
-  openAuthPopup,
-  stopAuthPopupMonitor,
   resolveAbsoluteUrl,
   normalizeInternalUrl,
   appendHiddenInput
 } from "c/utils";
 
-const DEFAULT_GOOGLE_AUTH_URL =
-  "https://americanbookcompany.my.site.com/services/auth/sso/Google_Login?site=https%3A%2F%2Famericanbookcompany.my.site.com%2FAmericanBookCompanyvforcesite&startURL=%2FAmericanBookCompany%2Fmyprofile";
-const DEFAULT_MICROSOFT_AUTH_URL =
-  "https://americanbookcompany.my.site.com/services/auth/sso/Microsoft_Login?site=https%3A%2F%2Famericanbookcompany.my.site.com%2FAmericanBookCompanyvforcesite&startURL=%2FAmericanBookCompany%2Fmyprofile";
+const DEFAULT_GOOGLE_AUTH_URL = "/services/auth/sso/Google_Login";
+const DEFAULT_MICROSOFT_AUTH_URL = "/services/auth/sso/Microsoft_Login";
 const SOCIAL_SIGN_IN_ERROR_MESSAGE =
   "Social sign-in could not be completed. Please try again. If this is your first time, contact support if the issue continues.";
 
@@ -32,9 +28,8 @@ export default class AccountLoginFormPopupFlow extends LightningElement {
   password = "";
   errorMessage = "";
   isSubmitting = false;
+  isSocialRedirecting = false;
   hasClientHydrated = false;
-  authPopup = null;
-  authPopupMonitorId = null;
 
   connectedCallback() {
     this.hydrateErrorMessageFromUrl();
@@ -56,16 +51,16 @@ export default class AccountLoginFormPopupFlow extends LightningElement {
     }
   }
 
-  disconnectedCallback() {
-    stopAuthPopupMonitor(this);
-  }
-
   get buttonLabel() {
     return this.isSubmitting ? "Signing In..." : this.loginButtonLabel;
   }
 
   get hasSocialOptions() {
     return Boolean(this.googleAuthUrl || this.microsoftAuthUrl);
+  }
+
+  get socialButtonDisabled() {
+    return this.isSubmitting || this.isSocialRedirecting;
   }
 
   handleUsernameChange(event) {
@@ -85,11 +80,11 @@ export default class AccountLoginFormPopupFlow extends LightningElement {
   }
 
   handleGoogleClick() {
-    this.doOpenAuthPopup(this.googleAuthUrl, "google-sign-in");
+    this.redirectToSocialAuth(this.googleAuthUrl);
   }
 
   handleMicrosoftClick() {
-    this.doOpenAuthPopup(this.microsoftAuthUrl, "microsoft-sign-in");
+    this.redirectToSocialAuth(this.microsoftAuthUrl);
   }
 
   handleLogin() {
@@ -194,22 +189,35 @@ export default class AccountLoginFormPopupFlow extends LightningElement {
     globalThis.location.assign(this.getResolvedStartUrl());
   }
 
-  doOpenAuthPopup(url, popupName) {
-    openAuthPopup(this, url, popupName, {
-      buildAuthUrl: (rawUrl) => {
-        const resolvedUrl = resolveAbsoluteUrl(rawUrl);
-        if (!resolvedUrl) return "";
-        try {
-          const authUrl = new URL(resolvedUrl);
-          authUrl.searchParams.set("startURL", this.getResolvedStartUrl());
-          return authUrl.toString();
-        } catch {
-          return resolvedUrl;
-        }
-      },
-      onCompletion: (nextUrl) => {
-        globalThis.location.assign(nextUrl);
-      }
-    });
+  buildSocialAuthUrl(rawUrl) {
+    const resolvedUrl = resolveAbsoluteUrl(rawUrl);
+    if (!resolvedUrl) {
+      return "";
+    }
+
+    try {
+      const authUrl = new URL(resolvedUrl, globalThis.location.origin);
+      authUrl.searchParams.set("startURL", this.getResolvedStartUrl());
+      return authUrl.toString();
+    } catch {
+      return resolvedUrl;
+    }
+  }
+
+  redirectToSocialAuth(rawUrl) {
+    if (this.socialButtonDisabled) {
+      return;
+    }
+
+    const authUrl = this.buildSocialAuthUrl(rawUrl);
+    if (!authUrl) {
+      this.errorMessage =
+        "Social sign-in is unavailable right now. Please try again later or use your email and password.";
+      return;
+    }
+
+    this.errorMessage = "";
+    this.isSocialRedirecting = true;
+    globalThis.location.assign(authUrl);
   }
 }
