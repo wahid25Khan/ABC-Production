@@ -106,7 +106,8 @@ public without sharing class BuyerSelfRegistrationService {
         String userId = Site.createExternalUser(
           userToCreate,
           account.Id,
-          req.password
+          req.password,
+          false
         );
         if (String.isBlank(userId)) {
           throwAura(GENERIC_ERROR_MESSAGE);
