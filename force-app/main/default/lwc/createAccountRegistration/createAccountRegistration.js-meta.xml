@@ -32,6 +32,12 @@
         default="/myprofile"
         label="Default Post-Registration Start URL"
       />
+            <property
+        name="socialAuthSiteUrl"
+        type="String"
+        default="https://americanbookcompany.my.site.com/AmericanBookCompanyvforcesite"
+        label="Social Auth Site URL or Path"
+      />
         </targetConfig>
     </targetConfigs>
 </LightningComponentBundle>
