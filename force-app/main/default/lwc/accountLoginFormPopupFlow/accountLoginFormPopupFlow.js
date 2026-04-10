@@ -1,13 +1,11 @@
 import { LightningElement, api } from "lwc";
 import isGuest from "@salesforce/user/isGuest";
-import {
-  resolveAbsoluteUrl,
-  normalizeInternalUrl,
-  appendHiddenInput
-} from "c/utils";
+import { resolveAbsoluteUrl, appendHiddenInput } from "c/utils";
 
 const DEFAULT_GOOGLE_AUTH_URL = "/services/auth/sso/Google_Login";
 const DEFAULT_MICROSOFT_AUTH_URL = "/services/auth/sso/Microsoft_Login";
+const DEFAULT_SOCIAL_AUTH_SITE_URL =
+  "https://americanbookcompany.my.site.com/AmericanBookCompanyvforcesite";
 const SOCIAL_SIGN_IN_ERROR_MESSAGE =
   "Social sign-in could not be completed. Please try again. If this is your first time, contact support if the issue continues.";
 
@@ -23,6 +21,7 @@ export default class AccountLoginFormPopupFlow extends LightningElement {
   @api selfRegisterUrl = "/create-account";
   @api usernameLabel = "Username";
   @api defaultStartUrl = "/myprofile";
+  @api socialAuthSiteUrl = DEFAULT_SOCIAL_AUTH_SITE_URL;
 
   username = "";
   password = "";
@@ -105,16 +104,22 @@ export default class AccountLoginFormPopupFlow extends LightningElement {
       const ownerDocument = this.template.host.ownerDocument;
       const form = ownerDocument.createElement("form");
       form.method = "POST";
-      form.action = this.getResolvedLoginActionUrl();
+      form.action =
+        (this.socialAuthSiteUrl || DEFAULT_SOCIAL_AUTH_SITE_URL) + "/login";
 
-      appendHiddenInput(ownerDocument, form, "username", this.username.trim());
-      appendHiddenInput(ownerDocument, form, "password", this.password);
+      const resolvedUsername = this.username.trim();
+      appendHiddenInput(ownerDocument, form, "username", resolvedUsername);
+      appendHiddenInput(ownerDocument, form, "un", resolvedUsername);
+      appendHiddenInput(ownerDocument, form, "pw", this.password);
       appendHiddenInput(
         ownerDocument,
         form,
         "startURL",
-        this.getLoginPostStartUrl()
+        this.getResolvedStartUrl()
       );
+      appendHiddenInput(ownerDocument, form, "loginType", "standard");
+      appendHiddenInput(ownerDocument, form, "lt", "standard");
+      appendHiddenInput(ownerDocument, form, "useSecure", "true");
 
       ownerDocument.body.appendChild(form);
       form.submit();
@@ -145,8 +150,8 @@ export default class AccountLoginFormPopupFlow extends LightningElement {
       params.get("startURL") || params.get("startUrl") || this.defaultStartUrl;
 
     return (
-      normalizeInternalUrl(startUrl) ||
-      normalizeInternalUrl(this.defaultStartUrl) ||
+      this.normalizeExperienceUrl(startUrl) ||
+      this.normalizeExperienceUrl(this.defaultStartUrl) ||
       "/"
     );
   }
@@ -185,8 +190,104 @@ export default class AccountLoginFormPopupFlow extends LightningElement {
     }
   }
 
+  get resolvedForgotPasswordUrl() {
+    return (
+      this.normalizeExperienceUrl(this.forgotPasswordUrl) ||
+      this.normalizeExperienceUrl("/ForgotPassword") ||
+      "/ForgotPassword"
+    );
+  }
+
+  get resolvedSelfRegisterUrl() {
+    return (
+      this.normalizeExperienceUrl(this.selfRegisterUrl) ||
+      this.normalizeExperienceUrl("/create-account") ||
+      "/create-account"
+    );
+  }
+
   redirectToResolvedStartUrl() {
     globalThis.location.assign(this.getResolvedStartUrl());
+  }
+
+  normalizeExperienceUrl(url) {
+    const decodedUrl = this.decodeUrl(url);
+    if (!decodedUrl) {
+      return "";
+    }
+
+    if (decodedUrl.startsWith("/")) {
+      return this.applyExperienceBasePath(decodedUrl);
+    }
+
+    try {
+      const parsed = new URL(decodedUrl, globalThis.location.origin);
+      return parsed.origin === globalThis.location.origin
+        ? this.applyExperienceBasePath(
+            `${parsed.pathname}${parsed.search}${parsed.hash}`
+          )
+        : "";
+    } catch {
+      return "";
+    }
+  }
+
+  decodeUrl(value) {
+    if (!value) {
+      return "";
+    }
+
+    try {
+      return decodeURIComponent(value);
+    } catch {
+      return value;
+    }
+  }
+
+  applyExperienceBasePath(path) {
+    const experienceBasePath = this.getExperienceBasePath();
+    if (
+      !experienceBasePath ||
+      path === experienceBasePath ||
+      path.startsWith(`${experienceBasePath}/`)
+    ) {
+      return path;
+    }
+
+    return `${experienceBasePath}${path}`;
+  }
+
+  getExperienceBasePath() {
+    try {
+      const resolvedLoginUrl =
+        resolveAbsoluteUrl(
+          this.loginActionUrl || "/AmericanBookCompany/login"
+        ) ||
+        this.loginActionUrl ||
+        "/AmericanBookCompany/login";
+      const loginUrl = new URL(resolvedLoginUrl, globalThis.location.origin);
+      const loginPath = loginUrl.pathname || "";
+      return loginPath.endsWith("/login")
+        ? loginPath.slice(0, -"/login".length)
+        : "";
+    } catch {
+      return "";
+    }
+  }
+
+  getResolvedSocialSiteUrl() {
+    if (!this.socialAuthSiteUrl) {
+      return "";
+    }
+
+    try {
+      return new URL(
+        this.socialAuthSiteUrl,
+        globalThis.location.origin
+      ).toString();
+    } catch {
+      return "";
+    }
   }
 
   buildSocialAuthUrl(rawUrl) {
@@ -197,6 +298,10 @@ export default class AccountLoginFormPopupFlow extends LightningElement {
 
     try {
       const authUrl = new URL(resolvedUrl, globalThis.location.origin);
+      const socialSiteUrl = this.getResolvedSocialSiteUrl();
+      if (socialSiteUrl && !authUrl.searchParams.has("site")) {
+        authUrl.searchParams.set("site", socialSiteUrl);
+      }
       authUrl.searchParams.set("startURL", this.getResolvedStartUrl());
       return authUrl.toString();
     } catch {

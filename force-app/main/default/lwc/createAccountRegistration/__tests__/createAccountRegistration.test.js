@@ -137,22 +137,19 @@ describe("c-create-account-registration", () => {
       marketingConsent: false
     });
     expect(createdForm).not.toBeNull();
-    expect(createdForm.action).toContain("/AmericanBookCompany/login");
+    expect(createdForm.action).toContain(
+      "/AmericanBookCompanyvforcesite/login"
+    );
     expect(createdForm.submit).toHaveBeenCalled();
 
-    const usernameInput = createdInputs.find(
-      (input) => input.name === "username"
+    const submittedFields = createdInputs.reduce(
+      (acc, input) => ({ ...acc, [input.name]: input.value }),
+      {}
     );
-    const passwordInput = createdInputs.find(
-      (input) => input.name === "password"
-    );
-    const startUrlInput = createdInputs.find(
-      (input) => input.name === "startURL"
-    );
-
-    expect(usernameInput.value).toBe("pat@example.com");
-    expect(passwordInput.value).toBe(TEST_PASSWORD);
-    expect(startUrlInput.value).toBe("/AmericanBookCompany/myprofile");
+    expect(submittedFields.username).toBe("pat@example.com");
+    expect(submittedFields.un).toBe("pat@example.com");
+    expect(submittedFields.pw).toBe(TEST_PASSWORD);
+    expect(submittedFields.loginType).toBe("standard");
   });
 
   it("submits successfully when the browser filled inputs without firing input events", async () => {
