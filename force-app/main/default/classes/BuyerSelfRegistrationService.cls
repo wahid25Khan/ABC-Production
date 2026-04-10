@@ -187,7 +187,7 @@ public without sharing class BuyerSelfRegistrationService {
         DEFAULT_BUYER_GROUP_NAME
       );
 
-      CommerceRegistrationProvisioning.ensureB2BBuyerEntitlements(
+      CommerceRegistrationProvisioning.ensureB2BBuyerEntitlementsAsync(
         outcome.userId
       );
 
