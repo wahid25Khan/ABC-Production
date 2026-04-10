@@ -1,12 +1,6 @@
 import { LightningElement, api } from "lwc";
 import registerBuyerFromJson from "@salesforce/apex/BuyerSelfRegistrationService.registerBuyerFromJson";
-import {
-  openAuthPopup,
-  stopAuthPopupMonitor,
-  resolveAbsoluteUrl,
-  appendHiddenInput,
-  isPopupLoginErrorUrl
-} from "c/utils";
+import { resolveAbsoluteUrl, appendHiddenInput } from "c/utils";
 
 const DEFAULT_GOOGLE_AUTH_URL = "/services/auth/sso/Google_Login";
 const DEFAULT_MICROSOFT_AUTH_URL = "/services/auth/sso/Microsoft_Login";
@@ -27,23 +21,16 @@ export default class CreateAccountRegistration extends LightningElement {
   email = "";
   errorMessage = "";
   isSubmitting = false;
-  authPopup = null;
-  authPopupMonitorId = null;
-
-  disconnectedCallback() {
-    stopAuthPopupMonitor(this);
-  }
-
   get submitButtonLabel() {
     return this.isSubmitting ? "Creating Account\u2026" : "Create Account";
   }
 
   handleGoogleClick() {
-    this.doOpenAuthPopup(this.googleAuthUrl, "google-sign-in");
+    this.redirectToSocialAuth(this.googleAuthUrl);
   }
 
   handleMicrosoftClick() {
-    this.doOpenAuthPopup(this.microsoftAuthUrl, "microsoft-sign-in");
+    this.redirectToSocialAuth(this.microsoftAuthUrl);
   }
 
   async handleFormSubmit(event) {
@@ -284,51 +271,37 @@ export default class CreateAccountRegistration extends LightningElement {
     }
   }
 
-  showSocialAuthError(message) {
-    Promise.resolve().then(() => {
-      this.errorMessage = message;
-    });
+  buildSocialAuthUrl(rawUrl) {
+    const resolvedUrl = resolveAbsoluteUrl(rawUrl);
+    if (!resolvedUrl) {
+      return "";
+    }
+
+    try {
+      const authUrl = new URL(resolvedUrl, globalThis.location.origin);
+      const socialSiteUrl = this.getResolvedSocialSiteUrl();
+      if (socialSiteUrl && !authUrl.searchParams.has("site")) {
+        authUrl.searchParams.set("site", socialSiteUrl);
+      }
+      authUrl.searchParams.set(
+        "startURL",
+        this.resolveRelativeUrl(this.defaultStartUrl, DEFAULT_START_URL)
+      );
+      return authUrl.toString();
+    } catch {
+      return resolvedUrl;
+    }
   }
 
-  doOpenAuthPopup(url, popupName) {
-    openAuthPopup(this, url, popupName, {
-      buildAuthUrl: (rawUrl) => {
-        const resolvedUrl = resolveAbsoluteUrl(rawUrl);
-        if (!resolvedUrl) return "";
-        try {
-          const authUrl = new URL(resolvedUrl, globalThis.location.origin);
-          const socialSiteUrl = this.getResolvedSocialSiteUrl();
-          if (socialSiteUrl && !authUrl.searchParams.has("site")) {
-            authUrl.searchParams.set("site", socialSiteUrl);
-          }
-          authUrl.searchParams.set(
-            "startURL",
-            this.resolveRelativeUrl(this.defaultStartUrl, DEFAULT_START_URL)
-          );
-          return authUrl.toString();
-        } catch {
-          return resolvedUrl;
-        }
-      },
-      onCompletion: (nextUrl) => {
-        try {
-          const completionUrl = new URL(nextUrl, globalThis.location.origin);
-          if (isPopupLoginErrorUrl(completionUrl, this.loginActionUrl)) {
-            this.showSocialAuthError(
-              "Social sign-in could not be completed. Please try again or use the form below."
-            );
-            return;
-          }
-        } catch {
-          // fall through to redirect
-        }
-        globalThis.location.assign(nextUrl);
-      },
-      onCloseWithoutCompletion: () => {
-        this.showSocialAuthError(
-          "The sign-in window was closed before completing. Please try again or use the form below."
-        );
-      }
-    });
+  redirectToSocialAuth(rawUrl) {
+    const authUrl = this.buildSocialAuthUrl(rawUrl);
+    if (!authUrl) {
+      this.errorMessage =
+        "Social sign-in is unavailable right now. Please try again later or use the form below.";
+      return;
+    }
+
+    this.errorMessage = "";
+    globalThis.location.assign(authUrl);
   }
 }
