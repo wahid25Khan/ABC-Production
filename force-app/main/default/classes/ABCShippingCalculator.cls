@@ -21,112 +21,29 @@ public class ABCShippingCalculator extends CartExtension.ShippingCartCalculator 
     ) {
         CartExtension.Cart cart = request.getCart();
         CartExtension.CartValidationOutputList cvos = cart.getCartValidationOutputs();
-
-        // ── 1. Clear previous shipping validation messages ──
         clearShippingValidations(cvos);
 
-        // ── 2. Load config from Custom Metadata ──
         Shipping_Config__mdt cfg = getConfig();
-        if (cfg == null) {
-            addError(cvos, 'Shipping configuration not found. Please contact support.');
-            return;
-        }
-
-        // ── 3. Validate delivery groups exist ──
         CartExtension.CartDeliveryGroupList groups = cart.getCartDeliveryGroups();
-        if (groups.size() == 0) {
-            addError(cvos, 'No delivery address found. Please add a shipping address.');
+        Id shippingProductId = resolveShippingProductId();
+        String validationMessage = validateConfiguration(cfg, groups.size(), shippingProductId);
+        if (validationMessage != null) {
+            addError(cvos, validationMessage);
             return;
         }
 
-        // ── 4. Resolve the Shipping Charge Product (framework requirement) ──
-        Id shippingProductId = resolveShippingProduct();
-        if (shippingProductId == null) {
-            addError(cvos, 'Shipping Charge Product not found. Please contact support.');
-            return;
-        }
-
-        // ── 5. Sum cart total for shippable items only ──
-        Decimal shippableTotal = sumShippableTotal(cart.getCartItems());
-
-        // ── 6. Calculate fee ──
-        Decimal rate = cfg.Shipping_Rate_Percent__c / 100;
-        Decimal shippingFee = (shippableTotal * rate).setScale(2, RoundingMode.HALF_UP);
-
-        // ── 7. Create the delivery method on each delivery group ──
-        String methodName = cfg.Shipping_Method_Name__c;
-        String carrier = cfg.Carrier__c;
-
-        for (Integer i = 0; i < groups.size(); i++) {
-            CartExtension.CartDeliveryGroup cdg = groups.get(i);
-            CartExtension.CartDeliveryGroupMethodList methods = cdg.getCartDeliveryGroupMethods();
-
-            // Remove any previous methods
-            for (Integer j = methods.size() - 1; j >= 0; j--) {
-                methods.remove(methods.get(j));
-            }
-            cdg.setSelectedCartDeliveryGroupMethod(null);
-
-            // Add the single shipping option
-            CartExtension.CartDeliveryGroupMethod method =
-                new CartExtension.CartDeliveryGroupMethod(methodName, shippingFee, shippingProductId);
-            if (String.isNotBlank(carrier)) {
-                method.setCarrier(carrier);
-                method.setClassOfService('Standard');
-            }
-            methods.add(method);
-        }
+        applyShippingMethods(
+            groups,
+            cfg,
+            shippingProductId,
+            calculateShippingFee(sumShippableTotal(cart.getCartItems()), cfg)
+        );
     }
 
-    // ── Private helpers ──────────────────────────────────────────────
-
-    private Decimal sumShippableTotal(CartExtension.CartItemList items) {
-        // Collect Product2 IDs
-        Set<Id> productIds = new Set<Id>();
-        Iterator<CartExtension.CartItem> iter = items.iterator();
-        while (iter.hasNext()) {
-            CartExtension.CartItem item = iter.next();
-            if (item.getProduct2Id() != null) {
-                productIds.add(item.getProduct2Id());
-            }
-        }
-
-        // Query which products are shipping-exempt
-        Map<Id, Product2> products = new Map<Id, Product2>([
-            SELECT Id, Is_Digital_Product__c
-            FROM Product2
-            WHERE Id IN :productIds
-        ]);
-
-        // Sum only shippable items
-        Decimal total = 0;
-        iter = items.iterator();
-        while (iter.hasNext()) {
-            CartExtension.CartItem item = iter.next();
-            if (item.getType() != CartExtension.SalesItemTypeEnum.PRODUCT) {
-                continue;
-            }
-            Product2 prod = products.get(item.getProduct2Id());
-            Boolean exempt = (prod != null && prod.Is_Digital_Product__c);
-            if (!exempt) {
-                Decimal itemTotal = item.getTotalPrice();
-                if (itemTotal != null) {
-                    total += itemTotal;
-                }
-            }
-        }
-        return total;
-    }
-
-    private Id resolveShippingProduct() {
-        List<Product2> results = [
-            SELECT Id
-            FROM Product2
-            WHERE Name = 'Shipping Charge Product'
-              AND IsActive = true
-            LIMIT 1
-        ];
-        return results.isEmpty() ? null : results[0].Id;
+    @AuraEnabled(cacheable=true)
+    public static Decimal getShippingRatePercent() {
+        Shipping_Config__mdt cfg = getConfig();
+        return cfg?.Shipping_Rate_Percent__c == null ? 0 : cfg.Shipping_Rate_Percent__c;
     }
 
     @TestVisible
@@ -152,7 +69,141 @@ public class ABCShippingCalculator extends CartExtension.ShippingCartCalculator 
         config = testConfig;
     }
 
-    private void clearShippingValidations(CartExtension.CartValidationOutputList cvos) {
+    @TestVisible
+    private static Id resolveShippingProductIdForTest() {
+        return resolveShippingProductId();
+    }
+
+    @TestVisible
+    private static Decimal calculateShippingFeeForTest(Decimal shippableTotal) {
+        return calculateShippingFee(shippableTotal, getConfig());
+    }
+
+    @TestVisible
+    private static String validateConfigurationForTest(Integer deliveryGroupCount, Id shippingProductId) {
+        return validateConfiguration(getConfig(), deliveryGroupCount, shippingProductId);
+    }
+
+    @TestVisible
+    private static Decimal sumShippableLineTotalsForTest(Map<Id, Decimal> lineTotalsByProductId) {
+        return sumShippableLineTotals(lineTotalsByProductId);
+    }
+
+    @TestVisible
+    private static Decimal getShippingRatePercentForTest() {
+        return getShippingRatePercent();
+    }
+
+    private static String validateConfiguration(
+        Shipping_Config__mdt cfg,
+        Integer deliveryGroupCount,
+        Id shippingProductId
+    ) {
+        if (cfg == null) {
+            return 'Shipping configuration not found. Please contact support.';
+        }
+        if (deliveryGroupCount == null || deliveryGroupCount == 0) {
+            return 'No delivery address found. Please add a shipping address.';
+        }
+        if (shippingProductId == null) {
+            return 'Shipping Charge Product not found. Please contact support.';
+        }
+        return null;
+    }
+
+    private static Decimal calculateShippingFee(Decimal shippableTotal, Shipping_Config__mdt cfg) {
+        Decimal safeTotal = shippableTotal == null ? 0 : shippableTotal;
+        Decimal ratePercent = cfg?.Shipping_Rate_Percent__c == null ? 0 : cfg.Shipping_Rate_Percent__c;
+        return (safeTotal * (ratePercent / 100)).setScale(2, RoundingMode.HALF_UP);
+    }
+
+    private static Decimal sumShippableTotal(CartExtension.CartItemList items) {
+        Map<Id, Decimal> lineTotalsByProductId = new Map<Id, Decimal>();
+        Iterator<CartExtension.CartItem> iter = items.iterator();
+        while (iter.hasNext()) {
+            CartExtension.CartItem item = iter.next();
+            if (item.getType() != CartExtension.SalesItemTypeEnum.PRODUCT || item.getProduct2Id() == null) {
+                continue;
+            }
+
+            Decimal itemTotal = item.getTotalPrice();
+            if (itemTotal == null || itemTotal <= 0) {
+                continue;
+            }
+
+            Decimal runningTotal = lineTotalsByProductId.containsKey(item.getProduct2Id())
+                ? lineTotalsByProductId.get(item.getProduct2Id())
+                : 0;
+            lineTotalsByProductId.put(item.getProduct2Id(), runningTotal + itemTotal);
+        }
+
+        return sumShippableLineTotals(lineTotalsByProductId);
+    }
+
+    private static Decimal sumShippableLineTotals(Map<Id, Decimal> lineTotalsByProductId) {
+        if (lineTotalsByProductId == null || lineTotalsByProductId.isEmpty()) {
+            return 0;
+        }
+
+        Decimal shippableTotal = 0;
+        Map<Id, Product2> products = new Map<Id, Product2>([
+            SELECT Id, Is_Digital_Product__c
+            FROM Product2
+            WHERE Id IN :lineTotalsByProductId.keySet()
+        ]);
+
+        for (Id productId : lineTotalsByProductId.keySet()) {
+            Product2 product = products.get(productId);
+            if (product != null && product.Is_Digital_Product__c == true) {
+                continue;
+            }
+
+            shippableTotal += lineTotalsByProductId.get(productId);
+        }
+
+        return shippableTotal;
+    }
+
+    private static Id resolveShippingProductId() {
+        List<Product2> results = [
+            SELECT Id
+            FROM Product2
+            WHERE Name = 'Shipping Charge Product'
+              AND IsActive = true
+            LIMIT 1
+        ];
+        return results.isEmpty() ? null : results[0].Id;
+    }
+
+    private static void applyShippingMethods(
+        CartExtension.CartDeliveryGroupList groups,
+        Shipping_Config__mdt cfg,
+        Id shippingProductId,
+        Decimal shippingFee
+    ) {
+        for (Integer i = 0; i < groups.size(); i++) {
+            CartExtension.CartDeliveryGroup cdg = groups.get(i);
+            CartExtension.CartDeliveryGroupMethodList methods = cdg.getCartDeliveryGroupMethods();
+            for (Integer j = methods.size() - 1; j >= 0; j--) {
+                methods.remove(methods.get(j));
+            }
+            cdg.setSelectedCartDeliveryGroupMethod(null);
+
+            CartExtension.CartDeliveryGroupMethod method =
+                new CartExtension.CartDeliveryGroupMethod(
+                    cfg.Shipping_Method_Name__c,
+                    shippingFee,
+                    shippingProductId
+                );
+            if (String.isNotBlank(cfg.Carrier__c)) {
+                method.setCarrier(cfg.Carrier__c);
+                method.setClassOfService('Standard');
+            }
+            methods.add(method);
+        }
+    }
+
+    private static void clearShippingValidations(CartExtension.CartValidationOutputList cvos) {
         for (Integer i = cvos.size() - 1; i >= 0; i--) {
             CartExtension.CartValidationOutput cvo = cvos.get(i);
             if (cvo.getType() == CartExtension.CartValidationOutputTypeEnum.SHIPPING) {
@@ -161,7 +212,7 @@ public class ABCShippingCalculator extends CartExtension.ShippingCartCalculator 
         }
     }
 
-    private void addError(CartExtension.CartValidationOutputList cvos, String message) {
+    private static void addError(CartExtension.CartValidationOutputList cvos, String message) {
         CartExtension.CartValidationOutput cvo = new CartExtension.CartValidationOutput(
             CartExtension.CartValidationOutputTypeEnum.SHIPPING,
             CartExtension.CartValidationOutputLevelEnum.ERROR

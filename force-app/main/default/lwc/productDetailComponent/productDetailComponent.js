@@ -12,6 +12,9 @@ import {
   resolveStockKeepingUnit,
   parsePositiveInteger,
   resolveUnitPriceForQuantity,
+  addProductToCart as sharedAddProductToCart,
+  buildAddToCartSuccessModalData,
+  buildFreeTrialPath,
   syncFavoriteState,
   doToggleFavorite,
   getCurrentProductId,
@@ -46,6 +49,8 @@ export default class ProductDetailComponent extends LightningElement {
   favoritePending = false;
   favoriteProductId = "";
   isAddingToCart = false;
+  isSuccessModalOpen = false;
+  successModalData = null;
 
   featuresLeft = ["Answer Key", "Posttest", "Pretest"];
   featuresRight = ["eBook"];
@@ -81,6 +86,22 @@ export default class ProductDetailComponent extends LightningElement {
 
   get displayTrialButton() {
     return this.showTrialButton !== false && this.showTrialButton !== "false";
+  }
+
+  get successProductName() {
+    return this.successModalData?.productName || "";
+  }
+
+  get successProductImageUrl() {
+    return this.successModalData?.productImageUrl || "";
+  }
+
+  get successProductUrl() {
+    return this.successModalData?.productUrl || "";
+  }
+
+  get successCartUrl() {
+    return this.successModalData?.cartUrl || "";
   }
 
   // ─── Variation getters ──────────────────────────────────────────────────
@@ -158,7 +179,7 @@ export default class ProductDetailComponent extends LightningElement {
     const variationMax = parsePositiveInteger(
       this.selectedVariation?.maximumQuantity
     );
-    if (variationMax !== null && variationMax <= 9999) {
+    if (variationMax !== null) {
       return variationMax;
     }
 
@@ -166,7 +187,7 @@ export default class ProductDetailComponent extends LightningElement {
     const ruleMax = rule?.maximum ?? rule?.Maximum ?? null;
     if (Number.isFinite(ruleMax) && ruleMax > 0 && ruleMax <= 9999)
       return ruleMax;
-    return 50;
+    return 99999;
   }
 
   get incrementQty() {
@@ -413,7 +434,16 @@ export default class ProductDetailComponent extends LightningElement {
   }
 
   handleQtyChange(event) {
-    let value = Number.parseInt(event?.target?.value, 10);
+    const raw = event?.target?.value;
+    if (raw === '') return;
+    const parsed = parseInt(raw, 10);
+    if (Number.isFinite(parsed) && parsed > 0) {
+      this.quantity = parsed;
+    }
+  }
+
+  handleQtyBlur(event) {
+    let value = this.quantity;
     if (!Number.isFinite(value)) value = this.minQty;
 
     const min = this.minQty;
@@ -432,7 +462,7 @@ export default class ProductDetailComponent extends LightningElement {
     }
 
     this.quantity = value;
-    event.target.value = String(value); // force-sync when clamped value equals current quantity
+    event.target.value = String(value);
   }
 
   handleQtyDecrement() {
@@ -443,6 +473,19 @@ export default class ProductDetailComponent extends LightningElement {
   handleQtyIncrement() {
     const next = this.quantity + this.incrementQty;
     this.quantity = Math.min(next, this.maxQty);
+  }
+
+  handleSuccessModalClose() {
+    this.isSuccessModalOpen = false;
+    this.successModalData = null;
+  }
+
+  showAddToCartSuccessModal() {
+    this.successModalData = buildAddToCartSuccessModalData(
+      this.product,
+      this.storeName || DEFAULT_STORE_NAME
+    );
+    this.isSuccessModalOpen = true;
   }
 
   async handleAddToCart() {
@@ -462,7 +505,12 @@ export default class ProductDetailComponent extends LightningElement {
 
     this.isAddingToCart = true;
     try {
-      const added = await this.addProductToCart(productId, this.quantity);
+      const { ok: added } = await sharedAddProductToCart({
+        productId,
+        quantity: this.quantity,
+        storeName: this.storeName || DEFAULT_STORE_NAME,
+        webStoreId: this.webStoreId || DEFAULT_WEBSTORE_ID
+      });
       this.dispatchEvent(
         new CustomEvent("addtocart", {
           detail: {
@@ -479,44 +527,11 @@ export default class ProductDetailComponent extends LightningElement {
       );
 
       if (added) {
-        globalThis.window.location.href = `/${this.storeName || DEFAULT_STORE_NAME}/cart`;
+        this.showAddToCartSuccessModal();
       }
     } finally {
       this.isAddingToCart = false;
     }
-  }
-
-  async addProductToCart(productId, quantity) {
-    const payload = {
-      productId,
-      quantity,
-      type: "Product"
-    };
-
-    try {
-      const response = await fetch(
-        this.buildAddToCartEndpoint(this.cartStateOrId || "current"),
-        {
-          method: "POST",
-          credentials: "include",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify(payload)
-        }
-      );
-
-      return response.ok;
-    } catch {
-      return false;
-    }
-  }
-
-  buildAddToCartEndpoint(cartStateOrId) {
-    const targetCart = String(cartStateOrId || "current").trim() || "current";
-    const params = applyStorefrontGuestParams(new URLSearchParams());
-
-    return `/${this.storeName || DEFAULT_STORE_NAME}/webruntime/api/services/data/v66.0/commerce/webstores/${this.webStoreId || DEFAULT_WEBSTORE_ID}/carts/${targetCart}/cart-items?${params.toString()}`;
   }
 
   handleTrial() {
@@ -528,6 +543,16 @@ export default class ProductDetailComponent extends LightningElement {
         }
       })
     );
+
+    const productId = this.selectedProductId || this.product?.id || "";
+    if (productId && this.product) {
+      const trialPath = buildFreeTrialPath(
+        { ...this.product, id: productId },
+        this.storeName || DEFAULT_STORE_NAME
+      );
+      globalThis.window.location.href = trialPath;
+      return;
+    }
 
     if (this.trialUrl && globalThis.window !== undefined) {
       globalThis.window.location.href = this.trialUrl;

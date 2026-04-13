@@ -1,265 +1,241 @@
 <template>
-  <div class="account-details-page">
-    <template if:true={isLoading}>
-      <lightning-spinner
-        alternative-text="Loading account details"
-        size="medium"
-      ></lightning-spinner>
-    </template>
-
-    <template if:false={isLoading}>
-      <div class="page-header">
-        <h1>{heroTitle}</h1>
-      </div>
-
-      <div
-        class="section-tabs"
-        role="tablist"
-        aria-label="Account Details Sections"
-      >
-        <template for:each={sectionTabs} for:item="tab">
-          <button
-            key={tab.id}
-            class={tab.className}
-            data-target={tab.id}
-            onclick={handleTabClick}
-            type="button"
-          >
-            {tab.label}
-          </button>
-        </template>
-      </div>
-
-      <template if:true={statusMessage}>
-        <output class={statusClass}>{statusMessage}</output>
-      </template>
-
-      <section class="detail-section" data-section="about-you" id="about-you">
-        <div class="section-heading">
-          <h2>About You</h2>
-          <button class="edit-link" type="button" onclick={handleEditAbout}>
-            Edit
-          </button>
-        </div>
-
-        <template if:false={isEditingAbout}>
-          <div class="about-grid">
-            <div class="detail-row">
-              <div class="detail-label">Name</div>
-              <div class="detail-value">{displayName}</div>
-            </div>
-            <div class="detail-row">
-              <div class="detail-label">Email</div>
-              <div class="detail-value">{displayEmail}</div>
-            </div>
-            <div class="detail-row">
-              <div class="detail-label">Phone</div>
-              <div class="detail-value">{displayPhone}</div>
-            </div>
-          </div>
+    <div class="account-details-page">
+        <template if:true={isLoading}>
+            <lightning-spinner alternative-text="Loading account details" size="medium"></lightning-spinner>
         </template>
 
-        <template if:true={isEditingAbout}>
-          <div class="form-grid">
-            <label class="field">
-              <span>First Name</span>
-              <input
-                data-field="firstName"
-                type="text"
-                value={aboutForm.firstName}
-                oninput={handleAboutInput}
-              />
-            </label>
-            <label class="field">
-              <span>Last Name</span>
-              <input
-                data-field="lastName"
-                type="text"
-                value={aboutForm.lastName}
-                oninput={handleAboutInput}
-              />
-            </label>
-            <label class="field full-width">
-              <span>Email</span>
-              <input
-                data-field="email"
-                type="email"
-                value={aboutForm.email}
-                oninput={handleAboutInput}
-              />
-            </label>
-            <label class="field full-width">
-              <span>Phone</span>
-              <input
-                data-field="phone"
-                type="tel"
-                value={aboutForm.phone}
-                oninput={handleAboutInput}
-              />
-            </label>
-          </div>
-          <div class="button-row">
-            <button
-              class="primary-button"
-              type="button"
-              onclick={handleSaveAbout}
-              disabled={isSavingAbout}
-            >
-              Save Details
-            </button>
-            <button
-              class="secondary-button"
-              type="button"
-              onclick={handleCancelAbout}
-            >
-              Cancel
-            </button>
-          </div>
-        </template>
-      </section>
+        <template if:false={isLoading}>
+            <div class="page-header">
+                <h1>{heroTitle}</h1>
+            </div>
 
-      <section
-        class="detail-section"
-        data-section="password-security"
-        id="password-security"
-      >
-        <div class="section-heading">
-          <h2>Password &amp; Security</h2>
-        </div>
-        <div class="password-layout">
-          <div class="password-form">
-            <label class="field">
-              <span>Current Password *</span>
-              <input
-                data-field="currentPassword"
-                type="password"
-                value={passwordForm.currentPassword}
-                oninput={handlePasswordInput}
-              />
-            </label>
-            <label class="field">
-              <span>New Password *</span>
-              <input
-                data-field="newPassword"
-                type="password"
-                value={passwordForm.newPassword}
-                oninput={handlePasswordInput}
-              />
-            </label>
-            <label class="field">
-              <span>Confirm Password *</span>
-              <input
-                data-field="confirmPassword"
-                type="password"
-                value={passwordForm.confirmPassword}
-                oninput={handlePasswordInput}
-              />
-            </label>
-            <button
-              class="secondary-pill"
-              type="button"
-              onclick={handleSavePassword}
-              disabled={isPasswordSubmitDisabled}
-            >
-              Update Password
-            </button>
-          </div>
-          <div class="password-rules">
-            <div class="rules-title">Password requirements:</div>
-            <div class="rules-columns">
-              <ul>
-                <template
-                  for:each={passwordRequirements}
-                  for:item="requirement"
-                >
-                  <li key={requirement.label} class={requirement.className}>
-                    {requirement.label}
-                  </li>
+            <div class="section-tabs" role="tablist" aria-label="Account Details Sections">
+                <template for:each={sectionTabs} for:item="tab">
+                    <button
+                        key={tab.id}
+                        class={tab.className}
+                        data-target={tab.id}
+                        onclick={handleTabClick}
+                        type="button"
+                    >
+                        {tab.label}
+                    </button>
                 </template>
-              </ul>
             </div>
-          </div>
-        </div>
-      </section>
 
-      <section
-        class="detail-section"
-        data-section="organization-details"
-        id="organization-details"
-      >
-        <div class="section-heading">
-          <h2>Organization Details</h2>
-        </div>
-        <template if:false={isEditingOrganization}>
-          <div class="section-copy">{displayOrganization}</div>
-          <button
-            class="secondary-pill"
-            type="button"
-            onclick={handleEditOrganization}
-          >
-            {organizationButtonLabel}
-          </button>
+            <template if:true={statusMessage}>
+                <output class={statusClass}>{statusMessage}</output>
+            </template>
+
+            <section class="detail-section" data-section="about-you" id="about-you">
+                <div class="section-heading">
+                    <h2>About You</h2>
+                    <button class="edit-link" type="button" onclick={handleEditAbout}>Edit</button>
+                </div>
+
+                <template if:false={isEditingAbout}>
+                    <div class="about-grid">
+                        <div class="detail-row">
+                            <div class="detail-label">Name</div>
+                            <div class="detail-value">{displayName}</div>
+                        </div>
+                        <div class="detail-row">
+                            <div class="detail-label">Email</div>
+                            <div class="detail-value">{displayEmail}</div>
+                        </div>
+                        <div class="detail-row">
+                            <div class="detail-label">Phone</div>
+                            <div class="detail-value">{displayPhone}</div>
+                        </div>
+                    </div>
+                </template>
+
+                <template if:true={isEditingAbout}>
+                    <div class="form-grid">
+                        <label class="field">
+                            <span>First Name</span>
+                            <input data-field="firstName" type="text" value={aboutForm.firstName} oninput={handleAboutInput} />
+                        </label>
+                        <label class="field">
+                            <span>Last Name</span>
+                            <input data-field="lastName" type="text" value={aboutForm.lastName} oninput={handleAboutInput} />
+                        </label>
+                        <label class="field full-width">
+                            <span>Email</span>
+                            <input data-field="email" type="email" value={aboutForm.email} oninput={handleAboutInput} />
+                        </label>
+                        <label class="field full-width">
+                            <span>Phone</span>
+                            <input data-field="phone" type="tel" value={aboutForm.phone} oninput={handleAboutInput} />
+                        </label>
+                    </div>
+                    <div class="button-row">
+                        <button class="primary-button" type="button" onclick={handleSaveAbout} disabled={isSavingAbout}>Save Details</button>
+                        <button class="secondary-button" type="button" onclick={handleCancelAbout}>Cancel</button>
+                    </div>
+                </template>
+            </section>
+
+            <section class="detail-section" data-section="password-security" id="password-security">
+                <div class="section-heading">
+                    <h2>Password &amp; Security</h2>
+                </div>
+                <div class="password-layout">
+                    <div class="password-form">
+                        <label class="field">
+                            <span>Current Password *</span>
+                            <input data-field="currentPassword" type="password" value={passwordForm.currentPassword} oninput={handlePasswordInput} />
+                        </label>
+                        <label class="field">
+                            <span>New Password *</span>
+                            <input data-field="newPassword" type="password" value={passwordForm.newPassword} oninput={handlePasswordInput} />
+                        </label>
+                        <label class="field">
+                            <span>Confirm Password *</span>
+                            <input data-field="confirmPassword" type="password" value={passwordForm.confirmPassword} oninput={handlePasswordInput} />
+                        </label>
+                        <button class="secondary-pill" type="button" onclick={handleSavePassword} disabled={isPasswordSubmitDisabled}>Update Password</button>
+                    </div>
+                    <div class="password-rules">
+                        <div class="rules-title">Password requirements:</div>
+                        <div class="rules-columns">
+                            <ul>
+                                <template for:each={passwordRequirements} for:item="requirement">
+                                    <li key={requirement.label} class={requirement.className}>{requirement.label}</li>
+                                </template>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="detail-section" data-section="organization-details" id="organization-details">
+                <div class="section-heading">
+                    <h2>Organization Details</h2>
+                </div>
+                <div class="section-copy">{displayOrganization}</div>
+                <button class="secondary-pill" type="button" onclick={openOrganizationModal}>{organizationButtonLabel}</button>
+            </section>
+
+            <section class="detail-section" data-section="shipping-address" id="shipping-address">
+                <div class="section-heading">
+                    <h2>Shipping Address</h2>
+                </div>
+                <div class="section-copy">{displayShippingAddress}</div>
+                <button class="secondary-pill" type="button" onclick={openShippingModal}>{shippingButtonLabel}</button>
+            </section>
+
+            <section class="detail-section" data-section="payment-methods" id="payment-methods">
+                <div class="section-heading">
+                    <h2>Payment Methods</h2>
+                </div>
+                <div class="section-copy">{displayPaymentSummary}</div>
+                <button class="text-link" type="button" onclick={openPaymentModal}>Manage payment methods</button>
+            </section>
         </template>
-        <template if:true={isEditingOrganization}>
-          <label class="field organization-field">
-            <span>Organization Name</span>
-            <input
-              type="text"
-              value={organizationForm.organizationName}
-              oninput={handleOrganizationInput}
-            />
-          </label>
-          <div class="button-row">
-            <button
-              class="primary-button"
-              type="button"
-              onclick={handleSaveOrganization}
-              disabled={isSavingOrganization}
-            >
-              Save Organization
-            </button>
-            <button
-              class="secondary-button"
-              type="button"
-              onclick={handleCancelOrganization}
-            >
-              Cancel
-            </button>
-          </div>
-        </template>
-      </section>
+    </div>
 
-      <section
-        class="detail-section"
-        data-section="shipping-address"
-        id="shipping-address"
-      >
-        <div class="section-heading">
-          <h2>Shipping Address</h2>
-        </div>
-        <div class="section-copy">{displayShippingAddress}</div>
-        <button
-          class="secondary-pill"
-          type="button"
-          onclick={handleManageShipping}
-        >
-          {shippingButtonLabel}
-        </button>
-      </section>
-
-      <section
-        class="detail-section"
-        data-section="payment-methods"
-        id="payment-methods"
-      >
-        <div class="section-heading">
-          <h2>Payment Methods</h2>
-        </div>
-        <div class="section-copy">{displayPaymentSummary}</div>
-        <button class="text-link" type="button" onclick={handleManagePayment}>
-          Add payment method
-        </button>
-      </section>
+    <!-- Organization Modal -->
+    <template if:true={showOrganizationModal}>
+        <section class="modal-backdrop" onclick={closeOrganizationModal} role="presentation">
+            <div class="modal-dialog" role="dialog" aria-modal="true" aria-labelledby="orgModalTitle" onclick={stopModalPropagation}>
+                <button class="modal-close" type="button" aria-label="Close" onclick={closeOrganizationModal} disabled={isSavingOrganization}>&times;</button>
+                <h2 id="orgModalTitle" class="modal-title">Organization Details</h2>
+                <div class="modal-form-stack">
+                    <label class="field">
+                        <span>School Name *</span>
+                        <input data-field="schoolName" type="text" value={organizationForm.schoolName} oninput={handleOrganizationInput} />
+                    </label>
+                    <label class="field">
+                        <span>School Address</span>
+                        <input data-field="schoolAddress" type="text" placeholder="Enter your address" value={organizationForm.schoolAddress} oninput={handleOrganizationInput} />
+                    </label>
+                    <div class="modal-two-col">
+                        <label class="field">
+                            <span>City</span>
+                            <input data-field="city" type="text" value={organizationForm.city} oninput={handleOrganizationInput} />
+                        </label>
+                        <label class="field">
+                            <span>State</span>
+                            <div class="select-wrapper">
+                                <select data-field="stateCode" onchange={handleOrganizationInput}>
+                                    <template for:each={orgStateOptions} for:item="opt">
+                                        <option key={opt.value} value={opt.value} selected={opt.selected}>{opt.label}</option>
+                                    </template>
+                                </select>
+                            </div>
+                        </label>
+                    </div>
+                    <div class="modal-two-col">
+                        <label class="field">
+                            <span>ZIP Code</span>
+                            <input data-field="postalCode" type="text" value={organizationForm.postalCode} oninput={handleOrganizationInput} />
+                        </label>
+                        <label class="field">
+                            <span>Phone</span>
+                            <input data-field="phone" type="tel" value={organizationForm.phone} oninput={handleOrganizationInput} />
+                        </label>
+                    </div>
+                </div>
+                <div class="modal-actions">
+                    <button class="primary-button" type="button" onclick={handleSaveOrganization} disabled={isSavingOrganization}>Save</button>
+                    <button class="secondary-button" type="button" onclick={closeOrganizationModal} disabled={isSavingOrganization}>Cancel</button>
+                </div>
+            </div>
+        </section>
     </template>
-  </div>
+
+    <!-- Shipping Address Modal -->
+    <template if:true={showShippingModal}>
+        <section class="modal-backdrop" onclick={closeShippingModal} role="presentation">
+            <div class="modal-dialog" role="dialog" aria-modal="true" aria-labelledby="shippingModalTitle" onclick={stopModalPropagation}>
+                <button class="modal-close" type="button" aria-label="Close" onclick={closeShippingModal} disabled={isSavingShipping}>&times;</button>
+                <h2 id="shippingModalTitle" class="modal-title">Shipping Address</h2>
+                <div class="modal-form-stack">
+                    <label class="field">
+                        <span>Street Address</span>
+                        <input data-field="street" type="text" value={shippingForm.street} oninput={handleShippingInput} />
+                    </label>
+                    <label class="field">
+                        <span>City</span>
+                        <input data-field="city" type="text" value={shippingForm.city} oninput={handleShippingInput} />
+                    </label>
+                    <div class="modal-two-col">
+                        <label class="field">
+                            <span>State</span>
+                            <input data-field="stateCode" type="text" maxlength="2" placeholder="e.g. GA" value={shippingForm.stateCode} oninput={handleShippingInput} />
+                        </label>
+                        <label class="field">
+                            <span>ZIP Code</span>
+                            <input data-field="postalCode" type="text" value={shippingForm.postalCode} oninput={handleShippingInput} />
+                        </label>
+                    </div>
+                    <label class="field">
+                        <span>Country</span>
+                        <input data-field="country" type="text" value={shippingForm.country} oninput={handleShippingInput} />
+                    </label>
+                </div>
+                <div class="modal-actions">
+                    <button class="primary-button" type="button" onclick={handleSaveShipping} disabled={isSavingShipping}>Save Address</button>
+                    <button class="secondary-button" type="button" onclick={closeShippingModal} disabled={isSavingShipping}>Cancel</button>
+                </div>
+            </div>
+        </section>
+    </template>
+
+    <!-- Payment Methods Modal -->
+    <template if:true={showPaymentModal}>
+        <section class="modal-backdrop" onclick={closePaymentModal} role="presentation">
+            <div class="modal-dialog modal-dialog--wide" role="dialog" aria-modal="true" aria-labelledby="paymentModalTitle" onclick={stopModalPropagation}>
+                <button class="modal-close" type="button" aria-label="Close" onclick={closePaymentModal}>&times;</button>
+                <h2 id="paymentModalTitle" class="modal-title">Payment Methods</h2>
+                <iframe
+                    src={paymentMethodsUrl}
+                    title="Manage Payment Methods"
+                    class="payment-iframe"
+                    frameborder="0"
+                ></iframe>
+            </div>
+        </section>
+    </template>
 </template>

@@ -17,12 +17,18 @@ export {
 
 export {
   DEFAULT_STORE_NAME,
+  CART_UPDATED_EVENT_NAME,
   STOREFRONT_GUEST_REQUEST_PARAMS,
+  STOREFRONT_REQUEST_PARAMS,
   applyStorefrontGuestParams,
+  applyStorefrontRequestParams,
   normalizeProduct,
   resolveProductImageUrl,
   extractProductList,
   buildProductDetailPath,
+  buildCartPath,
+  buildAddToCartSuccessModalData,
+  buildAddToCartEndpoint,
   scrollCarouselToIndex,
   resolveByPath,
   toNumber,
@@ -34,8 +40,23 @@ export {
   resolveStockKeepingUnit,
   resolveCurrencyIsoCode,
   parsePositiveInteger,
-  resolveUnitPriceForQuantity
+  resolveUnitPriceForQuantity,
+  addProductToCart,
+  dispatchCartUpdated
 } from "./productHelper";
+
+export {
+  buildCartFormatLines,
+  splitCartItemName,
+  normalizeCartQuantityRule,
+  normalizeQuantityToRule,
+  buildCartIncludesLines,
+  buildCartOrderSummaryLines,
+  extractCartItems,
+  normalizeCartSummary,
+  normalizeCartItem,
+  fetchStorefrontProductDetails
+} from "./cartPageHelper";
 
 export {
   openAuthPopup,
@@ -49,6 +70,8 @@ export {
 } from "./authPopupHelper";
 
 export {
+  dispatchWishlistUpdated,
+  WISHLIST_UPDATED_EVENT_NAME,
   syncFavoriteState,
   doToggleFavorite
 } from "./wishlistHelper";

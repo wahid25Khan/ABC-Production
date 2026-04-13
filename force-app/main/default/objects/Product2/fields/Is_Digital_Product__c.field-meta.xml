@@ -2,7 +2,8 @@
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>Is_Digital_Product__c</fullName>
     <defaultValue>false</defaultValue>
-    <label>Is Digital Product</label>
-    <type>Checkbox</type>
     <description>When true, this product is exempt from shipping charges. Used by ABCShippingCalculator.</description>
+    <label>Is Digital Product</label>
+    <trackHistory>false</trackHistory>
+    <type>Checkbox</type>
 </CustomField>

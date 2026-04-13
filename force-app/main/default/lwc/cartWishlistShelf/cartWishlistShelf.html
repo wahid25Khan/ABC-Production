@@ -1,0 +1,59 @@
+<template>
+  <template if:true={showSection}>
+    <section class="wishlist-shelf" aria-labelledby="wishlistShelfHeading">
+      <div class="wishlist-header">
+        <span class="header-rule" aria-hidden="true"></span>
+        <h2 id="wishlistShelfHeading" class="wishlist-title">
+          {heading}
+          <span class="wishlist-subtitle">{subheading}</span>
+        </h2>
+        <span class="header-rule" aria-hidden="true"></span>
+      </div>
+
+      <template if:true={isLoading}>
+        <div class="wishlist-state">
+          <lightning-spinner alternative-text="Loading wishlist" size="medium"></lightning-spinner>
+        </div>
+      </template>
+
+      <template if:true={errorMessage}>
+        <div class="wishlist-error" role="alert">{errorMessage}</div>
+      </template>
+
+      <template if:true={hasItems}>
+        <div class="wishlist-grid">
+          <template for:each={items} for:item="item">
+            <article key={item.wishlistItemId} class={item.cardClass}>
+              <a href={item.detailPath} class="image-link">
+                <template if:true={item.imageUrl}>
+                  <img
+                    class="wishlist-image"
+                    src={item.imageUrl}
+                    alt={item.productName}
+                    loading="lazy"
+                  />
+                </template>
+                <template if:false={item.imageUrl}>
+                  <div class="wishlist-image placeholder">No image</div>
+                </template>
+              </a>
+
+              <a href={item.detailPath} class="wishlist-name">{item.productName}</a>
+
+              <button
+                type="button"
+                class="move-button"
+                data-product-id={item.productId}
+                onclick={handleMoveToCart}
+                disabled={item.isMovingToCart}
+              >
+                <template if:true={item.isMovingToCart}>Moving...</template>
+                <template if:false={item.isMovingToCart}>Move to Cart</template>
+              </button>
+            </article>
+          </template>
+        </div>
+      </template>
+    </section>
+  </template>
+</template>

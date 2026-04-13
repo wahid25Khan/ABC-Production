@@ -64,6 +64,8 @@ private class BuyerSelfRegistrationServiceTest {
             BuyerSelfRegistrationService.buyerAccessGateway = buyerGateway;
             BuyerSelfRegistrationService.accountOwnerIdOverride = UserInfo.getUserId();
             BuyerSelfRegistrationService.profileIdOverride = UserInfo.getProfileId();
+            CommerceRegistrationProvisioning.permissionSetIdOverride = UserInfo.getProfileId();
+            CommerceRegistrationProvisioning.permissionSetLicenseIdOverride = UserInfo.getProfileId();
 
             BuyerSelfRegistrationService.RegistrationRequest req = buildRequest();
             req.marketingConsent = true;
@@ -79,6 +81,9 @@ private class BuyerSelfRegistrationServiceTest {
             System.assertEquals(1, buyerGateway.callCount, 'Buyer access should be assigned once.');
             System.assertEquals(existingAccount.Id, buyerGateway.capturedBuyerId, 'Buyer access should use the returned buyer account.');
             System.assertEquals('American Book Company Buyer Group', buyerGateway.capturedBuyerGroupName, 'Should assign the default buyer group.');
+
+            System.assertNotEquals(null, CommerceRegistrationProvisioning.lastPermissionSetAssignedUserId, 'B2B buyer permission set should be assigned.');
+            System.assertNotEquals(null, CommerceRegistrationProvisioning.lastPermissionSetLicenseAssignedUserId, 'B2B buyer permission set license should be assigned.');
 
             Contact updatedContact = [SELECT HasOptedOutOfEmail FROM Contact WHERE Id = :contact.Id LIMIT 1];
             System.assertEquals(false, updatedContact.HasOptedOutOfEmail, 'Marketing consent should opt the contact in.');
@@ -173,7 +178,9 @@ private class BuyerSelfRegistrationServiceTest {
 
             BuyerSelfRegistrationService.externalUserOutcomeOverride = outcome;
             BuyerSelfRegistrationService.accountOwnerIdOverride = UserInfo.getUserId();
-            BuyerSelfRegistrationService.buyerGroupIdOverride = existingAccount.Id;
+            CommerceRegistrationProvisioning.buyerGroupIdOverride = existingAccount.Id;
+            CommerceRegistrationProvisioning.permissionSetIdOverride = UserInfo.getProfileId();
+            CommerceRegistrationProvisioning.permissionSetLicenseIdOverride = UserInfo.getProfileId();
 
             Test.startTest();
             BuyerSelfRegistrationService.RegistrationResponse result =
@@ -181,8 +188,8 @@ private class BuyerSelfRegistrationServiceTest {
             Test.stopTest();
 
             System.assertEquals(true, result.success, 'Registration should succeed through the default gateways.');
-            System.assertNotEquals(null, BuyerSelfRegistrationService.lastAssignedBuyerId, 'Buyer group assignment should be attempted.');
-            System.assertEquals(existingAccount.Id, BuyerSelfRegistrationService.lastAssignedBuyerGroupId, 'The test override buyer group id should be recorded.');
+            System.assertNotEquals(null, CommerceRegistrationProvisioning.lastAssignedBuyerId, 'Buyer group assignment should be attempted.');
+            System.assertEquals(existingAccount.Id, CommerceRegistrationProvisioning.lastAssignedBuyerGroupId, 'The test override buyer group id should be recorded.');
         }
     }
 
@@ -200,7 +207,7 @@ private class BuyerSelfRegistrationServiceTest {
             insert account;
 
             Test.startTest();
-            BuyerSelfRegistrationService.ensureBuyerAccount(account);
+            CommerceRegistrationProvisioning.ensureBuyerAccount(account);
             Test.stopTest();
 
             BuyerAccount buyerAccount = [
@@ -220,7 +227,7 @@ private class BuyerSelfRegistrationServiceTest {
                 IsActive = false
             );
 
-            BuyerSelfRegistrationService.ensureBuyerAccount(account);
+            CommerceRegistrationProvisioning.ensureBuyerAccount(account);
 
             BuyerAccount refreshedBuyerAccount = [
                 SELECT BuyerStatus, CommerceType, IsActive
@@ -232,7 +239,7 @@ private class BuyerSelfRegistrationServiceTest {
             System.assertEquals('Buyer', refreshedBuyerAccount.CommerceType, 'Existing buyer accounts should retain Buyer commerce type.');
             System.assertEquals(true, refreshedBuyerAccount.IsActive, 'Existing buyer accounts should be marked active.');
 
-			BuyerSelfRegistrationService.ensureBuyerAccount(account);
+            CommerceRegistrationProvisioning.ensureBuyerAccount(account);
 			Integer buyerAccountCount = [SELECT COUNT() FROM BuyerAccount WHERE BuyerId = :account.Id];
 			System.assertEquals(1, buyerAccountCount, 'Re-ensuring an already active buyer account should not create duplicates.');
         }
@@ -245,7 +252,7 @@ private class BuyerSelfRegistrationServiceTest {
         System.runAs(runAsUser) {
             BuyerSelfRegistrationService.resetTestState();
             BuyerSelfRegistrationService.accountOwnerIdOverride = UserInfo.getUserId();
-            BuyerSelfRegistrationService.buyerGroupIdOverride = UserInfo.getUserId();
+            CommerceRegistrationProvisioning.buyerGroupIdOverride = UserInfo.getUserId();
             BuyerSelfRegistrationService.externalUserErrorOverride = 'Registration service unavailable.';
 
             Test.startTest();
@@ -276,8 +283,10 @@ private class BuyerSelfRegistrationServiceTest {
 
             BuyerSelfRegistrationService.externalUserOutcomeOverride = outcome;
             BuyerSelfRegistrationService.accountOwnerIdOverride = UserInfo.getUserId();
-            BuyerSelfRegistrationService.buyerGroupIdOverride = existingAccount.Id;
-            BuyerSelfRegistrationService.buyerMembershipExistsOverride = true;
+            CommerceRegistrationProvisioning.buyerGroupIdOverride = existingAccount.Id;
+            CommerceRegistrationProvisioning.buyerMembershipExistsOverride = true;
+            CommerceRegistrationProvisioning.permissionSetIdOverride = UserInfo.getProfileId();
+            CommerceRegistrationProvisioning.permissionSetLicenseIdOverride = UserInfo.getProfileId();
 
             BuyerSelfRegistrationService.RegistrationRequest req = buildRequest();
             req.firstName = '!!!';
@@ -290,7 +299,7 @@ private class BuyerSelfRegistrationServiceTest {
 
             System.assertEquals(true, result.success, 'Fallback alias and nickname generation should still allow registration.');
             System.assertEquals(existingAccount.Id, result.accountId, 'A non-null account outcome should be preserved.');
-            System.assertEquals(null, BuyerSelfRegistrationService.lastAssignedBuyerId, 'No buyer assignment should run when membership already exists.');
+            System.assertEquals(null, CommerceRegistrationProvisioning.lastAssignedBuyerId, 'No buyer assignment should run when membership already exists.');
         }
     }
 

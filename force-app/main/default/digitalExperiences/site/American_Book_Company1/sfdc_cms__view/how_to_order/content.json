@@ -28,7 +28,9 @@
           },
           "children" : [ {
             "children" : [ {
-              "attributes" : { },
+              "attributes" : {
+                "dxpStyle" : { }
+              },
               "definition" : "c:howToOrder",
               "id" : "444aea7e-4f50-4c68-9fb6-a237c36f4ce0",
               "type" : "component"
@@ -51,6 +53,7 @@
           "attributes" : {
             "customHeadTags" : "",
             "description" : "",
+            "dxpStyle" : { },
             "pageTitle" : "how-to-order",
             "recordId" : "{!recordId}"
           },

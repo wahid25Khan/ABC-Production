@@ -1,0 +1,50 @@
+<template>
+  <section class="success-layer" role="dialog" aria-modal="true" aria-label="Added to cart">
+    <div class="success-backdrop"></div>
+
+    <div class="success-panel">
+      <button class="close-btn" type="button" aria-label="Close" onclick={handleCloseClick}>X</button>
+
+      <div class="content-wrap">
+        <div class="media-wrap">
+          <template if:true={hasProductUrl}>
+            <a href={productUrl} class="image-link" aria-label={resolvedProductName}>
+              <template if:true={hasProductImage}>
+                <img src={productImageUrl} alt={resolvedProductName} class="product-image" loading="lazy" />
+              </template>
+              <template if:false={hasProductImage}>
+                <div class="image-placeholder">No image</div>
+              </template>
+            </a>
+          </template>
+
+          <template if:false={hasProductUrl}>
+            <template if:true={hasProductImage}>
+              <img src={productImageUrl} alt={resolvedProductName} class="product-image" loading="lazy" />
+            </template>
+            <template if:false={hasProductImage}>
+              <div class="image-placeholder">No image</div>
+            </template>
+          </template>
+        </div>
+
+        <div class="details-wrap">
+          <template if:true={hasProductUrl}>
+            <a href={productUrl} class="title-link">{resolvedProductName}</a>
+          </template>
+          <template if:false={hasProductUrl}>
+            <h2 class="title-text">{resolvedProductName}</h2>
+          </template>
+
+          <p class="status-text">Item has been added to your cart.</p>
+
+          <a href={cartUrl} class="cart-link">View my cart</a>
+        </div>
+      </div>
+
+      <div class="actions-row">
+        <button type="button" class="ok-btn" onclick={handleOkClick}>OK</button>
+      </div>
+    </div>
+  </section>
+</template>

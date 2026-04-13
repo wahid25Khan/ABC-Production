@@ -1,429 +1,419 @@
 :host {
-  --abc-blue: #0f6ead;
-  --abc-blue-dark: #0d3f75;
-  --abc-panel: #f8f9fb;
-  --abc-border: #c7d2de;
-  --abc-legend-border: #ef6b2a;
-  --abc-text: #263647;
+    --abc-blue: #0f6ead;
+    --abc-blue-dark: #0d3f75;
+    --abc-panel: #f8f9fb;
+    --abc-border: #c7d2de;
+    --abc-legend-border: #ef6b2a;
+    --abc-text: #263647;
 }
 
 .map-wrapper {
-  position: relative;
-  width: 100%;
-  background:
-    radial-gradient(
-      circle at 8% 10%,
-      rgba(15, 110, 173, 0.06) 0,
-      rgba(15, 110, 173, 0) 42%
-    ),
-    radial-gradient(
-      circle at 85% 80%,
-      rgba(15, 110, 173, 0.05) 0,
-      rgba(15, 110, 173, 0) 35%
-    ),
-    linear-gradient(180deg, #f8f9fb 0%, #f1f3f7 100%);
-  border: 4px solid var(--abc-blue);
-  border-radius: 0.45rem;
-  overflow: hidden;
+    position: relative;
+    width: 100%;
+    background:
+        radial-gradient(circle at 8% 10%, rgba(15, 110, 173, 0.06) 0, rgba(15, 110, 173, 0) 42%),
+        radial-gradient(circle at 85% 80%, rgba(15, 110, 173, 0.05) 0, rgba(15, 110, 173, 0) 35%),
+        linear-gradient(180deg, #f8f9fb 0%, #f1f3f7 100%);
+    border: 4px solid var(--abc-blue);
+    border-radius: 0.45rem;
+    overflow: hidden;
 }
 
 .map-wrapper--full {
-  min-height: 620px;
+    min-height: 620px;
 }
 
 .map-wrapper--modal {
-  min-height: min(88vh, 760px);
+    min-height: min(88vh, 760px);
 }
 
 .map {
-  width: 100%;
+    width: 100%;
 }
 
 .map--full {
-  height: 620px;
+    height: 620px;
 }
 
 .map--modal {
-  height: min(88vh, 760px);
+    height: min(88vh, 760px);
 }
 
 .map-card {
-  position: relative;
-  width: 100%;
-  max-width: 500px;
-  border: 1px solid #d8dde6;
-  border-radius: 1rem;
-  background: #fff;
-  box-shadow: 0 16px 36px rgba(15, 23, 42, 0.08);
-  overflow: hidden;
+    position: relative;
+    width: 100%;
+    max-width: 500px;
+    border: 1px solid #d8dde6;
+    border-radius: 1rem;
+    background: #fff;
+    box-shadow: 0 16px 36px rgba(15, 23, 42, 0.08);
+    overflow: hidden;
 }
 
 .map-card--interactive {
-  cursor: pointer;
-  transition:
-    transform 160ms ease,
-    box-shadow 160ms ease;
+    cursor: pointer;
+    transition: transform 160ms ease, box-shadow 160ms ease;
 }
 
 .map-card--interactive:hover,
 .map-card--interactive:focus-within {
-  transform: translateY(-2px);
-  box-shadow: 0 20px 40px rgba(15, 23, 42, 0.12);
+    transform: translateY(-2px);
+    box-shadow: 0 20px 40px rgba(15, 23, 42, 0.12);
 }
 
 .map-card__media {
-  position: relative;
-  background: linear-gradient(180deg, #f9fbfc 0%, #eef3f7 100%);
+    position: relative;
+    background: linear-gradient(180deg, #f9fbfc 0%, #eef3f7 100%);
 }
 
 .map--card {
-  height: 285px;
+    height: 285px;
 }
 
 .map-card__caption {
-  padding: 0.75rem 0.9rem 0.85rem;
-  font-size: 1.35rem;
-  line-height: 1.1;
-  font-weight: 700;
-  color: #1f6fb2;
-  text-align: center;
+    padding: 0.75rem 0.9rem 0.85rem;
+    font-size: 1.35rem;
+    line-height: 1.1;
+    font-weight: 700;
+    color: #1f6fb2;
+    text-align: center;
 }
 
 .card-hit-area {
-  position: absolute;
-  inset: 0;
-  z-index: 3;
-  border: 0;
-  background: transparent;
-  cursor: pointer;
+    position: absolute;
+    inset: 0;
+    z-index: 3;
+    border: 0;
+    background: transparent;
+    cursor: pointer;
 }
 
 .assistive-text {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  padding: 0;
-  margin: -1px;
-  overflow: hidden;
-  clip: rect(0, 0, 0, 0);
-  white-space: nowrap;
-  border: 0;
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
 }
 
 .error {
-  position: absolute;
-  top: 88px;
-  left: 24px;
-  z-index: 7;
-  color: #ba0517;
-  font-weight: 700;
-  background: rgba(255, 255, 255, 0.95);
-  padding: 0.3rem 0.55rem;
-  border-radius: 0.35rem;
+    position: absolute;
+    top: 88px;
+    left: 24px;
+    z-index: 7;
+    color: #ba0517;
+    font-weight: 700;
+    background: rgba(255, 255, 255, 0.95);
+    padding: 0.3rem 0.55rem;
+    border-radius: 0.35rem;
 }
 
 .error--card {
-  top: 0.75rem;
-  left: 0.75rem;
-  right: 0.75rem;
-  font-size: 0.8rem;
+    top: 0.75rem;
+    left: 0.75rem;
+    right: 0.75rem;
+    font-size: 0.8rem;
 }
 
 .header {
-  position: absolute;
-  top: 14px;
-  left: 14px;
-  z-index: 5;
-  display: flex;
-  align-items: center;
-  gap: 12px;
+    position: absolute;
+    top: 14px;
+    left: 14px;
+    z-index: 5;
+    display: flex;
+    align-items: center;
+    gap: 12px;
 }
 
 .marker-block {
-  display: grid;
-  grid-template-columns: repeat(2, 16px);
-  grid-template-rows: repeat(2, 16px);
-  gap: 3px;
+    display: grid;
+    grid-template-columns: repeat(2, 16px);
+    grid-template-rows: repeat(2, 16px);
+    gap: 3px;
 }
 
 .marker {
-  display: block;
-  width: 16px;
-  height: 16px;
-  border-radius: 2px;
+    display: block;
+    width: 16px;
+    height: 16px;
+    border-radius: 2px;
 }
 
 .marker.yellow {
-  background: #f3a327;
+    background: #f3a327;
 }
 
 .marker.red {
-  background: #ea1d2c;
+    background: #ea1d2c;
 }
 
 .marker.gray {
-  background: #d9d9d9;
+    background: #d9d9d9;
 }
 
 .title-wrap {
-  color: var(--abc-blue);
-  line-height: 1;
+    color: var(--abc-blue);
+    line-height: 1;
 }
 
 .title {
-  font-size: clamp(1.75rem, 3.2vw, 3.1rem);
-  font-weight: 800;
-  letter-spacing: 0.01em;
+    font-size: clamp(1.75rem, 3.2vw, 3.1rem);
+    font-weight: 800;
+    letter-spacing: 0.01em;
 }
 
 .subtitle {
-  margin-top: 0.25rem;
-  font-size: clamp(0.85rem, 1.2vw, 1.5rem);
-  font-weight: 700;
-  text-align: right;
+    margin-top: 0.25rem;
+    font-size: clamp(0.85rem, 1.2vw, 1.5rem);
+    font-weight: 700;
+    text-align: right;
 }
 
 .state-watermark {
-  position: absolute;
-  left: 50%;
-  bottom: 0.35rem;
-  transform: translateX(-50%);
-  z-index: 4;
-  width: 100%;
-  text-align: center;
-  font-size: clamp(2.7rem, 11vw, 8.5rem);
-  line-height: 0.95;
-  letter-spacing: 0.12em;
-  font-weight: 900;
-  color: transparent;
-  -webkit-text-stroke: 1.5px rgba(15, 110, 173, 0.4);
-  pointer-events: none;
-  text-transform: uppercase;
+    position: absolute;
+    left: 50%;
+    bottom: 0.35rem;
+    transform: translateX(-50%);
+    z-index: 4;
+    width: 100%;
+    text-align: center;
+    font-size: clamp(2.7rem, 11vw, 8.5rem);
+    line-height: 0.95;
+    letter-spacing: 0.12em;
+    font-weight: 900;
+    color: transparent;
+    -webkit-text-stroke: 1.5px rgba(15, 110, 173, 0.4);
+    pointer-events: none;
+    text-transform: uppercase;
 }
 
 .legend {
-  position: absolute;
-  right: 18px;
-  top: 108px;
-  z-index: 6;
-  background: #fff;
-  border: 2px solid var(--abc-legend-border);
-  border-radius: 14px;
-  padding: 12px;
-  min-width: 184px;
-  box-shadow: 0 8px 26px rgba(24, 36, 56, 0.18);
+    position: absolute;
+    right: 18px;
+    top: 108px;
+    z-index: 6;
+    background: #fff;
+    border: 2px solid var(--abc-legend-border);
+    border-radius: 14px;
+    padding: 12px;
+    min-width: 184px;
+    box-shadow: 0 8px 26px rgba(24, 36, 56, 0.18);
 }
 
 .legend-title {
-  font-weight: 800;
-  color: #35363d;
-  margin-bottom: 8px;
+    font-weight: 800;
+    color: #35363d;
+    margin-bottom: 8px;
 }
 
 .legend-row {
-  display: grid;
-  grid-template-columns: 30px 1fr auto;
-  align-items: center;
-  gap: 8px;
-  font-size: 0.8rem;
-  color: #3f4750;
-  margin: 4px 0;
+    display: grid;
+    grid-template-columns: 30px 1fr auto;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.8rem;
+    color: #3f4750;
+    margin: 4px 0;
 }
 
 .swatch {
-  width: 24px;
-  height: 14px;
-  border: 1px solid #97a0aa;
-  border-radius: 2px;
+    width: 24px;
+    height: 14px;
+    border: 1px solid #97a0aa;
+    border-radius: 2px;
 }
 
 .swatch.s0 {
-  background: #e3e3e3;
+    background: #e3e3e3;
 }
 
 .swatch.s1 {
-  background: #eceaa0;
+    background: #eceaa0;
 }
 
 .swatch.s2 {
-  background: #f8cf2a;
+    background: #f8cf2a;
 }
 
 .swatch.s3 {
-  background: #f3a327;
+    background: #f3a327;
 }
 
 .swatch.s4 {
-  background: #f05b22;
+    background: #f05b22;
 }
 
 .swatch.s5 {
-  background: #ea1d2c;
+    background: #ea1d2c;
 }
 
 .abc-logo {
-  position: absolute;
-  right: 30px;
-  top: 330px;
-  width: 94px;
-  height: auto;
-  z-index: 6;
+    position: absolute;
+    right: 30px;
+    top: 330px;
+    width: 94px;
+    height: auto;
+    z-index: 6;
 }
 
 .map-modal {
-  position: fixed;
-  inset: 0;
-  z-index: 9000;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 1.5rem;
+    position: fixed;
+    inset: 0;
+    z-index: 9000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1.5rem;
 }
 
 .map-modal__backdrop {
-  position: absolute;
-  inset: 0;
-  border: 0;
-  background: rgba(9, 18, 32, 0.58);
+    position: absolute;
+    inset: 0;
+    border: 0;
+    background: rgba(9, 18, 32, 0.58);
 }
 
 .map-modal__panel {
-  position: relative;
-  z-index: 1;
-  width: min(1120px, 100%);
-  max-height: calc(100vh - 3rem);
+    position: relative;
+    z-index: 1;
+    width: min(1120px, 100%);
+    max-height: calc(100vh - 3rem);
 }
 
 .map-modal__close {
-  position: absolute;
-  top: -0.85rem;
-  right: -0.85rem;
-  z-index: 7;
-  width: 2.5rem;
-  height: 2.5rem;
-  border: 0;
-  border-radius: 999px;
-  background: #16325c;
-  color: #fff;
-  font-size: 1.6rem;
-  line-height: 1;
-  cursor: pointer;
-  box-shadow: 0 12px 32px rgba(15, 23, 42, 0.25);
+    position: absolute;
+    top: -0.85rem;
+    right: -0.85rem;
+    z-index: 7;
+    width: 2.5rem;
+    height: 2.5rem;
+    border: 0;
+    border-radius: 999px;
+    background: #16325c;
+    color: #fff;
+    font-size: 1.6rem;
+    line-height: 1;
+    cursor: pointer;
+    box-shadow: 0 12px 32px rgba(15, 23, 42, 0.25);
 }
 
 .map-modal__close:hover {
-  background: #0f2443;
+    background: #0f2443;
 }
 
 @media (max-width: 1050px) {
-  .legend {
-    top: 92px;
-    right: 12px;
-    min-width: 164px;
-    padding: 10px;
-  }
+    .legend {
+        top: 92px;
+        right: 12px;
+        min-width: 164px;
+        padding: 10px;
+    }
 
-  .abc-logo {
-    width: 78px;
-    top: 296px;
-    right: 20px;
-  }
+    .abc-logo {
+        width: 78px;
+        top: 296px;
+        right: 20px;
+    }
 
-  .state-watermark {
-    font-size: clamp(2.35rem, 8.8vw, 5.1rem);
-  }
+    .state-watermark {
+        font-size: clamp(2.35rem, 8.8vw, 5.1rem);
+    }
 }
 
 @media (max-width: 900px) {
-  .title {
-    font-size: clamp(1.25rem, 4.5vw, 2.2rem);
-  }
+    .title {
+        font-size: clamp(1.25rem, 4.5vw, 2.2rem);
+    }
 
-  .subtitle {
-    font-size: 0.85rem;
-  }
+    .subtitle {
+        font-size: 0.85rem;
+    }
 
-  .legend {
-    top: auto;
-    right: auto;
-    left: 10px;
-    bottom: 16px;
-  }
+    .legend {
+        top: auto;
+        right: auto;
+        left: 10px;
+        bottom: 16px;
+    }
 
-  .abc-logo {
-    top: auto;
-    bottom: 18px;
-    right: 14px;
-    width: 68px;
-  }
+    .abc-logo {
+        top: auto;
+        bottom: 18px;
+        right: 14px;
+        width: 68px;
+    }
 
-  .state-watermark {
-    font-size: clamp(2rem, 9.2vw, 4.3rem);
-    letter-spacing: 0.08em;
-  }
+    .state-watermark {
+        font-size: clamp(2rem, 9.2vw, 4.3rem);
+        letter-spacing: 0.08em;
+    }
 }
 
 @media (max-width: 640px) {
-  .map-card {
-    max-width: none;
-  }
+    .map-card {
+        max-width: none;
+    }
 
-  .map--card {
-    height: 235px;
-  }
+    .map--card {
+        height: 235px;
+    }
 
-  .map-card__caption {
-    font-size: 1.2rem;
-  }
+    .map-card__caption {
+        font-size: 1.2rem;
+    }
 
-  .map-modal {
-    padding: 0.75rem;
-  }
+    .map-modal {
+        padding: 0.75rem;
+    }
 
-  .map-modal__panel {
-    width: 100%;
-  }
+    .map-modal__panel {
+        width: 100%;
+    }
 
-  .map-modal__close {
-    top: 0.5rem;
-    right: 0.5rem;
-  }
+    .map-modal__close {
+        top: 0.5rem;
+        right: 0.5rem;
+    }
 
-  .header {
-    top: 10px;
-    left: 10px;
-    gap: 8px;
-  }
+    .header {
+        top: 10px;
+        left: 10px;
+        gap: 8px;
+    }
 
-  .marker-block {
-    grid-template-columns: repeat(2, 12px);
-    grid-template-rows: repeat(2, 12px);
-  }
+    .marker-block {
+        grid-template-columns: repeat(2, 12px);
+        grid-template-rows: repeat(2, 12px);
+    }
 
-  .marker {
-    width: 12px;
-    height: 12px;
-  }
+    .marker {
+        width: 12px;
+        height: 12px;
+    }
 
-  .legend {
-    position: static;
-    margin: 0.6rem;
-  }
+    .legend {
+        position: static;
+        margin: 0.6rem;
+    }
 
-  .legend-row {
-    font-size: 0.76rem;
-  }
+    .legend-row {
+        font-size: 0.76rem;
+    }
 
-  .abc-logo {
-    position: static;
-    display: block;
-    margin: 0 0.6rem 0.6rem auto;
-    width: 62px;
-  }
+    .abc-logo {
+        position: static;
+        display: block;
+        margin: 0 0.6rem 0.6rem auto;
+        width: 62px;
+    }
 
-  .state-watermark {
-    bottom: 0.2rem;
-    font-size: clamp(1.7rem, 11vw, 3rem);
-    -webkit-text-stroke: 1px rgba(15, 110, 173, 0.38);
-  }
+    .state-watermark {
+        bottom: 0.2rem;
+        font-size: clamp(1.7rem, 11vw, 3rem);
+        -webkit-text-stroke: 1px rgba(15, 110, 173, 0.38);
+    }
 }

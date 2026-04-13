@@ -21,7 +21,9 @@
           },
           "children" : [ {
             "children" : [ {
-              "attributes" : { },
+              "attributes" : {
+                "dxpStyle" : { }
+              },
               "definition" : "c:portalLogoutRedirect",
               "id" : "69eeb02f-0dcf-48ca-8166-bd14c309a777",
               "type" : "component"

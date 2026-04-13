@@ -9,7 +9,40 @@
             "backgroundImageConfig" : "",
             "backgroundImageOverlay" : "rgba(0,0,0,0)",
             "componentSpacerSize" : "",
+            "layoutDirectionDesktop" : "row",
+            "layoutDirectionMobile" : "column",
+            "layoutDirectionTablet" : "column",
+            "maxContentWidth" : "",
+            "sectionColumnGutterWidth" : "",
+            "sectionConfig" : "{\"UUID\":\"aa93ef03-96d8-49ac-ad4d-997fa99066df\",\"columns\":[{\"UUID\":\"c540bff5-3cad-45f1-b85b-3f63fea3c603\",\"columnName\":\"Column 1\",\"columnKey\":\"col1\",\"columnWidth\":\"12\",\"seedComponents\":[]}]}",
+            "sectionMinHeight" : "",
+            "sectionVerticalAlign" : "flex-start"
+          },
+          "children" : [ {
+            "children" : [ {
+              "attributes" : {
+                "cartUrl" : "/cart",
+                "signInUrl" : "/login"
+              },
+              "definition" : "c:checkoutFlow",
+              "id" : "1f93cced-f672-4b2d-a57d-59d5784027fb",
+              "type" : "component"
+            } ],
+            "id" : "c540bff5-3cad-45f1-b85b-3f63fea3c603",
+            "name" : "col1",
+            "title" : "Column 1",
+            "type" : "region"
+          } ],
+          "definition" : "community_layout:section",
+          "id" : "aa93ef03-96d8-49ac-ad4d-997fa99066df",
+          "type" : "component"
+        }, {
+          "attributes" : {
+            "backgroundImageConfig" : "",
+            "backgroundImageOverlay" : "rgba(0,0,0,0)",
+            "componentSpacerSize" : "",
             "dxpStyle" : {
+              "isVisible" : false,
               "margin" : {
                 "bottom" : "0%",
                 "left" : "15%",
@@ -32,6 +65,7 @@
                 "cartUrl" : "/cart",
                 "checkoutUrl" : "/checkout",
                 "createAccountUrl" : "/create-account",
+                "dxpStyle" : { },
                 "forgotPasswordUrl" : "/ForgotPassword"
               },
               "definition" : "c:checkoutLoginGate",
@@ -39,6 +73,7 @@
               "type" : "component"
             }, {
               "attributes" : {
+                "dxpStyle" : { },
                 "heading" : "Checkout",
                 "signInUrl" : "/login"
               },

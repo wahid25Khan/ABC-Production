@@ -4,53 +4,55 @@
   "contentBody" : {
     "component" : {
       "children" : [ {
-          "children" : [ {
-            "attributes" : {
-              "backgroundImageConfig" : "",
-              "backgroundImageOverlay" : "rgba(0,0,0,0)",
-              "componentSpacerSize" : "",
-              "dxpStyle" : { },
-              "layoutDirectionDesktop" : "row",
-              "layoutDirectionMobile" : "column",
-              "layoutDirectionTablet" : "column",
-              "maxContentWidth" : "",
-              "sectionColumnGutterWidth" : "",
-              "sectionConfig" : "{\"UUID\":\"0b72c24b-54f6-4956-ae2a-f906e883a1b9\",\"columns\":[{\"UUID\":\"85357f1c-76ce-44f0-9df6-5b9472553291\",\"columnName\":\"Column 1\",\"columnKey\":\"col1\",\"columnWidth\":\"12\",\"seedComponents\":[]}]}",
-              "sectionMinHeight" : "",
-              "sectionVerticalAlign" : "flex-start"
-            },
-            "children" : [ {
-              "children" : [ {
-                "attributes" : {
-                  "defaultPageSize" : 20,
-                  "defaultSearchTerm" : "all",
-                  "fetchPageSize" : 120,
-                  "filterFieldApiNames" : "Grade_Level__c,Category__c",
-                  "filterFieldLabels" : "Grade Level,Subject",
-                  "maxFetchPages" : 8,
-                  "pageSizeOptions" : "20,40,60",
-                  "searchFieldApiNames" : "StockKeepingUnit,Price__c,Color_Price__c,Color_Price_25__c,BW_Price__c,BW_Price_25__c,CurrencyIsoCode",
-                  "stateFieldApiName" : "State__c",
-                  "storeName" : "AmericanBookCompany",
-                  "webStoreId" : "0ZEam000004dJDNGA2"
-                },
-                "definition" : "c:customResults",
-                "id" : "ce47f9de-f10d-4fea-a180-71b23a96d522",
-                "type" : "component"
-              } ],
-              "id" : "85357f1c-76ce-44f0-9df6-5b9472553291",
-              "name" : "col1",
-              "title" : "Column 1",
-              "type" : "region"
-            } ],
-            "definition" : "community_layout:section",
-            "id" : "0b72c24b-54f6-4956-ae2a-f906e883a1b9",
-            "type" : "component"
-          }, {
+        "children" : [ {
           "attributes" : {
             "backgroundImageConfig" : "",
             "backgroundImageOverlay" : "rgba(0,0,0,0)",
             "componentSpacerSize" : "",
+            "dxpStyle" : { },
+            "layoutDirectionDesktop" : "row",
+            "layoutDirectionMobile" : "column",
+            "layoutDirectionTablet" : "column",
+            "maxContentWidth" : "",
+            "sectionColumnGutterWidth" : "",
+            "sectionConfig" : "{\"UUID\":\"0b72c24b-54f6-4956-ae2a-f906e883a1b9\",\"columns\":[{\"UUID\":\"85357f1c-76ce-44f0-9df6-5b9472553291\",\"columnName\":\"Column 1\",\"columnKey\":\"col1\",\"columnWidth\":\"12\",\"seedComponents\":[]}]}",
+            "sectionMinHeight" : "",
+            "sectionVerticalAlign" : "flex-start"
+          },
+          "children" : [ {
+            "children" : [ {
+              "attributes" : {
+                "defaultPageSize" : 20,
+                "defaultSearchTerm" : "all",
+                "dxpStyle" : { },
+                "fetchPageSize" : 120,
+                "filterFieldApiNames" : "Grade_Level__c,Category__c",
+                "filterFieldLabels" : "Grade Level,Subject",
+                "maxFetchPages" : 8,
+                "pageSizeOptions" : "20,40,60",
+                "searchFieldApiNames" : "StockKeepingUnit,Price__c,Color_Price__c,Color_Price_25__c,BW_Price__c,BW_Price_25__c,CurrencyIsoCode",
+                "stateFieldApiName" : "State__c",
+                "storeName" : "AmericanBookCompany",
+                "webStoreId" : "0ZEam000004dJDNGA2"
+              },
+              "definition" : "c:customResults",
+              "id" : "ce47f9de-f10d-4fea-a180-71b23a96d522",
+              "type" : "component"
+            } ],
+            "id" : "85357f1c-76ce-44f0-9df6-5b9472553291",
+            "name" : "col1",
+            "title" : "Column 1",
+            "type" : "region"
+          } ],
+          "definition" : "community_layout:section",
+          "id" : "0b72c24b-54f6-4956-ae2a-f906e883a1b9",
+          "type" : "component"
+        }, {
+          "attributes" : {
+            "backgroundImageConfig" : "",
+            "backgroundImageOverlay" : "rgba(0,0,0,0)",
+            "componentSpacerSize" : "",
+            "dxpStyle" : { },
             "layoutDirectionDesktop" : "row",
             "layoutDirectionMobile" : "column",
             "layoutDirectionTablet" : "column",
@@ -63,6 +65,7 @@
           "children" : [ {
             "children" : [ {
               "attributes" : {
+                "dxpStyle" : { },
                 "maxProducts" : 18,
                 "storeName" : "AmericanBookCompany",
                 "visibleCount" : 6,
@@ -73,6 +76,7 @@
               "type" : "component"
             }, {
               "attributes" : {
+                "dxpStyle" : { },
                 "imageInfos" : "",
                 "richTextValue" : "<hr style=\"border: none; border-top: 1px solid #000;\">"
               },
@@ -84,6 +88,7 @@
                 "columnGutterWidth" : "",
                 "columnMinHeight" : "",
                 "columnVerticalAlign" : "flex-start",
+                "dxpStyle" : { },
                 "layoutDirectionDesktop" : "row",
                 "layoutDirectionMobile" : "column",
                 "layoutDirectionTablet" : "column",
@@ -92,6 +97,7 @@
               "children" : [ {
                 "children" : [ {
                   "attributes" : {
+                    "dxpStyle" : { },
                     "imageInfos" : "",
                     "richTextValue" : "<p style=\"text-align: center;\"><img src=\"{!cmsMedia.MCQBSGXW4IPREN5EVB5Z2OR5QMGE}\" alt=\"\"></p>"
                   },
@@ -334,7 +340,15 @@
       "id" : "e3fbe403-a171-4de4-a737-4c13e27e80af",
       "type" : "component"
     },
-    "dataProviders" : [ ],
+    "dataProviders" : [ {
+      "definition" : "sfdc_cms__commerceSearchDataProvider",
+      "sfdcExpressionKey" : "Search",
+      "attributes" : {
+        "searchTerm" : "{!Route.term}",
+        "categoryPathId" : "{!recordId}",
+        "categoryId" : "{!recordId}"
+      }
+    } ],
     "themeLayoutType" : "Inner",
     "viewType" : "global-search"
   },

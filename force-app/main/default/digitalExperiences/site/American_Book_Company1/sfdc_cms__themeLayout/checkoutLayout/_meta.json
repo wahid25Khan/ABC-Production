@@ -1,5 +1,5 @@
 {
-  "apiName": "checkoutLayout",
-  "type": "sfdc_cms__themeLayout",
-  "path": "themeLayouts"
+  "apiName" : "checkoutLayout",
+  "type" : "sfdc_cms__themeLayout",
+  "path" : "themeLayouts"
 }

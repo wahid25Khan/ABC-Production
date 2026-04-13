@@ -1,0 +1,169 @@
+<template>
+  <section class="cart-page">
+    <div class="page-header">
+      <h1>{heading}</h1>
+    </div>
+
+    <template if:true={errorMessage}>
+      <div class="state-card error-state" role="alert">{errorMessage}</div>
+    </template>
+
+    <template if:true={showInitialLoadingState}>
+      <div class="loading-state">
+        <lightning-spinner alternative-text="Loading cart" size="medium"></lightning-spinner>
+      </div>
+    </template>
+
+    <template if:true={hasItems}>
+      <div class="cart-layout">
+        <section class="items-column" aria-label="Cart items">
+          <template for:each={cartItems} for:item="item">
+            <article key={item.id} class={item.cartItemClass}>
+              <a href={item.detailPath} class="image-link">
+                <template if:true={item.imageUrl}>
+                  <img
+                    class="product-image"
+                    src={item.imageUrl}
+                    alt={item.productName}
+                    loading="lazy"
+                  />
+                </template>
+                <template if:false={item.imageUrl}>
+                  <div class="product-image placeholder">No image</div>
+                </template>
+              </a>
+
+              <div class="item-copy">
+                <a href={item.detailPath} class="product-name">{item.productName}</a>
+
+                <div class="includes-block">
+                  <p class="includes-label">Includes:</p>
+                  <template for:each={item.includesLines} for:item="line">
+                    <p key={line} class="includes-line">{line}</p>
+                  </template>
+                </div>
+
+                <div class="item-actions">
+                  <button
+                    type="button"
+                    class="action-link"
+                    data-item-id={item.id}
+                    data-product-id={item.productId}
+                    onclick={handleMoveToWishlist}
+                    disabled={item.isMovingToWishlist}
+                  >
+                    <template if:true={item.isMovingToWishlist}>Moving...</template>
+                    <template if:false={item.isMovingToWishlist}>Move to Wishlist</template>
+                  </button>
+
+                  <button
+                    type="button"
+                    class="action-link"
+                    data-item-id={item.id}
+                    onclick={handleRemoveFromCart}
+                    disabled={item.isRemoving}
+                  >
+                    <template if:true={item.isRemoving}>Removing...</template>
+                    <template if:false={item.isRemoving}>Remove from cart</template>
+                  </button>
+                </div>
+
+                <template if:true={item.rowError}>
+                  <p class="row-error" role="alert">{item.rowError}</p>
+                </template>
+              </div>
+
+              <div class="item-pricing">
+                <p class="unit-price">Unit Price: {item.unitPriceLabel}</p>
+                <p class={item.bulkPricingClass}>
+                  {item.bulkPricingLabel}
+                </p>
+                <label class="qty-label" for={item.id}>{item.quantityHelpText}</label>
+                <input
+                  id={item.id}
+                  class="qty-input"
+                  type="number"
+                  min={item.quantityRule.minimum}
+                  max={item.quantityRule.maximum}
+                  step={item.quantityRule.increment}
+                  value={item.draftQuantity}
+                  data-item-id={item.id}
+                  oninput={handleQuantityInput}
+                  onchange={handleQuantityChange}
+                  onblur={handleQuantityBlur}
+                  onkeydown={handleQuantityKeydown}
+                  disabled={item.isUpdating}
+                />
+              </div>
+            </article>
+          </template>
+        </section>
+
+        <aside class="summary-column">
+          <div class="summary-shell">
+            <div class="summary-card">
+              <h2>Order Summary</h2>
+
+              <template if:true={hasOrderSummaryLines}>
+                <div class="summary-copy">
+                  <template for:each={orderSummaryLines} for:item="line">
+                    <p key={line}>{line}</p>
+                  </template>
+                </div>
+              </template>
+
+              <div class="summary-totals">
+                <div class="total-row">
+                  <span>Subtotal</span>
+                  <span>{summary.subtotalLabel}</span>
+                </div>
+
+                <template if:true={showShippingLine}>
+                  <div class="total-row">
+                    <span>Shipping</span>
+                    <span>{summary.shippingLabel}</span>
+                  </div>
+                </template>
+
+                <div class="total-row">
+                  <span>Sales Tax</span>
+                  <span>{summary.salesTaxLabel}</span>
+                </div>
+
+                <div class="total-row grand-total">
+                  <span>Total</span>
+                  <span>{summary.totalLabel}</span>
+                </div>
+              </div>
+            </div>
+
+            <c-cart-action-buttons
+              checkout-url={checkoutUrl}
+              po-submission-url={poSubmissionUrl}
+            >
+            </c-cart-action-buttons>
+          </div>
+        </aside>
+      </div>
+
+    </template>
+
+    <template if:true={showEmptyState}>
+      <section class="empty-cart" aria-labelledby="emptyCartHeading">
+        <p id="emptyCartHeading" class="empty-cart-status">No items in cart</p>
+        <img
+          class="empty-cart-banner-image"
+          src={emptyCartBannerUrl}
+          alt="Need to download a quote? Add items to your cart to begin."
+        />
+      </section>
+    </template>
+
+    <c-cart-wishlist-shelf
+      store-name={storeName}
+      web-store-id={webStoreId}
+      refresh-key={wishlistRefreshKey}
+    >
+    </c-cart-wishlist-shelf>
+  </section>
+</template>

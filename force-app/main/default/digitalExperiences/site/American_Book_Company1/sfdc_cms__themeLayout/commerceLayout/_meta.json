@@ -1,5 +1,5 @@
 {
-  "apiName": "commerceLayout",
-  "type": "sfdc_cms__themeLayout",
-  "path": "themeLayouts"
+  "apiName" : "commerceLayout",
+  "type" : "sfdc_cms__themeLayout",
+  "path" : "themeLayouts"
 }

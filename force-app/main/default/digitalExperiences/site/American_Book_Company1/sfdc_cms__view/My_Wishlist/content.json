@@ -72,7 +72,7 @@
       "type" : "component"
     },
     "dataProviders" : [ ],
-    "themeLayoutType" : "MyAccount",
+    "themeLayoutType" : "Inner",
     "viewType" : "custom-mylists"
   },
   "urlName" : "my-wishlist"

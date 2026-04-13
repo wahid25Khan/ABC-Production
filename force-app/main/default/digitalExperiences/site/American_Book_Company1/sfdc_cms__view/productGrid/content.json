@@ -9,6 +9,7 @@
             "backgroundImageConfig" : "",
             "backgroundImageOverlay" : "rgba(0,0,0,0)",
             "componentSpacerSize" : "",
+            "dxpStyle" : { },
             "layoutDirectionDesktop" : "row",
             "layoutDirectionMobile" : "column",
             "layoutDirectionTablet" : "column",
@@ -20,12 +21,15 @@
           },
           "children" : [ {
             "children" : [ {
-              "attributes" : { },
+              "attributes" : {
+                "dxpStyle" : { }
+              },
               "definition" : "c:productGrid",
               "id" : "46cb29ab-510b-4c69-8c93-71ae4b8d554f",
               "type" : "component"
             }, {
               "attributes" : {
+                "dxpStyle" : { },
                 "maxProducts" : 18,
                 "refinementKey" : "State__c",
                 "searchTerm" : "*",
@@ -55,6 +59,7 @@
           "attributes" : {
             "customHeadTags" : "",
             "description" : "",
+            "dxpStyle" : { },
             "pageTitle" : "productGrid",
             "recordId" : "{!recordId}"
           },

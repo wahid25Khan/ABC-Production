@@ -2,6 +2,11 @@
 
 > Read this file at the start of every session to avoid repeating discovery work.
 
+## Research Notes
+
+- Salesforce Commerce platform research and debugging guidance: [Doc/salesforce-b2b-commerce-research-2026-04-10.md](Doc/salesforce-b2b-commerce-research-2026-04-10.md)
+- Account registration and Google auth review: [Doc/account-registration-and-google-auth-review-2026-04-10.md](Doc/account-registration-and-google-auth-review-2026-04-10.md)
+
 ---
 
 ## Org & Authentication

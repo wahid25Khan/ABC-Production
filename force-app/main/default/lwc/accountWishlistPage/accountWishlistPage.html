@@ -1,100 +1,45 @@
 <template>
-  <div class="account-wishlist-page">
-    <template if:true={isLoading}>
-      <lightning-spinner
-        alternative-text="Loading wishlist"
-        size="medium"
-      ></lightning-spinner>
-    </template>
-
-    <template if:false={isLoading}>
-      <div class="page-header">
-        <h1>{heading}</h1>
-        <div class="header-actions">
-          <button class="btn-filled" type="button" onclick={handleShareEmail}>
-            Share wishlist via email
-          </button>
-          <button class="btn-outline" type="button" onclick={handleCopyLink}>
-            {copyLinkLabel}
-          </button>
+    <section class="account-wishlist-page" aria-labelledby="wishlistHeading">
+        <div class="page-header">
+            <h1 id="wishlistHeading" class="page-title">{heading}</h1>
+            <div class="header-actions">
+                <button class="header-button" type="button" onclick={handleShareEmail}>Share wishlist via email</button>
+                <button class="header-button" type="button" onclick={handleCopyLink}>{copyLinkLabel}</button>
+            </div>
         </div>
-      </div>
 
-      <template if:true={errorMessage}>
-        <div class="state-card error-state">
-          <p>{errorMessage}</p>
-        </div>
-      </template>
+        <template if:true={isLoading}>
+            <div class="wishlist-state loading-state">
+                <lightning-spinner alternative-text="Loading wishlist" size="medium"></lightning-spinner>
+            </div>
+        </template>
 
-      <template if:true={showEmptyState}>
-        <p class="empty-text">
-          Your wishlist is empty. Click <a href={shopAllUrl}>here</a> to see
-          available products.
-        </p>
-      </template>
+        <template if:false={isLoading}>
+            <template if:true={errorMessage}>
+                <div class="wishlist-state error-state" role="alert">
+                    <p>{errorMessage}</p>
+                </div>
+            </template>
 
-      <template if:true={hasItems}>
-        <div class="wishlist-grid">
-          <template for:each={items} for:item="item">
-            <article key={item.wishlistItemId} class="wishlist-card">
-              <div class="card-image-wrap">
-                <a href={item.detailPath} class="image-link">
-                  <template if:true={item.imageUrl}>
-                    <img
-                      class="product-image"
-                      src={item.imageUrl}
-                      alt={item.productName}
-                      loading="lazy"
-                    />
-                  </template>
-                  <template if:false={item.imageUrl}>
-                    <div class="img-placeholder">
-                      <template if:true={isHydrating}>
-                        <span class="shimmer-block"></span>
-                      </template>
-                      <template if:false={isHydrating}> No image </template>
-                    </div>
-                  </template>
-                </a>
-              </div>
+            <template if:true={showEmptyState}>
+                <div class="wishlist-state empty-state">
+                    <p class="empty-text">Your wishlist is empty. Click <a href={shopAllUrl}>here</a> to see available products.</p>
+                </div>
+            </template>
 
-              <div class="card-body">
-                <a href={item.detailPath} class="product-name"
-                  >{item.productName}</a
-                >
-
-                <template if:true={item.sku}>
-                  <p class="product-sku">ISBN: {item.sku}</p>
-                </template>
-
-                <template if:true={item.priceLabel}>
-                  <p class="starting-label">Starting at</p>
-                  <p class="price-label">{item.priceLabel}</p>
-                </template>
-                <template if:false={item.priceLabel}>
-                  <template if:true={isHydrating}>
-                    <div class="price-shimmer"></div>
-                  </template>
-                </template>
-              </div>
-
-              <div class="card-actions">
-                <a class="btn-view" href={item.detailPath}>View Product</a>
-                <button
-                  class="btn-remove"
-                  type="button"
-                  data-product-id={item.productId}
-                  onclick={handleRemove}
-                  disabled={item.isRemoving}
-                >
-                  <template if:true={item.isRemoving}>Removing...</template>
-                  <template if:false={item.isRemoving}>Remove</template>
-                </button>
-              </div>
-            </article>
-          </template>
-        </div>
-      </template>
-    </template>
-  </div>
+            <template if:true={hasItems}>
+                <div class="wishlist-list">
+                    <template for:each={items} for:item="item">
+                        <article key={item.wishlistItemId} class="wishlist-item-shell">
+                            <c-product-detail-component
+                                product-id={item.productId}
+                                store-name={storeName}
+                                web-store-id={webStoreId}
+                            ></c-product-detail-component>
+                        </article>
+                    </template>
+                </div>
+            </template>
+        </template>
+    </section>
 </template>

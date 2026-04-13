@@ -1,7 +1,6 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8"?>
 <PermissionSet xmlns="http://soap.sforce.com/2006/04/metadata">
-    <description
-  >Grants guest user read access to ProductFormatPricing__c for storefront format tabs</description>
+    <description>Grants guest user read access to ProductFormatPricing__c for storefront format tabs</description>
     <fieldPermissions>
         <editable>false</editable>
         <field>ProductFormatPricing__c.Bulk_Price__c</field>

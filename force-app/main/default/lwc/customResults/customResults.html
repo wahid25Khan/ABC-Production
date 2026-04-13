@@ -532,5 +532,16 @@
       >
       </c-quick-shop-modal>
     </template>
+
+    <template if:true={isSuccessModalOpen}>
+      <c-add-to-cart-success-modal
+        product-name={successProductName}
+        product-image-url={successProductImageUrl}
+        product-url={successProductUrl}
+        cart-url={successCartUrl}
+        onclose={handleSuccessModalClose}
+      >
+      </c-add-to-cart-success-modal>
+    </template>
   </section>
 </template>

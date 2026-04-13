@@ -1,13 +1,13 @@
 {
-  "type": "sfdc_cms__themeLayout",
-  "title": "External Layout",
-  "contentBody": {
-    "component": {
-      "attributes": {},
-      "definition": "b2c_lite_commerce:externalLayout",
-      "id": "f0d78253-48a2-4ad9-8e09-655c66fec18e",
-      "type": "component"
+  "type" : "sfdc_cms__themeLayout",
+  "title" : "External Layout",
+  "contentBody" : {
+    "component" : {
+      "attributes" : { },
+      "definition" : "b2c_lite_commerce:externalLayout",
+      "id" : "f0d78253-48a2-4ad9-8e09-655c66fec18e",
+      "type" : "component"
     }
   },
-  "urlName": "external-layout"
+  "urlName" : "external-layout"
 }

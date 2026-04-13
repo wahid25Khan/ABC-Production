@@ -1,12 +1,10 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8"?>
 <Flow xmlns="http://soap.sforce.com/2006/04/metadata">
     <apiVersion>66.0</apiVersion>
     <areMetricsLoggedToDataCloud>false</areMetricsLoggedToDataCloud>
-    <description
-  >Automatically populates Opportunity # when a new Opportunity is created</description>
+    <description>Automatically populates Opportunity # when a new Opportunity is created</description>
     <environments>Default</environments>
-    <interviewLabel
-  >Auto Populate Opportunity Number {!$Flow.CurrentDateTime}</interviewLabel>
+    <interviewLabel>Auto Populate Opportunity Number {!$Flow.CurrentDateTime}</interviewLabel>
     <label>Auto Populate Opportunity Number</label>
     <processMetadataValues>
         <name>BuilderType</name>

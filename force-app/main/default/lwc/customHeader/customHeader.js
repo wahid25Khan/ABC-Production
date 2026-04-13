@@ -1,7 +1,10 @@
 import { LightningElement, wire } from "lwc";
 import isGuestUser from "@salesforce/user/isGuest";
 import logoResource from "@salesforce/resourceUrl/ABCLogo";
-import { CartSummaryAdapter, refreshCartSummary } from "commerce/cartApi";
+import {
+  CartSummaryAdapter,
+  refreshCartSummary
+} from "commerce/cartApi";
 import {
   decodeUrlValue,
   dispatchStateChange,
@@ -150,10 +153,7 @@ export default class CustomHeader extends LightningElement {
       this.refreshCartCount();
     };
     document.addEventListener("click", this._boundCloseDropdowns);
-    document.addEventListener(
-      "visibilitychange",
-      this._boundCartRefreshHandler
-    );
+    document.addEventListener("visibilitychange", this._boundCartRefreshHandler);
     globalThis.addEventListener(
       "abcstatechange",
       this._boundExternalStateHandler
@@ -180,10 +180,7 @@ export default class CustomHeader extends LightningElement {
       "abcstatechange",
       this._boundExternalStateHandler
     );
-    globalThis.removeEventListener(
-      "statechange",
-      this._boundExternalStateHandler
-    );
+    globalThis.removeEventListener("statechange", this._boundExternalStateHandler);
     globalThis.removeEventListener("storage", this._boundStorageHandler);
     globalThis.removeEventListener("hashchange", this._boundUrlHandler);
     globalThis.removeEventListener("popstate", this._boundUrlHandler);
@@ -261,9 +258,7 @@ export default class CustomHeader extends LightningElement {
     }
 
     const cartItems =
-      cartData?.cartItems ||
-      cartData?.items ||
-      cartData?.cartSummary?.cartItems;
+      cartData?.cartItems || cartData?.items || cartData?.cartSummary?.cartItems;
     if (Array.isArray(cartItems)) {
       return cartItems.reduce((total, item) => {
         const quantity = this.normalizeCartCount(

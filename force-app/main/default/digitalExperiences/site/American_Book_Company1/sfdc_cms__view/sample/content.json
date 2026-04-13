@@ -1,0 +1,204 @@
+{
+  "type" : "sfdc_cms__view",
+  "title" : "sample",
+  "contentBody" : {
+    "component" : {
+      "children" : [ {
+        "children" : [ {
+          "attributes" : {
+            "backgroundImageConfig" : "",
+            "backgroundImageOverlay" : "rgba(0,0,0,0)",
+            "componentSpacerSize" : "",
+            "dxpStyle" : { },
+            "layoutDirectionDesktop" : "row",
+            "layoutDirectionMobile" : "column",
+            "layoutDirectionTablet" : "column",
+            "maxContentWidth" : "",
+            "sectionColumnGutterWidth" : "",
+            "sectionConfig" : "{\"UUID\":\"417222e5-d759-4d03-b4eb-e7f81f0de21b\",\"columns\":[{\"UUID\":\"0171afd2-9a06-4f01-9c3c-d56050f10989\",\"columnName\":\"Column 1\",\"columnKey\":\"col1\",\"columnWidth\":\"12\",\"seedComponents\":[]}]}",
+            "sectionMinHeight" : "",
+            "sectionVerticalAlign" : "flex-start"
+          },
+          "children" : [ {
+            "children" : [ {
+              "attributes" : {
+                "dxpStyle" : { },
+                "hidePromoBanner" : false,
+                "hideWishlistShortcut" : false
+              },
+              "children" : [ {
+                "id" : "86fa2f5a-e625-49d4-a59d-a6c468953c2a",
+                "name" : "promoBanner",
+                "title" : "Rich Text Editor (Promo Banner)",
+                "type" : "region"
+              }, {
+                "children" : [ {
+                  "attributes" : {
+                    "alignment" : "left",
+                    "dxpStyle" : { },
+                    "imageInfo" : "",
+                    "imageInfoMobile" : "",
+                    "logoWidth" : 250
+                  },
+                  "definition" : "dxp_content_layout:siteLogo",
+                  "id" : "66f7bb0a-55b7-4755-92ca-830d162ff9b9",
+                  "type" : "component"
+                } ],
+                "id" : "b2ffd8ff-91fe-4d19-a534-92377b81afd9",
+                "name" : "storeLogo",
+                "title" : "Site Logo",
+                "type" : "region"
+              }, {
+                "children" : [ {
+                  "attributes" : {
+                    "alignment" : "left",
+                    "dxpStyle" : { },
+                    "showBackLabel" : true,
+                    "showHomeLink" : true
+                  },
+                  "definition" : "commerce_builder:drilldownNavigation",
+                  "id" : "4f9dbc82-4a5b-4b91-b65e-4fd69b067a66",
+                  "type" : "component"
+                } ],
+                "id" : "9354e0ed-79d2-4cbd-bb02-a4ea9391b161",
+                "name" : "navigation",
+                "title" : "Multilevel Navigation Menu",
+                "type" : "region"
+              }, {
+                "children" : [ {
+                  "attributes" : {
+                    "borderRadius" : 0,
+                    "dxpStyle" : { },
+                    "placeholderText" : "Enter keyword",
+                    "showSearchButton" : true,
+                    "showSearchSuggestionsSetup" : true
+                  },
+                  "definition" : "commerce_builder:searchInput",
+                  "id" : "f666a302-4bdf-4ff2-80b1-8f80a5e8656c",
+                  "type" : "component"
+                } ],
+                "id" : "45387747-e4a3-42e8-89ba-7b770206bf6e",
+                "name" : "searchInput",
+                "title" : "Search Bar",
+                "type" : "region"
+              }, {
+                "id" : "d9f6b72c-c133-4ec2-9d32-ffbd7abd32e3",
+                "name" : "shopperCopilot",
+                "title" : "Storefront Chat",
+                "type" : "region"
+              }, {
+                "children" : [ {
+                  "attributes" : {
+                    "dxpStyle" : { },
+                    "iconStyle" : "userIcon",
+                    "includeCompanyName" : false,
+                    "logOutLabel" : "Log Out",
+                    "loginLinkText" : "Log In",
+                    "loginLinkTextDecoration" : "{\"underline\":true}",
+                    "loginLinkTextOrientation" : "leftOfIcon",
+                    "menuStyle" : "iconAndName",
+                    "userNameTextOrientation" : "leftOfIcon",
+                    "userProfileMenuNavigationMenuEditor" : "Default_User_Profile_Menu"
+                  },
+                  "definition" : "commerce_builder:userProfileMenu",
+                  "id" : "324969d8-9996-47b7-b8fd-847fab6512a8",
+                  "type" : "component"
+                } ],
+                "id" : "cd1f1864-ef0f-44cc-ab35-cb473d367795",
+                "name" : "myAccount",
+                "title" : "Profile Menu",
+                "type" : "region"
+              }, {
+                "children" : [ {
+                  "attributes" : {
+                    "dxpStyle" : { },
+                    "iconType" : "heart",
+                    "isOutlined" : true
+                  },
+                  "definition" : "commerce_builder:wishlistShortcut",
+                  "id" : "73eef425-65e4-48e3-89ad-63a45eb211f3",
+                  "type" : "component"
+                } ],
+                "id" : "67700e58-93c0-408d-b003-a734bc956fbb",
+                "name" : "wishlist",
+                "title" : "List Badge",
+                "type" : "region"
+              }, {
+                "children" : [ {
+                  "attributes" : {
+                    "checkoutButtonSize" : "standard",
+                    "checkoutButtonText" : "Checkout",
+                    "continueShoppingButtonSize" : "standard",
+                    "continueShoppingButtonText" : "Continue Shopping",
+                    "countType" : "TotalProductCount",
+                    "dxpStyle" : { },
+                    "headerText" : "My Cart",
+                    "paymentMethodSetId" : "",
+                    "recommendationHeaderText" : "You May Also Like",
+                    "recommendationPriceDisplayType" : "displayAllPrices",
+                    "showContinueShoppingButton" : true,
+                    "showCount" : true,
+                    "showExpressCheckoutButton" : false,
+                    "showMiniCart" : true,
+                    "showMiniCartProperties" : true,
+                    "showRecommendation" : false,
+                    "showViewCartButton" : true,
+                    "useManualCapture" : true,
+                    "viewCartButtonSize" : "standard",
+                    "viewCartButtonText" : "View Cart"
+                  },
+                  "definition" : "commerce_builder:cartBadge",
+                  "id" : "d690a95e-5b44-481d-97b0-69a5e7cbe6e4",
+                  "type" : "component"
+                } ],
+                "id" : "9a413b97-8249-4e49-8d68-afa8be400888",
+                "name" : "cart",
+                "title" : "Cart Badge",
+                "type" : "region"
+              } ],
+              "definition" : "commerce_builder:layoutHeader",
+              "id" : "8b9ce06c-b65a-4dd6-9633-dccbd948a2f0",
+              "scopedBrandingSetId" : "sample",
+              "type" : "component"
+            } ],
+            "id" : "0171afd2-9a06-4f01-9c3c-d56050f10989",
+            "name" : "col1",
+            "title" : "Column 1",
+            "type" : "region"
+          } ],
+          "definition" : "community_layout:section",
+          "id" : "417222e5-d759-4d03-b4eb-e7f81f0de21b",
+          "type" : "component"
+        } ],
+        "id" : "52a2db20-66a5-4d5e-9d31-f5af3f28b913",
+        "name" : "content",
+        "title" : "Content",
+        "type" : "region"
+      }, {
+        "children" : [ {
+          "attributes" : {
+            "customHeadTags" : "",
+            "description" : "",
+            "dxpStyle" : { },
+            "pageTitle" : "sample",
+            "recordId" : "{!recordId}"
+          },
+          "definition" : "community_builder:seoAssistant",
+          "id" : "b1fec4e2-a697-490b-9fae-0eb72e92480f",
+          "type" : "component"
+        } ],
+        "id" : "c439b0cd-d654-40d5-aff3-963c682670ed",
+        "name" : "sfdcHiddenRegion",
+        "title" : "sfdcHiddenRegion",
+        "type" : "region"
+      } ],
+      "definition" : "community_layout:sldsFlexibleLayout",
+      "id" : "43498772-b195-48c8-ba46-1775b7cf758f",
+      "type" : "component"
+    },
+    "dataProviders" : [ ],
+    "themeLayoutType" : "Inner",
+    "viewType" : "custom-sample"
+  },
+  "urlName" : "sample"
+}

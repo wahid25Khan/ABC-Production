@@ -10,7 +10,7 @@
     <providerType>Microsoft</providerType>
     <registrationHandler>AutocreatedRegHandler1772220667704</registrationHandler>
     <requireMfa>false</requireMfa>
-    <sendAccessTokenInHeader>false</sendAccessTokenInHeader>
+    <sendAccessTokenInHeader>true</sendAccessTokenInHeader>
     <sendClientCredentialsInHeader>false</sendClientCredentialsInHeader>
     <sendSecretInApis>true</sendSecretInApis>
 </AuthProvider>

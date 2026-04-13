@@ -3,11 +3,20 @@
  * Used by similarProductsByState, similarProductsBySubject, featuredStateBooks, etc.
  */
 
+import { addItemToCart } from "commerce/cartApi";
+import isGuestUser from "@salesforce/user/isGuest";
+
 const DEFAULT_STORE_NAME = "AmericanBookCompany";
+export const CART_UPDATED_EVENT_NAME = "abccartupdated";
 
 export const STOREFRONT_GUEST_REQUEST_PARAMS = Object.freeze({
   language: "en-US",
   asGuest: "true",
+  htmlEncode: "false"
+});
+
+export const STOREFRONT_REQUEST_PARAMS = Object.freeze({
+  language: "en-US",
   htmlEncode: "false"
 });
 
@@ -20,6 +29,28 @@ export function applyStorefrontGuestParams(params) {
   Object.entries(STOREFRONT_GUEST_REQUEST_PARAMS).forEach(([key, value]) => {
     nextParams.set(key, value);
   });
+
+  return nextParams;
+}
+
+export function applyStorefrontRequestParams(
+  params,
+  { asGuest = isGuestUser } = {}
+) {
+  const nextParams =
+    params instanceof URLSearchParams
+      ? params
+      : new URLSearchParams(params || {});
+
+  Object.entries(STOREFRONT_REQUEST_PARAMS).forEach(([key, value]) => {
+    nextParams.set(key, value);
+  });
+
+  if (asGuest) {
+    nextParams.set("asGuest", "true");
+  } else {
+    nextParams.delete("asGuest");
+  }
 
   return nextParams;
 }
@@ -120,6 +151,41 @@ export function buildProductDetailPath(
     .replaceAll(/^-+|-+$/g, "");
 
   return `/${storeName}/product/${recordName || "detail"}/${product.id}`;
+}
+
+export function buildCartPath(storeName = DEFAULT_STORE_NAME) {
+  return `/${storeName}/cart`;
+}
+
+export function buildAddToCartEndpoint({
+  storeName = DEFAULT_STORE_NAME,
+  webStoreId,
+  cartStateOrId = "active",
+  asGuest = isGuestUser
+} = {}) {
+  const targetCart = String(cartStateOrId || "active").trim() || "active";
+  const params = applyStorefrontRequestParams(new URLSearchParams(), {
+    asGuest
+  });
+
+  return `/${storeName}/webruntime/api/services/data/v66.0/commerce/webstores/${webStoreId}/carts/${targetCart}/cart-items?${params.toString()}`;
+}
+
+export function buildAddToCartSuccessModalData(
+  product,
+  storeName = DEFAULT_STORE_NAME
+) {
+  const safeProduct = product && typeof product === "object" ? product : null;
+  const normalizedProductId = String(safeProduct?.id || "").trim();
+
+  return {
+    productName: firstString([safeProduct?.name]) || "Product",
+    productImageUrl: normalizeImageUrl(resolveProductImageUrl(safeProduct)),
+    productUrl: normalizedProductId
+      ? buildProductDetailPath(safeProduct, storeName)
+      : "",
+    cartUrl: buildCartPath(storeName)
+  };
 }
 
 /**
@@ -358,6 +424,153 @@ export function resolveCurrencyIsoCode(item) {
 export function parsePositiveInteger(value) {
   const parsed = Number.parseInt(value, 10);
   return Number.isFinite(parsed) && parsed > 0 ? parsed : null;
+}
+
+export function dispatchCartUpdated(detail = {}) {
+  if (
+    typeof globalThis.dispatchEvent !== "function" ||
+    typeof CustomEvent !== "function"
+  ) {
+    return;
+  }
+
+  globalThis.dispatchEvent(
+    new CustomEvent(CART_UPDATED_EVENT_NAME, {
+      detail
+    })
+  );
+}
+
+async function addProductToCartViaRest({
+  productId,
+  quantity,
+  storeName = DEFAULT_STORE_NAME,
+  webStoreId,
+  cartStateOrId = "active",
+  asGuest = isGuestUser
+} = {}) {
+  if (!webStoreId) {
+    return {
+      ok: false,
+      error: new Error("Missing webStoreId.")
+    };
+  }
+
+  const response = await fetch(
+    buildAddToCartEndpoint({
+      storeName,
+      webStoreId,
+      cartStateOrId,
+      asGuest
+    }),
+    {
+      method: "POST",
+      credentials: "include",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        productId,
+        quantity,
+        type: "Product"
+      })
+    }
+  );
+
+  if (!response.ok) {
+    const raw = await response.text();
+    let parsed;
+
+    try {
+      parsed = raw ? JSON.parse(raw) : null;
+    } catch {
+      parsed = raw;
+    }
+
+    const message =
+      parsed?.message ||
+      parsed?.[0]?.message ||
+      `Add to cart failed with status ${response.status}.`;
+
+    return {
+      ok: false,
+      error: new Error(message),
+      response,
+      parsed
+    };
+  }
+
+  let result = null;
+  try {
+    result = await response.json();
+  } catch {
+    result = null;
+  }
+
+  return {
+    ok: true,
+    result,
+    response
+  };
+}
+
+export async function addProductToCart({
+  productId,
+  quantity,
+  storeName = DEFAULT_STORE_NAME,
+  webStoreId
+} = {}) {
+  const normalizedProductId = String(productId || "").trim();
+  const normalizedQuantity = parsePositiveInteger(quantity) ?? 1;
+
+  if (!normalizedProductId) {
+    return {
+      ok: false,
+      error: new Error("Missing productId.")
+    };
+  }
+
+  try {
+    const result = await addItemToCart(
+      normalizedProductId,
+      normalizedQuantity
+    );
+
+    dispatchCartUpdated({
+      productId: normalizedProductId,
+      quantity: normalizedQuantity
+    });
+
+    return {
+      ok: true,
+      result
+    };
+  } catch (error) {
+    const fallback = await addProductToCartViaRest({
+      productId: normalizedProductId,
+      quantity: normalizedQuantity,
+      storeName,
+      webStoreId,
+      cartStateOrId: "active",
+      asGuest: isGuestUser
+    });
+
+    if (fallback.ok) {
+      dispatchCartUpdated({
+        productId: normalizedProductId,
+        quantity: normalizedQuantity
+      });
+      return fallback;
+    }
+
+    return {
+      ok: false,
+      error: fallback.error || error,
+      primaryError: error,
+      fallbackError: fallback.error
+    };
+  }
 }
 
 /**

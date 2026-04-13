@@ -1,0 +1,152 @@
+<template>
+    <div style="max-width: 1300px; margin: 0 auto; padding: 40px 20px; font-family: 'Arial', sans-serif; box-sizing: border-box;">
+  <div style="display:flex; flex-wrap:wrap; gap:40px; align-items:flex-start; justify-content:center;">
+
+    <div style="flex: 0 0 300px; max-width: 320px; position:relative;">
+      <div style="position:absolute; top:15px; left:-8px; background:#d32f2f; color:white; padding:6px 16px; font-weight:bold; font-size:14px; border-radius:2px; box-shadow:0 4px 6px rgba(0,0,0,0.2); z-index:10;">
+        Featured
+        <span style="position:absolute; bottom:-6px; left:0; border-top:6px solid #9a0000; border-left:8px solid transparent; width:0; height:0;"></span>
+      </div>
+
+      <a href="/products/foundations-kindergarten-mathematics" style="text-decoration: none;">
+        <img src="https://cms-assets.americanbookcompany.com/cache/containers/cover_images/ga-k-12-standards-success-grade-6-ela-framed.png/edf4a3ed5346deb1ec9f630bf115ba6e/ga-k-12-standards-success-grade-6-ela-framed.webp"
+             alt="Georgia K-12 Standards Success Grade 6 ELA cover"
+             style="width:100%; border:1px solid #e5e7eb; box-shadow:0 10px 15px -3px rgba(0,0,0,0.15); border-radius: 4px; display: block;" />
+        <div style="margin-top:15px; font-weight:bold; font-size: 18px; color: #1f2937; line-height: 1.3;">
+          Georgia K-12 Standards Success Grade 6 ELA
+        </div>
+      </a>
+    </div>
+
+    <div style="flex: 1 1 600px; display:flex; flex-wrap:wrap; gap:25px; justify-content:flex-start;">
+
+      <div class="book-card" style="width: 190px; display: flex; flex-direction: column;">
+        <div style="position: relative; width: 100%;">
+          <img src="https://cms-assets.americanbookcompany.com/cache/containers/cover_images/ga-k-12-standards-success-grade-6-ela-framed.png/edf4a3ed5346deb1ec9f630bf115ba6e/ga-k-12-standards-success-grade-6-ela-framed.webp"
+               alt="Georgia K-12 Standards Success Grade 6 ELA cover"
+               style="width:100%; height:auto; border:1px solid #e5e7eb; box-shadow:0 4px 6px -1px rgba(0,0,0,0.1); border-radius:4px; display:block;" />
+          
+          <div class="btn-container" style="position: absolute; bottom: 12px; left: 0; width: 100%; display: flex; flex-direction: column; gap: 8px; align-items: center; z-index: 10;">
+            <button disabled style="background: #f8fafc; border: 1px solid #cbd5e1; color: #475569; padding: 4px 0; font-size: 12px; font-weight: bold; border-radius: 20px; width: 75%; text-align: center; cursor: default;">Look Inside</button>
+            <button class="quick-shop-btn" style="background: rgba(255,255,255,0.95); border: 1.5px solid #1175bc; color: #1175bc; padding: 4px 0; font-size: 12px; font-weight: bold; text-decoration: none; border-radius: 20px; width: 75%; text-align: center; box-shadow: 0 1px 3px rgba(0,0,0,0.1); transition: background 0.2s; cursor: pointer;" onclick={openModal}>Quick Shop</button>
+          </div>
+        </div>
+        <a href="#" style="text-decoration: none;">
+          <div style="margin-top: 12px; font-weight: bold; font-size: 14px; color: #1f2937; line-height: 1.3; height: 3.9em; overflow: hidden;">Georgia K-12 Standards Success Grade 6 ELA</div>
+        </a>
+      </div>
+
+      <div class="book-card" style="width: 190px; display: flex; flex-direction: column;">
+        <div style="position: relative; width: 100%;">
+          <img src="https://cms-assets.americanbookcompany.com/cache/containers/cover_images/ga-k-12-standards-success-grade-1-math-72-frame.png/77a18102aa655c4ac8cced27ce252af9/ga-k-12-standards-success-grade-1-math-72-frame.webp"
+               alt="Georgia K-12 Standards Success Grade 1 Mathematics cover"
+               style="width:100%; height:auto; border:1px solid #e5e7eb; box-shadow:0 4px 6px -1px rgba(0,0,0,0.1); border-radius:4px; display:block;" />
+          <div class="btn-container" style="position: absolute; bottom: 12px; left: 0; width: 100%; display: flex; flex-direction: column; gap: 8px; align-items: center; z-index: 10;">
+            <button disabled style="background: #f8fafc; border: 1px solid #cbd5e1; color: #475569; padding: 4px 0; font-size: 12px; font-weight: bold; border-radius: 20px; width: 75%; text-align: center; cursor: default;">Look Inside</button>
+            <button class="quick-shop-btn" style="background: rgba(255,255,255,0.95); border: 1.5px solid #1175bc; color: #1175bc; padding: 4px 0; font-size: 12px; font-weight: bold; text-decoration: none; border-radius: 20px; width: 75%; text-align: center; box-shadow: 0 1px 3px rgba(0,0,0,0.1); transition: background 0.2s; cursor: pointer;" onclick={openModal}>Quick Shop</button>
+          </div>
+        </div>
+        <a href="#" style="text-decoration: none;">
+          <div style="margin-top: 12px; font-weight: bold; font-size: 14px; color: #1f2937; line-height: 1.3; height: 3.9em; overflow: hidden;">Georgia K-12 Standards Success Grade 1 Mathematics</div>
+        </a>
+      </div>
+
+      <div class="book-card" style="width: 190px; display: flex; flex-direction: column;">
+        <div style="position: relative; width: 100%;">
+          <img src="https://cms-assets.americanbookcompany.com/cache/containers/cover_images/ga-k-12-standards-success-grade-2-math-72-frame.png/7446921218745de313e19469b2c24f53/ga-k-12-standards-success-grade-2-math-72-frame.webp"
+               alt="Georgia K-12 Standards Success Grade 2 Mathematics cover"
+               style="width:100%; height:auto; border:1px solid #e5e7eb; box-shadow:0 4px 6px -1px rgba(0,0,0,0.1); border-radius:4px; display:block;" />
+          <div class="btn-container" style="position: absolute; bottom: 12px; left: 0; width: 100%; display: flex; flex-direction: column; gap: 8px; align-items: center; z-index: 10;">
+            <button disabled style="background: #f8fafc; border: 1px solid #cbd5e1; color: #475569; padding: 4px 0; font-size: 12px; font-weight: bold; border-radius: 20px; width: 75%; text-align: center; cursor: default;">Look Inside</button>
+            <button class="quick-shop-btn" style="background: rgba(255,255,255,0.95); border: 1.5px solid #1175bc; color: #1175bc; padding: 4px 0; font-size: 12px; font-weight: bold; text-decoration: none; border-radius: 20px; width: 75%; text-align: center; box-shadow: 0 1px 3px rgba(0,0,0,0.1); transition: background 0.2s; cursor: pointer;" onclick={openModal}>Quick Shop</button>
+          </div>
+        </div>
+        <a href="#" style="text-decoration: none;">
+          <div style="margin-top: 12px; font-weight: bold; font-size: 14px; color: #1f2937; line-height: 1.3; height: 3.9em; overflow: hidden;">Georgia K-12 Standards Success Grade 2 Mathematics</div>
+        </a>
+      </div>
+
+      <div class="book-card" style="width: 190px; display: flex; flex-direction: column;">
+        <div style="position: relative; width: 100%;">
+          <img src="https://cms-assets.americanbookcompany.com/cache/containers/cover_images/ga_k-12_stan_succ_lit&comp_i-72.png/422c916850ea23de09fca7b411e14ca6/ga_k-12_stan_succ_lit&comp_i-72.webp"
+               alt="Georgia K-12 Standards Success Literature and Composition I cover"
+               style="width:100%; height:auto; border:1px solid #e5e7eb; box-shadow:0 4px 6px -1px rgba(0,0,0,0.1); border-radius:4px; display:block;" />
+          <div class="btn-container" style="position: absolute; bottom: 12px; left: 0; width: 100%; display: flex; flex-direction: column; gap: 8px; align-items: center; z-index: 10;">
+            <button disabled style="background: #f8fafc; border: 1px solid #cbd5e1; color: #475569; padding: 4px 0; font-size: 12px; font-weight: bold; border-radius: 20px; width: 75%; text-align: center; cursor: default;">Look Inside</button>
+            <button class="quick-shop-btn" style="background: rgba(255,255,255,0.95); border: 1.5px solid #1175bc; color: #1175bc; padding: 4px 0; font-size: 12px; font-weight: bold; text-decoration: none; border-radius: 20px; width: 75%; text-align: center; box-shadow: 0 1px 3px rgba(0,0,0,0.1); transition: background 0.2s; cursor: pointer;" onclick={openModal}>Quick Shop</button>
+          </div>
+        </div>
+        <a href="#" style="text-decoration: none;">
+          <div style="margin-top: 12px; font-weight: bold; font-size: 14px; color: #1f2937; line-height: 1.3; height: 3.9em; overflow: hidden;">Georgia K-12 Standards Success Literature &...</div>
+        </a>
+      </div>
+
+      <div class="book-card" style="width: 190px; display: flex; flex-direction: column;">
+        <div style="position: relative; width: 100%;">
+          <img src="https://cms-assets.americanbookcompany.com/cache/containers/cover_images/georgia-k-12-standards-success-literature-&-composition-ii-72.png/55aa40a1eea47fcbc9ddd0fef10ab220/georgia-k-12-standards-success-literature-&-composition-ii-72.webp"
+               alt="Georgia K-12 Standards Success Literature and Composition II cover"
+               style="width:100%; height:auto; border:1px solid #e5e7eb; box-shadow:0 4px 6px -1px rgba(0,0,0,0.1); border-radius:4px; display:block;" />
+          <div class="btn-container" style="position: absolute; bottom: 12px; left: 0; width: 100%; display: flex; flex-direction: column; gap: 8px; align-items: center; z-index: 10;">
+            <button disabled style="background: #f8fafc; border: 1px solid #cbd5e1; color: #475569; padding: 4px 0; font-size: 12px; font-weight: bold; border-radius: 20px; width: 75%; text-align: center; cursor: default;">Look Inside</button>
+            <button class="quick-shop-btn" style="background: rgba(255,255,255,0.95); border: 1.5px solid #1175bc; color: #1175bc; padding: 4px 0; font-size: 12px; font-weight: bold; text-decoration: none; border-radius: 20px; width: 75%; text-align: center; box-shadow: 0 1px 3px rgba(0,0,0,0.1); transition: background 0.2s; cursor: pointer;" onclick={openModal}>Quick Shop</button>
+          </div>
+        </div>
+        <a href="#" style="text-decoration: none;">
+          <div style="margin-top: 12px; font-weight: bold; font-size: 14px; color: #1f2937; line-height: 1.3; height: 3.9em; overflow: hidden;">Georgia K-12 Standards Success Literature &...</div>
+        </a>
+      </div>
+
+      <div class="book-card" style="width: 190px; display: flex; flex-direction: column;">
+        <div style="position: relative; width: 100%;">
+          <img src="https://cms-assets.americanbookcompany.com/cache/containers/cover_images/ga_k-12_stan_succ_lit&comp_iii-72.png/46406d44c42937279c9e0c11dfbf539d/ga_k-12_stan_succ_lit&comp_iii-72.webp"
+               alt="Georgia K-12 Standards Success Literature and Composition III cover"
+               style="width:100%; height:auto; border:1px solid #e5e7eb; box-shadow:0 4px 6px -1px rgba(0,0,0,0.1); border-radius:4px; display:block;" />
+          <div class="btn-container" style="position: absolute; bottom: 12px; left: 0; width: 100%; display: flex; flex-direction: column; gap: 8px; align-items: center; z-index: 10;">
+            <button disabled style="background: #f8fafc; border: 1px solid #cbd5e1; color: #475569; padding: 4px 0; font-size: 12px; font-weight: bold; border-radius: 20px; width: 75%; text-align: center; cursor: default;">Look Inside</button>
+            <button class="quick-shop-btn" style="background: rgba(255,255,255,0.95); border: 1.5px solid #1175bc; color: #1175bc; padding: 4px 0; font-size: 12px; font-weight: bold; text-decoration: none; border-radius: 20px; width: 75%; text-align: center; box-shadow: 0 1px 3px rgba(0,0,0,0.1); transition: background 0.2s; cursor: pointer;" onclick={openModal}>Quick Shop</button>
+          </div>
+        </div>
+        <a href="#" style="text-decoration: none;">
+          <div style="margin-top: 12px; font-weight: bold; font-size: 14px; color: #1f2937; line-height: 1.3; height: 3.9em; overflow: hidden;">Georgia K-12 Standards Success Literature &...</div>
+        </a>
+      </div>
+
+      <div class="book-card" style="width: 190px; display: flex; flex-direction: column;">
+        <div style="position: relative; width: 100%;">
+          <img src="https://cms-assets.americanbookcompany.com/cache/containers/cover_images/ga-k-12-standards-success-grade-7-ela-72.png/fe9feca355cf72d6ba1b7cae27619130/ga-k-12-standards-success-grade-7-ela-72.webp"
+               alt="Georgia K-12 Standards Success Grade 7 ELA cover"
+               style="width:100%; height:auto; border:1px solid #e5e7eb; box-shadow:0 4px 6px -1px rgba(0,0,0,0.1); border-radius:4px; display:block;" />
+          <div class="btn-container" style="position: absolute; bottom: 12px; left: 0; width: 100%; display: flex; flex-direction: column; gap: 8px; align-items: center; z-index: 10;">
+            <button disabled style="background: #f8fafc; border: 1px solid #cbd5e1; color: #475569; padding: 4px 0; font-size: 12px; font-weight: bold; border-radius: 20px; width: 75%; text-align: center; cursor: default;">Look Inside</button>
+            <button class="quick-shop-btn" style="background: rgba(255,255,255,0.95); border: 1.5px solid #1175bc; color: #1175bc; padding: 4px 0; font-size: 12px; font-weight: bold; text-decoration: none; border-radius: 20px; width: 75%; text-align: center; box-shadow: 0 1px 3px rgba(0,0,0,0.1); transition: background 0.2s; cursor: pointer;" onclick={openModal}>Quick Shop</button>
+          </div>
+        </div>
+        <a href="#" style="text-decoration: none;">
+          <div style="margin-top: 12px; font-weight: bold; font-size: 14px; color: #1f2937; line-height: 1.3; height: 3.9em; overflow: hidden;">Georgia K-12 Standards Success Grade 7 ELA</div>
+        </a>
+      </div>
+
+      <div class="book-card" style="width: 190px; display: flex; flex-direction: column;">
+        <div style="position: relative; width: 100%;">
+          <img src="https://cms-assets.americanbookcompany.com/cache/containers/cover_images/ga-k-12-standards-success-grade-8-ela-72.png/c104731a90627d19266d09ab6e679d38/ga-k-12-standards-success-grade-8-ela-72.webp"
+               alt="Georgia K-12 Standards Success Grade 8 ELA cover"
+               style="width:100%; height:auto; border:1px solid #e5e7eb; box-shadow:0 4px 6px -1px rgba(0,0,0,0.1); border-radius:4px; display:block;" />
+          <div class="btn-container" style="position: absolute; bottom: 12px; left: 0; width: 100%; display: flex; flex-direction: column; gap: 8px; align-items: center; z-index: 10;">
+            <button disabled style="background: #f8fafc; border: 1px solid #cbd5e1; color: #475569; padding: 4px 0; font-size: 12px; font-weight: bold; border-radius: 20px; width: 75%; text-align: center; cursor: default;">Look Inside</button>
+            <button class="quick-shop-btn" style="background: rgba(255,255,255,0.95); border: 1.5px solid #1175bc; color: #1175bc; padding: 4px 0; font-size: 12px; font-weight: bold; text-decoration: none; border-radius: 20px; width: 75%; text-align: center; box-shadow: 0 1px 3px rgba(0,0,0,0.1); transition: background 0.2s; cursor: pointer;" onclick={openModal}>Quick Shop</button>
+          </div>
+        </div>
+        <a href="#" style="text-decoration: none;">
+          <div style="margin-top: 12px; font-weight: bold; font-size: 14px; color: #1f2937; line-height: 1.3; height: 3.9em; overflow: hidden;">Georgia K-12 Standards Success Grade 8 ELA</div>
+        </a>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<template if:true={isOpen}>
+  <c-quick-shop-modal onclose={closeModal}>
+  </c-quick-shop-modal>
+</template>
+</template>

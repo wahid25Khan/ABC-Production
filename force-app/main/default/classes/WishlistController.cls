@@ -55,7 +55,7 @@ public with sharing class WishlistController {
      * @param webStoreId The active web store identifier.
      * @return Wrapper containing wishlist items or an explanatory message.
      */
-    @AuraEnabled(cacheable=true)
+    @AuraEnabled
     public static WishlistPageResult getWishlistPage(String webStoreId) {
         WishlistPageResult result = new WishlistPageResult();
         result.success = true;
@@ -103,7 +103,7 @@ public with sharing class WishlistController {
      * @param webStoreId The active web store identifier.
      * @return Wrapper describing the product's wishlist state.
      */
-    @AuraEnabled(cacheable=true)
+    @AuraEnabled
     public static FavoriteStateResult getFavoriteState(String productId, String webStoreId) {
         FavoriteStateResult result = createResult(false);
 

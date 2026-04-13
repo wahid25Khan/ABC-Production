@@ -8,7 +8,8 @@ import {
   readStateFromStorage,
   writeStateToStorage,
   decodeUrlValue,
-  DEFAULT_WEBSTORE_ID
+  DEFAULT_WEBSTORE_ID,
+  dispatchWishlistUpdated
 } from "c/utils";
 
 const CHECKOUT_STAGE_KEY = "abc_checkout_stage";
@@ -19,8 +20,7 @@ const GUEST_LOGIN_GUARD_PATHS = new Set([
   "/AmericanBookCompany/native-mylists",
   "/AmericanBookCompany/my-orders"
 ]);
-const CART_PRODUCT_DETAIL_PATTERN =
-  /\/product\/[^/]+\/([A-Za-z0-9]{15,18})(?:[?#]|$)/;
+const CART_PRODUCT_DETAIL_PATTERN = /\/product\/[^/]+\/([A-Za-z0-9]{15,18})(?:[?#]|$)/;
 
 export default class StateFilterLwc extends LightningElement {
   @api refinementKey = "State__c";
@@ -521,7 +521,7 @@ export default class StateFilterLwc extends LightningElement {
       this.findElementByExactText(["button"], "Skip to Top"),
       this.findElementByExactText(["button"], "Previous"),
       this.findElementByExactText(["button"], "Next"),
-      this.findElementByExactText(["button"], "Quantity Help")
+      this.findElementByExactText(["button"], "Quantity Help"),
     ];
 
     elementsToHide.forEach((el) => {
@@ -601,14 +601,12 @@ export default class StateFilterLwc extends LightningElement {
             article.dataset.abcFormat = match[2]; // e.g. "Color Print + Digital"
           }
           // Strip suffix from every text node in the name area
-          article
-            .querySelectorAll(".item-name a, .item-name p")
-            .forEach((el) => {
-              const t = (el.textContent || "").trim();
-              if (t.includes(" - ")) {
-                el.textContent = t.replace(/\s+-\s+.+$/, "");
-              }
-            });
+          article.querySelectorAll(".item-name a, .item-name p").forEach((el) => {
+            const t = (el.textContent || "").trim();
+            if (t.includes(" - ")) {
+              el.textContent = t.replace(/\s+-\s+.+$/, "");
+            }
+          });
         }
       });
   }
@@ -643,12 +641,7 @@ export default class StateFilterLwc extends LightningElement {
         const includesEl = this._ensureCartIncludesEl(container, article);
         this._attachCartActionsToIncludes(container, includesEl);
         const col3Wrap = this._ensureCartCol3Wrap(container);
-        this._updateCartCol3Contents(
-          col3Wrap,
-          container,
-          article,
-          BULK_THRESHOLD
-        );
+        this._updateCartCol3Contents(col3Wrap, container, article, BULK_THRESHOLD);
       });
   }
 
@@ -711,8 +704,7 @@ export default class StateFilterLwc extends LightningElement {
     const format = article.dataset.abcFormat;
     let includesEl = container.querySelector(".abc-cart-includes");
     if (!format) {
-      if (includesEl)
-        includesEl.style.setProperty("display", "none", "important");
+      if (includesEl) includesEl.style.setProperty("display", "none", "important");
       return null;
     }
     if (!includesEl) {
@@ -720,11 +712,7 @@ export default class StateFilterLwc extends LightningElement {
       includesEl.className = "abc-cart-includes";
       // Insert after .item-name in the DOM so grid ordering stays correct
       const nameDiv = container.querySelector(".item-name");
-      if (nameDiv) {
-        nameDiv.after(includesEl);
-      } else {
-        container.appendChild(includesEl);
-      }
+      nameDiv ? nameDiv.after(includesEl) : container.appendChild(includesEl);
     }
     const displayFormat = format
       .split("+")
@@ -786,16 +774,8 @@ export default class StateFilterLwc extends LightningElement {
       col3Wrap.className = "abc-cart-col3-wrap";
       container.appendChild(col3Wrap);
     }
-    col3Wrap.style.setProperty(
-      "grid-column",
-      isDesktop ? "3" : "2",
-      "important"
-    );
-    col3Wrap.style.setProperty(
-      "grid-row",
-      isDesktop ? "1 / span 2" : "3",
-      "important"
-    );
+    col3Wrap.style.setProperty("grid-column", isDesktop ? "3" : "2", "important");
+    col3Wrap.style.setProperty("grid-row", isDesktop ? "1 / span 2" : "3", "important");
     col3Wrap.style.setProperty("display", "flex", "important");
     col3Wrap.style.setProperty("flex-direction", "column", "important");
     col3Wrap.style.setProperty(
@@ -841,15 +821,13 @@ export default class StateFilterLwc extends LightningElement {
     if (qtySelector && qtySelector.parentElement !== col3Wrap) {
       col3Wrap.appendChild(qtySelector);
     }
-    if (qtySelector) {
-      qtySelector.style.setProperty("width", "100%", "important");
-      qtySelector.style.setProperty("max-width", "144px", "important");
-      qtySelector.style.setProperty(
-        "align-self",
-        isDesktop ? "flex-end" : "flex-start",
-        "important"
-      );
-    }
+    qtySelector?.style.setProperty("width", "100%", "important");
+    qtySelector?.style.setProperty("max-width", "144px", "important");
+    qtySelector?.style.setProperty(
+      "align-self",
+      isDesktop ? "flex-end" : "flex-start",
+      "important"
+    );
   }
 
   _updateCartUpsell(col3Wrap, unitPriceDiv, currentQty, bulkThreshold) {
@@ -867,11 +845,7 @@ export default class StateFilterLwc extends LightningElement {
         "important"
       );
       upsellEl.style.setProperty("line-height", "1.3", "important");
-      if (unitPriceDiv?.nextSibling) {
-        unitPriceDiv.nextSibling.before(upsellEl);
-      } else {
-        col3Wrap.appendChild(upsellEl);
-      }
+      unitPriceDiv?.nextSibling?.before(upsellEl) ?? col3Wrap.appendChild(upsellEl);
     }
     upsellEl.style.setProperty(
       "text-align",
@@ -975,11 +949,7 @@ export default class StateFilterLwc extends LightningElement {
     const offset = Math.round(firstImageTop - summaryTop);
 
     if (offset > 0) {
-      summaryContent.style.setProperty(
-        "margin-top",
-        `${offset}px`,
-        "important"
-      );
+      summaryContent.style.setProperty("margin-top", `${offset}px`, "important");
     }
   }
 
@@ -1185,6 +1155,13 @@ export default class StateFilterLwc extends LightningElement {
       }
 
       this.cartWishlistStates.set(productId, Boolean(result?.favorite));
+      dispatchWishlistUpdated({
+        favorite: Boolean(result?.favorite),
+        productId,
+        webStoreId: DEFAULT_WEBSTORE_ID,
+        wishlistId: result?.wishlistId || null,
+        wishlistItemId: result?.wishlistItemId || null
+      });
     } catch {
       this.cartWishlistStates.set(productId, previousState);
     } finally {

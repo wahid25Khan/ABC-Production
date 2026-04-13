@@ -8,6 +8,23 @@
 import getFavoriteStateApex from "@salesforce/apex/WishlistController.getFavoriteState";
 import toggleFavoriteApex from "@salesforce/apex/WishlistController.toggleFavorite";
 
+export const WISHLIST_UPDATED_EVENT_NAME = "abcwishlistupdated";
+
+export function dispatchWishlistUpdated(detail = {}) {
+    if (
+        typeof globalThis.dispatchEvent !== "function" ||
+        typeof CustomEvent !== "function"
+    ) {
+        return;
+    }
+
+    globalThis.dispatchEvent(
+        new CustomEvent(WISHLIST_UPDATED_EVENT_NAME, {
+            detail
+        })
+    );
+}
+
 /**
  * Fetch the current favorite state for a product and update the host component.
  *
@@ -63,14 +80,18 @@ export async function doToggleFavorite(host, productId, webStoreId) {
 
         host.isFavorite = Boolean(result?.favorite);
         host.favoriteProductId = productId;
+        const detail = {
+            favorite: host.isFavorite,
+            productId,
+            webStoreId,
+            wishlistId: result?.wishlistId || null,
+            wishlistItemId: result?.wishlistItemId || null
+        };
+
+        dispatchWishlistUpdated(detail);
         host.dispatchEvent(
             new CustomEvent("favoritechange", {
-                detail: {
-                    favorite: host.isFavorite,
-                    productId,
-                    wishlistId: result?.wishlistId || null,
-                    wishlistItemId: result?.wishlistItemId || null
-                }
+                detail
             })
         );
     } catch {

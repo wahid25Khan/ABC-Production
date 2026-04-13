@@ -1,23 +1,20 @@
 {
-  "type": "sfdc_cms__themeLayout",
-  "title": "Checkout Layout",
-  "contentBody": {
-    "component": {
-      "children": [
-        {
-          "attributes": {
-            "flexAlignment": "flex-end"
-          },
-          "id": "d1099492-5f35-4d73-8f01-04e86e2cf6a5"
+  "type" : "sfdc_cms__themeLayout",
+  "title" : "Checkout Layout",
+  "contentBody" : {
+    "component" : {
+      "children" : [ {
+        "attributes" : {
+          "flexAlignment" : "flex-end"
         },
-        {
-          "attributes": {
-            "pickerButtonAlignment": "right"
-          },
-          "id": "e0e14272-5e50-4fde-ab60-dfb711971b64"
-        }
-      ]
+        "id" : "d1099492-5f35-4d73-8f01-04e86e2cf6a5"
+      }, {
+        "attributes" : {
+          "pickerButtonAlignment" : "right"
+        },
+        "id" : "e0e14272-5e50-4fde-ab60-dfb711971b64"
+      } ]
     }
   },
-  "urlName": "checkout-layout"
+  "urlName" : "checkout-layout"
 }

@@ -1,0 +1,127 @@
+<template>
+    <div class="po-shell">
+        <!-- Back to cart -->
+        <div class="back-row">
+            <button type="button" class="back-link" onclick={handleBackToCart}>
+                <lightning-icon icon-name="utility:chevronleft" size="xx-small"></lightning-icon>
+                <span>Return to cart</span>
+            </button>
+        </div>
+
+        <!-- Guest user message -->
+        <template lwc:if={isGuestUser}>
+            <div class="auth-message">
+                <p>Please sign in to submit a purchase order.</p>
+                <a href="/login" class="btn-primary" style="text-decoration:none; display:inline-flex; width:auto;">Sign In</a>
+            </div>
+        </template>
+
+        <template lwc:else>
+            <!-- Form state -->
+            <template lwc:if={isSubmitted}>
+                <div class="success-panel">
+                    <div class="success-icon-wrap">
+                        <svg class="success-check" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                            <circle cx="12" cy="12" r="11" stroke="#15803d" stroke-width="2"/>
+                            <path d="M7 12.5l3 3 7-7" stroke="#15803d" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </div>
+
+                    <h2 class="success-heading">Purchase Order Submitted</h2>
+                    <p class="success-ref">Reference Number: <strong>{caseNumber}</strong></p>
+                    <p class="success-desc">Your purchase order has been received. Our team will review it and follow up within 1-2 business days.</p>
+
+                    <!-- File upload section -->
+                    <div class="upload-section">
+                        <h3 class="upload-heading">Attach Your PO Document</h3>
+                        <p class="upload-desc">Upload your signed purchase order document (PDF, Word, Excel, or image).</p>
+                        <lightning-file-upload
+                            label="Upload PO Document"
+                            name="poDocument"
+                            accept={acceptedFormats}
+                            record-id={caseId}
+                            onuploadfinished={handleUploadFinished}
+                            multiple>
+                        </lightning-file-upload>
+                        <template lwc:if={filesUploaded}>
+                            <div class="upload-success">File(s) uploaded successfully.</div>
+                        </template>
+                    </div>
+
+                    <div class="success-actions">
+                        <button class="btn-outline" onclick={handleBackToCart}>Return to Cart</button>
+                    </div>
+                </div>
+            </template>
+
+            <!-- Form state: not yet submitted -->
+            <template lwc:else>
+                <h1 class="page-heading">Submit a Purchase Order</h1>
+                <p class="page-desc">Fill out the form below and attach your purchase order document. Our team will process your order within 1-2 business days.</p>
+
+                <template lwc:if={errorMessage}>
+                    <div class="error-banner" role="alert">{errorMessage}</div>
+                </template>
+
+                <div class="form-grid">
+                    <!-- PO Number -->
+                    <div class="form-group">
+                        <label for="po-number" class="form-label">PO Number <span class="required">*</span></label>
+                        <input id="po-number" type="text" class="form-input"
+                               value={poNumber} oninput={handlePONumberChange}
+                               placeholder="e.g. PO-2026-001" required />
+                    </div>
+
+                    <!-- School/District -->
+                    <div class="form-group">
+                        <label for="school" class="form-label">School / District Name <span class="required">*</span></label>
+                        <input id="school" type="text" class="form-input"
+                               value={schoolDistrict} oninput={handleSchoolChange}
+                               placeholder="e.g. Atlanta Public Schools" required />
+                    </div>
+
+                    <!-- Contact Name -->
+                    <div class="form-group">
+                        <label for="contact-name" class="form-label">Contact Name <span class="required">*</span></label>
+                        <input id="contact-name" type="text" class="form-input"
+                               value={contactName} oninput={handleNameChange}
+                               placeholder="Full name" required />
+                    </div>
+
+                    <!-- Contact Email -->
+                    <div class="form-group">
+                        <label for="contact-email" class="form-label">Contact Email <span class="required">*</span></label>
+                        <input id="contact-email" type="email" class="form-input"
+                               value={contactEmail} oninput={handleEmailChange}
+                               placeholder="email@school.edu" required />
+                    </div>
+
+                    <!-- Contact Phone -->
+                    <div class="form-group">
+                        <label for="contact-phone" class="form-label">Contact Phone</label>
+                        <input id="contact-phone" type="tel" class="form-input"
+                               value={contactPhone} oninput={handlePhoneChange}
+                               placeholder="(555) 123-4567" />
+                    </div>
+
+                    <!-- Notes -->
+                    <div class="form-group full-width">
+                        <label for="notes" class="form-label">Additional Notes</label>
+                        <textarea id="notes" class="form-input form-textarea"
+                                  oninput={handleNotesChange}
+                                  placeholder="Special instructions, shipping details, etc." rows="4">{notes}</textarea>
+                    </div>
+                </div>
+
+                <button class="btn-primary submit-btn" onclick={handleSubmit} disabled={isSubmitDisabled}>
+                    <template lwc:if={isSubmitting}>
+                        <lightning-spinner alternative-text="Submitting" size="small" variant="inverse"></lightning-spinner>
+                    </template>
+                    <template lwc:else>
+                        Submit Purchase Order
+                    </template>
+                </button>
+            </template>
+        </template>
+    </div>
+</template>

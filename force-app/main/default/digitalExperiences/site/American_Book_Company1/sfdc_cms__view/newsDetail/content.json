@@ -109,6 +109,7 @@
                 "children" : [ {
                   "attributes" : {
                     "alignment" : "center",
+                    "dxpStyle" : { },
                     "fit" : "cover",
                     "height" : 590,
                     "imageInfo" : "{\"imageInfoV1\":{\"url\":\"{!Item.contentBody.bannerImage.url}\",\"altText\":\"{!Item.contentBody.bannerImage.overrideAltText}\",\"contentKey\":\"\",\"contentType\":null}}",
@@ -130,6 +131,7 @@
                   "attributes" : {
                     "alignment" : "center",
                     "color" : "rgb(244, 247, 250)",
+                    "dxpStyle" : { },
                     "lineStyle" : "solid",
                     "size" : 39,
                     "width" : 100

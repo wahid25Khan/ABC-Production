@@ -17,13 +17,6 @@ private class CartQuotePdfPageControllerTest {
         );
         insert cart;
 
-        Product2 prod = new Product2(
-            Name = 'Test Product ELA',
-            StockKeepingUnit = 'SKU-001',
-            IsActive = true
-        );
-        insert prod;
-
         CartDeliveryGroup cdg = new CartDeliveryGroup(
             CartId = cart.Id,
             Name = 'Default Delivery',
@@ -34,8 +27,7 @@ private class CartQuotePdfPageControllerTest {
         CartItem item = new CartItem(
             CartId = cart.Id,
             CartDeliveryGroupId = cdg.Id,
-            Product2Id = prod.Id,
-            Name = prod.Name,
+            Name = 'Test Product ELA',
             Sku = 'SKU-001',
             Quantity = 10,
             SalesPrice = 44.00,
@@ -52,6 +44,19 @@ private class CartQuotePdfPageControllerTest {
         Test.setCurrentPage(Page.CartQuotePdf);
         ApexPages.currentPage().getParameters().put('cartId', cart.Id);
         ApexPages.currentPage().getParameters().put('quoteNumber', 'ABC-20260330-12345');
+        ApexPages.currentPage().getParameters().put('contactName', 'Jordan Smith');
+        ApexPages.currentPage().getParameters().put('organizationName', 'American Book Company');
+        ApexPages.currentPage().getParameters().put('streetAddress', '123 Market Street');
+        ApexPages.currentPage().getParameters().put('city', 'Atlanta');
+        ApexPages.currentPage().getParameters().put('stateLabel', 'Georgia');
+        ApexPages.currentPage().getParameters().put('postalCode', '30303');
+        ApexPages.currentPage().getParameters().put('contactPhone', '555-222-1111');
+        ApexPages.currentPage().getParameters().put('contactEmail', 'jordan@example.com');
+        ApexPages.currentPage().getParameters().put('taxExempt', 'true');
+        ApexPages.currentPage().getParameters().put('subtotal', '440.00');
+        ApexPages.currentPage().getParameters().put('shippingAmount', '44.00');
+        ApexPages.currentPage().getParameters().put('salesTaxAmount', '0');
+        ApexPages.currentPage().getParameters().put('grandTotal', '484.00');
 
         Test.startTest();
         CartQuotePdfPageController ctrl = new CartQuotePdfPageController();
@@ -60,7 +65,15 @@ private class CartQuotePdfPageControllerTest {
         System.assertEquals('ABC-20260330-12345', ctrl.quoteNumber, 'Quote number should match');
         System.assertNotEquals(null, ctrl.quoteDate, 'Quote date should be set');
         System.assertEquals(1, ctrl.lines.size(), 'Should have 1 line item');
-        System.assertEquals(440.00, ctrl.grandTotal, 'Grand total should be 440');
+        System.assertEquals('Jordan Smith', ctrl.contactName);
+        System.assertEquals('American Book Company', ctrl.organizationName);
+        System.assertEquals('123 Market Street', ctrl.streetAddress);
+        System.assertEquals('Atlanta, Georgia 30303', ctrl.getAddressLine());
+        System.assertEquals(true, ctrl.taxExempt);
+        System.assertEquals(440.00, ctrl.subtotal, 'Subtotal should match the request');
+        System.assertEquals(44.00, ctrl.shippingAmount, 'Shipping should match the request');
+        System.assertEquals(0.00, ctrl.salesTaxAmount, 'Sales tax should match the request');
+        System.assertEquals(484.00, ctrl.grandTotal, 'Grand total should match the request');
 
         CartQuotePdfPageController.QuoteLine line = ctrl.lines[0];
         System.assertEquals('Test Product ELA', line.productName);
@@ -78,6 +91,7 @@ private class CartQuotePdfPageControllerTest {
         Test.stopTest();
 
         System.assertEquals(0, ctrl.lines.size(), 'Should have no lines without cartId');
+        System.assertEquals(0, ctrl.subtotal, 'Subtotal should be 0');
         System.assertEquals(0, ctrl.grandTotal, 'Grand total should be 0');
     }
 

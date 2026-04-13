@@ -58,11 +58,35 @@
         margin-bottom: 4px;
     }
     .customer-section {
-        margin-bottom: 20px;
+        margin-bottom: 22px;
         font-size: 10pt;
     }
-    .customer-section strong {
+    .customer-grid {
+        width: 100%;
+    }
+    .customer-grid td {
+        vertical-align: top;
+        width: 50%;
+        padding-right: 12px;
+    }
+    .customer-card {
+        border: 1px solid #d4d8dc;
+        background: #f8fafc;
+        padding: 12px 14px;
+        min-height: 104px;
+    }
+    .customer-card-title {
+        font-size: 11pt;
+        font-weight: bold;
         color: #007cba;
+        margin-bottom: 8px;
+    }
+    .customer-line {
+        margin-bottom: 4px;
+        line-height: 1.45;
+    }
+    .customer-line strong {
+        color: #1e2a3a;
     }
     table.items-table {
         width: 100%;
@@ -111,6 +135,11 @@
         font-size: 14pt;
         width: 140px;
     }
+    .totals-row .grand-total-label,
+    .totals-row .grand-total-value {
+        border-top: 2px solid #d4d8dc;
+        padding-top: 12px;
+    }
     .footer {
         margin-top: 40px;
         font-size: 9pt;
@@ -152,15 +181,42 @@
 
     <!-- Customer Info -->
     <div class="customer-section">
-        <apex:outputPanel rendered="{!NOT(ISBLANK(accountName))}">
-            <strong>Account:</strong> {!accountName}<br/>
-        </apex:outputPanel>
-        <apex:outputPanel rendered="{!NOT(ISBLANK(contactName))}">
-            <strong>Prepared for:</strong> {!contactName}<br/>
-        </apex:outputPanel>
-        <apex:outputPanel rendered="{!NOT(ISBLANK(contactEmail))}">
-            <strong>Email:</strong> {!contactEmail}
-        </apex:outputPanel>
+        <table class="customer-grid" cellpadding="0" cellspacing="0">
+            <tr>
+                <td>
+                    <div class="customer-card">
+                        <div class="customer-card-title">Contact Information</div>
+                        <apex:outputPanel rendered="{!NOT(ISBLANK(contactName))}">
+                            <div class="customer-line"><strong>Contact:</strong> {!contactName}</div>
+                        </apex:outputPanel>
+                        <apex:outputPanel rendered="{!NOT(ISBLANK(organizationName))}">
+                            <div class="customer-line"><strong>Organization:</strong> {!organizationName}</div>
+                        </apex:outputPanel>
+                        <apex:outputPanel rendered="{!NOT(ISBLANK(contactEmail))}">
+                            <div class="customer-line"><strong>Email:</strong> {!contactEmail}</div>
+                        </apex:outputPanel>
+                        <apex:outputPanel rendered="{!NOT(ISBLANK(contactPhone))}">
+                            <div class="customer-line"><strong>Phone:</strong> {!contactPhone}</div>
+                        </apex:outputPanel>
+                    </div>
+                </td>
+                <td>
+                    <div class="customer-card">
+                        <div class="customer-card-title">Shipping Address</div>
+                        <apex:outputPanel rendered="{!NOT(ISBLANK(streetAddress))}">
+                            <div class="customer-line">{!streetAddress}</div>
+                        </apex:outputPanel>
+                        <apex:outputPanel rendered="{!NOT(ISBLANK(addressLine))}">
+                            <div class="customer-line">{!addressLine}</div>
+                        </apex:outputPanel>
+                        <div class="customer-line">
+                            <strong>Tax Status:</strong>
+                            <apex:outputText value="{!IF(taxExempt, 'Tax Exempt', 'Standard Tax')}"/>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+        </table>
     </div>
 
     <!-- Items Table -->
@@ -204,6 +260,30 @@
         <tr>
             <td class="total-label">Subtotal:</td>
             <td class="total-value">
+                <apex:outputText value="{0,number,currency}">
+                    <apex:param value="{!subtotal}" />
+                </apex:outputText>
+            </td>
+        </tr>
+        <tr>
+            <td class="total-label">Shipping:</td>
+            <td class="total-value">
+                <apex:outputText value="{0,number,currency}">
+                    <apex:param value="{!shippingAmount}" />
+                </apex:outputText>
+            </td>
+        </tr>
+        <tr>
+            <td class="total-label">Sales Tax:</td>
+            <td class="total-value">
+                <apex:outputText value="{0,number,currency}">
+                    <apex:param value="{!salesTaxAmount}" />
+                </apex:outputText>
+            </td>
+        </tr>
+        <tr>
+            <td class="total-label grand-total-label">Total:</td>
+            <td class="total-value grand-total-value">
                 <apex:outputText value="{0,number,currency}">
                     <apex:param value="{!grandTotal}" />
                 </apex:outputText>

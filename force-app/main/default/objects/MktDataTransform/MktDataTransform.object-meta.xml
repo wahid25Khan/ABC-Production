@@ -80,24 +80,28 @@
         <customTabListAdditionalFields>LastRunStatus</customTabListAdditionalFields>
         <customTabListAdditionalFields>LastRunTime</customTabListAdditionalFields>
         <customTabListAdditionalFields>IsSystem</customTabListAdditionalFields>
+        <customTabListAdditionalFields>CreationSource</customTabListAdditionalFields>
         <lookupDialogsAdditionalFields>DataSpace</lookupDialogsAdditionalFields>
         <lookupDialogsAdditionalFields>Type</lookupDialogsAdditionalFields>
         <lookupDialogsAdditionalFields>DataTransformStatus</lookupDialogsAdditionalFields>
         <lookupDialogsAdditionalFields>LastRunStatus</lookupDialogsAdditionalFields>
         <lookupDialogsAdditionalFields>LastRunTime</lookupDialogsAdditionalFields>
         <lookupDialogsAdditionalFields>IsSystem</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>CreationSource</lookupDialogsAdditionalFields>
         <lookupPhoneDialogsAdditionalFields>DataSpace</lookupPhoneDialogsAdditionalFields>
         <lookupPhoneDialogsAdditionalFields>Type</lookupPhoneDialogsAdditionalFields>
         <lookupPhoneDialogsAdditionalFields>DataTransformStatus</lookupPhoneDialogsAdditionalFields>
         <lookupPhoneDialogsAdditionalFields>LastRunStatus</lookupPhoneDialogsAdditionalFields>
         <lookupPhoneDialogsAdditionalFields>LastRunTime</lookupPhoneDialogsAdditionalFields>
         <lookupPhoneDialogsAdditionalFields>IsSystem</lookupPhoneDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>CreationSource</lookupPhoneDialogsAdditionalFields>
         <searchResultsAdditionalFields>DataSpace</searchResultsAdditionalFields>
         <searchResultsAdditionalFields>Type</searchResultsAdditionalFields>
         <searchResultsAdditionalFields>DataTransformStatus</searchResultsAdditionalFields>
         <searchResultsAdditionalFields>LastRunStatus</searchResultsAdditionalFields>
         <searchResultsAdditionalFields>LastRunTime</searchResultsAdditionalFields>
         <searchResultsAdditionalFields>IsSystem</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>CreationSource</searchResultsAdditionalFields>
     </searchLayouts>
     <sharingModel>Private</sharingModel>
 </CustomObject>

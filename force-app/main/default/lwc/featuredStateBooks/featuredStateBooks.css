@@ -16,6 +16,23 @@
   color: var(--lwc-colorTextWeak);
 }
 
+.empty-state {
+  max-width: 42rem;
+  margin: 0 auto;
+  padding: 1.5rem;
+  border: 1px solid #d8dee6;
+  border-radius: 0.5rem;
+  background: #f8fafc;
+}
+
+.empty-state-text {
+  margin: 0;
+  text-align: center;
+  color: #435162;
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+
 /* ── Heading ─────────────────────────────────────────────────── */
 
 .heading-row {

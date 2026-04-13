@@ -40,7 +40,9 @@
               },
               "children" : [ {
                 "children" : [ {
-                  "attributes" : { },
+                  "attributes" : {
+                    "dxpStyle" : { }
+                  },
                   "definition" : "c:aboutSection",
                   "id" : "92f5cf27-2f1f-424d-8ad1-9a75739c8c04",
                   "type" : "component"

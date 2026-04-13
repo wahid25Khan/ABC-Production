@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8"?>
 <Flow xmlns="http://soap.sforce.com/2006/04/metadata">
     <apiVersion>65.0</apiVersion>
     <areMetricsLoggedToDataCloud>false</areMetricsLoggedToDataCloud>
@@ -325,20 +325,17 @@
     <customProperties>
         <name>ScreenProgressIndicator</name>
         <value>
-            <stringValue
-      >{&quot;location&quot;:&quot;top&quot;,&quot;type&quot;:&quot;simple&quot;}</stringValue>
+            <stringValue>{&quot;location&quot;:&quot;top&quot;,&quot;type&quot;:&quot;simple&quot;}</stringValue>
         </value>
     </customProperties>
     <environments>Default</environments>
     <formulas>
         <name>FullNameFormula</name>
         <dataType>String</dataType>
-        <expression
-    >{!vFirstName} &amp; &quot; &quot; &amp; {!vLastName}</expression>
+        <expression>{!vFirstName} &amp; &quot; &quot; &amp; {!vLastName}</expression>
     </formulas>
     <interviewLabel>Submit a PO {!$Flow.CurrentDateTime}</interviewLabel>
-    <isAdditionalPermissionRequiredToRun
-  >true</isAdditionalPermissionRequiredToRun>
+    <isAdditionalPermissionRequiredToRun>true</isAdditionalPermissionRequiredToRun>
     <label>Submit a PO</label>
     <processMetadataValues>
         <name>BuilderType</name>

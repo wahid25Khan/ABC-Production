@@ -58,11 +58,7 @@
                 </svg>
               </button>
               <template if:true={accountMenuOpen}>
-                <div
-                  class="abc-account-dd"
-                  role="menu"
-                  aria-label="Account menu"
-                >
+                <div class="abc-account-dd" role="menu" aria-label="Account menu">
                   <template if:true={isGuest}>
                     <a
                       href={loginUrl}

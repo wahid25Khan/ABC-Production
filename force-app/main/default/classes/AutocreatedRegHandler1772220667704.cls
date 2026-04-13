@@ -17,12 +17,9 @@ global without sharing class AutocreatedRegHandler1772220667704 implements Auth.
 
 	@TestVisible private static Id profileIdOverride;
 	@TestVisible private static Id accountOwnerIdOverride;
-	@TestVisible private static Id buyerGroupIdOverride;
-	@TestVisible private static Boolean buyerMembershipExistsOverride = false;
 	@TestVisible private static User existingUserOverride;
 	@TestVisible private static String externalUserErrorOverride;
-	@TestVisible private static Id lastAssignedBuyerId;
-	@TestVisible private static Id lastAssignedBuyerGroupId;
+	@TestVisible private static Id createdExternalUserIdOverride;
 
 	global Boolean canCreateUser(Auth.UserData data) {
 		if (!hasRequiredIdentity(data)) {
@@ -38,25 +35,35 @@ global without sharing class AutocreatedRegHandler1772220667704 implements Auth.
 			return null;
 		}
 
-		String normalizedEmail = normalizeEmail(data.email);
-		User existingUser = findUserByEmail(normalizedEmail);
-		if (existingUser != null) {
-			Id existingBuyerId = resolveExistingBuyerId(existingUser);
-			ensureBuyerAccount(existingBuyerId);
-			if (existingBuyerId != null) {
-				ensureBuyerAccess(existingBuyerId, DEFAULT_BUYER_GROUP_NAME);
-			}
-			return existingUser;
-		}
+		Savepoint registrationSavepoint = Database.setSavepoint();
 
-		Account account = createBuyerAccount(data);
-		User createdUser = createExternalCommunityUser(account.Id, data, normalizedEmail);
-		if (createdUser == null) {
-			return null;
+		String normalizedEmail = normalizeEmail(data.email);
+		try {
+			User existingUser = findUserByEmail(normalizedEmail);
+			if (existingUser != null) {
+				Id existingBuyerId = resolveExistingBuyerId(existingUser);
+				ensureBuyerAccount(existingBuyerId);
+				if (existingBuyerId != null) {
+					ensureBuyerAccess(existingBuyerId, DEFAULT_BUYER_GROUP_NAME);
+				}
+				enqueueB2BBuyerEntitlements(existingUser.Id);
+				return existingUser;
+			}
+
+			Account account = createBuyerAccount(data);
+			User createdUser = createExternalCommunityUser(account.Id, data, normalizedEmail);
+			if (createdUser == null) {
+				return null;
+			}
+
+			Id buyerId = resolveExistingBuyerId(createdUser);
+			ensureBuyerAccess(buyerId != null ? buyerId : account.Id, DEFAULT_BUYER_GROUP_NAME);
+			enqueueB2BBuyerEntitlements(createdUser.Id);
+			return createdUser;
+		} catch (Exception ex) {
+			Database.rollback(registrationSavepoint);
+			throw ex;
 		}
-		Id buyerId = resolveExistingBuyerId(createdUser);
-		ensureBuyerAccess(buyerId != null ? buyerId : account.Id, DEFAULT_BUYER_GROUP_NAME);
-		return createdUser;
 	}
 
 	global void updateUser(Id userId, Id portalId, Auth.UserData data) {
@@ -121,65 +128,16 @@ global without sharing class AutocreatedRegHandler1772220667704 implements Auth.
 			OwnerId = resolveAccountOwnerId()
 		);
 		insert account;
-		ensureBuyerAccount(account);
+		CommerceRegistrationProvisioning.ensureBuyerAccount(account);
 		return account;
 	}
 
 	private static void ensureBuyerAccount(Id accountId) {
-		if (accountId == null) {
-			return;
-		}
-
-		List<Account> accounts = [
-			SELECT Id, Name, OwnerId
-			FROM Account
-			WHERE Id = :accountId
-			LIMIT 1
-		];
-		if (accounts.isEmpty()) {
-			return;
-		}
-
-		ensureBuyerAccount(accounts[0]);
+		CommerceRegistrationProvisioning.ensureBuyerAccount(accountId);
 	}
 
 	private static void ensureBuyerAccount(Account account) {
-		if (account == null || account.Id == null) {
-			return;
-		}
-
-		List<BuyerAccount> buyerAccounts = [
-			SELECT Id, BuyerStatus, IsActive, CommerceType
-			FROM BuyerAccount
-			WHERE BuyerId = :account.Id
-			LIMIT 1
-		];
-
-		if (buyerAccounts.isEmpty()) {
-			insert new BuyerAccount(
-				Name = account.Name,
-				BuyerId = account.Id,
-				OwnerId = account.OwnerId,
-				BuyerStatus = 'Active',
-				CommerceType = 'Buyer',
-				IsActive = true
-			);
-			return;
-		}
-
-		BuyerAccount existingBuyerAccount = buyerAccounts[0];
-		if (existingBuyerAccount.IsActive == true
-				&& existingBuyerAccount.BuyerStatus == 'Active'
-				&& existingBuyerAccount.CommerceType == 'Buyer') {
-			return;
-		}
-
-		update new BuyerAccount(
-			Id = existingBuyerAccount.Id,
-			BuyerStatus = 'Active',
-			CommerceType = 'Buyer',
-			IsActive = true
-		);
+		CommerceRegistrationProvisioning.ensureBuyerAccount(account);
 	}
 
 	private static User createExternalCommunityUser(Id accountId, Auth.UserData data, String normalizedEmail) {
@@ -187,10 +145,38 @@ global without sharing class AutocreatedRegHandler1772220667704 implements Auth.
 			throw new AuraHandledException(externalUserErrorOverride);
 		}
 
-		Contact contact = createBuyerContact(accountId, data, normalizedEmail);
-		User userToCreate = buildCommunityUser(data, normalizedEmail);
-		userToCreate.ContactId = contact.Id;
-		return userToCreate;
+		if (Test.isRunningTest()) {
+			Contact contact = createBuyerContact(accountId, data, normalizedEmail);
+			User userToCreate = buildCommunityUser(data, normalizedEmail);
+			userToCreate.ContactId = contact.Id;
+			userToCreate.Id = createdExternalUserIdOverride;
+			return userToCreate;
+		}
+
+		try {
+			String userId = Site.createExternalUser(buildCommunityUser(data, normalizedEmail), accountId, null);
+			if (String.isBlank(userId)) {
+				return null;
+			}
+
+			User createdUser = [
+				SELECT Id, ContactId, Contact.AccountId, Email, FirstName, LastName, ProfileId, Username
+				FROM User
+				WHERE Id = :userId
+				LIMIT 1
+			];
+
+			if (createdUser.ContactId != null) {
+				update new Contact(
+					Id = createdUser.ContactId,
+					HasOptedOutOfEmail = true
+				);
+			}
+
+			return createdUser;
+		} catch (Site.ExternalUserCreateException ex) {
+			throw new AuraHandledException(extractExternalUserMessage(ex));
+		}
 	}
 
 	private static Contact createBuyerContact(Id accountId, Auth.UserData data, String normalizedEmail) {
@@ -222,68 +208,33 @@ global without sharing class AutocreatedRegHandler1772220667704 implements Auth.
 	}
 
 	private static void ensureBuyerAccess(Id buyerId, String buyerGroupName) {
-		if (buyerId == null) {
-			return;
-		}
-
-		Id buyerGroupId = resolveBuyerGroupId(buyerGroupName);
-		if (hasExistingBuyerMembership(buyerId, buyerGroupId)) {
-			return;
-		}
-
-		createBuyerMembership(buyerId, buyerGroupId);
+		CommerceRegistrationProvisioning.ensureBuyerAccess(buyerId, buyerGroupName, null);
 	}
 
-	private static Id resolveBuyerGroupId(String buyerGroupName) {
-		if (Test.isRunningTest() && buyerGroupIdOverride != null) {
-			return buyerGroupIdOverride;
-		}
-
-		List<BuyerGroup> buyerGroups = [
-			SELECT Id
-			FROM BuyerGroup
-			WHERE Name = :buyerGroupName
-			LIMIT 1
-		];
-		if (buyerGroups.isEmpty()) {
-			return null;
-		}
-
-		return buyerGroups[0].Id;
+	private static void ensureB2BBuyerEntitlements(Id userId) {
+		CommerceRegistrationProvisioning.ensureB2BBuyerEntitlements(userId);
 	}
 
-	private static Boolean hasExistingBuyerMembership(Id buyerId, Id buyerGroupId) {
-		if (buyerId == null || buyerGroupId == null) {
-			return false;
-		}
-
-		if (Test.isRunningTest() && buyerGroupIdOverride != null) {
-			return buyerMembershipExistsOverride == true;
-		}
-
-		return [
-			SELECT COUNT()
-			FROM BuyerGroupMember
-			WHERE BuyerId = :buyerId
-			  AND BuyerGroupId = :buyerGroupId
-		] > 0;
-	}
-
-	private static void createBuyerMembership(Id buyerId, Id buyerGroupId) {
-		if (buyerId == null || buyerGroupId == null) {
+	private static void enqueueB2BBuyerEntitlements(Id userId) {
+		if (userId == null) {
 			return;
 		}
 
-		if (Test.isRunningTest() && buyerGroupIdOverride != null) {
-			lastAssignedBuyerId = buyerId;
-			lastAssignedBuyerGroupId = buyerGroupId;
+		if (Test.isRunningTest()) {
+			ensureB2BBuyerEntitlements(userId);
 			return;
 		}
 
-		insert new BuyerGroupMember(
-			BuyerId = buyerId,
-			BuyerGroupId = buyerGroupId
-		);
+		ensureB2BBuyerEntitlementsAsync(String.valueOf(userId));
+	}
+
+	@future
+	private static void ensureB2BBuyerEntitlementsAsync(String userId) {
+		if (String.isBlank(userId)) {
+			return;
+		}
+
+		CommerceRegistrationProvisioning.ensureB2BBuyerEntitlements((Id) userId);
 	}
 
 	private static Id resolveShopperProfileId() {
@@ -463,15 +414,21 @@ global without sharing class AutocreatedRegHandler1772220667704 implements Auth.
 		return data.attributeMap.get(key);
 	}
 
+	private static String extractExternalUserMessage(Site.ExternalUserCreateException ex) {
+		List<String> messages = ex.getDisplayMessages();
+		if (messages != null && !messages.isEmpty()) {
+			return String.join(messages, ' ');
+		}
+		return ex.getMessage();
+	}
+
 	@TestVisible
 	private static void resetTestState() {
 		profileIdOverride = null;
 		accountOwnerIdOverride = null;
-		buyerGroupIdOverride = null;
-		buyerMembershipExistsOverride = false;
 		existingUserOverride = null;
 		externalUserErrorOverride = null;
-		lastAssignedBuyerId = null;
-		lastAssignedBuyerGroupId = null;
+		createdExternalUserIdOverride = null;
+		CommerceRegistrationProvisioning.resetTestState();
 	}
 }

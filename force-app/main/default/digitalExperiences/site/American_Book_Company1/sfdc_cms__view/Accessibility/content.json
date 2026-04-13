@@ -9,6 +9,7 @@
             "backgroundImageConfig" : "",
             "backgroundImageOverlay" : "rgba(0,0,0,0)",
             "componentSpacerSize" : "",
+            "dxpStyle" : { },
             "layoutDirectionDesktop" : "row",
             "layoutDirectionMobile" : "column",
             "layoutDirectionTablet" : "column",
@@ -22,6 +23,7 @@
             "children" : [ {
               "attributes" : {
                 "backgroundColor" : "",
+                "dxpStyle" : { },
                 "isLinkable" : false,
                 "linkAssistiveText" : "",
                 "paddingHorizontal" : "none",
@@ -36,6 +38,7 @@
               "type" : "component"
             }, {
               "attributes" : {
+                "dxpStyle" : { },
                 "imageInfos" : "",
                 "richTextValue" : "<p><span style=\"color: oklch(0.278 0.033 256.848); font-family: arial; font-size: 24px;\"><span class=\"ql-cursor\">﻿</span></span><span style=\"color: oklch(0.278 0.033 256.848); font-family: arial; font-size: 18px;\">Coming soon...</span></p>"
               },
@@ -61,6 +64,7 @@
           "attributes" : {
             "customHeadTags" : "",
             "description" : "",
+            "dxpStyle" : { },
             "pageTitle" : "Accessibility",
             "recordId" : "{!recordId}"
           },

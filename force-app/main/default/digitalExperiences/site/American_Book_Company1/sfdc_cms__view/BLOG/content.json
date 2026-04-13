@@ -21,7 +21,9 @@
           },
           "children" : [ {
             "children" : [ {
-              "attributes" : { },
+              "attributes" : {
+                "dxpStyle" : { }
+              },
               "definition" : "c:blogHero",
               "id" : "fc86ac85-133f-4114-a1ed-bb5a74bcc657",
               "type" : "component"
@@ -113,6 +115,7 @@
             "backgroundImageConfig" : "",
             "backgroundImageOverlay" : "rgba(0,0,0,0)",
             "componentSpacerSize" : "",
+            "dxpStyle" : { },
             "layoutDirectionDesktop" : "row",
             "layoutDirectionMobile" : "column",
             "layoutDirectionTablet" : "column",
@@ -130,6 +133,7 @@
                 "borderColor" : "",
                 "borderRadius" : 5,
                 "borderWidth" : 0,
+                "dxpStyle" : { },
                 "horizontalAlignment" : "center",
                 "isFixedRowHeight" : true,
                 "itemSpacing" : "small",
@@ -212,6 +216,7 @@
                     }, {
                       "attributes" : {
                         "backgroundColor" : "",
+                        "dxpStyle" : { },
                         "isLinkable" : false,
                         "linkAssistiveText" : "",
                         "paddingHorizontal" : "none",
@@ -259,6 +264,7 @@
                     "children" : [ {
                       "attributes" : {
                         "alignment" : "center",
+                        "dxpStyle" : { },
                         "size" : "standard",
                         "stretch" : "standard",
                         "text" : "Contact Us",
@@ -274,7 +280,9 @@
                     "type" : "region"
                   }, {
                     "children" : [ {
-                      "attributes" : { },
+                      "attributes" : {
+                        "dxpStyle" : { }
+                      },
                       "definition" : "dxp_page_layout:placeHolder",
                       "id" : "edb897e4-cbb9-4ca2-b6b5-eae179b2dcc2",
                       "type" : "component"
@@ -296,12 +304,15 @@
               }, {
                 "children" : [ {
                   "attributes" : {
+                    "dxpStyle" : { },
                     "paginatorAttributes" : "{\"nested\":{\"componentName\":\"dxp_content_layout:paginatorStandard\",\"attributes\":{\"horizontalAlignment\":\"right\",\"buttonSpacing\":\"medium\",\"nextButtonLabel\":\">\",\"nextButtonStyle\":\"secondary\",\"nextButtonTextDecoration\":\"{\\\"bold\\\":true}\",\"prevButtonLabel\":\"<\",\"prevButtonStyle\":\"secondary\",\"prevButtonTextDecoration\":\"{\\\"bold\\\":true}\"}}}",
                     "variant" : "standard"
                   },
                   "children" : [ {
                     "children" : [ {
-                      "attributes" : { },
+                      "attributes" : {
+                        "dxpStyle" : { }
+                      },
                       "definition" : "dxp_page_layout:placeHolder",
                       "id" : "9e11c833-a2f6-406d-88fe-18c4cc11f42a",
                       "type" : "component"

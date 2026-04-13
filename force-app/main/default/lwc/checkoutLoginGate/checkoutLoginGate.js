@@ -2,6 +2,9 @@ import { LightningElement, api } from 'lwc';
 import { NavigationMixin } from 'lightning/navigation';
 import isGuest from '@salesforce/user/isGuest';
 
+const LOGIN_BRIDGE_STORAGE_KEY = 'abc_site_login_bridge_payload';
+const LOGIN_BRIDGE_URL = '/AmericanBookCompanyvforcesite/apex/SiteLoginRelay';
+
 export default class CheckoutLoginGate extends NavigationMixin(LightningElement) {
     rememberedEmailStorageKey = 'abc_checkout_remembered_email';
     checkoutStageStorageKey = 'abc_checkout_stage';
@@ -91,43 +94,17 @@ export default class CheckoutLoginGate extends NavigationMixin(LightningElement)
         this.dispatchCheckoutStageChange('details');
 
         try {
-            // C4 fix: Use a POST form to submit credentials instead of putting
-            // the email in the URL query string (which exposes it in browser
-            // history, server logs, and proxy logs).
-            const ownerDocument = this.template.host.ownerDocument;
-            const form = ownerDocument.createElement('form');
-            form.method = 'POST';
-            form.action = '/AmericanBookCompany/login';
+            globalThis.sessionStorage?.setItem(
+                LOGIN_BRIDGE_STORAGE_KEY,
+                JSON.stringify({
+                    username: this.email.trim(),
+                    password: this.password,
+                    startUrl: this.checkoutUrl
+                })
+            );
 
-            const usernameInput = ownerDocument.createElement('input');
-            usernameInput.type = 'hidden';
-            usernameInput.name = 'username';
-            usernameInput.value = this.email.trim();
-
-            const passwordInput = ownerDocument.createElement('input');
-            passwordInput.type = 'hidden'; // NOSONAR — required hidden form field for submitted credentials
-            passwordInput.name = 'password'; // NOSONAR — standard backend field name, not a hard-coded credential
-            passwordInput.value = this.password;
-
-            const startUrlInput = ownerDocument.createElement('input');
-            startUrlInput.type = 'hidden';
-            startUrlInput.name = 'startURL';
-            startUrlInput.value = this.checkoutUrl;
-
-            form.appendChild(usernameInput);
-            form.appendChild(passwordInput);
-            form.appendChild(startUrlInput);
-            ownerDocument.body.appendChild(form);
-            form.submit();
+            globalThis.location.assign(LOGIN_BRIDGE_URL);
         } catch {
-            // N3 fix: Remove the form from DOM on error to prevent credential leakage
-            const ownerDocument = this.template.host.ownerDocument;
-            const staleForms = ownerDocument.body.getElementsByTagName('form');
-            for (const staleForm of staleForms) {
-                if (staleForm.action?.endsWith('/AmericanBookCompany/login')) {
-                    staleForm.remove();
-                }
-            }
             this.loginError = 'Unable to sign in. Please check your credentials and try again.';
             this.isLoggingIn = false;
         }

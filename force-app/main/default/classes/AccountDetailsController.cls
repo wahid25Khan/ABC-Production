@@ -17,8 +17,18 @@ public with sharing class AccountDetailsController {
         @AuraEnabled public String phone;
         @AuraEnabled public String organizationName;
         @AuraEnabled public Boolean hasOrganization;
+        @AuraEnabled public String organizationPhone;
+        @AuraEnabled public String billingStreet;
+        @AuraEnabled public String billingCity;
+        @AuraEnabled public String billingState;
+        @AuraEnabled public String billingPostalCode;
         @AuraEnabled public String shippingAddress;
         @AuraEnabled public Boolean hasShippingAddress;
+        @AuraEnabled public String shippingStreet;
+        @AuraEnabled public String shippingCity;
+        @AuraEnabled public String shippingState;
+        @AuraEnabled public String shippingPostalCode;
+        @AuraEnabled public String shippingCountry;
         @AuraEnabled public String paymentSummary;
         @AuraEnabled public Boolean hasPaymentMethods;
     }
@@ -77,15 +87,27 @@ public with sharing class AccountDetailsController {
     }
 
     /**
-     * Updates the current user's related organization name when an account is available.
+     * Updates the current user's related organization details (name, billing address, phone).
      *
-     * @param organizationName Updated organization/account name.
+     * @param organizationName School / organization name.
+     * @param street Billing street address.
+     * @param city Billing city.
+     * @param stateCode Two-letter US state abbreviation.
+     * @param postalCode ZIP code.
+     * @param phone Main phone number.
      * @return Mutation result and refreshed account details.
      */
     @AuraEnabled
-    public static ActionResult updateOrganization(String organizationName) {
+    public static ActionResult updateOrganization(
+        String organizationName,
+        String street,
+        String city,
+        String stateCode,
+        String postalCode,
+        String phone
+    ) {
         if (String.isBlank(organizationName)) {
-            return errorResult('Please enter an organization name.');
+            return errorResult('Please enter a school name.');
         }
 
         User currentUser = [
@@ -102,11 +124,51 @@ public with sharing class AccountDetailsController {
         }
 
         update new Account(
-            Id = accountId,
-            Name = organizationName.trim()
+            Id               = accountId,
+            Name             = organizationName.trim(),
+            BillingStreet    = String.isBlank(street)     ? null : street.trim(),
+            BillingCity      = String.isBlank(city)       ? null : city.trim(),
+            BillingState     = String.isBlank(stateCode)  ? null : stateCode.trim(),
+            BillingPostalCode = String.isBlank(postalCode) ? null : postalCode.trim(),
+            Phone            = String.isBlank(phone)      ? null : phone.trim()
         );
 
         return successResult(ORGANIZATION_SUCCESS_MESSAGE);
+    }
+
+    /**
+     * Updates the current user's shipping address fields.
+     *
+     * @param street Street address line.
+     * @param city City.
+     * @param stateCode Two-letter state/province code.
+     * @param postalCode ZIP or postal code.
+     * @param country Country (defaults to US when blank).
+     * @return Mutation result and refreshed account details.
+     */
+    @AuraEnabled
+    public static ActionResult updateShippingAddress(
+        String street,
+        String city,
+        String stateCode,
+        String postalCode,
+        String country
+    ) {
+        if (String.isBlank(street) || String.isBlank(city)
+            || String.isBlank(stateCode) || String.isBlank(postalCode)) {
+            return errorResult('Street, city, state, and ZIP code are required.');
+        }
+
+        update new User(
+            Id           = UserInfo.getUserId(),
+            Street       = street.trim(),
+            City         = city.trim(),
+            State        = stateCode.trim(),
+            PostalCode   = postalCode.trim(),
+            Country      = String.isBlank(country) ? 'US' : country.trim()
+        );
+
+        return successResult('Shipping address updated successfully.');
     }
 
     /**
@@ -158,7 +220,12 @@ public with sharing class AccountDetailsController {
                 Contact.Email,
                 Contact.Phone,
                 Contact.MobilePhone,
-                Contact.Account.Name
+                Contact.Account.Name,
+                Contact.Account.BillingStreet,
+                Contact.Account.BillingCity,
+                Contact.Account.BillingState,
+                Contact.Account.BillingPostalCode,
+                Contact.Account.Phone
             FROM User
             WHERE Id = :UserInfo.getUserId()
             WITH USER_MODE
@@ -194,8 +261,23 @@ public with sharing class AccountDetailsController {
             ? safeString(currentUser.Contact.Account.Name)
             : '';
         result.hasOrganization = String.isNotBlank(result.organizationName);
+        result.organizationPhone = currentUser.Contact != null && currentUser.Contact.Account != null
+            ? safeString(currentUser.Contact.Account.Phone) : '';
+        result.billingStreet = currentUser.Contact != null && currentUser.Contact.Account != null
+            ? safeString(currentUser.Contact.Account.BillingStreet) : '';
+        result.billingCity = currentUser.Contact != null && currentUser.Contact.Account != null
+            ? safeString(currentUser.Contact.Account.BillingCity) : '';
+        result.billingState = currentUser.Contact != null && currentUser.Contact.Account != null
+            ? safeString(currentUser.Contact.Account.BillingState) : '';
+        result.billingPostalCode = currentUser.Contact != null && currentUser.Contact.Account != null
+            ? safeString(currentUser.Contact.Account.BillingPostalCode) : '';
         result.shippingAddress = buildAddressSummary(currentUser);
         result.hasShippingAddress = String.isNotBlank(result.shippingAddress);
+        result.shippingStreet = safeString(currentUser.Street);
+        result.shippingCity = safeString(currentUser.City);
+        result.shippingState = safeString(currentUser.State);
+        result.shippingPostalCode = safeString(currentUser.PostalCode);
+        result.shippingCountry = safeString(currentUser.Country);
         result.paymentSummary = DEFAULT_PAYMENT_MESSAGE;
         result.hasPaymentMethods = false;
         return result;

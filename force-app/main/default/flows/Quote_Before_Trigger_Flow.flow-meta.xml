@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8"?>
 <Flow xmlns="http://soap.sforce.com/2006/04/metadata">
     <actionCalls>
         <name>Notify_Admin</name>
@@ -59,8 +59,7 @@
             <name>Within_Limit</name>
             <conditionLogic>and</conditionLogic>
             <conditions>
-                <leftValueReference
-        >$Record.ShippingHandling</leftValueReference>
+                <leftValueReference>$Record.ShippingHandling</leftValueReference>
                 <operator>GreaterThanOrEqualTo</operator>
                 <rightValue>
                     <elementReference>MinAllowedShipping</elementReference>
@@ -75,8 +74,7 @@
             <name>Exceeds_Limit</name>
             <conditionLogic>and</conditionLogic>
             <conditions>
-                <leftValueReference
-        >$Record.ShippingHandling</leftValueReference>
+                <leftValueReference>$Record.ShippingHandling</leftValueReference>
                 <operator>LessThan</operator>
                 <rightValue>
                     <elementReference>MinAllowedShipping</elementReference>
@@ -107,8 +105,7 @@
         <expression>{!CalculatedShipping12} - {!MaxDecrease6}</expression>
         <scale>2</scale>
     </formulas>
-    <interviewLabel
-  >Quote Before Trigger Flow {!$Flow.CurrentDateTime}</interviewLabel>
+    <interviewLabel>Quote Before Trigger Flow {!$Flow.CurrentDateTime}</interviewLabel>
     <label>Quote Before Trigger Flow</label>
     <processMetadataValues>
         <name>BuilderType</name>

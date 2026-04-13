@@ -4,9 +4,13 @@ import SCORE_GUARANTEE from "@salesforce/resourceUrl/ScoreGuarantee";
 import {
   STATE_CHANGE_EVENT_NAMES,
   readStateFromStorage,
+  decodeUrlValue,
+  ALL_STATES,
   normalizeProduct as sharedNormalizeProduct,
   extractProductList as sharedExtractProductList,
   buildProductDetailPath as sharedBuildProductDetailPath,
+  addProductToCart as sharedAddProductToCart,
+  buildAddToCartSuccessModalData,
   resolvePrice,
   extractPricingMap as sharedExtractPricingMap,
   resolveStockKeepingUnit as sharedResolveStockKeepingUnit,
@@ -18,6 +22,9 @@ import {
 
 const SHOP_ALL_URL =
   "https://americanbookcompany.my.site.com/AmericanBookCompany/global-search/all";
+const DEFAULT_STATE = "Georgia";
+const REFINEMENT_PARAM = "refinement";
+const REFINEMENTS_PARAM = "refinements";
 const SEARCH_PRODUCT_FIELDS = ["StockKeepingUnit"];
 export default class FeaturedStateBooks extends LightningElement {
   @api storeName = DEFAULT_STORE_NAME;
@@ -27,6 +34,7 @@ export default class FeaturedStateBooks extends LightningElement {
   @api gridColumns = 4;
   @api shopAllUrl = SHOP_ALL_URL;
   @api cartStateOrId = "current";
+  @api fallbackState = DEFAULT_STATE;
 
   products = [];
 
@@ -39,6 +47,8 @@ export default class FeaturedStateBooks extends LightningElement {
   isAddingToCart = false;
   isModalPricingLoading = false;
   modalPricingLoadError = false;
+  isSuccessModalOpen = false;
+  successModalData = null;
 
   _boundStateSyncHandler;
 
@@ -81,6 +91,11 @@ export default class FeaturedStateBooks extends LightningElement {
     return state ? `Featured ${state} Books` : "Featured Books";
   }
 
+  get normalizedFallbackState() {
+    const state = String(this.fallbackState || "").trim();
+    return ALL_STATES.includes(state) ? state : DEFAULT_STATE;
+  }
+
   get featuredProduct() {
     return this.products.length > 0 ? this.products[0] : null;
   }
@@ -95,6 +110,17 @@ export default class FeaturedStateBooks extends LightningElement {
 
   get resolvedShopAllUrl() {
     return this.shopAllUrl || SHOP_ALL_URL;
+  }
+
+  get showEmptyState() {
+    return !this.loading && !this.showProducts;
+  }
+
+  get emptyStateMessage() {
+    const state = String(this.selectedState || "").trim();
+    return state
+      ? `No featured books are available for ${state} right now.`
+      : "No featured books are available right now.";
   }
 
   get modalTitle() {
@@ -142,6 +168,22 @@ export default class FeaturedStateBooks extends LightningElement {
     return 1;
   }
 
+  get successProductName() {
+    return this.successModalData?.productName || "";
+  }
+
+  get successProductImageUrl() {
+    return this.successModalData?.productImageUrl || "";
+  }
+
+  get successProductUrl() {
+    return this.successModalData?.productUrl || "";
+  }
+
+  get successCartUrl() {
+    return this.successModalData?.cartUrl || "";
+  }
+
   // ─── Initialise ───────────────────────────────────────────────────────────
 
   async initialize() {
@@ -149,12 +191,6 @@ export default class FeaturedStateBooks extends LightningElement {
 
     try {
       this.selectedState = this.resolveSelectedState();
-
-      if (!this.selectedState) {
-        this.resetProducts();
-        return;
-      }
-
       const fetched = await this.fetchProductsByState(this.selectedState);
       const baseProducts = fetched
         .map((item) => this.normalizeProduct(item))
@@ -188,10 +224,79 @@ export default class FeaturedStateBooks extends LightningElement {
   // ─── State resolution ─────────────────────────────────────────────────────
 
   resolveSelectedState() {
-    const fromStorage = readStateFromStorage();
-    if (fromStorage) return fromStorage;
+    return (
+      this.getStoredState() ||
+      this.getStateFromParams() ||
+      this.getStateFromHash() ||
+      this.getStateFromPath() ||
+      this.normalizedFallbackState
+    );
+  }
 
-    return this.getStateFromPath();
+  getStoredState() {
+    const fromStorage = readStateFromStorage();
+    return ALL_STATES.includes(fromStorage) ? fromStorage : "";
+  }
+
+  getStateFromHash() {
+    const hashValue = String(globalThis.location?.hash || "")
+      .replace(/^#/, "")
+      .trim();
+    if (!hashValue) {
+      return "";
+    }
+
+    const decodedHash = decodeUrlValue(hashValue);
+    return ALL_STATES.includes(decodedHash) ? decodedHash : "";
+  }
+
+  getStateFromParams() {
+    try {
+      const url = new URL(globalThis.location.href);
+      const refinementsRaw = url.searchParams.get(REFINEMENTS_PARAM);
+      if (refinementsRaw) {
+        const result = this.getStateFromRefinementsList(refinementsRaw);
+        if (result) {
+          return result;
+        }
+      }
+
+      const refinement = url.searchParams.get(REFINEMENT_PARAM);
+      if (refinement) {
+        const decodedRefinement = decodeUrlValue(refinement);
+        const prefix = `${this.refinementKey}:`;
+        if (decodedRefinement.startsWith(prefix)) {
+          const stateValue = decodedRefinement.slice(prefix.length).trim();
+          return ALL_STATES.includes(stateValue) ? stateValue : "";
+        }
+      }
+    } catch {
+      return "";
+    }
+
+    return "";
+  }
+
+  getStateFromRefinementsList(refinementsRaw) {
+    try {
+      const refinementList = JSON.parse(decodeUrlValue(refinementsRaw));
+      const stateEntry = Array.isArray(refinementList)
+        ? refinementList.find((entry) => entry?.nameOrId === this.refinementKey)
+        : null;
+
+      if (
+        stateEntry &&
+        Array.isArray(stateEntry.values) &&
+        stateEntry.values.length
+      ) {
+        const selectedState = String(stateEntry.values[0] || "").trim();
+        return ALL_STATES.includes(selectedState) ? selectedState : "";
+      }
+    } catch {
+      return "";
+    }
+
+    return "";
   }
 
   getStateFromPath() {
@@ -303,7 +408,7 @@ export default class FeaturedStateBooks extends LightningElement {
     const base = `/${storeName}/webruntime/api/services/data/v66.0/commerce/webstores/${webStoreId}/search/products`;
     const params = applyStorefrontGuestParams(
       new URLSearchParams({
-        searchTerm: "*",
+        searchTerm: this.buildSearchTermWithState(stateValue),
         page: "0",
         pageSize: String(this.normalizedMaxProducts + 4),
         refinement: `${this.refinementKey}:${stateValue}`
@@ -315,6 +420,11 @@ export default class FeaturedStateBooks extends LightningElement {
     });
 
     return `${base}?${params.toString()}`;
+  }
+
+  buildSearchTermWithState(stateValue) {
+    const state = String(stateValue || "").trim();
+    return state || "all";
   }
 
   // ─── Normalization ────────────────────────────────────────────────────────
@@ -366,6 +476,7 @@ export default class FeaturedStateBooks extends LightningElement {
 
   handleQuickShop(event) {
     event.stopPropagation();
+    this.handleSuccessModalClose();
     const productId = event.currentTarget.dataset.pid;
     if (!productId) return;
 
@@ -404,6 +515,20 @@ export default class FeaturedStateBooks extends LightningElement {
     this.modalPricingLoadError = false;
   }
 
+  handleSuccessModalClose() {
+    this.isSuccessModalOpen = false;
+    this.successModalData = null;
+  }
+
+  showAddToCartSuccessModal(productId) {
+    const product = this.getProductById(productId) || this.modalProduct;
+    this.successModalData = buildAddToCartSuccessModalData(
+      product,
+      this.storeName || DEFAULT_STORE_NAME
+    );
+    this.isSuccessModalOpen = true;
+  }
+
   openModalProductDetails() {
     if (!this.modalProduct) {
       return;
@@ -439,52 +564,18 @@ export default class FeaturedStateBooks extends LightningElement {
 
     this.isAddingToCart = true;
     try {
-      const added = await this.addProductToCart(productId, quantity);
+      const { ok: added } = await sharedAddProductToCart({
+        productId,
+        quantity,
+        storeName: this.storeName || DEFAULT_STORE_NAME,
+        webStoreId: this.webStoreId || DEFAULT_WEBSTORE_ID
+      });
       if (added) {
-        this.handleModalClose();
-        globalThis.window.location.href = `/${
-          this.storeName || DEFAULT_STORE_NAME
-        }/cart`;
+        this.showAddToCartSuccessModal(productId);
       }
     } finally {
       this.isAddingToCart = false;
     }
-  }
-
-  async addProductToCart(productId, quantity) {
-    const targetCart =
-      String(this.cartStateOrId || "current").trim() || "current";
-    const payload = {
-      productId,
-      quantity,
-      type: "Product"
-    };
-
-    try {
-      const response = await fetch(this.buildAddToCartEndpoint(targetCart), {
-        method: "POST",
-        credentials: "include",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify(payload)
-      });
-
-      if (response.ok) {
-        return true;
-      }
-    } catch {
-      // Silently fail — UI already shows fallback.
-    }
-
-    return false;
-  }
-
-  buildAddToCartEndpoint(cartStateOrId = "current") {
-    const storeName = this.storeName || DEFAULT_STORE_NAME;
-    const webStoreId = this.webStoreId || DEFAULT_WEBSTORE_ID;
-    const params = applyStorefrontGuestParams(new URLSearchParams());
-    return `/${storeName}/webruntime/api/services/data/v66.0/commerce/webstores/${webStoreId}/carts/${cartStateOrId}/cart-items?${params.toString()}`;
   }
 
   handleShopAll(event) {

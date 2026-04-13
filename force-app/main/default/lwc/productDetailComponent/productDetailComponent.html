@@ -125,9 +125,9 @@
                     type="number"
                     value={quantity}
                     min={minQty}
-                    max={maxQty}
                     step={incrementQty}
                     oninput={handleQtyChange}
+                    onblur={handleQtyBlur}
                     class="qty-input"
                   />
                   <button
@@ -185,6 +185,17 @@
 
     <template if:true={showError}>
       <p class="error-message">{errorMessage}</p>
+    </template>
+
+    <template if:true={isSuccessModalOpen}>
+      <c-add-to-cart-success-modal
+        product-name={successProductName}
+        product-image-url={successProductImageUrl}
+        product-url={successProductUrl}
+        cart-url={successCartUrl}
+        onclose={handleSuccessModalClose}
+      >
+      </c-add-to-cart-success-modal>
     </template>
   </section>
 </template>

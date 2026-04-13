@@ -1,0 +1,573 @@
+<template>
+    <div class="checkout-shell">
+
+        <!-- Page heading -->
+        <h1 class="page-heading">Checkout</h1>
+
+        <template if:true={hasItems}>
+            <div class="checkout-layout">
+
+                <!-- Left column: all steps -->
+                <div class="steps-column">
+
+                    <!-- STEP 1 — Contact Information -->
+                    <div class="step-section">
+                        <div class="step-header">
+                            <h2 class="step-heading">1. Enter Contact Information</h2>
+                            <div class="step-header-right">
+                                <template if:true={showStep1SignIn}>
+                                    <a href={signInUrl} class="header-link">
+                                        <span class="header-link-full">Already Have an Account? Sign In.</span>
+                                        <span class="header-link-short">Sign In</span>
+                                    </a>
+                                </template>
+                                <template if:true={showStep1Edit}>
+                                    <span class="edit-link" onclick={editStep1} role="button" tabindex="0">Edit</span>
+                                </template>
+                            </div>
+                        </div>
+
+                        <template if:true={isStep1}>
+                            <form class="step-form" onsubmit={handleStep1Submit}>
+                                <div class="form-group">
+                                    <label for="contactName" class="form-label">Name *</label>
+                                    <input id="contactName" type="text" class="form-input"
+                                        data-field="contactName" value={form.contactName}
+                                        oninput={handleInput} autocomplete="name" required />
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="contactEmail" class="form-label">Email *</label>
+                                    <input id="contactEmail" type="email" class="form-input"
+                                        data-field="contactEmail" value={form.contactEmail}
+                                        oninput={handleInput} autocomplete="email" required />
+                                </div>
+
+                                <template if:true={contactEmailError}>
+                                    <div class="field-error">{contactEmailError}</div>
+                                </template>
+
+                                <div class="form-group">
+                                    <label for="contactEmailConfirm" class="form-label">Confirm Email *</label>
+                                    <input id="contactEmailConfirm" type="email" class="form-input"
+                                        data-field="contactEmailConfirm" value={form.contactEmailConfirm}
+                                        oninput={handleInput} required />
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="contactPhone" class="form-label form-label-phone">
+                                        <span>Phone Number *</span>
+                                        <span class="phone-hint">Phone numbers will only be used to assist in delivering your orders</span>
+                                    </label>
+                                    <input id="contactPhone" type="tel" class="form-input"
+                                        data-field="contactPhone" value={form.contactPhone}
+                                        oninput={handleInput} autocomplete="tel" required />
+                                </div>
+
+                                <button type="submit" class="btn-primary btn-continue">Save and Continue</button>
+                            </form>
+                        </template>
+
+                        <template if:true={showStep1Summary}>
+                            <div class="step-summary">
+                                <div>{form.contactName}</div>
+                                <div>{form.contactEmail}</div>
+                                <div>{form.contactPhone}</div>
+                            </div>
+                        </template>
+                    </div>
+
+                    <hr class="step-divider" />
+
+                    <!-- STEP 2 — Shipping Address -->
+                    <div class="step-section">
+                        <div class="step-header">
+                            <h2 class="step-heading">2. Enter Shipping Address</h2>
+                            <div class="step-header-right">
+                                <template if:true={showStep2Edit}>
+                                    <span class="edit-link" onclick={editStep2} role="button" tabindex="0">Edit</span>
+                                </template>
+                            </div>
+                        </div>
+
+                        <template if:true={isStep2}>
+                            <form class="step-form" onsubmit={handleStep2Submit}>
+                                <div class="form-group">
+                                    <label for="shipName" class="form-label">Ship To *</label>
+                                    <input id="shipName" type="text" class="form-input"
+                                        data-field="shipName" value={form.shipName}
+                                        oninput={handleInput} autocomplete="name" required />
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="orgName" class="form-label">Organization Name *</label>
+                                    <input id="orgName" type="text" class="form-input"
+                                        data-field="orgName" value={form.orgName}
+                                        oninput={handleInput} autocomplete="organization" required />
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="street" class="form-label">Street *</label>
+                                    <input id="street" type="text" class="form-input"
+                                        data-field="street" value={form.street}
+                                        oninput={handleInput} autocomplete="address-line1"
+                                        placeholder="Enter your address" required />
+                                </div>
+
+                                <div class="form-row form-row-address">
+                                    <div class="form-group form-group-city">
+                                        <label for="city" class="form-label">City *</label>
+                                        <input id="city" type="text" class="form-input"
+                                            data-field="city" value={form.city}
+                                            oninput={handleInput} autocomplete="address-level2" required />
+                                    </div>
+
+                                    <div class="form-group form-group-state">
+                                        <label for="stateCode" class="form-label">State *</label>
+                                        <select id="stateCode" class="form-input form-select"
+                                            data-field="stateCode"
+                                            onchange={handleStateChange} required>
+                                            <option value=""></option>
+                                            <template for:each={usStates} for:item="st">
+                                                <option key={st.value} value={st.value} selected={st.selected}>{st.label}</option>
+                                            </template>
+                                        </select>
+                                    </div>
+
+                                    <div class="form-group form-group-zip">
+                                        <label for="postalCode" class="form-label">ZIP Code *</label>
+                                        <input id="postalCode" type="text" class="form-input"
+                                            data-field="postalCode" value={form.postalCode}
+                                            oninput={handleInput} onchange={handleZipChange}
+                                            autocomplete="postal-code" maxlength="10" required />
+                                    </div>
+                                </div>
+
+                                <template if:true={isGuest}>
+                                    <div class="form-group create-account-option">
+                                        <label class="checkbox-label">
+                                            <input type="checkbox" checked={form.useToCreateAccount}
+                                                onchange={handleCreateAccountToggle} />
+                                            <span>Use the entered details to create an account</span>
+                                        </label>
+                                    </div>
+                                </template>
+
+                                <button type="submit" class="btn-primary btn-continue" disabled={isLoadingShipping}>
+                                    <template if:true={isLoadingShipping}>
+                                        <lightning-spinner alternative-text="Loading" size="small" variant="inverse"></lightning-spinner>
+                                    </template>
+                                    <template if:false={isLoadingShipping}>
+                                        Save and Continue
+                                    </template>
+                                </button>
+                            </form>
+                        </template>
+
+                        <template if:true={showStep2Summary}>
+                            <div class="step-summary">
+                                <div>{form.shipName}</div>
+                                <div>{form.orgName}</div>
+                                <div>{form.street}</div>
+                                <div>{cityStateZip}</div>
+                            </div>
+                        </template>
+                    </div>
+
+                    <hr class="step-divider" />
+
+                    <!-- STEP 3 — Payment Method -->
+                    <div class="step-section">
+                        <div class="step-header">
+                            <h2 class="step-heading step-heading-payment">3. Select Payment Method</h2>
+                            <div class="step-header-right">
+                                <template if:true={showStep3Edit}>
+                                    <span class="edit-link" onclick={editStep3} role="button" tabindex="0">Edit</span>
+                                </template>
+                            </div>
+                        </div>
+
+                        <template if:true={isStep3}>
+                            <form class="step-form" onsubmit={handlePlaceOrder}>
+                                <ul class="payment-list">
+                                    <!-- ACH option -->
+                                    <li class="payment-option-row">
+                                        <label class="radio-label">
+                                            <input type="radio" name="paymentType" value="ach"
+                                                checked={isACH}
+                                                onchange={handlePaymentTypeChange}
+                                                class="radio-input" />
+                                            <span>Pay with ACH</span>
+                                        </label>
+                                    </li>
+
+                                    <template if:true={isACH}>
+                                        <li class="payment-fields">
+                                            <div class="form-group">
+                                                <label for="achAccountHolder" class="form-label">Account Holders Name *</label>
+                                                <input id="achAccountHolder" type="text" class="form-input"
+                                                    data-field="achAccountHolder" value={form.achAccountHolder}
+                                                    oninput={handleInput} placeholder="Enter name as it appears on account" required />
+                                            </div>
+                                            <div class="form-row">
+                                                <div class="form-group">
+                                                    <label for="achAccountNumber" class="form-label">Account Number *</label>
+                                                    <input id="achAccountNumber" type="text" class="form-input"
+                                                        data-field="achAccountNumber" value={form.achAccountNumber}
+                                                        oninput={handleInput} placeholder="Up to 17 Digit Account Numbers" maxlength="17" required />
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="achAccountNumberConfirm" class="form-label">Confirm Account Number *</label>
+                                                    <input id="achAccountNumberConfirm" type="text" class="form-input"
+                                                        data-field="achAccountNumberConfirm" value={form.achAccountNumberConfirm}
+                                                        oninput={handleInput} placeholder="Confirm Account Number" maxlength="17" required />
+                                                </div>
+                                            </div>
+                                            <div class="form-row">
+                                                <div class="form-group">
+                                                    <label for="achRoutingNumber" class="form-label">Routing Number *</label>
+                                                    <input id="achRoutingNumber" type="text" class="form-input"
+                                                        data-field="achRoutingNumber" value={form.achRoutingNumber}
+                                                        oninput={handleInput} placeholder="9 Digit Routing Number" maxlength="9" required />
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="achAccountType" class="form-label">Account Type *</label>
+                                                    <select id="achAccountType" class="form-input form-select"
+                                                        data-field="achAccountType" onchange={handleInput} required>
+                                                        <option value="">Select</option>
+                                                        <option value="checking">Checking Account</option>
+                                                        <option value="savings">Savings Account</option>
+                                                        <option value="other">Other</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+
+                                            <div class="ach-checkboxes">
+                                                <label class="checkbox-label">
+                                                    <input type="checkbox" checked={form.saveAch}
+                                                        onchange={handleSaveAchToggle} />
+                                                    <span>Save this ACH for future purchases</span>
+                                                </label>
+                                                <label class="checkbox-label checkbox-label-mt">
+                                                    <input type="checkbox" checked={form.setDefaultAchPayment}
+                                                        onchange={handleDefaultAchPaymentToggle} />
+                                                    <span>Set as my default payment method</span>
+                                                </label>
+                                            </div>
+                                        </li>
+                                    </template>
+
+                                    <!-- Credit Card option -->
+                                    <li class="payment-option-row">
+                                        <div class="payment-option-header">
+                                            <label class="radio-label">
+                                                <input type="radio" name="paymentType" value="cc"
+                                                    checked={isCreditCard}
+                                                    onchange={handlePaymentTypeChange}
+                                                    class="radio-input" />
+                                                <span>Pay with Credit Card</span>
+                                            </label>
+                                            <div class="card-logos">
+                                                <img src={visaIcon} alt="Visa" title="Visa" class="card-logo-img" />
+                                                <img src={mastercardIcon} alt="MC" title="Master Card" class="card-logo-img" />
+                                                <img src={amexIcon} alt="AXP" title="American Express" class="card-logo-img" />
+                                                <img src={discoverIcon} alt="DGN" title="Discover" class="card-logo-img" />
+                                            </div>
+                                        </div>
+                                    </li>
+
+                                    <template if:true={isCreditCard}>
+                                        <li class="payment-fields">
+                                            <div class="form-group">
+                                                <label for="cardNumber" class="form-label">Card Number *</label>
+                                                <input id="cardNumber" type="text" class="form-input"
+                                                    data-field="cardNumber" value={form.cardNumber}
+                                                    oninput={handleCardNumber} autocomplete="cc-number"
+                                                    maxlength="19" required />
+                                            </div>
+
+                                            <div class="form-row form-row-cc-details">
+                                                <div class="form-group form-group-cardholder">
+                                                    <label for="cardholderName" class="form-label">Cardholder Name *</label>
+                                                    <input id="cardholderName" type="text" class="form-input"
+                                                        data-field="cardholderName" value={form.cardholderName}
+                                                        oninput={handleInput} autocomplete="cc-name" required />
+                                                </div>
+                                                <div class="form-group form-group-expiry">
+                                                    <label class="form-label">Expiration Date *</label>
+                                                    <div class="expiry-selects">
+                                                        <select class="form-input form-select"
+                                                            onchange={handleExpMonthChange} required>
+                                                            <option value=""></option>
+                                                            <template for:each={expirationMonths} for:item="mo">
+                                                                <option key={mo.value} value={mo.value} selected={mo.selected}>{mo.label}</option>
+                                                            </template>
+                                                        </select>
+                                                        <select class="form-input form-select"
+                                                            onchange={handleExpYearChange} required>
+                                                            <option value=""></option>
+                                                            <template for:each={expirationYears} for:item="yr">
+                                                                <option key={yr.value} value={yr.value} selected={yr.selected}>{yr.label}</option>
+                                                            </template>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group form-group-cvv">
+                                                    <label for="cardCvv" class="form-label">CVV *</label>
+                                                    <input id="cardCvv" type="text" class="form-input"
+                                                        data-field="cardCvv" value={form.cardCvv}
+                                                        oninput={handleInput} autocomplete="cc-csc"
+                                                        maxlength="4" required />
+                                                </div>
+                                            </div>
+
+                                            <h3 class="billing-heading">Billing Address</h3>
+
+                                            <template if:true={shippingAddressDisplay}>
+                                                <ul class="billing-radio-list">
+                                                    <li>
+                                                        <label class="radio-label">
+                                                            <input type="radio" name="billingType" value="true"
+                                                                checked={billingUseShippingChecked}
+                                                                onchange={handleBillingRadioChange}
+                                                                class="radio-input" />
+                                                            <span>Use Shipping Address</span>
+                                                        </label>
+                                                        <div class="billing-address-preview">{shippingAddressDisplay}</div>
+                                                    </li>
+                                                    <li>
+                                                        <label class="radio-label">
+                                                            <input type="radio" name="billingType" value="false"
+                                                                checked={billingUseDifferentChecked}
+                                                                onchange={handleBillingRadioChange}
+                                                                class="radio-input" />
+                                                            <span>Enter a Different Address</span>
+                                                        </label>
+                                                    </li>
+                                                </ul>
+                                            </template>
+
+                                            <template if:true={showBillingForm}>
+                                                <div class="billing-form">
+                                                    <div class="form-group">
+                                                        <label for="billingStreet" class="form-label">Address *</label>
+                                                        <input id="billingStreet" type="text" class="form-input"
+                                                            data-field="billingStreet" value={form.billingStreet}
+                                                            oninput={handleInput} placeholder="Enter your address" required />
+                                                    </div>
+                                                    <div class="form-row form-row-address">
+                                                        <div class="form-group form-group-city">
+                                                            <label for="billingCity" class="form-label">City *</label>
+                                                            <input id="billingCity" type="text" class="form-input"
+                                                                data-field="billingCity" value={form.billingCity}
+                                                                oninput={handleInput} required />
+                                                        </div>
+                                                        <div class="form-group form-group-state">
+                                                            <label for="billingState" class="form-label">State *</label>
+                                                            <select id="billingState" class="form-input form-select"
+                                                                data-field="billingStateCode" onchange={handleInput} required>
+                                                                <option value=""></option>
+                                                                <template for:each={billingStates} for:item="st">
+                                                                    <option key={st.value} value={st.value} selected={st.selected}>{st.label}</option>
+                                                                </template>
+                                                            </select>
+                                                        </div>
+                                                        <div class="form-group form-group-zip">
+                                                            <label for="billingZip" class="form-label">ZIP Code *</label>
+                                                            <input id="billingZip" type="text" class="form-input"
+                                                                data-field="billingZip" value={form.billingZip}
+                                                                oninput={handleInput} maxlength="10" required />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </template>
+
+                                            <template if:true={isGuest}>
+                                                <div class="cc-checkboxes">
+                                                    <label class="checkbox-label">
+                                                        <input type="checkbox" checked={form.saveCard}
+                                                            onchange={handleSaveCardToggle} />
+                                                        <span>Save this card for future purchases</span>
+                                                    </label>
+                                                    <label class="checkbox-label checkbox-label-mt">
+                                                        <input type="checkbox" checked={form.setDefaultPayment}
+                                                            onchange={handleDefaultPaymentToggle} />
+                                                        <span>Set as my default payment method</span>
+                                                    </label>
+                                                </div>
+                                            </template>
+                                        </li>
+                                    </template>
+                                </ul>
+
+                                <template if:true={stepError}>
+                                    <div class="error-banner" role="alert">{stepError}</div>
+                                </template>
+
+                                <template if:true={showPlaceOrderInline}>
+                                    <div class="place-order-inline">
+                                        <button type="submit" class="btn-primary btn-place-order" disabled={isPlacingOrder}>
+                                            <template if:true={isPlacingOrder}>
+                                                <lightning-spinner alternative-text="Placing order" size="small" variant="inverse"></lightning-spinner>
+                                            </template>
+                                            <template if:false={isPlacingOrder}>
+                                                Place Order
+                                            </template>
+                                        </button>
+                                        <div class="place-order-total">Total: {totalLabel}</div>
+                                    </div>
+                                </template>
+                            </form>
+                        </template>
+
+                        <template if:true={showStep3Summary}>
+                            <div class="step-summary">
+                                <template if:true={isCreditCard}>
+                                    <div>Credit Card ending in {cardLastFour}</div>
+                                </template>
+                                <template if:true={isACH}>
+                                    <div>ACH - {form.achAccountHolder}</div>
+                                </template>
+                            </div>
+                        </template>
+                    </div>
+                </div>
+
+                <!-- Right column: Order Summary + Items -->
+                <div class="summary-column">
+                    <div class="order-summary-box">
+                        <h2 class="summary-title hidden-mobile">Order Summary</h2>
+                        <hr class="summary-title-hr hidden-mobile" />
+
+                        <template if:true={summaryLoading}>
+                            <div class="summary-loading">
+                                <lightning-spinner alternative-text="Loading summary" size="small"></lightning-spinner>
+                            </div>
+                        </template>
+
+                        <template if:false={summaryLoading}>
+                            <table class="summary-table">
+                                <tbody>
+                                    <tr>
+                                        <td>Subtotal</td>
+                                        <td class="text-right">{subtotalLabel}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Shipping</td>
+                                        <td class="text-right">{shippingLabel}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Sales Tax</td>
+                                        <td class="text-right">{taxLabel}</td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="2"><hr class="summary-total-hr hidden-mobile" /></td>
+                                    </tr>
+                                    <tr class="summary-total-row">
+                                        <td>Total</td>
+                                        <td class="text-right">{totalLabel}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                            <div class="shipping-help">
+                                <span class="shipping-help-link" onclick={toggleShippingHelp} role="button" tabindex="0">
+                                    How are shipping rates calculated?
+                                </span>
+                            </div>
+
+                            <div class="summary-place-order">
+                                <button type="button" class="btn-primary btn-place-order-summary"
+                                    onclick={handlePlaceOrder}
+                                    disabled={placeOrderDisabled}>
+                                    Place Order
+                                </button>
+                            </div>
+                        </template>
+                    </div>
+
+                    <div class="items-in-order-box">
+                        <h2 class="items-title">Items in order ({itemCount})</h2>
+                        <template for:each={summaryItems} for:item="item">
+                            <div key={item.id} class="order-item">
+                                <div class="order-item-image-wrap">
+                                    <template if:true={item.imageUrl}>
+                                        <img src={item.imageUrl} alt={item.name} class="order-item-image" loading="lazy" />
+                                    </template>
+                                    <template if:false={item.imageUrl}>
+                                        <div class="order-item-image placeholder"></div>
+                                    </template>
+                                </div>
+                                <div class="order-item-details">
+                                    <h3 class="order-item-title">{item.name}</h3>
+                                    <div class="order-item-meta">
+                                        <template if:true={item.hasDigital}>
+                                            <div class="order-item-line">{item.quantity} Digital Workbooks</div>
+                                        </template>
+                                        <template if:true={item.hasColorPrint}>
+                                            <div class="order-item-line">{item.quantity} Color Print Workbooks</div>
+                                        </template>
+                                        <template if:true={item.hasBwPrint}>
+                                            <div class="order-item-line">{item.quantity} B&amp;W Print Workbooks</div>
+                                        </template>
+                                        <div class="order-item-line">{item.quantity} CourseWave Codes for Online Testing</div>
+                                    </div>
+                                    <div class="order-item-price">{item.totalLabel}</div>
+                                </div>
+                            </div>
+                        </template>
+                    </div>
+                </div>
+
+            </div>
+        </template>
+
+        <template if:false={hasItems}>
+            <div class="empty-cart-message">
+                <p>Your cart is empty.</p>
+                <a href={cartUrl} class="btn-primary btn-return-cart">Return to Cart</a>
+            </div>
+        </template>
+
+        <!-- Shipping help modal -->
+        <template if:true={showShippingModal}>
+            <div class="modal-overlay" onclick={closeShippingModal}>
+                <div class="shipping-modal-card" onclick={stopPropagation}>
+                    <button type="button" class="shipping-modal-close" onclick={closeShippingModal} aria-label="Close">
+                        &times;
+                    </button>
+                    <h3 class="shipping-modal-title">How are shipping costs calculated?</h3>
+                    <p class="shipping-modal-text">
+                        Books are heavy&#x2013;but shipping costs don&#x27;t have to be. ABC uses a flat-rate shipping system based on the uniform size of our boxes. We calculate that rate as a percentage of your order so you&#x27;re not paying for empty space.
+                    </p>
+                </div>
+            </div>
+        </template>
+
+        <!-- Place order error modal -->
+        <template if:true={showErrorModal}>
+            <div class="modal-overlay" onclick={closeErrorModal}>
+                <div class="modal-content" onclick={stopPropagation}>
+                    <div class="error-modal-body">
+                        <div class="error-modal-title">Failed to process order.</div>
+                        <div class="error-modal-msg">{placeOrderErrorMsg}</div>
+                        <div class="error-modal-contact">
+                            <a href="mailto:contact@americanbookcompany.com" class="contact-link">
+                                <lightning-icon icon-name="utility:email" size="xx-small" class="contact-icon"></lightning-icon>
+                                contact@americanbookcompany.com
+                            </a>
+                            <br />
+                            <a href="tel:18882645877" class="contact-link">
+                                <lightning-icon icon-name="utility:call" size="xx-small" class="contact-icon"></lightning-icon>
+                                1-888-264-5877
+                            </a>
+                        </div>
+                    </div>
+                    <div class="error-modal-actions">
+                        <button type="button" class="btn-primary btn-modal-ok" onclick={closeErrorModal}>Ok</button>
+                    </div>
+                </div>
+            </div>
+        </template>
+    </div>
+</template>

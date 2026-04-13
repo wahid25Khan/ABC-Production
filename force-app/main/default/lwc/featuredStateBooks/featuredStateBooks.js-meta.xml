@@ -50,6 +50,12 @@
         default="https://americanbookcompany.my.site.com/AmericanBookCompany/global-search/all" />
 
       <property
+        name="fallbackState"
+        type="String"
+        label="Fallback State"
+        default="Georgia" />
+
+      <property
         name="cartStateOrId"
         type="String"
         label="Cart State or Cart ID"

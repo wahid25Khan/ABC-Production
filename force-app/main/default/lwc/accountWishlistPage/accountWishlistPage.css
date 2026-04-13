@@ -1,326 +1,164 @@
+/* ── ABC Design System: Lato, #007cba primary, #111827 headings ── */
 .account-wishlist-page {
-  min-height: 12rem;
+    --wishlist-ink: #111827;
+    --wishlist-muted: #6b7280;
+    --wishlist-line: #d1d5db;
+    --wishlist-brand: #007cba;
+    min-height: 12rem;
+    max-width: 80rem;
+    margin: 0 auto;
+    padding: 0 1rem 2.5rem;
+    font-family: Lato, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    color: #1f2937;
 }
-
-/* ── Page header — title left, share buttons right ── */
 
 .page-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  gap: 1rem;
-  margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem 1.5rem;
+    flex-wrap: wrap;
+    margin-bottom: 1.75rem;
 }
 
-.page-header h1 {
-  margin: 0;
-  font-size: 2rem;
-  font-weight: 700;
-  line-height: 1.2;
-  color: #0f172a;
+.page-title {
+    margin: 0;
+    color: var(--wishlist-ink);
+    font-size: 1.875rem;
+    font-weight: 700;
+    line-height: 1.2;
 }
 
 .header-actions {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  flex-wrap: wrap;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 0.75rem;
+    flex-wrap: wrap;
 }
 
-/* Share button — filled teal/blue pill */
-.btn-filled {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0.7rem 1.5rem;
-  border: 2px solid #005f8e;
-  border-radius: 999px;
-  background: #005f8e;
-  color: #fff;
-  font-weight: 600;
-  font-size: 0.9rem;
-  cursor: pointer;
-  white-space: nowrap;
-  transition: background 0.15s ease;
+.header-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 180px;
+    padding: 0.8rem 1.4rem;
+    border: 0;
+    border-radius: 999px;
+    background: var(--wishlist-brand);
+    color: #fff;
+    font-size: 0.9375rem;
+    font-weight: 600;
+    line-height: 1;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background-color 0.15s ease;
 }
 
-.btn-filled:hover {
-  background: #004d73;
-  border-color: #004d73;
+.header-button:hover,
+.header-button:focus-visible {
+    background: #005f8e;
 }
 
-/* Copy link button — outlined pill */
-.btn-outline {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0.7rem 1.5rem;
-  border: 2px solid #005f8e;
-  border-radius: 999px;
-  background: transparent;
-  color: #005f8e;
-  font-weight: 600;
-  font-size: 0.9rem;
-  cursor: pointer;
-  white-space: nowrap;
-  transition:
-    background 0.15s ease,
-    color 0.15s ease;
+.wishlist-state {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 10rem;
+    padding: 2rem;
+    border: 1px solid var(--wishlist-line);
+    border-radius: 0.5rem;
+    background: #fff;
 }
 
-.btn-outline:hover {
-  background: #005f8e;
-  color: #fff;
+.wishlist-state p {
+    margin: 0;
 }
 
-/* ── Empty state — plain inline text like live site ── */
+.error-state {
+    background: #fef2f2;
+    border-color: #fecaca;
+    color: #b91c1c;
+    justify-content: flex-start;
+}
+
+.empty-state {
+    justify-content: flex-start;
+    background: #f9fafb;
+}
 
 .empty-text {
-  margin: 0;
-  font-size: 1rem;
-  color: #374151;
-  line-height: 1.6;
+    color: #374151;
+    font-size: 1rem;
+    line-height: 1.7;
 }
 
 .empty-text a {
-  color: #005f8e;
-  text-decoration: underline;
-  font-weight: 500;
+    color: var(--wishlist-brand);
+    font-weight: 600;
+    text-decoration: underline;
 }
 
 .empty-text a:hover {
-  color: #004d73;
+    color: #005f8e;
 }
 
-/* ── Error state ── */
-
-.state-card {
-  border: 1px solid #d9e2ec;
-  border-radius: 1rem;
-  background: #fff;
-  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.06);
-  padding: 2rem;
-  text-align: center;
-}
-
-.state-card p {
-  margin: 0;
-  color: #475569;
-}
-
-/* ── Product card grid ── */
-
-.wishlist-grid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 1.5rem;
-}
-
-.wishlist-card {
-  display: flex;
-  flex-direction: column;
-  border: 1px solid #d9e2ec;
-  border-radius: 1rem;
-  background: #fff;
-  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.06);
-  overflow: hidden;
-  transition: box-shadow 0.2s ease;
-}
-
-.wishlist-card:hover {
-  box-shadow: 0 12px 28px rgba(15, 23, 42, 0.1);
-}
-
-/* ── Card image ── */
-
-.card-image-wrap {
-  width: 100%;
-}
-
-.image-link {
-  display: block;
-  overflow: hidden;
-}
-
-.product-image,
-.img-placeholder {
-  width: 100%;
-  aspect-ratio: 0.74 / 1;
-  display: block;
-}
-
-.product-image {
-  object-fit: cover;
-  border-bottom: 1px solid #d8dee8;
-}
-
-.img-placeholder {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: #f8fafc;
-  color: #64748b;
-  font-size: 0.85rem;
-  border-bottom: 1px solid #d8dee8;
-}
-
-/* ── Card body ── */
-
-.card-body {
-  padding: 0.75rem 1rem 0;
-  flex: 1 1 auto;
-}
-
-.product-name {
-  display: block;
-  color: #1f2937;
-  text-decoration: none;
-  font-size: 0.9rem;
-  font-weight: 700;
-  line-height: 1.3;
-  margin: 0 0 0.25rem;
-}
-
-a.product-name:hover,
-a.product-name:focus-visible {
-  text-decoration: underline;
-}
-
-.product-sku {
-  margin: 0 0 0.35rem;
-  font-size: 0.78rem;
-  color: #6b7280;
-}
-
-.starting-label {
-  margin: 0;
-  color: #6b7280;
-  font-size: 0.8rem;
-  line-height: 1.2;
-}
-
-.price-label {
-  margin: 0.05rem 0 0;
-  font-size: 0.98rem;
-  font-weight: 700;
-  color: #1f2937;
-}
-
-/* ── Card actions ── */
-
-.card-actions {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-  padding: 0.75rem 1rem 1rem;
-}
-
-/* View Product — filled blue pill */
-.btn-view {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0.65rem 1rem;
-  border-radius: 999px;
-  background: #1175bc;
-  color: #fff;
-  font-weight: 600;
-  font-size: 0.85rem;
-  text-decoration: none;
-  text-align: center;
-  transition: background 0.15s ease;
-}
-
-.btn-view:hover {
-  background: #0e6199;
-}
-
-/* Remove — rose-red text */
-.btn-remove {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border: 0;
-  background: transparent;
-  color: #9f1239;
-  font-weight: 600;
-  font-size: 0.8rem;
-  cursor: pointer;
-  padding: 0.35rem 0;
-}
-
-.btn-remove:hover {
-  text-decoration: underline;
-}
-
-.btn-remove:disabled {
-  cursor: default;
-  color: #94a3b8;
-  text-decoration: none;
-}
-
-/* ── Shimmer loading placeholders ── */
-
-.shimmer-block {
-  display: block;
-  width: 60%;
-  height: 1rem;
-  background: linear-gradient(90deg, #e2e8f0 25%, #f1f5f9 50%, #e2e8f0 75%);
-  background-size: 200% 100%;
-  animation: shimmer 1.5s infinite;
-  border-radius: 4px;
-}
-
-.price-shimmer {
-  width: 5rem;
-  height: 1.1rem;
-  margin-top: 0.3rem;
-  background: linear-gradient(90deg, #e2e8f0 25%, #f1f5f9 50%, #e2e8f0 75%);
-  background-size: 200% 100%;
-  animation: shimmer 1.5s infinite;
-  border-radius: 4px;
-}
-
-@keyframes shimmer {
-  0% {
-    background-position: 200% 0;
-  }
-  100% {
-    background-position: -200% 0;
-  }
-}
-
-/* ── Responsive breakpoints ── */
-
-@media (max-width: 767px) {
-  .wishlist-grid {
-    gap: 1rem;
-  }
-
-  .page-header {
+.wishlist-list {
+    display: flex;
     flex-direction: column;
-    align-items: flex-start;
-  }
-
-  .page-header h1 {
-    font-size: 1.5rem;
-  }
-
-  .btn-filled,
-  .btn-outline {
-    padding: 0.6rem 1.1rem;
-    font-size: 0.82rem;
-  }
 }
 
-@media (max-width: 479px) {
-  .header-actions {
-    width: 100%;
-  }
+.wishlist-item-shell {
+    padding: 1.75rem 0 2rem;
+    border-bottom: 1px solid var(--wishlist-line);
+    opacity: 1;
+    transform: translateY(0);
+    transition: opacity 0.25s ease, transform 0.25s ease;
+}
 
-  .btn-filled,
-  .btn-outline {
-    flex: 1;
-  }
+.wishlist-item-shell:first-child {
+    padding-top: 0;
+}
+
+.wishlist-item-shell:last-child {
+    padding-bottom: 0;
+    border-bottom: 0;
+}
+
+c-product-detail-component {
+    display: block;
+}
+
+@media (max-width: 900px) {
+    .page-header {
+        align-items: flex-start;
+    }
+
+    .header-actions {
+        justify-content: flex-start;
+    }
+
+    .wishlist-item-shell {
+        padding: 1.5rem 0 1.75rem;
+    }
+}
+
+@media (max-width: 640px) {
+    .page-title {
+        font-size: 1.5rem;
+    }
+
+    .header-actions {
+        width: 100%;
+    }
+
+    .header-button {
+        width: 100%;
+        min-width: 0;
+    }
+
+    .wishlist-state {
+        padding: 1.5rem;
+        min-height: 8rem;
+    }
 }

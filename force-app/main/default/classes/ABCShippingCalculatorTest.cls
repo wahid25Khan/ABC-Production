@@ -230,6 +230,90 @@ private class ABCShippingCalculatorTest {
             'Expected shipping = 12% of 250.00 = 30.00');
     }
 
+    @IsTest
+    static void testGetShippingRatePercent_returnsConfiguredValue() {
+        ABCShippingCalculator.setConfigForTest(buildTestConfig());
+
+        Test.startTest();
+        Decimal ratePercent = ABCShippingCalculator.getShippingRatePercent();
+        Test.stopTest();
+
+        System.assertEquals(12.00, ratePercent,
+            'The exposed shipping rate percent should match active metadata.');
+    }
+
+    @IsTest
+    static void testResolveShippingProductIdForTest_returnsShippingProduct() {
+        Test.startTest();
+        Id shippingProductId = ABCShippingCalculator.resolveShippingProductIdForTest();
+        Test.stopTest();
+
+        System.assertNotEquals(null, shippingProductId,
+            'The shipping product lookup should resolve the configured charge product.');
+    }
+
+    @IsTest
+    static void testCalculateShippingFeeForTest_usesConfiguredPercentage() {
+        ABCShippingCalculator.setConfigForTest(buildTestConfig());
+
+        Test.startTest();
+        Decimal shippingFee = ABCShippingCalculator.calculateShippingFeeForTest(500);
+        Test.stopTest();
+
+        System.assertEquals(60.00, shippingFee,
+            'Configured shipping percent should be applied to the shippable total.');
+    }
+
+    @IsTest
+    static void testValidateConfigurationForTest_returnsExpectedMessages() {
+        ABCShippingCalculator.setConfigForTest(buildTestConfig());
+        Id shippingProductId = [
+            SELECT Id
+            FROM Product2
+            WHERE Name = 'Shipping Charge Product'
+            LIMIT 1
+        ].Id;
+
+        Test.startTest();
+        String noGroupsMessage = ABCShippingCalculator.validateConfigurationForTest(0, shippingProductId);
+        String missingProductMessage = ABCShippingCalculator.validateConfigurationForTest(1, null);
+        String validMessage = ABCShippingCalculator.validateConfigurationForTest(1, shippingProductId);
+        Test.stopTest();
+
+        System.assertEquals('No delivery address found. Please add a shipping address.', noGroupsMessage);
+        System.assertEquals('Shipping Charge Product not found. Please contact support.', missingProductMessage);
+        System.assertEquals(null, validMessage);
+    }
+
+    @IsTest
+    static void testSumShippableLineTotalsForTest_excludesDigitalProducts() {
+        Id physicalProductId = [
+            SELECT Id
+            FROM Product2
+            WHERE Name = 'Test Physical Book'
+            LIMIT 1
+        ].Id;
+
+        Id digitalProductId = [
+            SELECT Id
+            FROM Product2
+            WHERE Name = 'Test Digital Resource'
+            LIMIT 1
+        ].Id;
+
+        Map<Id, Decimal> totals = new Map<Id, Decimal>{
+            physicalProductId => 150,
+            digitalProductId => 50
+        };
+
+        Test.startTest();
+        Decimal shippableTotal = ABCShippingCalculator.sumShippableLineTotalsForTest(totals);
+        Test.stopTest();
+
+        System.assertEquals(150, shippableTotal,
+            'Only physical products should contribute to shipping.');
+    }
+
     // ── Calculator instantiation ─────────────────────────────────────
 
     @IsTest

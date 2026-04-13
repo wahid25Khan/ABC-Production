@@ -56,7 +56,9 @@ private class AccountDetailsControllerTest {
 
         System.runAs(runAsUser) {
             Test.startTest();
-            AccountDetailsController.ActionResult result = AccountDetailsController.updateOrganization('American Book Company');
+            AccountDetailsController.ActionResult result = AccountDetailsController.updateOrganization(
+                'American Book Company', '123 Main St', 'Atlanta', 'GA', '30301', '555-000-0000'
+            );
             Test.stopTest();
 
             System.assertEquals(false, result.success);

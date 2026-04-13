@@ -1,5 +1,5 @@
 {
-  "apiName": "myAccountLayout",
-  "type": "sfdc_cms__themeLayout",
-  "path": "themeLayouts"
+  "apiName" : "myAccountLayout",
+  "type" : "sfdc_cms__themeLayout",
+  "path" : "themeLayouts"
 }

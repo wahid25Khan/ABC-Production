@@ -13,6 +13,8 @@ import {
   normalizeProduct as sharedNormalizeProduct,
   extractProductList as sharedExtractProductList,
   buildProductDetailPath as sharedBuildProductDetailPath,
+  addProductToCart as sharedAddProductToCart,
+  buildAddToCartSuccessModalData,
   resolveStockKeepingUnit as sharedResolveStockKeepingUnit,
   resolveCurrencyIsoCode as sharedResolveCurrencyIsoCode,
   applyStorefrontGuestParams,
@@ -178,6 +180,8 @@ export default class CustomResults extends LightningElement {
   modalVariationPricing = null;
   isModalPricingLoading = false;
   modalPricingLoadError = false;
+  isSuccessModalOpen = false;
+  successModalData = null;
 
   isStateDropdownOpen = false;
   isSortDropdownOpen = false;
@@ -329,6 +333,22 @@ export default class CustomResults extends LightningElement {
     const ruleInc = rule?.increment ?? rule?.Increment ?? null;
     if (Number.isFinite(ruleInc) && ruleInc > 0) return ruleInc;
     return 1;
+  }
+
+  get successProductName() {
+    return this.successModalData?.productName || "";
+  }
+
+  get successProductImageUrl() {
+    return this.successModalData?.productImageUrl || "";
+  }
+
+  get successProductUrl() {
+    return this.successModalData?.productUrl || "";
+  }
+
+  get successCartUrl() {
+    return this.successModalData?.cartUrl || "";
   }
 
   get selectedStateLabel() {
@@ -824,8 +844,20 @@ export default class CustomResults extends LightningElement {
     return decoded;
   }
 
+  getTermFromUrl() {
+    try {
+      const params = new URLSearchParams(
+        globalThis.window?.location?.search || ""
+      );
+      return (params.get("term") || "").trim();
+    } catch {
+      return "";
+    }
+  }
+
   captureCurrentRouteState() {
     this.currentPathSearchToken = this.getPathSearchToken();
+    this.searchText = this.getTermFromUrl();
     this.lastObservedHref = this.getCurrentHref();
   }
 
@@ -873,9 +905,15 @@ export default class CustomResults extends LightningElement {
 
   handleObservedUrlChange() {
     const nextPathSearchToken = this.getPathSearchToken();
-    if (nextPathSearchToken === this.currentPathSearchToken) return;
+    const nextTermParam = this.getTermFromUrl();
+    const pathTokenChanged =
+      nextPathSearchToken !== this.currentPathSearchToken;
+    const termParamChanged = nextTermParam !== this.searchText;
+
+    if (!pathTokenChanged && !termParamChanged) return;
 
     this.currentPathSearchToken = nextPathSearchToken;
+    this.searchText = nextTermParam;
     this.currentPage = 1;
     this.applyLocalFiltersAndPagination();
   }
@@ -1369,7 +1407,7 @@ export default class CustomResults extends LightningElement {
 
     this.visibleProducts = sorted.slice(start, end).map((product) => ({
       ...product,
-      productUrl: sharedBuildProductDetailPath(product, this.storeName),
+      productUrl: this.getProductDetailPath(product),
       priceLabel: sharedFormatCurrency(
         product.startingPrice,
         product.currencyIsoCode
@@ -1548,9 +1586,21 @@ export default class CustomResults extends LightningElement {
     );
   }
 
+  getProductDetailPath(product) {
+    if (!product) {
+      return "";
+    }
+
+    return sharedBuildProductDetailPath(
+      product,
+      this.storeName || DEFAULT_STORE_NAME
+    );
+  }
+
   handleQuickShop(event) {
     event.preventDefault();
     event.stopPropagation();
+    this.handleSuccessModalClose();
 
     const productId = event?.currentTarget?.dataset?.pid;
     const product = this.getProductById(productId);
@@ -1587,14 +1637,28 @@ export default class CustomResults extends LightningElement {
     this.modalPricingLoadError = false;
   }
 
+  handleSuccessModalClose() {
+    this.isSuccessModalOpen = false;
+    this.successModalData = null;
+  }
+
+  showAddToCartSuccessModal(productId) {
+    const product = this.getProductById(productId) || this.modalProduct;
+    this.successModalData = buildAddToCartSuccessModalData(
+      product,
+      this.storeName || DEFAULT_STORE_NAME
+    );
+    this.isSuccessModalOpen = true;
+  }
+
   openModalProductDetails() {
     if (!this.modalProduct) return;
 
+    const targetPath = this.getProductDetailPath(this.modalProduct);
     this.handleModalClose();
-    globalThis.window.location.href = sharedBuildProductDetailPath(
-      this.modalProduct,
-      this.storeName
-    );
+    if (targetPath) {
+      globalThis.window.location.href = targetPath;
+    }
   }
 
   handleViewDetails() {
@@ -1616,41 +1680,18 @@ export default class CustomResults extends LightningElement {
 
     this.isAddingToCart = true;
     try {
-      const added = await this.addProductToCart(productId, quantity);
+      const { ok: added } = await sharedAddProductToCart({
+        productId,
+        quantity,
+        storeName: this.storeName || DEFAULT_STORE_NAME,
+        webStoreId: this.webStoreId || DEFAULT_WEBSTORE_ID
+      });
       if (added) {
-        this.handleModalClose();
-        globalThis.window.location.href = `/${this.storeName || DEFAULT_STORE_NAME}/cart`;
+        this.showAddToCartSuccessModal(productId);
       }
     } finally {
       this.isAddingToCart = false;
     }
-  }
-
-  async addProductToCart(productId, quantity) {
-    const payload = { productId, quantity, type: "Product" };
-
-    try {
-      const response = await fetch(
-        this.buildAddToCartEndpoint(this.cartStateOrId || "current"),
-        {
-          method: "POST",
-          credentials: "include",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(payload)
-        }
-      );
-
-      return response.ok;
-    } catch {
-      return false;
-    }
-  }
-
-  buildAddToCartEndpoint(cartStateOrId) {
-    const targetCart = String(cartStateOrId || "current").trim() || "current";
-    const params = applyStorefrontGuestParams(new URLSearchParams());
-
-    return `/${this.storeName || DEFAULT_STORE_NAME}/webruntime/api/services/data/v66.0/commerce/webstores/${this.webStoreId || DEFAULT_WEBSTORE_ID}/carts/${targetCart}/cart-items?${params.toString()}`;
   }
 
   resolveProductImageUrl(item) {
