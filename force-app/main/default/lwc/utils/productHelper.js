@@ -5,6 +5,7 @@
 
 import { addItemToCart } from "commerce/cartApi";
 import isGuestUser from "@salesforce/user/isGuest";
+import apexAddCartItem from "@salesforce/apex/CartItemController.addCartItem";
 
 const DEFAULT_STORE_NAME = "AmericanBookCompany";
 export const CART_UPDATED_EVENT_NAME = "abccartupdated";
@@ -441,80 +442,6 @@ export function dispatchCartUpdated(detail = {}) {
   );
 }
 
-async function addProductToCartViaRest({
-  productId,
-  quantity,
-  storeName = DEFAULT_STORE_NAME,
-  webStoreId,
-  cartStateOrId = "active",
-  asGuest = isGuestUser
-} = {}) {
-  if (!webStoreId) {
-    return {
-      ok: false,
-      error: new Error("Missing webStoreId.")
-    };
-  }
-
-  const response = await fetch(
-    buildAddToCartEndpoint({
-      storeName,
-      webStoreId,
-      cartStateOrId,
-      asGuest
-    }),
-    {
-      method: "POST",
-      credentials: "include",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        productId,
-        quantity,
-        type: "Product"
-      })
-    }
-  );
-
-  if (!response.ok) {
-    const raw = await response.text();
-    let parsed;
-
-    try {
-      parsed = raw ? JSON.parse(raw) : null;
-    } catch {
-      parsed = raw;
-    }
-
-    const message =
-      parsed?.message ||
-      parsed?.[0]?.message ||
-      `Add to cart failed with status ${response.status}.`;
-
-    return {
-      ok: false,
-      error: new Error(message),
-      response,
-      parsed
-    };
-  }
-
-  let result = null;
-  try {
-    result = await response.json();
-  } catch {
-    result = null;
-  }
-
-  return {
-    ok: true,
-    result,
-    response
-  };
-}
-
 export async function addProductToCart({
   productId,
   quantity,
@@ -546,30 +473,44 @@ export async function addProductToCart({
       ok: true,
       result
     };
-  } catch (error) {
-    const fallback = await addProductToCartViaRest({
-      productId: normalizedProductId,
-      quantity: normalizedQuantity,
-      storeName,
-      webStoreId,
-      cartStateOrId: "active",
-      asGuest: isGuestUser
-    });
-
-    if (fallback.ok) {
-      dispatchCartUpdated({
-        productId: normalizedProductId,
-        quantity: normalizedQuantity
-      });
-      return fallback;
+  } catch (primaryError) {
+    // REST fetch fallback (addProductToCartViaRest) returns 401 in Experience Cloud
+    // because browser fetch cannot satisfy Salesforce CSRF requirements on POST.
+    // Use an Apex fallback instead which handles auth server-side.
+    if (!webStoreId) {
+      return {
+        ok: false,
+        error: primaryError
+      };
     }
 
-    return {
-      ok: false,
-      error: fallback.error || error,
-      primaryError: error,
-      fallbackError: fallback.error
-    };
+    try {
+      const apexResult = await apexAddCartItem({
+        productId: normalizedProductId,
+        quantity: normalizedQuantity,
+        webStoreId
+      });
+
+      if (apexResult?.ok) {
+        dispatchCartUpdated({
+          productId: normalizedProductId,
+          quantity: normalizedQuantity
+        });
+        return { ok: true, result: apexResult };
+      }
+
+      return {
+        ok: false,
+        error: new Error(apexResult?.message || "Could not add to cart."),
+        primaryError
+      };
+    } catch (apexError) {
+      return {
+        ok: false,
+        error: new Error(apexError?.body?.message || apexError?.message || "Could not add to cart."),
+        primaryError
+      };
+    }
   }
 }
 
