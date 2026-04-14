@@ -19,6 +19,8 @@ import {
   resolveCurrencyIsoCode as sharedResolveCurrencyIsoCode,
   applyStorefrontGuestParams,
   ALL_STATES,
+  STATE_ABBREVIATIONS,
+  ABBREVIATION_TO_STATE,
   DEFAULT_WEBSTORE_ID,
   DEFAULT_STORE_NAME,
   STATE_STORAGE_KEY
@@ -176,6 +178,7 @@ export default class CustomResults extends LightningElement {
 
   isModalOpen = false;
   isAddingToCart = false;
+  addToCartError = "";
   modalProduct = null;
   modalVariationPricing = null;
   isModalPricingLoading = false;
@@ -822,7 +825,10 @@ export default class CustomResults extends LightningElement {
     const token = (after.split("/")[0] || "").trim();
     if (!token || token.toLowerCase() === "all") return "";
 
-    return this.decodeSearchPathSegment(token);
+    const decoded = this.decodeSearchPathSegment(token);
+    // Reverse-lookup abbreviation → full state name (e.g. "ga" → "Georgia")
+    const fromAbbrev = ABBREVIATION_TO_STATE[decoded.toLowerCase()];
+    return fromAbbrev || decoded;
   }
 
   decodeSearchPathSegment(value) {
@@ -1609,6 +1615,7 @@ export default class CustomResults extends LightningElement {
     this.modalProduct = product;
     this.modalVariationPricing = null;
     this.modalPricingLoadError = false;
+    this.addToCartError = "";
     this.isModalPricingLoading = true;
     this.isModalOpen = true;
 
@@ -1635,6 +1642,7 @@ export default class CustomResults extends LightningElement {
     this.modalVariationPricing = null;
     this.isModalPricingLoading = false;
     this.modalPricingLoadError = false;
+    this.addToCartError = "";
   }
 
   handleSuccessModalClose() {
@@ -1679,8 +1687,9 @@ export default class CustomResults extends LightningElement {
       Number.isFinite(requestedQty) && requestedQty > 0 ? requestedQty : 1;
 
     this.isAddingToCart = true;
+    this.addToCartError = "";
     try {
-      const { ok: added } = await sharedAddProductToCart({
+      const { ok: added, error } = await sharedAddProductToCart({
         productId,
         quantity,
         storeName: this.storeName || DEFAULT_STORE_NAME,
@@ -1688,7 +1697,12 @@ export default class CustomResults extends LightningElement {
       });
       if (added) {
         this.showAddToCartSuccessModal(productId);
+      } else {
+        this.addToCartError =
+          error?.message || "Could not add to cart. Please try again.";
       }
+    } catch (err) {
+      this.addToCartError = err?.message || "Could not add to cart. Please try again.";
     } finally {
       this.isAddingToCart = false;
     }
@@ -1702,27 +1716,33 @@ export default class CustomResults extends LightningElement {
   updateResultsUrlForState(stateValue) {
     if (!globalThis.window?.history) return;
 
-    const nextToken = String(stateValue || "").trim() || "all";
+    const fullName = String(stateValue || "").trim();
+    // Use lowercase abbreviation in the URL (e.g. "ga" instead of "Georgia")
+    const abbrevToken = fullName
+      ? (STATE_ABBREVIATIONS[fullName] || fullName).toLowerCase()
+      : "all";
     const currentPath = globalThis.window.location?.pathname || "";
     const markerIndex = currentPath.indexOf(SEARCH_MARKER);
     const basePath =
       markerIndex >= 0
         ? currentPath.slice(0, markerIndex + SEARCH_MARKER.length)
         : `/${this.storeName || DEFAULT_STORE_NAME}${SEARCH_MARKER}`;
-    const nextPath = `${basePath}${encodeURIComponent(nextToken)}`;
+    const nextPath = `${basePath}${encodeURIComponent(abbrevToken)}`;
 
     if (
       currentPath === nextPath &&
       !globalThis.window.location?.search &&
       !globalThis.window.location?.hash
     ) {
-      this.currentPathSearchToken = nextToken === "all" ? "" : nextToken;
+      // Store full state name in token so product filtering still works
+      this.currentPathSearchToken = abbrevToken === "all" ? "" : fullName;
       this.lastObservedHref = this.getCurrentHref();
       return;
     }
 
     globalThis.window.history.pushState({}, "", nextPath);
-    this.currentPathSearchToken = nextToken === "all" ? "" : nextToken;
+    // Store full state name in token so product filtering still works
+    this.currentPathSearchToken = abbrevToken === "all" ? "" : fullName;
     this.lastObservedHref = this.getCurrentHref();
   }
 

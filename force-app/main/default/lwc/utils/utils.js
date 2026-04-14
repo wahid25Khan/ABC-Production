@@ -8,6 +8,7 @@ export {
   DEFAULT_WEBSTORE_ID,
   ALL_STATES,
   STATE_ABBREVIATIONS,
+  ABBREVIATION_TO_STATE,
   readStateFromStorage,
   writeStateToStorage,
   dispatchStateChange,

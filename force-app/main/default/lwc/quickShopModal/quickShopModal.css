@@ -372,6 +372,13 @@ button.slds-backdrop {
   padding-top: 12px;
 }
 
+.cart-error-msg {
+  color: #c23934;
+  font-size: 0.8rem;
+  margin: 0 0 6px;
+  padding: 0;
+}
+
 .btns {
   display: flex;
   align-items: center;

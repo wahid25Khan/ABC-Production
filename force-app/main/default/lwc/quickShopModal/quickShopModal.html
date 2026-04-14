@@ -180,6 +180,9 @@
                   </div>
                 </div>
                 <div class="btn-offset">
+                  <template if:true={cartError}>
+                    <p class="cart-error-msg">{cartError}</p>
+                  </template>
                   <button
                     class="btn-add"
                     type="button"

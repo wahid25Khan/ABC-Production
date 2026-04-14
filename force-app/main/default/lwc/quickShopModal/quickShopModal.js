@@ -21,6 +21,7 @@ export default class QuickShopModal extends LightningElement {
   @api incrementQuantity = 1;
   @api pricingLoading = false;
   @api pricingError = false;
+  @api cartError = "";
 
   _variationPricing;
 

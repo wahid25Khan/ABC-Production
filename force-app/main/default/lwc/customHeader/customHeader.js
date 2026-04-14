@@ -11,6 +11,7 @@ import {
   readStateFromStorage,
   writeStateToStorage,
   ALL_STATES,
+  STATE_ABBREVIATIONS,
   STATE_STORAGE_KEY,
   DEFAULT_WEBSTORE_ID,
   DEFAULT_STORE_NAME,
@@ -494,7 +495,9 @@ export default class CustomHeader extends LightningElement {
     if (this.isResultsPage(current)) {
       // On search/results page: re-run results with new state
       const kw = this.getResultsKeyword(current) || "all";
-      const target = `${RESULTS_BASE}/${encodeURIComponent(kw)}`;
+      // Preserve non-state keywords; use abbreviation only when writing a new state path
+      const pathToken = (STATE_ABBREVIATIONS[stateVal] || stateVal).toLowerCase();
+      const target = `${RESULTS_BASE}/${encodeURIComponent(pathToken)}`;
       globalThis.location.assign(
         target + (params.toString() ? `?${params.toString()}` : "")
       );

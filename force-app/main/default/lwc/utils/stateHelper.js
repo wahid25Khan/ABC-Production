@@ -220,8 +220,17 @@ const STATE_ABBREVIATIONS = Object.freeze({
   Wyoming: "WY"
 });
 
+// Reverse map: lowercase abbreviation → full state name (e.g. "ga" → "Georgia")
+const ABBREVIATION_TO_STATE = Object.freeze(
+  Object.entries(STATE_ABBREVIATIONS).reduce((acc, [full, abbr]) => {
+    acc[abbr.toLowerCase()] = full;
+    return acc;
+  }, {})
+);
+
 export { STATE_STORAGE_KEY };
 export { STATE_CHANGE_EVENT_NAMES };
 export { DEFAULT_WEBSTORE_ID };
 export { ALL_STATES };
 export { STATE_ABBREVIATIONS };
+export { ABBREVIATION_TO_STATE };

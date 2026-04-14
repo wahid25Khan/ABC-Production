@@ -5,6 +5,7 @@ import toggleFavorite from "@salesforce/apex/WishlistController.toggleFavorite";
 import {
   ALL_STATES,
   STATE_ABBREVIATIONS,
+  ABBREVIATION_TO_STATE,
   readStateFromStorage,
   writeStateToStorage,
   decodeUrlValue,
@@ -1455,7 +1456,14 @@ export default class StateFilterLwc extends LightningElement {
       return "";
     }
 
-    return this.states.includes(kw) ? kw : "";
+    // Direct full state name match
+    if (this.states.includes(kw)) return kw;
+
+    // Abbreviation reverse-lookup (e.g. "ga" → "Georgia")
+    const fromAbbrev = ABBREVIATION_TO_STATE[kw.toLowerCase()];
+    if (fromAbbrev && this.states.includes(fromAbbrev)) return fromAbbrev;
+
+    return "";
   }
 
   getStateFromParams(urlObj) {
@@ -1516,10 +1524,16 @@ export default class StateFilterLwc extends LightningElement {
       const hasKw = !!kw;
 
       if (!hasKw) {
+        // Default to the selected/default state abbreviation instead of "/all"
+        const defaultAbbrev = (
+          STATE_ABBREVIATIONS[this.selectedValue] ||
+          STATE_ABBREVIATIONS[this.defaultState] ||
+          this.defaultState
+        ).toLowerCase();
         globalThis.history.replaceState(
           {},
           "",
-          this.resultsAllPath + urlObj.search
+          `${this.resultsBasePath}/${defaultAbbrev}${urlObj.search}`
         );
         this._lastHref = globalThis.location.href;
         return;
@@ -1547,7 +1561,11 @@ export default class StateFilterLwc extends LightningElement {
         const url = new URL(globalThis.location.href);
 
         if (this.isResultsPage(url)) {
-          const kw = this.getResultsKeyword(url) || "all";
+          let kw = this.getResultsKeyword(url) || "all";
+          // Convert full state name to lowercase abbreviation for clean URL
+          if (this.states.includes(kw)) {
+            kw = (STATE_ABBREVIATIONS[kw] || kw).toLowerCase();
+          }
           const desiredPath = `${this.resultsBasePath}/${encodeURIComponent(kw)}`;
           globalThis.history.replaceState({}, "", desiredPath);
           this._lastHref = globalThis.location.href;
@@ -1602,9 +1620,11 @@ export default class StateFilterLwc extends LightningElement {
       params.delete(this.refinementsParam);
     }
 
+    // Use lowercase abbreviation in the URL path
+    const abbrev = (STATE_ABBREVIATIONS[stateVal] || stateVal).toLowerCase();
+
     if (this.isResultsPage(current)) {
-      const kw = this.getResultsKeyword(current) || "all";
-      const targetPath = `${this.resultsBasePath}/${encodeURIComponent(kw)}`;
+      const targetPath = `${this.resultsBasePath}/${encodeURIComponent(abbrev)}`;
       const newUrl =
         targetPath + (params.toString() ? `?${params.toString()}` : "");
       globalThis.location.assign(newUrl);
