@@ -7,6 +7,7 @@ import CC_VISA from '@salesforce/resourceUrl/ccVisa';
 import CC_MASTERCARD from '@salesforce/resourceUrl/ccMastercard';
 import CC_AMEX from '@salesforce/resourceUrl/ccAmex';
 import CC_DISCOVER from '@salesforce/resourceUrl/ccDiscover';
+import AN_COMMUNICATOR from '@salesforce/resourceUrl/anCommunicator';
 
 const FORM_KEY = 'abc_checkout_flow_form';
 const CHECKOUT_SESSION_KEY = 'abc_checkout_session';
@@ -14,6 +15,8 @@ const API_VERSION = 'v66.0';
 const WEBSTORE_ID = '0ZEam000004dJDNGA2';
 const PAYMENT_FORM_SANDBOX = 'https://test.authorize.net/payment/payment';
 const PAYMENT_FORM_PROD = 'https://accept.authorize.net/payment/payment';
+const AN_ORIGIN_SANDBOX = 'https://test.authorize.net';
+const AN_ORIGIN_PROD = 'https://accept.authorize.net';
 
 const US_STATES = [
     { value: 'AL', label: 'Alabama' }, { value: 'AK', label: 'Alaska' },
@@ -100,6 +103,18 @@ export default class CheckoutFlow extends LightningElement {
     @track showErrorModal = false;
     @track placeOrderErrorMsg = '';
 
+    // Payment modal state
+    @track showPaymentModal = false;
+    @track paymentIframeSrc = '';
+    @track isPlacingOrderAfterPayment = false;
+    @track orderPlaced = false;
+    @track orderNumber = '';
+    @track orderSummaryId = '';
+
+    // Internal checkout context (not persisted across page loads)
+    _pendingCheckoutId = null;
+    _messageHandler = null;
+
     currentStep = 1;
     completedStep1 = false;
     completedStep2 = false;
@@ -110,7 +125,10 @@ export default class CheckoutFlow extends LightningElement {
         this.currentStep = this._readStepFromUrl();
         this._restoreForm();
         this._loadSummaryFromCart();
-        this._handlePaymentReturn();
+    }
+
+    disconnectedCallback() {
+        this._removeMessageListener();
     }
 
     @wire(getShippingRatePercent)
@@ -567,22 +585,20 @@ export default class CheckoutFlow extends LightningElement {
                 throw new Error('Failed to start checkout session.');
             }
 
-            // 3 — Build return URL: the current page URL + ?paymentReturn=1
-            const origin = globalThis.location.origin;
-            const pathname = globalThis.location.pathname;
-            const returnUrl = `${origin}${pathname}?paymentReturn=1`;
-            const cancelUrl = `${origin}${pathname}?paymentCancel=1`;
+            // 3 — Build communicator URL (absolute, required by Authorize.Net)
+            const communicatorUrl = `${globalThis.location.origin}/resource/anCommunicator`;
 
-            // 4 — Get Authorize.Net Accept Hosted token
+            // 4 — Get Authorize.Net Accept Hosted token (iFrame mode)
             const tokenResponse = await getHostedPaymentToken({
                 req: {
                     amount,
                     currencyIsoCode: currencyCode,
-                    returnUrl,
-                    cancelUrl,
+                    returnUrl: `${globalThis.location.origin}${globalThis.location.pathname}`,
+                    cancelUrl: `${globalThis.location.origin}${globalThis.location.pathname}`,
                     showReceipt: false,
                     transactionType: 'authCaptureTransaction',
-                    referenceId: cartId
+                    referenceId: cartId,
+                    iFrameCommunicatorUrl: communicatorUrl
                 }
             });
 
@@ -590,18 +606,15 @@ export default class CheckoutFlow extends LightningElement {
                 throw new Error(tokenResponse?.message || 'Payment token generation failed.');
             }
 
-            // 5 — Persist checkout context so the return handler can place the order
-            try {
-                globalThis.sessionStorage?.setItem(
-                    CHECKOUT_SESSION_KEY,
-                    JSON.stringify({ checkoutId, cartId, amount })
-                );
-            } catch { /* noop */ }
+            // 5 — Store checkoutId in memory (no page reload in iframe mode)
+            this._pendingCheckoutId = checkoutId;
 
-            // 6 — Redirect to Accept Hosted (sandbox vs production)
-            const isSandboxToken = tokenResponse.token.length < 200; // sandbox tokens are shorter
-            const formAction = isSandboxToken ? PAYMENT_FORM_SANDBOX : PAYMENT_FORM_PROD;
-            this._submitPaymentForm(tokenResponse.token, formAction);
+            // 6 — Build the iframe src by POST-ing the token to AN via a hidden form
+            //     then opening the result in the modal iframe
+            const isSandbox = tokenResponse.token.length < 200;
+            const formAction = isSandbox ? PAYMENT_FORM_SANDBOX : PAYMENT_FORM_PROD;
+
+            this._openPaymentModal(tokenResponse.token, formAction);
 
         } catch (error) {
             this.isPlacingOrder = false;
@@ -609,83 +622,143 @@ export default class CheckoutFlow extends LightningElement {
         }
     }
 
-    /** Called on page load when Authorize.Net redirects back with ?paymentReturn=1 */
-    async _handlePaymentReturn() {
+    /** Open the payment modal and submit the token form targeting the modal iframe */
+    _openPaymentModal(token, formAction) {
+        // Show the modal first (iframe is already rendered in DOM)
+        this.showPaymentModal = true;
+        this.isPlacingOrder = false;
+
+        // Register the postMessage listener BEFORE the iframe loads
+        this._addMessageListener();
+
+        // After render, create a hidden form that targets the modal iframe and submit it
+        // eslint-disable-next-line @lwc/lwc/no-async-operation
+        setTimeout(() => {
+            const iframe = this.template.querySelector('.an-payment-iframe');
+            if (!iframe) return;
+
+            iframe.name = 'an-payment-iframe';
+
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = formAction;
+            form.target = 'an-payment-iframe';
+            form.style.display = 'none';
+
+            const input = document.createElement('input');
+            input.type = 'hidden';
+            input.name = 'token';
+            input.value = token;
+            form.appendChild(input);
+
+            document.body.appendChild(form);
+            form.submit();
+            document.body.removeChild(form);
+        }, 100);
+    }
+
+    /** Listen for postMessage events from the Authorize.Net communicator page */
+    _addMessageListener() {
+        this._removeMessageListener(); // ensure no duplicates
+        this._messageHandler = (event) => this._handleAnMessage(event);
+        globalThis.addEventListener('message', this._messageHandler);
+    }
+
+    _removeMessageListener() {
+        if (this._messageHandler) {
+            globalThis.removeEventListener('message', this._messageHandler);
+            this._messageHandler = null;
+        }
+    }
+
+    _handleAnMessage(event) {
+        // Only accept messages from AN origins OR from our own origin (via communicator relay)
+        const allowed = [AN_ORIGIN_SANDBOX, AN_ORIGIN_PROD, globalThis.location.origin];
+        if (!allowed.includes(event.origin)) return;
+
+        let msg;
         try {
-            const params = new URLSearchParams(globalThis.location?.search || '');
-            if (params.get('paymentReturn') !== '1') return;
+            msg = (typeof event.data === 'string') ? JSON.parse(event.data) : event.data;
+        } catch {
+            return;
+        }
 
-            // Clean the URL so a refresh doesn't re-trigger this
-            try {
-                globalThis.history?.replaceState({}, '', globalThis.location.pathname);
-            } catch { /* noop */ }
+        if (!msg || !msg.action) return;
 
-            const raw = globalThis.sessionStorage?.getItem(CHECKOUT_SESSION_KEY);
-            if (!raw) return;
+        switch (msg.action) {
+            case 'successfulSave':
+            case 'transactResponse':
+                // Payment was authorised/captured — close modal and place the order
+                this._removeMessageListener();
+                this.showPaymentModal = false;
+                this._completeOrder();
+                break;
+            case 'cancel':
+            case 'cancelTransaction':
+                // User cancelled inside the hosted form
+                this._removeMessageListener();
+                this.showPaymentModal = false;
+                this.isPlacingOrder = false;
+                this.stepError = 'Payment was cancelled. You can try again when ready.';
+                break;
+            case 'resizeWindow':
+                // AN requests iframe resize — update height if needed
+                break;
+            default:
+                break;
+        }
+    }
 
-            const { checkoutId } = JSON.parse(raw);
-            globalThis.sessionStorage?.removeItem(CHECKOUT_SESSION_KEY);
+    /** Close the payment modal when user clicks the X button */
+    handleClosePaymentModal() {
+        this._removeMessageListener();
+        this.showPaymentModal = false;
+        this.isPlacingOrder = false;
+        this._pendingCheckoutId = null;
+        this.stepError = 'Payment was cancelled. You can try again or create an account.';
+    }
 
-            if (!checkoutId) return;
+    /** Called after AN confirms payment — calls placeOrder to create Order in Salesforce */
+    async _completeOrder() {
+        const checkoutId = this._pendingCheckoutId;
+        this._pendingCheckoutId = null;
 
-            this.isPlacingOrder = true;
-            this.currentStep = 3;
+        if (!checkoutId) {
+            this.stepError = 'Session expired. Please refresh and try again.';
+            return;
+        }
 
-            // Place the order — converts the Cart to Order + OrderSummary in Salesforce
+        this.isPlacingOrderAfterPayment = true;
+
+        try {
             const placeOrderResponse = await this._fetchJson(
                 `/AmericanBookCompany/webruntime/api/services/data/${API_VERSION}/commerce/webstores/${WEBSTORE_ID}/checkouts/${checkoutId}/actions/placeOrder`,
                 { method: 'POST', body: '{}' }
             );
 
-            const orderRef =
-                placeOrderResponse?.orderReferenceNumber ||
-                placeOrderResponse?.orderId ||
-                placeOrderResponse?.orderSummaryId ||
-                'created';
-
-            // Clear the form from sessionStorage, order is done
+            // Clear saved form — order is complete
             try { globalThis.sessionStorage?.removeItem(FORM_KEY); } catch { /* noop */ }
 
-            // Navigate to the order confirmation page
-            const orderConfirmUrl = `/AmericanBookCompany/order?orderSummaryId=${placeOrderResponse?.orderSummaryId || ''}`;
-            globalThis.location.assign(orderConfirmUrl);
+            this.isPlacingOrderAfterPayment = false;
+            this.orderPlaced = true;
+            this.orderNumber = placeOrderResponse?.orderReferenceNumber || placeOrderResponse?.orderId || '';
+            this.orderSummaryId = placeOrderResponse?.orderSummaryId || '';
 
         } catch (error) {
-            this.isPlacingOrder = false;
+            this.isPlacingOrderAfterPayment = false;
             this.showErrorModal = true;
-            this.placeOrderErrorMsg = error?.message || 'Order placement failed after payment. Please contact support.';
+            this.placeOrderErrorMsg = error?.message || 'Payment was received but order creation failed. Please contact support with your transaction details.';
         }
     }
 
-    /** Called on page load when Authorize.Net redirects back with ?paymentCancel=1 */
-    _handlePaymentCancel() {
-        const params = new URLSearchParams(globalThis.location?.search || '');
-        if (params.get('paymentCancel') !== '1') return;
-        try {
-            globalThis.history?.replaceState({}, '', globalThis.location.pathname);
-            globalThis.sessionStorage?.removeItem(CHECKOUT_SESSION_KEY);
-        } catch { /* noop */ }
-        this.stepError = 'Payment was cancelled. Please try again.';
-        this.currentStep = 3;
+    /** Navigate to the order confirmation page from the success screen */
+    handleViewOrder() {
+        const url = this.orderSummaryId
+            ? `/AmericanBookCompany/order?orderSummaryId=${this.orderSummaryId}`
+            : '/AmericanBookCompany/my-account/orders';
+        globalThis.location.assign(url);
     }
 
-    /** Build the Authorize.Net POST form and submit */
-    _submitPaymentForm(token, formAction) {
-        const form = document.createElement('form');
-        form.method = 'POST';
-        form.action = formAction;
-        form.target = '_top';
-        form.style.display = 'none';
-
-        const input = document.createElement('input');
-        input.type = 'hidden';
-        input.name = 'token';
-        input.value = token;
-        form.appendChild(input);
-
-        document.body.appendChild(form);
-        form.submit();
-    }
 
     async _clearCheckoutIfPresent() {
         try {

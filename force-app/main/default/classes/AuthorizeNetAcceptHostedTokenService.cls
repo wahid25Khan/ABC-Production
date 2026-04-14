@@ -21,6 +21,13 @@ public with sharing class AuthorizeNetAcceptHostedTokenService {
         @AuraEnabled public String transactionType { get; set; }
         /** Reference ID (e.g. cart ID). */
         @AuraEnabled public String referenceId { get; set; }
+        /**
+         * Publicly accessible URL of the iFrame communicator HTML page (static resource).
+         * Required for Accept Hosted iFrame/modal mode — allows AN to relay postMessage
+         * events back to the parent LWC page without a full-page redirect.
+         * Omit or leave blank to use full-page redirect mode instead.
+         */
+        @AuraEnabled public String iFrameCommunicatorUrl { get; set; }
     }
 
     /** Response wrapper returned to LWC after token generation. */
@@ -177,6 +184,9 @@ public with sharing class AuthorizeNetAcceptHostedTokenService {
         if (String.isNotBlank(req.cancelUrl) && !isSafeRedirectUrl(req.cancelUrl)) {
             throwAura('Invalid cancelUrl: must be a relative path or an americanbookcompany.my.site.com URL.');
         }
+        if (String.isNotBlank(req.iFrameCommunicatorUrl) && !isSafeCommunicatorUrl(req.iFrameCommunicatorUrl)) {
+            throwAura('Invalid iFrameCommunicatorUrl: must be hosted on americanbookcompany.my.site.com or americanbookcompany.my.salesforce.com.');
+        }
     }
 
     /**
@@ -188,6 +198,17 @@ public with sharing class AuthorizeNetAcceptHostedTokenService {
     private static Boolean isSafeRedirectUrl(String url) {
         if (String.isBlank(url)) return true;
         if (url.startsWith('/')) return true; // relative path
+        return url.startsWith('https://americanbookcompany.my.site.com/')
+            || url.startsWith('https://americanbookcompany.my.salesforce.com/');
+    }
+
+    /**
+     * Validates the iFrame communicator URL.
+     * Must be an absolute HTTPS URL on our known domains (no relative paths — AN requires absolute).
+     */
+    @TestVisible
+    private static Boolean isSafeCommunicatorUrl(String url) {
+        if (String.isBlank(url)) return true;
         return url.startsWith('https://americanbookcompany.my.site.com/')
             || url.startsWith('https://americanbookcompany.my.salesforce.com/');
     }
@@ -248,6 +269,20 @@ public with sharing class AuthorizeNetAcceptHostedTokenService {
                             gen.writeStringField('settingName', 'hostedPaymentReturnOptions');
                             gen.writeStringField('settingValue', JSON.serialize(returnOptions));
                         gen.writeEndObject();
+                        gen.writeStartObject();
+                            gen.writeStringField('settingName', 'hostedPaymentButtonOptions');
+                            gen.writeStringField('settingValue', JSON.serialize(new Map<String, Object>{
+                                'text' => 'Pay Now'
+                            }));
+                        gen.writeEndObject();
+                        if (String.isNotBlank(req.iFrameCommunicatorUrl)) {
+                            gen.writeStartObject();
+                                gen.writeStringField('settingName', 'hostedPaymentIFrameCommunicatorUrl');
+                                gen.writeStringField('settingValue', JSON.serialize(new Map<String, Object>{
+                                    'url' => req.iFrameCommunicatorUrl
+                                }));
+                            gen.writeEndObject();
+                        }
                     gen.writeEndArray();
                 gen.writeEndObject();
 

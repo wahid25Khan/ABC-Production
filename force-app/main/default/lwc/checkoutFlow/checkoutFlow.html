@@ -402,5 +402,78 @@
                 </div>
             </div>
         </template>
+
+        <!-- ═══════════════════════════════════════════════════════
+             PAYMENT MODAL — Authorize.Net Accept Hosted (iFrame)
+             Opens over the checkout page; user never leaves the site
+        ════════════════════════════════════════════════════════════ -->
+        <template if:true={showPaymentModal}>
+            <div class="an-modal-backdrop" role="dialog" aria-modal="true" aria-label="Secure Payment">
+                <div class="an-modal-container">
+
+                    <!-- Modal header -->
+                    <div class="an-modal-header">
+                        <span class="an-modal-title">Secure Payment</span>
+                        <button type="button" class="an-modal-close" onclick={handleClosePaymentModal}
+                            aria-label="Close payment modal" title="Close">
+                            &#x2715;
+                        </button>
+                    </div>
+
+                    <!-- AN hosted form loads here -->
+                    <div class="an-modal-body">
+                        <iframe
+                            class="an-payment-iframe"
+                            title="Authorize.Net Secure Payment"
+                            name="an-payment-iframe"
+                            src="about:blank"
+                            frameborder="0"
+                            scrolling="no"
+                            allowpaymentrequest>
+                        </iframe>
+                    </div>
+
+                    <!-- Placing order overlay — shown after AN confirms payment -->
+                    <template if:true={isPlacingOrderAfterPayment}>
+                        <div class="an-placing-overlay">
+                            <lightning-spinner alternative-text="Placing your order" size="medium"></lightning-spinner>
+                            <p class="an-placing-text">Placing your order&hellip;</p>
+                        </div>
+                    </template>
+
+                </div>
+            </div>
+        </template>
+
+        <!-- ═══════════════════════════════════════════════════════
+             ORDER SUCCESS SCREEN — shown after placeOrder succeeds
+        ════════════════════════════════════════════════════════════ -->
+        <template if:true={orderPlaced}>
+            <div class="order-success-overlay">
+                <div class="order-success-card">
+                    <div class="order-success-icon">&#10003;</div>
+                    <h2 class="order-success-title">Order Placed Successfully!</h2>
+                    <p class="order-success-msg">
+                        Thank you for your purchase. Your payment has been processed and your
+                        order has been created in our system.
+                    </p>
+                    <template if:true={orderNumber}>
+                        <p class="order-success-ref">Order reference: <strong>{orderNumber}</strong></p>
+                    </template>
+                    <p class="order-success-msg">
+                        You will receive a confirmation email shortly.
+                    </p>
+                    <div class="order-success-actions">
+                        <button type="button" class="btn-primary" onclick={handleViewOrder}>
+                            View My Order
+                        </button>
+                        <a href="/AmericanBookCompany/home" class="btn-secondary order-success-continue">
+                            Continue Shopping
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </template>
+
     </div>
 </template>
