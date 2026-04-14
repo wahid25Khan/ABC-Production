@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>Exceed_6_percent_of_Shipping</fullName>
-    <active>true</active>
+    <active>false</active>
     <errorConditionFormula>ShippingHandling  &lt; (Subtotal * 0.94)</errorConditionFormula>
     <errorMessage>Shipping discount cannot exceed 6% of the shipping amount.</errorMessage>
 </ValidationRule>

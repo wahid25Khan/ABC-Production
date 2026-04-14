@@ -1,0 +1,227 @@
+<template>
+  <section class="trial-shell">
+    <template if:true={loading}>
+      <div class="loading-wrap">
+        <lightning-spinner alternative-text="Loading" size="medium"></lightning-spinner>
+      </div>
+    </template>
+
+    <template if:false={loading}>
+      <h1 class="page-heading">Try free for two weeks</h1>
+
+      <div class="login-row">
+        Already have an account?
+        <a href={loginUrl} class="login-link">Log in</a>
+      </div>
+
+      <div class="content-grid">
+        <!-- Left: Product Card -->
+        <div class="left-col">
+          <a href={productDetailUrl} class="product-card-link">
+            <div class="product-card">
+              <template if:true={bookImageUrl}>
+                <img src={bookImageUrl} alt={productName} class="product-image" />
+              </template>
+              <template if:false={bookImageUrl}>
+                <div class="image-placeholder">
+                  <lightning-icon icon-name="utility:image" size="large"></lightning-icon>
+                  <span class="ph-text">Book Cover</span>
+                </div>
+              </template>
+            </div>
+            <div class="product-name">{productName}</div>
+          </a>
+        </div>
+
+        <!-- Right: Form -->
+        <div class="right-col">
+          <!-- Sample Type -->
+          <h2 class="section-heading">Sample Type</h2>
+          <div class="sample-type-row">
+            <label class="radio-label">
+              <input
+                type="radio"
+                name="sampleType"
+                value="Physical"
+                checked={isPhysicalSelected}
+                onchange={handleSampleTypeChange}
+              />
+              <span class="radio-text">Physical</span>
+            </label>
+            <label class="radio-label">
+              <input
+                type="radio"
+                name="sampleType"
+                value="Digital"
+                checked={isDigitalSelected}
+                onchange={handleSampleTypeChange}
+              />
+              <span class="radio-text">Digital</span>
+            </label>
+          </div>
+
+          <!-- Personal Details -->
+          <h2 class="section-heading">Personal details</h2>
+          <div class="form-grid">
+            <label class="form-field">
+              <span class="field-label">First Name *</span>
+              <input
+                class="field-input"
+                data-field="firstName"
+                type="text"
+                name="firstName"
+                value={form.firstName}
+                oninput={handleFieldChange}
+              />
+            </label>
+            <label class="form-field">
+              <span class="field-label">Last Name *</span>
+              <input
+                class="field-input"
+                data-field="lastName"
+                type="text"
+                name="lastName"
+                value={form.lastName}
+                oninput={handleFieldChange}
+              />
+            </label>
+            <label class="form-field">
+              <span class="field-label">Email *</span>
+              <input
+                class="field-input"
+                data-field="email"
+                type="email"
+                name="email"
+                value={form.email}
+                oninput={handleFieldChange}
+              />
+            </label>
+            <label class="form-field">
+              <span class="field-label">Phone *</span>
+              <input
+                class="field-input"
+                data-field="phone"
+                type="tel"
+                name="phone"
+                value={form.phone}
+                oninput={handleFieldChange}
+              />
+            </label>
+          </div>
+
+          <!-- Organization Details -->
+          <h2 class="section-heading">Organization details</h2>
+          <div class="form-grid">
+            <label class="form-field full-width">
+              <span class="field-label">Organization name *</span>
+              <input
+                class="field-input"
+                data-field="organizationName"
+                type="text"
+                name="organizationName"
+                value={form.organizationName}
+                oninput={handleFieldChange}
+              />
+            </label>
+            <label class="form-field full-width">
+              <span class="field-label">Street Address *</span>
+              <input
+                class="field-input"
+                data-field="streetAddress"
+                type="text"
+                name="streetAddress"
+                value={form.streetAddress}
+                oninput={handleFieldChange}
+              />
+            </label>
+            <label class="form-field">
+              <span class="field-label">City *</span>
+              <input
+                class="field-input"
+                data-field="city"
+                type="text"
+                name="city"
+                value={form.city}
+                oninput={handleFieldChange}
+              />
+            </label>
+            <label class="form-field">
+              <span class="field-label">State *</span>
+              <select
+                class="field-input field-select"
+                data-field="stateCode"
+                name="stateCode"
+                onchange={handleFieldChange}
+              >
+                <option value=""></option>
+                <template for:each={usStates} for:item="st">
+                  <option key={st.value} value={st.value} selected={st.selected}>{st.label}</option>
+                </template>
+              </select>
+            </label>
+            <label class="form-field zip-field">
+              <span class="field-label">ZIP Code *</span>
+              <input
+                class="field-input"
+                data-field="postalCode"
+                type="text"
+                name="postalCode"
+                maxlength="10"
+                value={form.postalCode}
+                oninput={handleFieldChange}
+              />
+            </label>
+          </div>
+
+          <!-- Referral Details -->
+          <h2 class="section-heading">Referral details</h2>
+          <div class="form-grid">
+            <label class="form-field full-width">
+              <span class="field-label">Referral information</span>
+              <input
+                class="field-input"
+                data-field="referralInfo"
+                type="text"
+                name="referralInfo"
+                value={form.referralInfo}
+                oninput={handleFieldChange}
+              />
+            </label>
+            <label class="form-field full-width">
+              <span class="field-label">Comments</span>
+              <textarea
+                class="field-input field-textarea"
+                data-field="comments"
+                name="comments"
+                oninput={handleFieldChange}
+              ></textarea>
+            </label>
+          </div>
+
+          <!-- Order Total -->
+          <div class="order-total">
+            <h2 class="section-heading total-heading">Order total: <span class="free-label">FREE</span></h2>
+          </div>
+
+          <template if:true={errorMessage}>
+            <div class="error-banner" role="alert">{errorMessage}</div>
+          </template>
+
+          <template if:true={successMessage}>
+            <div class="success-banner" role="status">{successMessage}</div>
+          </template>
+
+          <button
+            class="btn-submit"
+            type="button"
+            onclick={handleSubmit}
+            disabled={isSubmitting}
+          >
+            <template if:true={isSubmitting}>Submitting...</template>
+            <template if:false={isSubmitting}>Start my free trial</template>
+          </button>
+        </div>
+      </div>
+    </template>
+  </section>
+</template>

@@ -158,8 +158,7 @@ export default class CreateAccountRegistration extends LightningElement {
     const ownerDocument = this.template.host.ownerDocument;
     const form = ownerDocument.createElement("form");
     form.method = "POST";
-    form.action =
-      (this.socialAuthSiteUrl || DEFAULT_SOCIAL_AUTH_SITE_URL) + "/login";
+    form.action = (this.socialAuthSiteUrl || DEFAULT_SOCIAL_AUTH_SITE_URL) + "/login";
 
     const resolvedUsername = email.trim().toLowerCase();
     appendHiddenInput(ownerDocument, form, "username", resolvedUsername);

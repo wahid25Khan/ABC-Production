@@ -66,6 +66,7 @@ private class BuyerSelfRegistrationServiceTest {
             BuyerSelfRegistrationService.profileIdOverride = UserInfo.getProfileId();
             CommerceRegistrationProvisioning.permissionSetIdOverride = UserInfo.getProfileId();
             CommerceRegistrationProvisioning.permissionSetLicenseIdOverride = UserInfo.getProfileId();
+            CommerceRegistrationProvisioning.permissionSetGroupIdOverride = UserInfo.getProfileId();
 
             BuyerSelfRegistrationService.RegistrationRequest req = buildRequest();
             req.marketingConsent = true;
@@ -84,6 +85,7 @@ private class BuyerSelfRegistrationServiceTest {
 
             System.assertNotEquals(null, CommerceRegistrationProvisioning.lastPermissionSetAssignedUserId, 'B2B buyer permission set should be assigned.');
             System.assertNotEquals(null, CommerceRegistrationProvisioning.lastPermissionSetLicenseAssignedUserId, 'B2B buyer permission set license should be assigned.');
+            System.assertNotEquals(null, CommerceRegistrationProvisioning.lastPermissionSetGroupAssignedUserId, 'Commerce buyer permission set group should be assigned.');
 
             Contact updatedContact = [SELECT HasOptedOutOfEmail FROM Contact WHERE Id = :contact.Id LIMIT 1];
             System.assertEquals(false, updatedContact.HasOptedOutOfEmail, 'Marketing consent should opt the contact in.');
@@ -181,6 +183,7 @@ private class BuyerSelfRegistrationServiceTest {
             CommerceRegistrationProvisioning.buyerGroupIdOverride = existingAccount.Id;
             CommerceRegistrationProvisioning.permissionSetIdOverride = UserInfo.getProfileId();
             CommerceRegistrationProvisioning.permissionSetLicenseIdOverride = UserInfo.getProfileId();
+            CommerceRegistrationProvisioning.permissionSetGroupIdOverride = UserInfo.getProfileId();
 
             Test.startTest();
             BuyerSelfRegistrationService.RegistrationResponse result =
@@ -287,6 +290,7 @@ private class BuyerSelfRegistrationServiceTest {
             CommerceRegistrationProvisioning.buyerMembershipExistsOverride = true;
             CommerceRegistrationProvisioning.permissionSetIdOverride = UserInfo.getProfileId();
             CommerceRegistrationProvisioning.permissionSetLicenseIdOverride = UserInfo.getProfileId();
+            CommerceRegistrationProvisioning.permissionSetGroupIdOverride = UserInfo.getProfileId();
 
             BuyerSelfRegistrationService.RegistrationRequest req = buildRequest();
             req.firstName = '!!!';

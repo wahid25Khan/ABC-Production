@@ -190,74 +190,7 @@
                         <template if:true={isStep3}>
                             <form class="step-form" onsubmit={handlePlaceOrder}>
                                 <ul class="payment-list">
-                                    <!-- ACH option -->
-                                    <li class="payment-option-row">
-                                        <label class="radio-label">
-                                            <input type="radio" name="paymentType" value="ach"
-                                                checked={isACH}
-                                                onchange={handlePaymentTypeChange}
-                                                class="radio-input" />
-                                            <span>Pay with ACH</span>
-                                        </label>
-                                    </li>
-
-                                    <template if:true={isACH}>
-                                        <li class="payment-fields">
-                                            <div class="form-group">
-                                                <label for="achAccountHolder" class="form-label">Account Holders Name *</label>
-                                                <input id="achAccountHolder" type="text" class="form-input"
-                                                    data-field="achAccountHolder" value={form.achAccountHolder}
-                                                    oninput={handleInput} placeholder="Enter name as it appears on account" required />
-                                            </div>
-                                            <div class="form-row">
-                                                <div class="form-group">
-                                                    <label for="achAccountNumber" class="form-label">Account Number *</label>
-                                                    <input id="achAccountNumber" type="text" class="form-input"
-                                                        data-field="achAccountNumber" value={form.achAccountNumber}
-                                                        oninput={handleInput} placeholder="Up to 17 Digit Account Numbers" maxlength="17" required />
-                                                </div>
-                                                <div class="form-group">
-                                                    <label for="achAccountNumberConfirm" class="form-label">Confirm Account Number *</label>
-                                                    <input id="achAccountNumberConfirm" type="text" class="form-input"
-                                                        data-field="achAccountNumberConfirm" value={form.achAccountNumberConfirm}
-                                                        oninput={handleInput} placeholder="Confirm Account Number" maxlength="17" required />
-                                                </div>
-                                            </div>
-                                            <div class="form-row">
-                                                <div class="form-group">
-                                                    <label for="achRoutingNumber" class="form-label">Routing Number *</label>
-                                                    <input id="achRoutingNumber" type="text" class="form-input"
-                                                        data-field="achRoutingNumber" value={form.achRoutingNumber}
-                                                        oninput={handleInput} placeholder="9 Digit Routing Number" maxlength="9" required />
-                                                </div>
-                                                <div class="form-group">
-                                                    <label for="achAccountType" class="form-label">Account Type *</label>
-                                                    <select id="achAccountType" class="form-input form-select"
-                                                        data-field="achAccountType" onchange={handleInput} required>
-                                                        <option value="">Select</option>
-                                                        <option value="checking">Checking Account</option>
-                                                        <option value="savings">Savings Account</option>
-                                                        <option value="other">Other</option>
-                                                    </select>
-                                                </div>
-                                            </div>
-
-                                            <div class="ach-checkboxes">
-                                                <label class="checkbox-label">
-                                                    <input type="checkbox" checked={form.saveAch}
-                                                        onchange={handleSaveAchToggle} />
-                                                    <span>Save this ACH for future purchases</span>
-                                                </label>
-                                                <label class="checkbox-label checkbox-label-mt">
-                                                    <input type="checkbox" checked={form.setDefaultAchPayment}
-                                                        onchange={handleDefaultAchPaymentToggle} />
-                                                    <span>Set as my default payment method</span>
-                                                </label>
-                                            </div>
-                                        </li>
-                                    </template>
-
-                                    <!-- Credit Card option -->
+                                    <!-- Credit Card / ACH via Authorize.Net Accept Hosted -->
                                     <li class="payment-option-row">
                                         <div class="payment-option-header">
                                             <label class="radio-label">
@@ -265,7 +198,7 @@
                                                     checked={isCreditCard}
                                                     onchange={handlePaymentTypeChange}
                                                     class="radio-input" />
-                                                <span>Pay with Credit Card</span>
+                                                <span>Pay with Credit Card or ACH</span>
                                             </label>
                                             <div class="card-logos">
                                                 <img src={visaIcon} alt="Visa" title="Visa" class="card-logo-img" />
@@ -278,126 +211,24 @@
 
                                     <template if:true={isCreditCard}>
                                         <li class="payment-fields">
-                                            <div class="form-group">
-                                                <label for="cardNumber" class="form-label">Card Number *</label>
-                                                <input id="cardNumber" type="text" class="form-input"
-                                                    data-field="cardNumber" value={form.cardNumber}
-                                                    oninput={handleCardNumber} autocomplete="cc-number"
-                                                    maxlength="19" required />
-                                            </div>
-
-                                            <div class="form-row form-row-cc-details">
-                                                <div class="form-group form-group-cardholder">
-                                                    <label for="cardholderName" class="form-label">Cardholder Name *</label>
-                                                    <input id="cardholderName" type="text" class="form-input"
-                                                        data-field="cardholderName" value={form.cardholderName}
-                                                        oninput={handleInput} autocomplete="cc-name" required />
-                                                </div>
-                                                <div class="form-group form-group-expiry">
-                                                    <label class="form-label">Expiration Date *</label>
-                                                    <div class="expiry-selects">
-                                                        <select class="form-input form-select"
-                                                            onchange={handleExpMonthChange} required>
-                                                            <option value=""></option>
-                                                            <template for:each={expirationMonths} for:item="mo">
-                                                                <option key={mo.value} value={mo.value} selected={mo.selected}>{mo.label}</option>
-                                                            </template>
-                                                        </select>
-                                                        <select class="form-input form-select"
-                                                            onchange={handleExpYearChange} required>
-                                                            <option value=""></option>
-                                                            <template for:each={expirationYears} for:item="yr">
-                                                                <option key={yr.value} value={yr.value} selected={yr.selected}>{yr.label}</option>
-                                                            </template>
-                                                        </select>
-                                                    </div>
-                                                </div>
-                                                <div class="form-group form-group-cvv">
-                                                    <label for="cardCvv" class="form-label">CVV *</label>
-                                                    <input id="cardCvv" type="text" class="form-input"
-                                                        data-field="cardCvv" value={form.cardCvv}
-                                                        oninput={handleInput} autocomplete="cc-csc"
-                                                        maxlength="4" required />
-                                                </div>
-                                            </div>
-
-                                            <h3 class="billing-heading">Billing Address</h3>
-
-                                            <template if:true={shippingAddressDisplay}>
-                                                <ul class="billing-radio-list">
-                                                    <li>
-                                                        <label class="radio-label">
-                                                            <input type="radio" name="billingType" value="true"
-                                                                checked={billingUseShippingChecked}
-                                                                onchange={handleBillingRadioChange}
-                                                                class="radio-input" />
-                                                            <span>Use Shipping Address</span>
-                                                        </label>
-                                                        <div class="billing-address-preview">{shippingAddressDisplay}</div>
-                                                    </li>
-                                                    <li>
-                                                        <label class="radio-label">
-                                                            <input type="radio" name="billingType" value="false"
-                                                                checked={billingUseDifferentChecked}
-                                                                onchange={handleBillingRadioChange}
-                                                                class="radio-input" />
-                                                            <span>Enter a Different Address</span>
-                                                        </label>
-                                                    </li>
-                                                </ul>
-                                            </template>
-
-                                            <template if:true={showBillingForm}>
-                                                <div class="billing-form">
-                                                    <div class="form-group">
-                                                        <label for="billingStreet" class="form-label">Address *</label>
-                                                        <input id="billingStreet" type="text" class="form-input"
-                                                            data-field="billingStreet" value={form.billingStreet}
-                                                            oninput={handleInput} placeholder="Enter your address" required />
-                                                    </div>
-                                                    <div class="form-row form-row-address">
-                                                        <div class="form-group form-group-city">
-                                                            <label for="billingCity" class="form-label">City *</label>
-                                                            <input id="billingCity" type="text" class="form-input"
-                                                                data-field="billingCity" value={form.billingCity}
-                                                                oninput={handleInput} required />
-                                                        </div>
-                                                        <div class="form-group form-group-state">
-                                                            <label for="billingState" class="form-label">State *</label>
-                                                            <select id="billingState" class="form-input form-select"
-                                                                data-field="billingStateCode" onchange={handleInput} required>
-                                                                <option value=""></option>
-                                                                <template for:each={billingStates} for:item="st">
-                                                                    <option key={st.value} value={st.value} selected={st.selected}>{st.label}</option>
-                                                                </template>
-                                                            </select>
-                                                        </div>
-                                                        <div class="form-group form-group-zip">
-                                                            <label for="billingZip" class="form-label">ZIP Code *</label>
-                                                            <input id="billingZip" type="text" class="form-input"
-                                                                data-field="billingZip" value={form.billingZip}
-                                                                oninput={handleInput} maxlength="10" required />
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </template>
-
-                                            <template if:true={isGuest}>
-                                                <div class="cc-checkboxes">
-                                                    <label class="checkbox-label">
-                                                        <input type="checkbox" checked={form.saveCard}
-                                                            onchange={handleSaveCardToggle} />
-                                                        <span>Save this card for future purchases</span>
-                                                    </label>
-                                                    <label class="checkbox-label checkbox-label-mt">
-                                                        <input type="checkbox" checked={form.setDefaultPayment}
-                                                            onchange={handleDefaultPaymentToggle} />
-                                                        <span>Set as my default payment method</span>
-                                                    </label>
-                                                </div>
-                                            </template>
+                                            <p class="authorize-net-notice">
+                                                You will be redirected to Authorize.Net&apos;s secure hosted payment
+                                                page to enter your card or ACH details. Your payment information
+                                                is never stored on our servers.
+                                            </p>
                                         </li>
                                     </template>
+
+                                    <!-- Purchase Order option -->
+                                    <li class="payment-option-row">
+                                        <label class="radio-label">
+                                            <input type="radio" name="paymentType" value="po"
+                                                checked={isPurchaseOrder}
+                                                onchange={handlePaymentTypeChange}
+                                                class="radio-input" />
+                                            <span>Pay with Purchase Order</span>
+                                        </label>
+                                    </li>
                                 </ul>
 
                                 <template if:true={stepError}>
@@ -408,10 +239,12 @@
                                     <div class="place-order-inline">
                                         <button type="submit" class="btn-primary btn-place-order" disabled={isPlacingOrder}>
                                             <template if:true={isPlacingOrder}>
-                                                <lightning-spinner alternative-text="Placing order" size="small" variant="inverse"></lightning-spinner>
+                                                <lightning-spinner alternative-text="Processing" size="small" variant="inverse"></lightning-spinner>
                                             </template>
                                             <template if:false={isPlacingOrder}>
-                                                Place Order
+                                                <template if:true={isCreditCard}>Proceed to Secure Checkout</template>
+                                                <template if:true={isPurchaseOrder}>Submit Purchase Order</template>
+                                                <template if:false={isAnyPaymentTypeSelected}>Place Order</template>
                                             </template>
                                         </button>
                                         <div class="place-order-total">Total: {totalLabel}</div>
@@ -423,10 +256,10 @@
                         <template if:true={showStep3Summary}>
                             <div class="step-summary">
                                 <template if:true={isCreditCard}>
-                                    <div>Credit Card ending in {cardLastFour}</div>
+                                    <div>Credit Card / ACH (Authorize.Net)</div>
                                 </template>
-                                <template if:true={isACH}>
-                                    <div>ACH - {form.achAccountHolder}</div>
+                                <template if:true={isPurchaseOrder}>
+                                    <div>Purchase Order</div>
                                 </template>
                             </div>
                         </template>

@@ -5,9 +5,13 @@ import updateAboutYou from '@salesforce/apex/AccountDetailsController.updateAbou
 import updateOrganization from '@salesforce/apex/AccountDetailsController.updateOrganization';
 import changePassword from '@salesforce/apex/AccountDetailsController.changePassword';
 import updateShippingAddress from '@salesforce/apex/AccountDetailsController.updateShippingAddress';
+import savePaymentMethod from '@salesforce/apex/AccountDetailsController.savePaymentMethod';
+import CC_VISA from '@salesforce/resourceUrl/ccVisa';
+import CC_MASTERCARD from '@salesforce/resourceUrl/ccMastercard';
+import CC_AMEX from '@salesforce/resourceUrl/ccAmex';
+import CC_DISCOVER from '@salesforce/resourceUrl/ccDiscover';
 
 const LOGIN_URL = '/AmericanBookCompany/login';
-const PAYMENT_METHOD_URL = '/AmericanBookCompany/add-payment-methods';
 
 const US_STATES = [
     { value: 'AL', label: 'Alabama' }, { value: 'AK', label: 'Alaska' },
@@ -51,19 +55,40 @@ export default class AccountDetailsPage extends LightningElement {
     organizationForm = { schoolName: '', schoolAddress: '', city: '', stateCode: '', postalCode: '', phone: '' };
     passwordForm = { currentPassword: '', newPassword: '', confirmPassword: '' };
     shippingForm = { street: '', city: '', stateCode: '', postalCode: '', country: 'US' };
+    paymentForm = {
+        paymentType: 'cc',
+        cardHolderName: '',
+        cardNumber: '',
+        expiryMonth: '',
+        expiryYear: '',
+        cardCvv: '',
+        billingUseShipping: true,
+        billingStreet: '',
+        billingCity: '',
+        billingStateCode: '',
+        billingZip: '',
+        achAccountHolder: '',
+        achRoutingNumber: '',
+        achAccountNumber: '',
+        achAccountNumberConfirm: '',
+        achAccountType: '',
+        saveAch: false,
+        setDefaultAchPayment: false
+    };
 
     isLoading = true;
     isSavingAbout = false;
     isSavingOrganization = false;
     isSavingPassword = false;
     isSavingShipping = false;
+    isSavingPayment = false;
     isEditingAbout = false;
     showOrganizationModal = false;
     showShippingModal = false;
-    showPaymentModal = false;
     activeSection = 'about-you';
     statusMessage = '';
     statusVariant = 'info';
+    statusTimeout = null;
 
     connectedCallback() {
         if (isGuest) {
@@ -165,8 +190,98 @@ export default class AccountDetailsPage extends LightningElement {
         return `status-banner ${this.statusVariant}`;
     }
 
-    get paymentMethodsUrl() {
-        return PAYMENT_METHOD_URL;
+    get paymentMonthOptions() {
+        return Array.from({ length: 12 }, (_, i) => {
+            const value = String(i + 1);
+            return { value, label: value, selected: value === this.paymentForm.expiryMonth };
+        });
+    }
+
+    get achAccountTypeOptions() {
+        const current = this.paymentForm.achAccountType || '';
+        return [
+            { value: '', label: 'Select', selected: current === '' },
+            { value: 'checking', label: 'Checking Account', selected: current === 'checking' },
+            { value: 'savings', label: 'Savings Account', selected: current === 'savings' },
+            { value: 'other', label: 'Other', selected: current === 'other' }
+        ];
+    }
+
+    get paymentYearOptions() {
+        const startYear = new Date().getFullYear() - 1;
+        return Array.from({ length: 20 }, (_, i) => {
+            const value = String(startYear + i);
+            return { value, label: value, selected: value === this.paymentForm.expiryYear };
+        });
+    }
+
+    get isPaymentSubmitDisabled() {
+        const f = this.paymentForm;
+        if (f.paymentType === 'ach') {
+            if (!f.achAccountHolder || !f.achRoutingNumber || !f.achAccountNumber || !f.achAccountNumberConfirm || !f.achAccountType) {
+                return true;
+            }
+            if (f.achAccountNumber !== f.achAccountNumberConfirm) {
+                return true;
+            }
+            return this.isSavingPayment;
+        }
+
+        if (!f.cardHolderName || !f.cardNumber || !f.expiryMonth || !f.expiryYear || !f.cardCvv) {
+            return true;
+        }
+        if (!f.billingUseShipping || !this.paymentShippingAddressDisplay) {
+            if (!f.billingStreet || !f.billingCity || !f.billingStateCode || !f.billingZip) {
+                return true;
+            }
+        }
+        return this.isSavingPayment;
+    }
+
+    get isCreditCard() {
+        return this.paymentForm.paymentType === 'cc';
+    }
+
+    get isACH() {
+        return this.paymentForm.paymentType === 'ach';
+    }
+
+    get visaIcon() {
+        return CC_VISA;
+    }
+
+    get mastercardIcon() {
+        return CC_MASTERCARD;
+    }
+
+    get amexIcon() {
+        return CC_AMEX;
+    }
+
+    get discoverIcon() {
+        return CC_DISCOVER;
+    }
+
+    get paymentShippingAddressDisplay() {
+        const s = this.details;
+        if (!s?.shippingStreet) return '';
+        return `${s.shippingStreet}, ${s.shippingCity}, ${s.shippingState} ${s.shippingPostalCode}`;
+    }
+
+    get paymentBillingUseShippingChecked() {
+        return this.paymentForm.billingUseShipping === true;
+    }
+
+    get paymentBillingUseDifferentChecked() {
+        return this.paymentForm.billingUseShipping === false;
+    }
+
+    get showPaymentBillingForm() {
+        return !this.paymentForm.billingUseShipping || !this.paymentShippingAddressDisplay;
+    }
+
+    get paymentBillingStates() {
+        return US_STATES.map((st) => ({ ...st, selected: st.value === this.paymentForm.billingStateCode }));
     }
 
     get canSubmitPassword() {
@@ -208,6 +323,13 @@ export default class AccountDetailsPage extends LightningElement {
             postalCode: result?.billingPostalCode || '',
             phone: result?.organizationPhone || ''
         };
+
+        if (!this.paymentForm.cardHolderName) {
+            this.paymentForm = {
+                ...this.paymentForm,
+                cardHolderName: result?.fullName || ''
+            };
+        }
     }
 
     handleTabClick(event) {
@@ -388,12 +510,126 @@ export default class AccountDetailsPage extends LightningElement {
         }
     }
 
-    openPaymentModal() {
-        this.showPaymentModal = true;
+    resetPaymentForm() {
+        this.paymentForm = {
+            paymentType: 'cc',
+            cardHolderName: this.details?.fullName || '',
+            cardNumber: '',
+            expiryMonth: '',
+            expiryYear: '',
+            cardCvv: '',
+            billingUseShipping: true,
+            billingStreet: '',
+            billingCity: '',
+            billingStateCode: '',
+            billingZip: '',
+            achAccountHolder: '',
+            achRoutingNumber: '',
+            achAccountNumber: '',
+            achAccountNumberConfirm: '',
+            achAccountType: '',
+            saveAch: false,
+            setDefaultAchPayment: false
+        };
     }
 
-    closePaymentModal() {
-        this.showPaymentModal = false;
+    handleResetPayment() {
+        this.resetPaymentForm();
+        this.clearStatus();
+    }
+
+    handlePaymentInput(event) {
+        const { field } = event.target.dataset;
+        if (!field) {
+            return;
+        }
+
+        let value = event.target.value;
+        if (field === 'cardNumber') {
+            value = this.formatCardNumber(value);
+            event.target.value = value;
+        }
+
+        this.paymentForm = {
+            ...this.paymentForm,
+            [field]: value
+        };
+    }
+
+    handlePaymentTypeChange(event) {
+        this.paymentForm = {
+            ...this.paymentForm,
+            paymentType: event.target.value
+        };
+    }
+
+    handlePaymentCheckboxChange(event) {
+        const { field } = event.target.dataset;
+        if (!field) {
+            return;
+        }
+        this.paymentForm = {
+            ...this.paymentForm,
+            [field]: event.target.checked
+        };
+    }
+
+    handlePaymentBillingRadioChange(event) {
+        this.paymentForm = { ...this.paymentForm, billingUseShipping: event.target.value === 'true' };
+    }
+
+    formatCardNumber(value) {
+        const digits = (value || '').replace(/\D/g, '').slice(0, 16);
+        return digits.match(/.{1,4}/g)?.join(' ') ?? digits;
+    }
+
+    async handleSavePayment() {
+        if (this.isPaymentSubmitDisabled) {
+            return;
+        }
+
+        this.isSavingPayment = true;
+        try {
+            const f = this.paymentForm;
+
+            if (f.paymentType === 'ach') {
+                this.setStatus('ACH payment details captured successfully.', 'success');
+                this.resetPaymentForm();
+                return;
+            }
+
+            let billingStreet, billingCity, billingStateCode, billingZip;
+
+            if (f.billingUseShipping && this.paymentShippingAddressDisplay) {
+                billingStreet = this.details?.shippingStreet || '';
+                billingCity = this.details?.shippingCity || '';
+                billingStateCode = this.details?.shippingState || '';
+                billingZip = this.details?.shippingPostalCode || '';
+            } else {
+                billingStreet = f.billingStreet;
+                billingCity = f.billingCity;
+                billingStateCode = f.billingStateCode;
+                billingZip = f.billingZip;
+            }
+
+            const result = await savePaymentMethod({
+                cardHolderName: f.cardHolderName,
+                cardNumber: f.cardNumber,
+                expiryMonth: f.expiryMonth,
+                expiryYear: f.expiryYear,
+                billingStreet,
+                billingCity,
+                billingStateCode,
+                billingZip
+            });
+            this.handleActionResult(result, () => {
+                this.resetPaymentForm();
+            });
+        } catch {
+            this.setStatus('Unable to save this payment method right now.', 'error');
+        } finally {
+            this.isSavingPayment = false;
+        }
     }
 
     stopModalPropagation(event) {
@@ -413,11 +649,26 @@ export default class AccountDetailsPage extends LightningElement {
     }
 
     setStatus(message, variant) {
+        // Clear any existing timeout
+        if (this.statusTimeout) {
+            clearTimeout(this.statusTimeout);
+        }
+
         this.statusMessage = message;
         this.statusVariant = variant;
+
+        // Auto-dismiss success messages after 3 seconds, errors after 5 seconds
+        const dismissDelay = variant === 'success' ? 3000 : 5000;
+        this.statusTimeout = setTimeout(() => {
+            this.clearStatus();
+        }, dismissDelay);
     }
 
     clearStatus() {
+        if (this.statusTimeout) {
+            clearTimeout(this.statusTimeout);
+            this.statusTimeout = null;
+        }
         this.statusMessage = '';
         this.statusVariant = 'info';
     }

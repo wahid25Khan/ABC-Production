@@ -2,13 +2,12 @@ import { LightningElement, api } from 'lwc';
 import { NavigationMixin } from 'lightning/navigation';
 import isGuest from '@salesforce/user/isGuest';
 import generateQuotePdf from '@salesforce/apex/CartQuotePdfController.generateQuotePdf';
-import getQuoteFormDefaults from '@salesforce/apex/CartQuotePdfController.getQuoteFormDefaults';
+import QuoteDownloadModal from 'c/quoteDownloadModal';
 
 const CHECKOUT_FORM_KEY = 'abc_checkout_flow_form';
 const QUOTE_FORM_KEY = 'abc_quote_download_form';
 const CART_PAGE_CACHE_KEY = 'abc_custom_cart_page_cache_v1';
 const LEGACY_CART_PAGE_CACHE_KEY = 'abc_cart_page_cache';
-const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 function normalizeText(value) {
     return typeof value === 'string' ? value.trim() : '';
@@ -118,7 +117,6 @@ export default class CartActionButtons extends NavigationMixin(LightningElement)
     isDownloading = false;
     errorMessage = '';
     downloadSuccess = false;
-    showQuoteModal = false;
     quoteForm = createDefaultQuoteForm();
 
     get normalizedCheckoutUrl() {
@@ -130,19 +128,12 @@ export default class CartActionButtons extends NavigationMixin(LightningElement)
     }
 
     get showInlineErrorBanner() {
-        return Boolean(this.errorMessage) && !this.showQuoteModal;
-    }
-
-    get usStates() {
-        return CartActionButtons.US_STATES.map(st => ({
-            ...st,
-            selected: st.value === this.quoteForm.stateCode
-        }));
+        return Boolean(this.errorMessage);
     }
 
     /* ---- Download a Quote ---- */
 
-    handleDownloadQuote() {
+    async handleDownloadQuote() {
         if (this.isDownloading) {
             return;
         }
@@ -156,14 +147,31 @@ export default class CartActionButtons extends NavigationMixin(LightningElement)
         }
 
         this.errorMessage = '';
-        this.openQuoteModal();
+        const preparedQuoteForm = this.prepareQuoteForm();
+        const modalResult = await QuoteDownloadModal.open({
+            label: 'Download a Quote',
+            size: 'small',
+            description: 'Download a quote',
+            formData: preparedQuoteForm,
+            states: CartActionButtons.US_STATES
+        });
+
+        if (!modalResult || modalResult.action !== 'download') {
+            return;
+        }
+
+        this.quoteForm = {
+            ...preparedQuoteForm,
+            ...modalResult.form
+        };
+
+        await this.handleQuoteDownloadConfirm();
     }
 
-    async openQuoteModal() {
+    prepareQuoteForm() {
         const savedQuoteForm = readSessionJson(QUOTE_FORM_KEY) || {};
         const checkoutForm = readSessionJson(CHECKOUT_FORM_KEY) || {};
 
-        // Populate from session / checkout-form data first so modal opens immediately
         this.quoteForm = {
             contactName: normalizeText(
                 savedQuoteForm.contactName || checkoutForm.contactName || checkoutForm.shipName
@@ -188,59 +196,7 @@ export default class CartActionButtons extends NavigationMixin(LightningElement)
             taxExempt: savedQuoteForm.taxExempt === true
         };
         this.persistQuoteForm();
-        this.clearFieldErrors();
-        this.showQuoteModal = true;
-
-        // For authenticated users: fetch Account defaults and fill any blank fields.
-        // Session-storage values always take priority so user edits are never overwritten.
-        if (!isGuest) {
-            try {
-                const acct = await getQuoteFormDefaults();
-                if (acct) {
-                    this.quoteForm = {
-                        contactName:  this.quoteForm.contactName  || normalizeText(acct.contactName),
-                        organization: this.quoteForm.organization || normalizeText(acct.organizationName),
-                        address:      this.quoteForm.address      || normalizeText(acct.street),
-                        city:         this.quoteForm.city         || normalizeText(acct.city),
-                        stateCode:    this.quoteForm.stateCode    || normalizeText(acct.stateCode),
-                        postalCode:   this.quoteForm.postalCode   || normalizeText(acct.postalCode),
-                        phone:        this.quoteForm.phone        || normalizeText(acct.phone),
-                        email:        this.quoteForm.email        || normalizeText(acct.email),
-                        taxExempt:    this.quoteForm.taxExempt
-                    };
-                    this.persistQuoteForm();
-                }
-            } catch {
-                // Account defaults are best-effort — form still works without them.
-            }
-        }
-    }
-
-    closeQuoteModal() {
-        if (this.isDownloading) {
-            return;
-        }
-
-        this.showQuoteModal = false;
-        this.errorMessage = '';
-        this.clearFieldErrors();
-    }
-
-    stopModalPropagation(event) {
-        event.stopPropagation();
-    }
-
-    handleQuoteFieldChange(event) {
-        const { name, type } = event.target;
-        const value = type === 'checkbox' ? event.target.checked : event.target.value;
-
-        this.quoteForm = {
-            ...this.quoteForm,
-            [name]: value
-        };
-        this.errorMessage = '';
-        event.target.classList.remove('input-error');
-        this.persistQuoteForm();
+        return { ...this.quoteForm };
     }
 
     persistQuoteForm() {
@@ -249,49 +205,6 @@ export default class CartActionButtons extends NavigationMixin(LightningElement)
         } catch {
             // Ignore storage failures.
         }
-    }
-
-    clearFieldErrors() {
-        this.template.querySelectorAll('.quote-field').forEach((field) => {
-            field.classList.remove('input-error');
-        });
-    }
-
-    markFieldInvalid(fieldName) {
-        const field = this.template.querySelector(`[data-field="${fieldName}"]`);
-        field?.classList.add('input-error');
-        field?.focus();
-    }
-
-    validateQuoteForm() {
-        this.clearFieldErrors();
-
-        const validations = [
-            ['contactName', 'Contact Name is required.'],
-            ['organization', 'Organization is required.'],
-            ['address', 'Address is required.'],
-            ['city', 'City is required.'],
-            ['stateCode', 'State is required.'],
-            ['postalCode', 'ZIP Code is required.'],
-            ['phone', 'Phone is required.'],
-            ['email', 'Email is required.']
-        ];
-
-        for (const [fieldName, message] of validations) {
-            if (!normalizeText(this.quoteForm[fieldName])) {
-                this.markFieldInvalid(fieldName);
-                this.errorMessage = message;
-                return false;
-            }
-        }
-
-        if (!EMAIL_PATTERN.test(normalizeText(this.quoteForm.email))) {
-            this.markFieldInvalid('email');
-            this.errorMessage = 'Please enter a valid email address.';
-            return false;
-        }
-
-        return true;
     }
 
     readCartSummary() {
@@ -340,10 +253,6 @@ export default class CartActionButtons extends NavigationMixin(LightningElement)
             return;
         }
 
-        if (!this.validateQuoteForm()) {
-            return;
-        }
-
         this.isDownloading = true;
         this.errorMessage = '';
         this.downloadSuccess = false;
@@ -361,8 +270,6 @@ export default class CartActionButtons extends NavigationMixin(LightningElement)
             if (result?.downloadUrl) {
                 const directDownloadUrl = resolveDirectDownloadUrl(result.downloadUrl);
                 globalThis.open(directDownloadUrl, '_blank', 'noopener');
-
-                this.showQuoteModal = false;
                 this.downloadSuccess = true;
                 globalThis.setTimeout(() => {
                     this.downloadSuccess = false;
@@ -391,7 +298,6 @@ export default class CartActionButtons extends NavigationMixin(LightningElement)
             link.remove();
             globalThis.URL.revokeObjectURL(url);
 
-            this.showQuoteModal = false;
             this.downloadSuccess = true;
             globalThis.setTimeout(() => {
                 this.downloadSuccess = false;

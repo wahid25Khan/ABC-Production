@@ -211,6 +211,61 @@
                 <default>false</default>
                 <label>Rhode Island</label>
             </value>
+            <value>
+                <fullName>South Carolina</fullName>
+                <default>false</default>
+                <label>South Carolina</label>
+            </value>
+            <value>
+                <fullName>South Dakota</fullName>
+                <default>false</default>
+                <label>South Dakota</label>
+            </value>
+            <value>
+                <fullName>Tennessee</fullName>
+                <default>false</default>
+                <label>Tennessee</label>
+            </value>
+            <value>
+                <fullName>Texas</fullName>
+                <default>false</default>
+                <label>Texas</label>
+            </value>
+            <value>
+                <fullName>Utah</fullName>
+                <default>false</default>
+                <label>Utah</label>
+            </value>
+            <value>
+                <fullName>Vermont</fullName>
+                <default>false</default>
+                <label>Vermont</label>
+            </value>
+            <value>
+                <fullName>Virginia</fullName>
+                <default>false</default>
+                <label>Virginia</label>
+            </value>
+            <value>
+                <fullName>Washington</fullName>
+                <default>false</default>
+                <label>Washington</label>
+            </value>
+            <value>
+                <fullName>West Virginia</fullName>
+                <default>false</default>
+                <label>West Virginia</label>
+            </value>
+            <value>
+                <fullName>Wisconsin</fullName>
+                <default>false</default>
+                <label>Wisconsin</label>
+            </value>
+            <value>
+                <fullName>Wyoming</fullName>
+                <default>false</default>
+                <label>Wyoming</label>
+            </value>
         </valueSetDefinition>
     </valueSet>
 </CustomField>

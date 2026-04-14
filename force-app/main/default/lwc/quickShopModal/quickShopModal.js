@@ -17,7 +17,7 @@ export default class QuickShopModal extends LightningElement {
   @api webStoreId = DEFAULT_WEBSTORE_ID;
   @api currencyIsoCode = "USD";
   @api minimumQuantity = 10;
-  @api maximumQuantity = 50;
+  @api maximumQuantity = 99999;
   @api incrementQuantity = 1;
   @api pricingLoading = false;
   @api pricingError = false;
@@ -146,12 +146,12 @@ export default class QuickShopModal extends LightningElement {
     const variationMax = parsePositiveInteger(
       this.selectedVariation?.maximumQuantity
     );
-    if (variationMax !== null && variationMax <= 9999) {
+    if (variationMax !== null) {
       return variationMax;
     }
 
     const parsed = parsePositiveInteger(this.maximumQuantity);
-    return parsed !== null && parsed <= 9999 ? parsed : 50;
+    return parsed !== null ? parsed : 99999;
   }
 
   get incrementQty() {
@@ -233,7 +233,16 @@ export default class QuickShopModal extends LightningElement {
   }
 
   handleQtyChange(e) {
-    this.quantity = this.normalizeQuantity(e.target.value);
+    const raw = e.target.value;
+    if (raw === '') return;
+    const parsed = parseInt(raw, 10);
+    if (Number.isFinite(parsed) && parsed > 0) {
+      this.quantity = parsed;
+    }
+  }
+
+  handleQtyBlur(e) {
+    this.quantity = this.normalizeQuantity(this.quantity);
     e.target.value = String(this.quantity);
   }
 

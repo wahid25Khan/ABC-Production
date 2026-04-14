@@ -3,7 +3,7 @@
  * Queries the active cart and its items, then exposes the data
  * for rendering in the CartQuotePdf Visualforce page.
  */
-public with sharing class CartQuotePdfPageController {
+public without sharing class CartQuotePdfPageController {
 
     public String quoteNumber { get; set; }
     public String quoteDate { get; set; }

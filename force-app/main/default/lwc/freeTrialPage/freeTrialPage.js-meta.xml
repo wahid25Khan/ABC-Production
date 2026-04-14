@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
+  <apiVersion>66.0</apiVersion>
+  <isExposed>true</isExposed>
+  <targets>
+    <target>lightningCommunity__Page</target>
+    <target>lightningCommunity__Default</target>
+  </targets>
+  <targetConfigs>
+    <targetConfig targets="lightningCommunity__Default">
+      <property
+        name="storeName"
+        type="String"
+        label="Store Name"
+        default="AmericanBookCompany" />
+      <property
+        name="webStoreId"
+        type="String"
+        label="Web Store ID"
+        default="0ZEam000004dJDNGA2" />
+      <property
+        name="loginUrl"
+        type="String"
+        label="Login URL"
+        default="/login" />
+    </targetConfig>
+  </targetConfigs>
+</LightningComponentBundle>

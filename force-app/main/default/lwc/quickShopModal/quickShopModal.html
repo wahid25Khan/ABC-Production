@@ -160,9 +160,9 @@
                       type="number"
                       value={quantity}
                       min={minQty}
-                      max={maxQty}
                       step={incrementQty}
                       oninput={handleQtyChange}
+                      onblur={handleQtyBlur}
                       class="qty-input"
                     />
                     <button

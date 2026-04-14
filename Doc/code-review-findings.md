@@ -8,13 +8,106 @@
 **Status Re-verification Date:** March 30, 2026
 **Re-verified By:** Claude Code (Opus 4.6) — all files re-retrieved from connected org before verification
 
+**Checkout & Authorize.Net Deep-Review Date:** 2026-04-14
+**Reviewer:** GitHub Copilot (Claude Sonnet 4.6)
+**Scope:** All checkout flows, payment LWCs, Apex payment classes, named credentials, VF bridge pages
+
 ---
 
-## Fix Status Summary
+## Checkout & Authorize.Net Architecture Review (2026-04-14)
+
+### Summary
+
+The org runs **two parallel checkout paths** that were discovered in the Experience Builder layout:
+
+| Path | Components | Payment method | Status |
+|---|---|---|---|
+| **OOB Native Checkout** | `commerce_unified_checkout:*`, `commerce_builder:*` | Authorize.Net Accept Hosted via `authorizeNetCheckoutButton` | ✅ Correctly wired |
+| **Custom checkoutFlow** | `c:checkoutFlow` (full-page LWC) | Collects card/ACH numbers in-browser — **no gateway integration** | 🔴 BROKEN — card data collected but never submitted |
+
+The `authorizeNetCheckoutButton` + `AuthorizeNetAcceptHostedTokenService` path is architecturally sound and follows PCI DSS best practices (Accept Hosted redirects to Authorize.Net servers; raw card data never touches ABC servers). The `checkoutFlow` custom component is a **non-functional mock** that collects raw PAN, CVV, and ACH numbers but dispatches a `checkoutsubmit` event that nothing listens to.
+
+---
+
+### Critical Findings (Checkout-Specific)
+
+| ID | Severity | Description | File | Fix |
+|----|----------|-------------|------|-----|
+| **CC1** | 🔴 CRITICAL | `checkoutFlow` dispatches `checkoutsubmit` event that has NO listener anywhere in the codebase. Card/ACH data collected but order never placed. Buyers on this path will hang forever. | checkoutFlow.js:515 | Route checkout page to OOB components OR wire the event to Submit_a_PO/Authorize.Net flow |
+| **CC2** | 🔴 CRITICAL (FIXED 2026-04-14) | `_persistForm()` serialized entire form — including `cardNumber`, `cardCvv`, `achAccountNumber`, `achRoutingNumber` — to `sessionStorage`. PAN and CVV in storage violates PCI DSS SAQ requirements. | checkoutFlow.js:150 | ✅ FIXED — excluded sensitive fields from persist payload |
+| **CC3** | 🔴 CRITICAL | `checkoutFlow` collects raw card numbers and CVVs in-browser. Even if wired to a backend, sending PANs to an Apex endpoint violates PCI DSS. Must use Accept Hosted or Accept.js to keep ABC out of the cardholder data flow. | checkoutFlow.html + checkoutFlow.js | Replace Step 3 credit-card section with `authorizeNetCheckoutButton` or hosted iframe |
+| **CC4** | 🟠 HIGH (FIXED 2026-04-14) | `checkoutLoginGate` stored plain-text user password in `sessionStorage` via `LOGIN_BRIDGE_STORAGE_KEY` and left it in component reactive state after handoff. VF relay page deletes it quickly but reactive state lingered. | checkoutLoginGate.js:97-107 | ✅ FIXED — password cleared from state immediately after sessionStorage write. VF page already removes entry before form submit. |
+| **CC5** | 🟠 HIGH | `checkoutFlow` shows "Save this card" / "Set as default payment" checkboxes which do nothing — no Apex wiring, no Salesforce Payment Method saved object. Misleading to buyers. | checkoutFlow.html:388-398 | Remove or hide until actually wired to `CardPaymentMethod`/`SavedPaymentMethod` |
+| **CC6** | 🟠 HIGH | `authorizeNetCheckoutButton` `paymentFormAction` API property defaults to `https://accept.authorize.net/payment/payment` (production). But `AuthorizeNet_Config__mdt.UseSandbox__c = true` routes the token request to `apitest.authorize.net`. Mismatch will cause token to fail at the hosted form. When sandbox: token comes from test API, form must point to `https://test.authorize.net/payment/payment`. | authorizeNetCheckoutButton.js-meta.xml | Set `paymentFormAction` to sandbox URL in Experience Builder OR dynamically resolve it from `UseSandbox__c` via Apex |
+| **CC7** | 🟡 LOW | `AuthorizeNet_Prod` named credential does not exist locally (not retrieved). If `UseSandbox__c = false` in AuthorizeNet_Config__mdt, production token requests will fail at runtime with a callout error. Must create `AuthorizeNet_Prod` Named Credential in org Setup. | (org config) | Create Named Credential in org: URL = `https://api.authorize.net`, no-auth, callout enabled |
+| **CC8** | 🟡 LOW | VF login relay pages (`SiteLoginBridge.page`, `SiteLoginRelay.page`) are **identical** — both use the same `storageKey` and same logic. One is redundant. The bridge page is referenced; the relay page is unclear if it is referenced by anything. | SiteLoginBridge.page, SiteLoginRelay.page | Audit which URL is actually called; delete the unused page |
+| **CC9** | 🟡 LOW | `ABCShippingCalculator` queries `Shipping_Config__mdt` using a static cache (`config != null` guard). In a transaction that updates the config, the old value will be used. Low-risk for runtime but a test isolation concern. | ABCShippingCalculator.cls:46 | Already has `setConfigForTest()` — document the known limitation |
+| **CC10** | 🟡 LOW | `checkoutSummaryExtras.js` polls `document.querySelectorAll('button')` every 500ms via `setInterval` to detect the OOB "Place Order" button visibility. This is fragile — it scans the global document, not the shadow DOM. Will break if the OOB button's text label ever changes. | checkoutSummaryExtras.js:8 | Replace with a `MutationObserver` or event listener on the `commerce_builder:placeOrder` component |
+
+---
+
+### Authorize.Net Integration — Layer-by-layer Analysis
+
+#### Token Service (`AuthorizeNetAcceptHostedTokenService.cls`)
+**Status: GOOD** — All previously identified security issues have been fixed.
+- ✅ `with sharing` 
+- ✅ Credentials from Custom Metadata (not hardcoded)
+- ✅ Named Credential callout (no secret in code)
+- ✅ Raw API response not exposed to browser
+- ✅ Stack trace not surfaced to browser on error
+- ✅ URL allowlist validates `returnUrl`/`cancelUrl` (open-redirect protection)
+- ✅ `referenceId` truncated to 20 chars (Authorize.Net invoice number limit)
+- ✅ `showReceipt` configurable via `@api`
+- ⚠️ `AuthorizeNet_Prod` named credential not found locally — verify it exists in org (see CC7)
+
+#### Webhook Receiver (`AuthorizeNetWebhookRest.cls`)
+**Status: GOOD** — HMAC-SHA512 validation now implemented.
+- ✅ `with sharing` 
+- ✅ HMAC-SHA512 signature validation when `WebhookSigningKey__c` is configured
+- ✅ Payload size guard (32KB)
+- ✅ Idempotent upsert on `NotificationId__c` external ID
+- ✅ Key fields extracted on insert (transactionId, authAmount, invoiceNumber, sourceIp)
+- ✅ Always returns HTTP 200 to prevent Authorize.Net retries
+- ⚠️ **Action required:** Set `WebhookSigningKey__c` in AuthorizeNet_Config__mdt. Until configured, `SignatureValid__c = false` on all webhook records — any endpoint knowing the URL can insert fake transactions. Obtain the value from Authorize.Net portal: Account → Webhooks → Manage Endpoints.
+
+#### Checkout Button LWC (`authorizeNetCheckoutButton.js`)
+**Status: GOOD** with one environment mismatch concern.
+- ✅ Fetches live cart total before requesting token
+- ✅ Clears stale checkout session before starting new one
+- ✅ Payment token not logged to console
+- ✅ POST form submit redirects to Authorize.Net hosted page — card data never enters ABC state
+- ⚠️ URL mismatch when sandbox: see CC6
+
+#### `checkoutLoginGate` VF Bridge Flow
+**Status: IMPROVED** — password now cleared from reactive state after handoff.
+- ✅ sessionStorage payload cleared by VF relay page before form submission
+- ✅ password cleared from LWC reactive state immediately after handoff (FIXED 2026-04-14)
+- ⚠️ Duplicate VF pages (`SiteLoginBridge` vs `SiteLoginRelay`) — see CC8
+- ⚠️ `LOGIN_BRIDGE_URL` is hardcoded to `/AmericanBookCompany...` path — breaking if site path changes
+
+---
+
+### Recommended Action Plan (Priority Order)
+
+| Priority | Issue | Action | Owner |
+|----------|-------|--------|-------|
+| 🔴 P1 | CC1 — `checkoutsubmit` event unhandled | Remove the card/ACH UI from `checkoutFlow` Step 3 and route buyers to `authorizeNetCheckoutButton` (Accept Hosted) or the Submit PO flow | Dev |
+| 🔴 P1 | CC3 — Raw PAN/CVV collected in-browser | Remove `cardNumber`, `cardCvv`, ACH fields from `checkoutFlow` entirely. Use Accept Hosted for card payments. | Dev |
+| 🟠 P2 | CC6 — Sandbox/prod form URL mismatch | Add `isSandbox` property to `authorizeNetCheckoutButton` and resolve `paymentFormAction` dynamically, or expose via Apex Aura method | Dev |
+| 🟠 P2 | CC5 — "Save card" checkboxes without backing logic | Remove or hide until `CardPaymentMethod` / `SavedPaymentMethod` wiring is implemented | Dev |
+| 🟡 P3 | CC7 — `AuthorizeNet_Prod` named credential missing | Verify / create it in org Setup → Named Credentials | Admin |
+| 🟡 P3 | CC8 — Duplicate VF bridge pages | Audit and delete the unused one | Dev |
+| 🟡 P3 | Webhook signing key | Configure `WebhookSigningKey__c` in `AuthorizeNet_Config__mdt` | Admin |
+| 🟡 P4 | CC10 — `setInterval` DOM polling | Replace with `MutationObserver` | Dev |
+
+---
+
+## Fix Status Summary (Updated 2026-04-14)
 
 | Category | Total | Fixed | Still Open | Notes |
 |----------|-------|-------|------------|-------|
 | Critical Security (C1-C5) | 5 | 4 | 1 | C5 (Mapbox token) requires Dashboard config, not code |
+| Checkout-specific (CC1-CC10) | 10 | 2 | 8 | CC2, CC4 fixed this session |
 | High Priority Bugs (B1-B10) | 10 | 3 | 7 | B1, B2, B3 fixed; B4-B9 still open; B10 scaffolding |
 | Code Quality (Q1-Q15) | 15 | 2 | 13 | Q6, Q13 fixed; rest still open |
 

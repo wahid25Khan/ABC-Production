@@ -269,7 +269,7 @@
 .summary-shell {
   background: #f4f7fa;
   border-radius: 0.5rem;
-  overflow: hidden;
+  overflow: visible;
 }
 
 .summary-card {

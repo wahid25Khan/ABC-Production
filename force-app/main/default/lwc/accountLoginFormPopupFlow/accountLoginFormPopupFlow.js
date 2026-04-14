@@ -2,8 +2,10 @@ import { LightningElement, api } from "lwc";
 import isGuest from "@salesforce/user/isGuest";
 import { resolveAbsoluteUrl, appendHiddenInput } from "c/utils";
 
-const DEFAULT_GOOGLE_AUTH_URL = "/services/auth/sso/Google_Login";
-const DEFAULT_MICROSOFT_AUTH_URL = "/services/auth/sso/Microsoft_Login";
+const DEFAULT_GOOGLE_AUTH_URL =
+  "/services/auth/sso/Google_Login";
+const DEFAULT_MICROSOFT_AUTH_URL =
+  "/services/auth/sso/Microsoft_Login";
 const DEFAULT_SOCIAL_AUTH_SITE_URL =
   "https://americanbookcompany.my.site.com/AmericanBookCompanyvforcesite";
 const SOCIAL_SIGN_IN_ERROR_MESSAGE =
@@ -104,19 +106,13 @@ export default class AccountLoginFormPopupFlow extends LightningElement {
       const ownerDocument = this.template.host.ownerDocument;
       const form = ownerDocument.createElement("form");
       form.method = "POST";
-      form.action =
-        (this.socialAuthSiteUrl || DEFAULT_SOCIAL_AUTH_SITE_URL) + "/login";
+      form.action = (this.socialAuthSiteUrl || DEFAULT_SOCIAL_AUTH_SITE_URL) + "/login";
 
       const resolvedUsername = this.username.trim();
       appendHiddenInput(ownerDocument, form, "username", resolvedUsername);
       appendHiddenInput(ownerDocument, form, "un", resolvedUsername);
       appendHiddenInput(ownerDocument, form, "pw", this.password);
-      appendHiddenInput(
-        ownerDocument,
-        form,
-        "startURL",
-        this.getResolvedStartUrl()
-      );
+      appendHiddenInput(ownerDocument, form, "startURL", this.getResolvedStartUrl());
       appendHiddenInput(ownerDocument, form, "loginType", "standard");
       appendHiddenInput(ownerDocument, form, "lt", "standard");
       appendHiddenInput(ownerDocument, form, "useSecure", "true");
@@ -260,12 +256,13 @@ export default class AccountLoginFormPopupFlow extends LightningElement {
   getExperienceBasePath() {
     try {
       const resolvedLoginUrl =
-        resolveAbsoluteUrl(
-          this.loginActionUrl || "/AmericanBookCompany/login"
-        ) ||
+        resolveAbsoluteUrl(this.loginActionUrl || "/AmericanBookCompany/login") ||
         this.loginActionUrl ||
         "/AmericanBookCompany/login";
-      const loginUrl = new URL(resolvedLoginUrl, globalThis.location.origin);
+      const loginUrl = new URL(
+        resolvedLoginUrl,
+        globalThis.location.origin
+      );
       const loginPath = loginUrl.pathname || "";
       return loginPath.endsWith("/login")
         ? loginPath.slice(0, -"/login".length)
@@ -281,10 +278,7 @@ export default class AccountLoginFormPopupFlow extends LightningElement {
     }
 
     try {
-      return new URL(
-        this.socialAuthSiteUrl,
-        globalThis.location.origin
-      ).toString();
+      return new URL(this.socialAuthSiteUrl, globalThis.location.origin).toString();
     } catch {
       return "";
     }

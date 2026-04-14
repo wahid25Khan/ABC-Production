@@ -3,6 +3,10 @@ import { LightningElement } from "lwc";
 export default class ProductGrid extends LightningElement {
   isOpen = false;
 
+  handleLookInside() {
+    globalThis.window.open("https://coursewave.com/login", "_blank", "noopener");
+  }
+
   openModal() {
     this.isOpen = true;
 

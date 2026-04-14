@@ -1,6 +1,7 @@
 import { LightningElement, api, track, wire } from 'lwc';
 import isGuestUser from '@salesforce/user/isGuest';
 import getShippingRatePercent from '@salesforce/apex/ABCShippingCalculator.getShippingRatePercent';
+import getHostedPaymentToken from '@salesforce/apex/AuthorizeNetAcceptHostedTokenService.getHostedPaymentToken';
 import { splitCartItemName } from 'c/utils';
 import CC_VISA from '@salesforce/resourceUrl/ccVisa';
 import CC_MASTERCARD from '@salesforce/resourceUrl/ccMastercard';
@@ -8,6 +9,11 @@ import CC_AMEX from '@salesforce/resourceUrl/ccAmex';
 import CC_DISCOVER from '@salesforce/resourceUrl/ccDiscover';
 
 const FORM_KEY = 'abc_checkout_flow_form';
+const CHECKOUT_SESSION_KEY = 'abc_checkout_session';
+const API_VERSION = 'v66.0';
+const WEBSTORE_ID = '0ZEam000004dJDNGA2';
+const PAYMENT_FORM_SANDBOX = 'https://test.authorize.net/payment/payment';
+const PAYMENT_FORM_PROD = 'https://accept.authorize.net/payment/payment';
 
 const US_STATES = [
     { value: 'AL', label: 'Alabama' }, { value: 'AK', label: 'Alaska' },
@@ -104,6 +110,7 @@ export default class CheckoutFlow extends LightningElement {
         this.currentStep = this._readStepFromUrl();
         this._restoreForm();
         this._loadSummaryFromCart();
+        this._handlePaymentReturn();
     }
 
     @wire(getShippingRatePercent)
@@ -149,7 +156,18 @@ export default class CheckoutFlow extends LightningElement {
     // ── Form persistence ─────────────────────────────────────────
     _persistForm() {
         try {
-            globalThis.sessionStorage?.setItem(FORM_KEY, JSON.stringify(this.form));
+            // SECURITY: Never persist sensitive payment data to sessionStorage.
+            // CVV, PANs, ACH account/routing numbers must not be stored outside
+            // the component's reactive state. Only safe, non-payment fields are saved.
+            const {
+                cardNumber,      // PAN — never store
+                cardCvv,         // CVV — PCI DSS violation to store anywhere
+                achRoutingNumber,
+                achAccountNumber,
+                achAccountNumberConfirm,
+                ...safeToPersist
+            } = this.form;
+            globalThis.sessionStorage?.setItem(FORM_KEY, JSON.stringify(safeToPersist));
         } catch {
             /* noop */
         }
@@ -294,6 +312,10 @@ export default class CheckoutFlow extends LightningElement {
 
     get isPurchaseOrder() {
         return this.form.paymentType === 'po';
+    }
+
+    get isAnyPaymentTypeSelected() {
+        return !!this.form.paymentType;
     }
 
     get visaIcon() { return CC_VISA; }
@@ -498,14 +520,217 @@ export default class CheckoutFlow extends LightningElement {
             return;
         }
 
+        if (this.form.paymentType === 'po') {
+            // PO path — navigate to the dedicated PO submission page
+            try {
+                const poUrl = globalThis.location.pathname.replace(/\/checkout.*$/, '/submit-a-po') || '/AmericanBookCompany/submit-a-po';
+                globalThis.location.assign(poUrl);
+            } catch {
+                globalThis.location.assign('/AmericanBookCompany/submit-a-po');
+            }
+            return;
+        }
+
+        // Credit-card / Authorize.Net Accept Hosted path
         this.isPlacingOrder = true;
         this.stepError = '';
+        this._startAuthorizeNetCheckout();
+    }
 
-        this.dispatchEvent(new CustomEvent('checkoutsubmit', {
-            detail: { form: { ...this.form } },
-            bubbles: true,
-            composed: true
-        }));
+    async _startAuthorizeNetCheckout() {
+        try {
+            // 1 — Fetch the active cart to get the grand total
+            const cartData = await this._fetchJson(
+                `/AmericanBookCompany/webruntime/api/services/data/${API_VERSION}/commerce/webstores/${WEBSTORE_ID}/carts/current`,
+                { method: 'GET' }
+            );
+
+            const amount = this._extractCartTotal(cartData);
+            if (!amount || amount <= 0) {
+                throw new Error('Could not determine cart total. Please refresh and try again.');
+            }
+
+            const currencyCode = cartData?.currencyIsoCode || 'USD';
+            const cartId = cartData?.cartId || cartData?.id || 'current';
+
+            // 2 — Clear any stale checkout session, then start a new one
+            await this._clearCheckoutIfPresent();
+            const checkoutData = await this._fetchJson(
+                `/AmericanBookCompany/webruntime/api/services/data/${API_VERSION}/commerce/webstores/${WEBSTORE_ID}/checkouts`,
+                {
+                    method: 'POST',
+                    body: JSON.stringify({ cartId })
+                }
+            );
+            const checkoutId = checkoutData?.cartCheckoutSessionId || checkoutData?.id;
+            if (!checkoutId) {
+                throw new Error('Failed to start checkout session.');
+            }
+
+            // 3 — Build return URL: the current page URL + ?paymentReturn=1
+            const origin = globalThis.location.origin;
+            const pathname = globalThis.location.pathname;
+            const returnUrl = `${origin}${pathname}?paymentReturn=1`;
+            const cancelUrl = `${origin}${pathname}?paymentCancel=1`;
+
+            // 4 — Get Authorize.Net Accept Hosted token
+            const tokenResponse = await getHostedPaymentToken({
+                req: {
+                    amount,
+                    currencyIsoCode: currencyCode,
+                    returnUrl,
+                    cancelUrl,
+                    showReceipt: false,
+                    transactionType: 'authCaptureTransaction',
+                    referenceId: cartId
+                }
+            });
+
+            if (!tokenResponse?.success || !tokenResponse?.token) {
+                throw new Error(tokenResponse?.message || 'Payment token generation failed.');
+            }
+
+            // 5 — Persist checkout context so the return handler can place the order
+            try {
+                globalThis.sessionStorage?.setItem(
+                    CHECKOUT_SESSION_KEY,
+                    JSON.stringify({ checkoutId, cartId, amount })
+                );
+            } catch { /* noop */ }
+
+            // 6 — Redirect to Accept Hosted (sandbox vs production)
+            const isSandboxToken = tokenResponse.token.length < 200; // sandbox tokens are shorter
+            const formAction = isSandboxToken ? PAYMENT_FORM_SANDBOX : PAYMENT_FORM_PROD;
+            this._submitPaymentForm(tokenResponse.token, formAction);
+
+        } catch (error) {
+            this.isPlacingOrder = false;
+            this.stepError = error?.message || 'Payment could not be started. Please try again.';
+        }
+    }
+
+    /** Called on page load when Authorize.Net redirects back with ?paymentReturn=1 */
+    async _handlePaymentReturn() {
+        try {
+            const params = new URLSearchParams(globalThis.location?.search || '');
+            if (params.get('paymentReturn') !== '1') return;
+
+            // Clean the URL so a refresh doesn't re-trigger this
+            try {
+                globalThis.history?.replaceState({}, '', globalThis.location.pathname);
+            } catch { /* noop */ }
+
+            const raw = globalThis.sessionStorage?.getItem(CHECKOUT_SESSION_KEY);
+            if (!raw) return;
+
+            const { checkoutId } = JSON.parse(raw);
+            globalThis.sessionStorage?.removeItem(CHECKOUT_SESSION_KEY);
+
+            if (!checkoutId) return;
+
+            this.isPlacingOrder = true;
+            this.currentStep = 3;
+
+            // Place the order — converts the Cart to Order + OrderSummary in Salesforce
+            const placeOrderResponse = await this._fetchJson(
+                `/AmericanBookCompany/webruntime/api/services/data/${API_VERSION}/commerce/webstores/${WEBSTORE_ID}/checkouts/${checkoutId}/actions/placeOrder`,
+                { method: 'POST', body: '{}' }
+            );
+
+            const orderRef =
+                placeOrderResponse?.orderReferenceNumber ||
+                placeOrderResponse?.orderId ||
+                placeOrderResponse?.orderSummaryId ||
+                'created';
+
+            // Clear the form from sessionStorage, order is done
+            try { globalThis.sessionStorage?.removeItem(FORM_KEY); } catch { /* noop */ }
+
+            // Navigate to the order confirmation page
+            const orderConfirmUrl = `/AmericanBookCompany/order?orderSummaryId=${placeOrderResponse?.orderSummaryId || ''}`;
+            globalThis.location.assign(orderConfirmUrl);
+
+        } catch (error) {
+            this.isPlacingOrder = false;
+            this.showErrorModal = true;
+            this.placeOrderErrorMsg = error?.message || 'Order placement failed after payment. Please contact support.';
+        }
+    }
+
+    /** Called on page load when Authorize.Net redirects back with ?paymentCancel=1 */
+    _handlePaymentCancel() {
+        const params = new URLSearchParams(globalThis.location?.search || '');
+        if (params.get('paymentCancel') !== '1') return;
+        try {
+            globalThis.history?.replaceState({}, '', globalThis.location.pathname);
+            globalThis.sessionStorage?.removeItem(CHECKOUT_SESSION_KEY);
+        } catch { /* noop */ }
+        this.stepError = 'Payment was cancelled. Please try again.';
+        this.currentStep = 3;
+    }
+
+    /** Build the Authorize.Net POST form and submit */
+    _submitPaymentForm(token, formAction) {
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.action = formAction;
+        form.target = '_top';
+        form.style.display = 'none';
+
+        const input = document.createElement('input');
+        input.type = 'hidden';
+        input.name = 'token';
+        input.value = token;
+        form.appendChild(input);
+
+        document.body.appendChild(form);
+        form.submit();
+    }
+
+    async _clearCheckoutIfPresent() {
+        try {
+            const r = await fetch(
+                `/AmericanBookCompany/webruntime/api/services/data/${API_VERSION}/commerce/webstores/${WEBSTORE_ID}/checkouts/active`,
+                { method: 'GET', headers: { Accept: 'application/json' } }
+            );
+            if (!r.ok) return;
+            await fetch(
+                `/AmericanBookCompany/webruntime/api/services/data/${API_VERSION}/commerce/webstores/${WEBSTORE_ID}/checkouts/active`,
+                { method: 'DELETE', headers: { Accept: 'application/json' } }
+            );
+        } catch { /* non-fatal */ }
+    }
+
+    async _fetchJson(url, options = {}) {
+        const response = await fetch(url, {
+            ...options,
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+                ...(options.headers || {})
+            }
+        });
+        const text = await response.text();
+        let parsed;
+        try { parsed = text ? JSON.parse(text) : {}; } catch { throw new Error('Invalid response from server.'); }
+        if (!response.ok) {
+            const msg = parsed?.message || parsed?.[0]?.message || `HTTP ${response.status}`;
+            throw new Error(msg);
+        }
+        return parsed;
+    }
+
+    _extractCartTotal(cartData) {
+        const candidates = [
+            cartData?.totalAmount, cartData?.grandTotalAmount,
+            cartData?.amount, cartData?.cartSummary?.totalAmount,
+            cartData?.cartSummary?.grandTotalAmount
+        ];
+        for (const v of candidates) {
+            const n = Number(v);
+            if (!Number.isNaN(n) && n > 0) return n;
+        }
+        return null;
     }
 
     // ── Handlers: shipping help ──────────────────────────────────
@@ -554,28 +779,7 @@ export default class CheckoutFlow extends LightningElement {
     _validateStep3() {
         const { paymentType } = this.form;
         if (!paymentType) return 'Please select a payment method.';
-
-        if (paymentType === 'cc') {
-            const { cardholderName, cardNumber, cardExpMonth, cardExpYear, cardCvv, billingUseShipping, billingStreet, billingCity, billingStateCode, billingZip } = this.form;
-            if (!cardholderName.trim()) return 'Cardholder name is required.';
-            if ((cardNumber || '').replace(/\D/g, '').length < 13) return 'Please enter a valid card number.';
-            if (!cardExpMonth || !cardExpYear) return 'Please select an expiration date.';
-            if (!/^\d{3,4}$/.test((cardCvv || '').trim())) return 'Please enter a valid CVV.';
-            if (!billingUseShipping) {
-                if (!billingStreet.trim()) return 'Billing address is required.';
-                if (!billingCity.trim()) return 'Billing city is required.';
-                if (!billingStateCode) return 'Please select a billing state.';
-                if (!billingZip.trim()) return 'Billing ZIP code is required.';
-            }
-        } else if (paymentType === 'ach') {
-            const { achAccountHolder, achRoutingNumber, achAccountNumber, achAccountNumberConfirm, achAccountType } = this.form;
-            if (!achAccountHolder.trim()) return 'Account holder name is required.';
-            if (!achAccountNumber.trim()) return 'Account number is required.';
-            if (achAccountNumber.trim() !== (achAccountNumberConfirm || '').trim()) return 'Account numbers do not match.';
-            if (!/^\d{9}$/.test(achRoutingNumber || '')) return 'Please enter a valid 9-digit routing number.';
-            if (!achAccountType) return 'Please select an account type.';
-        }
-
+        // Card and ACH data are collected on Authorize.Net's secure hosted page — no local field validation needed here.
         return '';
     }
 

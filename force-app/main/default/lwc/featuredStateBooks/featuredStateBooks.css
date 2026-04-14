@@ -298,9 +298,14 @@
 
 .overlay-btn--look {
   background: rgba(255, 255, 255, 0.9);
-  border: 1px solid #d1d5db;
-  color: #5f6b7a;
-  cursor: default;
+  border: 1px solid #1175bc;
+  color: #1175bc;
+  cursor: pointer;
+}
+
+.overlay-btn--look:hover {
+  background: #1175bc;
+  color: #fff;
 }
 
 .overlay-btn--shop {

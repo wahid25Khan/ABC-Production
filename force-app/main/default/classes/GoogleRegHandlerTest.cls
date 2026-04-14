@@ -54,6 +54,7 @@ private class GoogleRegHandlerTest {
             AutocreatedRegHandler1772220667704.createdExternalUserIdOverride = UserInfo.getUserId();
             CommerceRegistrationProvisioning.permissionSetIdOverride = UserInfo.getUserId();
             CommerceRegistrationProvisioning.permissionSetLicenseIdOverride = UserInfo.getUserId();
+            CommerceRegistrationProvisioning.permissionSetGroupIdOverride = UserInfo.getUserId();
 
             Map<String, String> attributes = new Map<String, String>{
                 'sfdc_networkid' => '0DBfake000000001',
@@ -76,6 +77,8 @@ private class GoogleRegHandlerTest {
             System.assertEquals(UserInfo.getUserId(), CommerceRegistrationProvisioning.lastAssignedPermissionSetId, 'The configured B2B buyer permission set should be targeted.');
             System.assertEquals(UserInfo.getUserId(), CommerceRegistrationProvisioning.lastPermissionSetLicenseAssignedUserId, 'New social users should receive the B2B buyer permission set license.');
             System.assertEquals(UserInfo.getUserId(), CommerceRegistrationProvisioning.lastAssignedPermissionSetLicenseId, 'The configured B2B buyer permission set license should be targeted.');
+            System.assertEquals(UserInfo.getUserId(), CommerceRegistrationProvisioning.lastPermissionSetGroupAssignedUserId, 'New social users should receive the Commerce_Buyer permission set group.');
+            System.assertEquals(UserInfo.getUserId(), CommerceRegistrationProvisioning.lastAssignedPermissionSetGroupId, 'The configured Commerce_Buyer permission set group should be targeted.');
 
             Contact createdContact = [
                 SELECT Id, Account.Name, HasOptedOutOfEmail
@@ -173,6 +176,7 @@ private class GoogleRegHandlerTest {
             CommerceRegistrationProvisioning.buyerGroupIdOverride = existingAccount.Id;
             CommerceRegistrationProvisioning.permissionSetIdOverride = UserInfo.getUserId();
             CommerceRegistrationProvisioning.permissionSetLicenseIdOverride = UserInfo.getUserId();
+            CommerceRegistrationProvisioning.permissionSetGroupIdOverride = UserInfo.getUserId();
             Auth.UserData data = buildUserData('existing.google@example.com', 'Existing', 'Buyer', new Map<String, String>{ 'sfdc_networkid' => '0DBfake000000001' });
 
             Test.startTest();
@@ -183,6 +187,7 @@ private class GoogleRegHandlerTest {
             System.assertEquals(existingContact.AccountId, CommerceRegistrationProvisioning.lastAssignedBuyerId, 'Existing buyers should still be ensured into the buyer group.');
             System.assertEquals(existingUser.Id, CommerceRegistrationProvisioning.lastPermissionSetAssignedUserId, 'Existing social users should also be backfilled with the B2B buyer permission set.');
             System.assertEquals(existingUser.Id, CommerceRegistrationProvisioning.lastPermissionSetLicenseAssignedUserId, 'Existing social users should also be backfilled with the B2B buyer permission set license.');
+            System.assertEquals(existingUser.Id, CommerceRegistrationProvisioning.lastPermissionSetGroupAssignedUserId, 'Existing social users should also be backfilled with the Commerce_Buyer permission set group.');
         }
     }
 
@@ -213,6 +218,7 @@ private class GoogleRegHandlerTest {
             CommerceRegistrationProvisioning.buyerGroupIdOverride = existingAccount.Id;
             CommerceRegistrationProvisioning.permissionSetIdOverride = UserInfo.getUserId();
             CommerceRegistrationProvisioning.permissionSetLicenseIdOverride = UserInfo.getUserId();
+            CommerceRegistrationProvisioning.permissionSetGroupIdOverride = UserInfo.getUserId();
 
             Test.startTest();
             User returnedUser = new AutocreatedRegHandler1772220667704().createUser(
@@ -291,8 +297,10 @@ private class GoogleRegHandlerTest {
             CommerceRegistrationProvisioning.buyerGroupIdOverride = existingAccount.Id;
             CommerceRegistrationProvisioning.permissionSetIdOverride = UserInfo.getUserId();
             CommerceRegistrationProvisioning.permissionSetLicenseIdOverride = UserInfo.getUserId();
+            CommerceRegistrationProvisioning.permissionSetGroupIdOverride = UserInfo.getUserId();
             CommerceRegistrationProvisioning.permissionSetAssignmentExistsOverride = true;
             CommerceRegistrationProvisioning.permissionSetLicenseAssignmentExistsOverride = true;
+            CommerceRegistrationProvisioning.permissionSetGroupAssignmentExistsOverride = true;
 
             Test.startTest();
             new AutocreatedRegHandler1772220667704().createUser(
@@ -303,6 +311,7 @@ private class GoogleRegHandlerTest {
 
             System.assertEquals(null, CommerceRegistrationProvisioning.lastPermissionSetAssignedUserId, 'The permission set should not be re-assigned when it already exists.');
             System.assertEquals(null, CommerceRegistrationProvisioning.lastPermissionSetLicenseAssignedUserId, 'The permission set license should not be re-assigned when it already exists.');
+            System.assertEquals(null, CommerceRegistrationProvisioning.lastPermissionSetGroupAssignedUserId, 'The permission set group should not be re-assigned when it already exists.');
         }
     }
 

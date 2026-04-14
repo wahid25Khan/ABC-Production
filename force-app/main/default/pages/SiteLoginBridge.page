@@ -1,0 +1,56 @@
+<apex:page controller="SiteLoginController" showHeader="false" sidebar="false" cache="false" docType="html-5.0">
+	<apex:form id="bridgeForm" forceSSL="true">
+		<apex:inputHidden id="usernameField" value="{!username}"/>
+		<apex:inputHidden id="passwordField" value="{!password}"/>
+		<apex:inputHidden id="startUrlField" value="{!startUrl}"/>
+		<apex:commandButton id="submitButton" action="{!login}" value="Sign In" style="display:none;"/>
+	</apex:form>
+
+	<div>Signing you in...</div>
+
+	<script>
+		(function() {
+			const storageKey = 'abc_site_login_bridge_payload';
+			const fallbackUrl = '/AmericanBookCompany/login?loginError=1';
+
+			function redirectToLogin() {
+				window.location.replace(fallbackUrl);
+			}
+
+			function submitBridgeForm() {
+				try {
+					const rawPayload = window.sessionStorage.getItem(storageKey);
+					if (!rawPayload) {
+						redirectToLogin();
+						return;
+					}
+
+					window.sessionStorage.removeItem(storageKey);
+					const payload = JSON.parse(rawPayload);
+					const usernameField = document.getElementById('{!$Component.bridgeForm.usernameField}');
+					const passwordField = document.getElementById('{!$Component.bridgeForm.passwordField}');
+					const startUrlField = document.getElementById('{!$Component.bridgeForm.startUrlField}');
+					const submitButton = document.getElementById('{!$Component.bridgeForm.submitButton}');
+
+					if (!usernameField || !passwordField || !startUrlField || !submitButton) {
+						redirectToLogin();
+						return;
+					}
+
+					usernameField.value = payload.username || '';
+					passwordField.value = payload.password || '';
+					startUrlField.value = payload.startUrl || '/myprofile';
+					submitButton.click();
+				} catch (error) {
+					redirectToLogin();
+				}
+			}
+
+			if (document.readyState === 'loading') {
+				document.addEventListener('DOMContentLoaded', submitBridgeForm, { once: true });
+			} else {
+				submitBridgeForm();
+			}
+		})();
+	</script>
+</apex:page>

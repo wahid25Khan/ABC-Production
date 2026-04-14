@@ -145,6 +145,10 @@
         <type>CustomApplication</type>
     </appMenuItems>
     <appMenuItems>
+        <name>standard__Audience360</name>
+        <type>CustomApplication</type>
+    </appMenuItems>
+    <appMenuItems>
         <name>standard__CommerceV2</name>
         <type>CustomApplication</type>
     </appMenuItems>
@@ -166,6 +170,10 @@
     </appMenuItems>
     <appMenuItems>
         <name>standard__PaymentsManagement</name>
+        <type>CustomApplication</type>
+    </appMenuItems>
+    <appMenuItems>
+        <name>standard__EasyMarketing</name>
         <type>CustomApplication</type>
     </appMenuItems>
 </AppMenu>

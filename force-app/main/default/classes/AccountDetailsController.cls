@@ -6,7 +6,9 @@ public with sharing class AccountDetailsController {
     private static final String PASSWORD_SUCCESS_MESSAGE = 'Your password has been updated.';
     private static final String PROFILE_SUCCESS_MESSAGE = 'Your account details have been updated.';
     private static final String ORGANIZATION_SUCCESS_MESSAGE = 'Your organization details have been updated.';
+    private static final String PAYMENT_SUCCESS_MESSAGE = 'Payment method saved successfully.';
     private static final String DEFAULT_PAYMENT_MESSAGE = 'No payment on file.';
+    @TestVisible private static Id testAccountIdOverride;
 
     /** Wrapper returned to the LWC for current account details. */
     public class AccountDetailsResult {
@@ -172,6 +174,104 @@ public with sharing class AccountDetailsController {
     }
 
     /**
+     * Creates a card payment method for the current user's account.
+     *
+     * @param cardHolderName Name shown on the card.
+     * @param cardNumber Card number entered by the user.
+     * @param expiryMonth Expiration month.
+     * @param expiryYear Expiration year.
+     * @param nickName Optional label for the card.
+     * @return Mutation result and refreshed account details.
+     */
+    @AuraEnabled
+    public static ActionResult savePaymentMethod(
+        String cardHolderName,
+        String cardNumber,
+        String expiryMonth,
+        String expiryYear,
+        String billingStreet,
+        String billingCity,
+        String billingStateCode,
+        String billingZip
+    ) {
+        if (String.isBlank(cardHolderName)) {
+            return errorResult('Please enter the cardholder name.');
+        }
+
+        String normalizedCardNumber = normalizeCardNumber(cardNumber);
+        if (normalizedCardNumber.length() < 12 || normalizedCardNumber.length() > 19) {
+            return errorResult('Please enter a valid card number.');
+        }
+
+        Integer monthValue;
+        Integer yearValue;
+        try {
+            monthValue = Integer.valueOf(safeString(expiryMonth));
+            yearValue = normalizeExpiryYear(expiryYear);
+        } catch (Exception e) {
+            return errorResult('Please enter a valid expiration date.');
+        }
+
+        if (monthValue < 1 || monthValue > 12) {
+            return errorResult('Please choose a valid expiration month.');
+        }
+
+        Date currentMonth = Date.newInstance(Date.today().year(), Date.today().month(), 1);
+        Date enteredMonth = Date.newInstance(yearValue, monthValue, 1);
+        if (enteredMonth < currentMonth) {
+            return errorResult('The expiration date must be in the future.');
+        }
+
+        User currentUser = [
+            SELECT Email, Phone, Contact.AccountId, Contact.Account.Name
+            FROM User
+            WHERE Id = :UserInfo.getUserId()
+            LIMIT 1
+        ];
+
+        Id accountId = getAccountId(currentUser);
+        if (accountId == null) {
+            return errorResult('No organization is available for this account.');
+        }
+
+        CardPaymentMethod paymentMethod = new CardPaymentMethod(
+            AccountId = accountId,
+            CardHolderName = cardHolderName.trim(),
+            InputCardNumber = normalizedCardNumber,
+            ExpiryMonth = monthValue,
+            ExpiryYear = yearValue,
+            NickName = buildCardNickname(normalizedCardNumber),
+            Status = 'Active',
+            ProcessingMode = 'External',
+            Email = String.isBlank(currentUser.Email) ? null : currentUser.Email.trim(),
+            Phone = String.isBlank(currentUser.Phone) ? null : currentUser.Phone.trim(),
+            CompanyName = getAccountName(currentUser, accountId),
+            PaymentMethodStreet = String.isBlank(billingStreet) ? null : billingStreet.trim(),
+            PaymentMethodCity = String.isBlank(billingCity) ? null : billingCity.trim(),
+            PaymentMethodState = String.isBlank(billingStateCode) ? null : billingStateCode.trim(),
+            PaymentMethodPostalCode = String.isBlank(billingZip) ? null : billingZip.trim(),
+            PaymentMethodCountry = 'US'
+        );
+
+        String cardType = inferCardType(normalizedCardNumber);
+        if (String.isNotBlank(cardType)) {
+            paymentMethod.CardType = cardType;
+        }
+
+        List<String> nameParts = splitCardHolderName(cardHolderName);
+        if (!nameParts.isEmpty()) {
+            paymentMethod.CardHolderFirstName = nameParts[0];
+            if (nameParts.size() > 1) {
+                paymentMethod.CardHolderLastName = nameParts[1];
+            }
+        }
+
+        insert as system paymentMethod;
+
+        return successResult(PAYMENT_SUCCESS_MESSAGE);
+    }
+
+    /**
      * Changes the current user's password.
      *
      * @param currentPassword The current password.
@@ -257,6 +357,7 @@ public with sharing class AccountDetailsController {
             contactPhone,
             contactMobilePhone
         });
+        Id accountId = getAccountId(currentUser);
         result.organizationName = currentUser.Contact != null && currentUser.Contact.Account != null
             ? safeString(currentUser.Contact.Account.Name)
             : '';
@@ -278,9 +379,57 @@ public with sharing class AccountDetailsController {
         result.shippingState = safeString(currentUser.State);
         result.shippingPostalCode = safeString(currentUser.PostalCode);
         result.shippingCountry = safeString(currentUser.Country);
-        result.paymentSummary = DEFAULT_PAYMENT_MESSAGE;
-        result.hasPaymentMethods = false;
+
+        CardPaymentMethod latestPaymentMethod = getLatestPaymentMethod(accountId);
+        result.paymentSummary = latestPaymentMethod == null
+            ? DEFAULT_PAYMENT_MESSAGE
+            : buildPaymentSummary(latestPaymentMethod);
+        result.hasPaymentMethods = latestPaymentMethod != null;
         return result;
+    }
+
+    private static CardPaymentMethod getLatestPaymentMethod(Id accountId) {
+        if (accountId == null) {
+            return null;
+        }
+
+        List<CardPaymentMethod> paymentMethods = [
+            SELECT NickName, CardType, DisplayCardNumber, CardLastFour, ExpiryMonth, ExpiryYear
+            FROM CardPaymentMethod
+            WHERE AccountId = :accountId
+            ORDER BY CreatedDate DESC
+            LIMIT 1
+        ];
+        return paymentMethods.isEmpty() ? null : paymentMethods[0];
+    }
+
+    private static String buildPaymentSummary(CardPaymentMethod paymentMethod) {
+        List<String> parts = new List<String>();
+        if (String.isNotBlank(paymentMethod.NickName)) {
+            parts.add(paymentMethod.NickName.trim());
+        }
+        if (String.isNotBlank(paymentMethod.CardType)) {
+            parts.add(paymentMethod.CardType.trim());
+        }
+
+        String displayCardNumber = safeString(paymentMethod.DisplayCardNumber);
+        if (String.isBlank(displayCardNumber) && paymentMethod.CardLastFour != null) {
+            displayCardNumber = '•••• ' + String.valueOf(paymentMethod.CardLastFour).replace('.0', '');
+        }
+        if (String.isNotBlank(displayCardNumber)) {
+            parts.add(displayCardNumber);
+        }
+
+        if (paymentMethod.ExpiryMonth != null && paymentMethod.ExpiryYear != null) {
+            String paddedMonth = String.valueOf(paymentMethod.ExpiryMonth).leftPad(2, '0');
+            String shortYear = String.valueOf(paymentMethod.ExpiryYear);
+            if (shortYear.length() > 2) {
+                shortYear = shortYear.right(2);
+            }
+            parts.add('Exp ' + paddedMonth + '/' + shortYear);
+        }
+
+        return parts.isEmpty() ? DEFAULT_PAYMENT_MESSAGE : String.join(parts, ' • ');
     }
 
     private static String buildFullName(String firstName, String lastName) {
@@ -333,6 +482,82 @@ public with sharing class AccountDetailsController {
     private static Boolean isValidEmail(String email) {
         String normalized = safeString(email);
         return normalized.contains('@') && normalized.substringAfter('@').contains('.');
+    }
+
+    private static Id getAccountId(User currentUser) {
+        Id accountId = currentUser.Contact != null ? currentUser.Contact.AccountId : null;
+        if (accountId == null && Test.isRunningTest() && testAccountIdOverride != null) {
+            return testAccountIdOverride;
+        }
+        return accountId;
+    }
+
+    private static String getAccountName(User currentUser, Id accountId) {
+        if (currentUser.Contact != null && currentUser.Contact.Account != null) {
+            return safeString(currentUser.Contact.Account.Name);
+        }
+        if (Test.isRunningTest() && accountId != null) {
+            List<Account> accounts = [SELECT Name FROM Account WHERE Id = :accountId LIMIT 1];
+            if (!accounts.isEmpty()) {
+                return safeString(accounts[0].Name);
+            }
+        }
+        return null;
+    }
+
+    private static String normalizeCardNumber(String cardNumber) {
+        return safeString(cardNumber).replaceAll('[^0-9]', '');
+    }
+
+    private static Integer normalizeExpiryYear(String expiryYear) {
+        String normalizedYear = safeString(expiryYear);
+        if (normalizedYear.length() == 2) {
+            return Integer.valueOf('20' + normalizedYear);
+        }
+        return Integer.valueOf(normalizedYear);
+    }
+
+    private static String buildCardNickname(String cardNumber) {
+        if (String.isBlank(cardNumber) || cardNumber.length() < 4) {
+            return 'Card';
+        }
+        return 'Card ending in ' + cardNumber.right(4);
+    }
+
+    private static List<String> splitCardHolderName(String cardHolderName) {
+        List<String> parts = new List<String>();
+        String normalized = safeString(cardHolderName);
+        if (String.isBlank(normalized)) {
+            return parts;
+        }
+
+        List<String> rawParts = normalized.split('\\s+');
+        if (!rawParts.isEmpty()) {
+            parts.add(rawParts[0]);
+            if (rawParts.size() > 1) {
+                parts.add(rawParts[rawParts.size() - 1]);
+            }
+        }
+        return parts;
+    }
+
+    private static String inferCardType(String cardNumber) {
+        if (String.isBlank(cardNumber)) {
+            return null;
+        }
+        if (cardNumber.startsWith('4')) {
+            return 'Visa';
+        }
+        if (Pattern.matches('^(5[1-5].*|2(2[2-9].*|[3-6].*|7[01].*|720.*))$', cardNumber)) {
+            return 'Master Card';
+        }
+        if (Pattern.matches('^(34.*|37.*)$', cardNumber)) {
+            return 'American Express';
+        }
+        if (Pattern.matches('^(6011.*|65.*|64[4-9].*)$', cardNumber)) {
+            return 'Discover';
+        }
+        return null;
     }
 
     private static String safeString(String value) {

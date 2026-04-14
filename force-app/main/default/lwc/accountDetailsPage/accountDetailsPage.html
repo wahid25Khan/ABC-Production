@@ -130,7 +130,289 @@
                     <h2>Payment Methods</h2>
                 </div>
                 <div class="section-copy">{displayPaymentSummary}</div>
-                <button class="text-link" type="button" onclick={openPaymentModal}>Manage payment methods</button>
+                <ul class="payment-list">
+                    <li class="payment-option-row">
+                        <label class="radio-label">
+                            <input
+                                type="radio"
+                                name="accountPaymentType"
+                                value="ach"
+                                checked={isACH}
+                                onchange={handlePaymentTypeChange}
+                                class="radio-input"
+                            />
+                            <span>Pay with ACH</span>
+                        </label>
+                    </li>
+
+                    <template if:true={isACH}>
+                        <li class="payment-fields">
+                            <div class="form-group">
+                                <label for="achAccountHolder" class="form-label">Account Holders Name *</label>
+                                <input
+                                    id="achAccountHolder"
+                                    type="text"
+                                    class="form-input"
+                                    data-field="achAccountHolder"
+                                    value={paymentForm.achAccountHolder}
+                                    oninput={handlePaymentInput}
+                                    placeholder="Enter name as it appears on account"
+                                />
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="achAccountNumber" class="form-label">Account Number *</label>
+                                    <input
+                                        id="achAccountNumber"
+                                        type="text"
+                                        class="form-input"
+                                        data-field="achAccountNumber"
+                                        value={paymentForm.achAccountNumber}
+                                        oninput={handlePaymentInput}
+                                        placeholder="Up to 17 Digit Account Numbers"
+                                        maxlength="17"
+                                    />
+                                </div>
+                                <div class="form-group">
+                                    <label for="achAccountNumberConfirm" class="form-label">Confirm Account Number *</label>
+                                    <input
+                                        id="achAccountNumberConfirm"
+                                        type="text"
+                                        class="form-input"
+                                        data-field="achAccountNumberConfirm"
+                                        value={paymentForm.achAccountNumberConfirm}
+                                        oninput={handlePaymentInput}
+                                        placeholder="Confirm Account Number"
+                                        maxlength="17"
+                                    />
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="achRoutingNumber" class="form-label">Routing Number *</label>
+                                    <input
+                                        id="achRoutingNumber"
+                                        type="text"
+                                        class="form-input"
+                                        data-field="achRoutingNumber"
+                                        value={paymentForm.achRoutingNumber}
+                                        oninput={handlePaymentInput}
+                                        placeholder="9 Digit Routing Number"
+                                        maxlength="9"
+                                    />
+                                </div>
+                                <div class="form-group">
+                                    <label for="achAccountType" class="form-label">Account Type *</label>
+                                    <select
+                                        id="achAccountType"
+                                        class="form-input form-select"
+                                        data-field="achAccountType"
+                                        onchange={handlePaymentInput}
+                                    >
+                                        <template for:each={achAccountTypeOptions} for:item="opt">
+                                            <option key={opt.value} value={opt.value} selected={opt.selected}>{opt.label}</option>
+                                        </template>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="ach-checkboxes">
+                                <label class="checkbox-label">
+                                    <input
+                                        type="checkbox"
+                                        data-field="saveAch"
+                                        checked={paymentForm.saveAch}
+                                        onchange={handlePaymentCheckboxChange}
+                                    />
+                                    <span>Save this ACH for future purchases</span>
+                                </label>
+                                <label class="checkbox-label checkbox-label-mt">
+                                    <input
+                                        type="checkbox"
+                                        data-field="setDefaultAchPayment"
+                                        checked={paymentForm.setDefaultAchPayment}
+                                        onchange={handlePaymentCheckboxChange}
+                                    />
+                                    <span>Set as my default payment method</span>
+                                </label>
+                            </div>
+                        </li>
+                    </template>
+
+                    <li class="payment-option-row">
+                        <div class="payment-option-header">
+                            <label class="radio-label">
+                                <input
+                                    type="radio"
+                                    name="accountPaymentType"
+                                    value="cc"
+                                    checked={isCreditCard}
+                                    onchange={handlePaymentTypeChange}
+                                    class="radio-input"
+                                />
+                                <span>Pay with Credit Card</span>
+                            </label>
+                            <div class="card-logos" aria-label="Accepted cards">
+                                <img src={visaIcon} alt="Visa" title="Visa" class="card-logo-img" />
+                                <img src={mastercardIcon} alt="MC" title="Master Card" class="card-logo-img" />
+                                <img src={amexIcon} alt="AXP" title="American Express" class="card-logo-img" />
+                                <img src={discoverIcon} alt="DGN" title="Discover" class="card-logo-img" />
+                            </div>
+                        </div>
+                    </li>
+
+                    <template if:true={isCreditCard}>
+                    <li class="payment-fields">
+                        <div class="form-group">
+                            <label for="paymentCardNumber" class="form-label">Card Number *</label>
+                            <input
+                                id="paymentCardNumber"
+                                data-field="cardNumber"
+                                type="text"
+                                class="form-input"
+                                value={paymentForm.cardNumber}
+                                oninput={handlePaymentInput}
+                                autocomplete="cc-number"
+                                maxlength="19"
+                            />
+                        </div>
+
+                        <div class="form-row-cc-details">
+                            <div class="form-group form-group-cardholder">
+                                <label for="paymentCardholderName" class="form-label">Cardholder Name *</label>
+                                <input
+                                    id="paymentCardholderName"
+                                    data-field="cardHolderName"
+                                    type="text"
+                                    class="form-input"
+                                    value={paymentForm.cardHolderName}
+                                    oninput={handlePaymentInput}
+                                    autocomplete="cc-name"
+                                />
+                            </div>
+                            <div class="form-group form-group-expiry">
+                                <label class="form-label">Expiration Date *</label>
+                                <div class="expiry-selects">
+                                    <select class="form-input form-select" data-field="expiryMonth" onchange={handlePaymentInput}>
+                                        <option value=""></option>
+                                        <template for:each={paymentMonthOptions} for:item="opt">
+                                            <option key={opt.value} value={opt.value} selected={opt.selected}>{opt.label}</option>
+                                        </template>
+                                    </select>
+                                    <select class="form-input form-select" data-field="expiryYear" onchange={handlePaymentInput}>
+                                        <option value=""></option>
+                                        <template for:each={paymentYearOptions} for:item="opt">
+                                            <option key={opt.value} value={opt.value} selected={opt.selected}>{opt.label}</option>
+                                        </template>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group form-group-cvv">
+                                <label for="paymentCvv" class="form-label">CVV *</label>
+                                <input
+                                    id="paymentCvv"
+                                    data-field="cardCvv"
+                                    type="text"
+                                    class="form-input"
+                                    value={paymentForm.cardCvv}
+                                    oninput={handlePaymentInput}
+                                    autocomplete="cc-csc"
+                                    maxlength="4"
+                                />
+                            </div>
+                        </div>
+
+                        <h3 class="billing-heading">Billing Address</h3>
+
+                        <template if:true={paymentShippingAddressDisplay}>
+                            <ul class="billing-radio-list">
+                                <li>
+                                    <label class="radio-label">
+                                        <input type="radio" name="paymentBillingType" value="true"
+                                            checked={paymentBillingUseShippingChecked}
+                                            onchange={handlePaymentBillingRadioChange}
+                                            class="radio-input" />
+                                        <span>Use Shipping Address</span>
+                                    </label>
+                                    <div class="billing-address-preview">{paymentShippingAddressDisplay}</div>
+                                </li>
+                                <li>
+                                    <label class="radio-label">
+                                        <input type="radio" name="paymentBillingType" value="false"
+                                            checked={paymentBillingUseDifferentChecked}
+                                            onchange={handlePaymentBillingRadioChange}
+                                            class="radio-input" />
+                                        <span>Enter a Different Address</span>
+                                    </label>
+                                </li>
+                            </ul>
+                        </template>
+
+                        <template if:true={showPaymentBillingForm}>
+                            <div class="billing-form">
+                                <div class="form-group">
+                                    <label for="paymentBillingStreet" class="form-label">Address *</label>
+                                    <input
+                                        id="paymentBillingStreet"
+                                        data-field="billingStreet"
+                                        type="text"
+                                        class="form-input"
+                                        value={paymentForm.billingStreet}
+                                        oninput={handlePaymentInput}
+                                        placeholder="Enter your address"
+                                    />
+                                </div>
+                                <div class="form-row-address">
+                                    <div class="form-group form-group-city">
+                                        <label for="paymentBillingCity" class="form-label">City *</label>
+                                        <input
+                                            id="paymentBillingCity"
+                                            data-field="billingCity"
+                                            type="text"
+                                            class="form-input"
+                                            value={paymentForm.billingCity}
+                                            oninput={handlePaymentInput}
+                                        />
+                                    </div>
+                                    <div class="form-group form-group-state">
+                                        <label for="paymentBillingState" class="form-label">State *</label>
+                                        <select
+                                            id="paymentBillingState"
+                                            class="form-input form-select"
+                                            data-field="billingStateCode"
+                                            onchange={handlePaymentInput}
+                                        >
+                                            <option value=""></option>
+                                            <template for:each={paymentBillingStates} for:item="st">
+                                                <option key={st.value} value={st.value} selected={st.selected}>{st.label}</option>
+                                            </template>
+                                        </select>
+                                    </div>
+                                    <div class="form-group form-group-zip">
+                                        <label for="paymentBillingZip" class="form-label">ZIP Code *</label>
+                                        <input
+                                            id="paymentBillingZip"
+                                            data-field="billingZip"
+                                            type="text"
+                                            class="form-input"
+                                            value={paymentForm.billingZip}
+                                            oninput={handlePaymentInput}
+                                            maxlength="10"
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+                        </template>
+                    </li>
+                    </template>
+                </ul>
+
+                <div class="button-row">
+                    <button class="primary-button" type="button" onclick={handleSavePayment} disabled={isPaymentSubmitDisabled}>Save Payment Method</button>
+                    <button class="secondary-button" type="button" onclick={handleResetPayment} disabled={isSavingPayment}>Cancel</button>
+                </div>
             </section>
         </template>
     </div>
@@ -223,19 +505,4 @@
         </section>
     </template>
 
-    <!-- Payment Methods Modal -->
-    <template if:true={showPaymentModal}>
-        <section class="modal-backdrop" onclick={closePaymentModal} role="presentation">
-            <div class="modal-dialog modal-dialog--wide" role="dialog" aria-modal="true" aria-labelledby="paymentModalTitle" onclick={stopModalPropagation}>
-                <button class="modal-close" type="button" aria-label="Close" onclick={closePaymentModal}>&times;</button>
-                <h2 id="paymentModalTitle" class="modal-title">Payment Methods</h2>
-                <iframe
-                    src={paymentMethodsUrl}
-                    title="Manage Payment Methods"
-                    class="payment-iframe"
-                    frameborder="0"
-                ></iframe>
-            </div>
-        </section>
-    </template>
 </template>

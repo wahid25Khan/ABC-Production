@@ -10,6 +10,8 @@
     <columns>OPPORTUNITY.TYPE</columns>
     <columns>OPPORTUNITY.LEAD_SOURCE</columns>
     <columns>CORE.USERS.FULL_NAME</columns>
+    <columns>OPPORTUNITY.CREATED_DATE</columns>
+    <columns>OPPORTUNITY.LAST_UPDATE</columns>
     <filterScope>Everything</filterScope>
     <label>All Opportunities</label>
 </ListView>

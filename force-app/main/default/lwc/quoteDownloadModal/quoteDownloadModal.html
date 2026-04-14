@@ -1,0 +1,147 @@
+<template>
+    <lightning-modal-body class="quote-modal-body">
+        <div class="modal-form-shell">
+            <h2 class="modal-title">Download a Quote</h2>
+            <h3 class="modal-section-heading">Shipping Address:</h3>
+
+            <div class="modal-form-stack">
+                <label class="modal-field">
+                    <span class="field-label">Contact Name *</span>
+                    <input
+                        class="quote-field"
+                        data-field="contactName"
+                        type="text"
+                        name="contactName"
+                        value={quoteForm.contactName}
+                        oninput={handleFieldChange}
+                    />
+                </label>
+
+                <label class="modal-field">
+                    <span class="field-label">Organization *</span>
+                    <input
+                        class="quote-field"
+                        data-field="organization"
+                        type="text"
+                        name="organization"
+                        value={quoteForm.organization}
+                        oninput={handleFieldChange}
+                    />
+                </label>
+
+                <label class="modal-field">
+                    <span class="field-label">Address *</span>
+                    <input
+                        class="quote-field"
+                        data-field="address"
+                        type="text"
+                        name="address"
+                        placeholder="Enter your address"
+                        value={quoteForm.address}
+                        oninput={handleFieldChange}
+                    />
+                </label>
+
+                <div class="modal-row">
+                    <label class="modal-field modal-field-city">
+                        <span class="field-label">City *</span>
+                        <input
+                            class="quote-field"
+                            data-field="city"
+                            type="text"
+                            name="city"
+                            value={quoteForm.city}
+                            oninput={handleFieldChange}
+                        />
+                    </label>
+
+                    <label class="modal-field modal-field-state">
+                        <span class="field-label">State *</span>
+                        <select
+                            class="quote-field quote-select"
+                            data-field="stateCode"
+                            name="stateCode"
+                            onchange={handleFieldChange}
+                        >
+                            <option value=""></option>
+                            <template for:each={stateOptions} for:item="st">
+                                <option key={st.value} value={st.value} selected={st.selected}>{st.label}</option>
+                            </template>
+                        </select>
+                    </label>
+                </div>
+
+                <label class="modal-field modal-field-zip">
+                    <span class="field-label">ZIP Code *</span>
+                    <input
+                        class="quote-field"
+                        data-field="postalCode"
+                        type="text"
+                        name="postalCode"
+                        maxlength="10"
+                        value={quoteForm.postalCode}
+                        oninput={handleFieldChange}
+                    />
+                </label>
+
+                <div class="modal-row">
+                    <label class="modal-field">
+                        <span class="field-label">Phone *</span>
+                        <input
+                            class="quote-field"
+                            data-field="phone"
+                            type="tel"
+                            name="phone"
+                            value={quoteForm.phone}
+                            oninput={handleFieldChange}
+                        />
+                    </label>
+
+                    <label class="modal-field">
+                        <span class="field-label">Email *</span>
+                        <input
+                            class="quote-field"
+                            data-field="email"
+                            type="email"
+                            name="email"
+                            value={quoteForm.email}
+                            oninput={handleFieldChange}
+                        />
+                    </label>
+                </div>
+
+                <label class="modal-checkbox-label">
+                    <input
+                        type="checkbox"
+                        data-field="taxExempt"
+                        name="taxExempt"
+                        checked={quoteForm.taxExempt}
+                        onchange={handleFieldChange}
+                    />
+                    <span>Tax Exempt</span>
+                </label>
+            </div>
+
+            <template lwc:if={errorMessage}>
+                <div class="error-banner modal-error" role="alert">{errorMessage}</div>
+            </template>
+
+            <div class="modal-actions">
+                <button
+                    type="button"
+                    class="modal-download-btn"
+                    onclick={handleDownload}
+                >
+                    Download
+                </button>
+                <button
+                    type="button"
+                    class="modal-cancel-btn"
+                    onclick={handleCancel}
+                >
+                    Cancel
+                </button>
+            </div>
+        </div>
+    </lightning-modal-body>
+</template>

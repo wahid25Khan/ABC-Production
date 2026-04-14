@@ -9,6 +9,7 @@ import {
   normalizeProduct as sharedNormalizeProduct,
   extractProductList as sharedExtractProductList,
   buildProductDetailPath as sharedBuildProductDetailPath,
+  buildFreeTrialPath as sharedBuildFreeTrialPath,
   addProductToCart as sharedAddProductToCart,
   buildAddToCartSuccessModalData,
   resolvePrice,
@@ -546,8 +547,21 @@ export default class FeaturedStateBooks extends LightningElement {
     this.openModalProductDetails();
   }
 
+  handleLookInside() {
+    globalThis.window.open("https://coursewave.com/login", "_blank", "noopener");
+  }
+
   handleTrial() {
-    this.openModalProductDetails();
+    if (!this.modalProduct) return;
+
+    const trialPath = sharedBuildFreeTrialPath(
+      this.modalProduct,
+      this.storeName || DEFAULT_STORE_NAME
+    );
+    this.handleModalClose();
+    if (trialPath) {
+      globalThis.location.href = trialPath;
+    }
   }
 
   async handleAddToCart(event) {

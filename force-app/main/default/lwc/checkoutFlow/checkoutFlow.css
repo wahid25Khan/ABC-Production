@@ -398,6 +398,13 @@
     padding: 10px 0;
 }
 
+.authorize-net-notice {
+    margin: 8px 0 4px 28px;
+    font-size: 13px;
+    color: #6b7280;
+    line-height: 1.5;
+}
+
 .payment-option-header {
     display: flex;
     align-items: center;

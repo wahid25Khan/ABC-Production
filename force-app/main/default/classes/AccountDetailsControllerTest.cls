@@ -57,7 +57,12 @@ private class AccountDetailsControllerTest {
         System.runAs(runAsUser) {
             Test.startTest();
             AccountDetailsController.ActionResult result = AccountDetailsController.updateOrganization(
-                'American Book Company', '123 Main St', 'Atlanta', 'GA', '30301', '555-000-0000'
+                'American Book Company',
+                null,
+                null,
+                null,
+                null,
+                null
             );
             Test.stopTest();
 
@@ -81,6 +86,53 @@ private class AccountDetailsControllerTest {
 
             System.assertEquals(true, result.success);
             System.assertEquals('Your password has been updated.', result.message);
+        }
+    }
+
+    @IsTest
+    static void savePaymentMethodCreatesCardPaymentMethodForAccount() {
+        User runAsUser = createRunAsUser();
+        Account account = new Account(Name = 'American Book Company');
+        insert account;
+
+        System.runAs(runAsUser) {
+            AccountDetailsController.testAccountIdOverride = account.Id;
+
+            Test.startTest();
+            AccountDetailsController.ActionResult result = AccountDetailsController.savePaymentMethod(
+                'Pat Buyer',
+                '4111 1111 1111 1111',
+                '12',
+                String.valueOf(Date.today().year() + 1),
+                '123 Main St',
+                'Atlanta',
+                'GA',
+                '30301'
+            );
+            Test.stopTest();
+
+            CardPaymentMethod paymentMethod = [
+                SELECT AccountId, CardHolderName, NickName, ExpiryMonth, ExpiryYear, Status, ProcessingMode,
+                       PaymentMethodStreet, PaymentMethodCity, PaymentMethodState, PaymentMethodPostalCode, PaymentMethodCountry
+                FROM CardPaymentMethod
+                WHERE AccountId = :account.Id
+                ORDER BY CreatedDate DESC
+                LIMIT 1
+            ];
+
+            System.assertEquals(true, result.success);
+            System.assertEquals(account.Id, paymentMethod.AccountId);
+            System.assertEquals('Pat Buyer', paymentMethod.CardHolderName);
+            System.assertEquals(12, paymentMethod.ExpiryMonth);
+            System.assertEquals(Date.today().year() + 1, paymentMethod.ExpiryYear);
+            System.assertEquals('Active', paymentMethod.Status);
+            System.assertEquals('External', paymentMethod.ProcessingMode);
+            System.assertEquals('123 Main St', paymentMethod.PaymentMethodStreet);
+            System.assertEquals('Atlanta', paymentMethod.PaymentMethodCity);
+            System.assertEquals('GA', paymentMethod.PaymentMethodState);
+            System.assertEquals('30301', paymentMethod.PaymentMethodPostalCode);
+            System.assertEquals('US', paymentMethod.PaymentMethodCountry);
+            System.assertEquals(true, result.details.hasPaymentMethods);
         }
     }
 
