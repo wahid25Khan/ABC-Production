@@ -192,6 +192,10 @@ public without sharing class BuyerSelfRegistrationService {
         outcome.userId
       );
 
+      assignCommerceBuyerGroup(outcome.userId);
+
+      assignCommerceBuyerGroup(outcome.userId);
+
       response.success = true;
       response.userId = outcome.userId;
       response.accountId = String.valueOf(
@@ -455,5 +459,34 @@ public without sharing class BuyerSelfRegistrationService {
     CommerceRegistrationProvisioning.resetTestState();
     externalUserGateway = new SiteExternalUserGateway();
     buyerAccessGateway = new CommerceBuyerAccessGateway();
+  }
+
+  private static void assignCommerceBuyerGroup(String userId) {
+    if (String.isBlank(userId)) {
+      return;
+    }
+    try {
+      List<PermissionSetGroup> psgs = [
+        SELECT Id FROM PermissionSetGroup WHERE DeveloperName = 'Commerce_Buyer' LIMIT 1
+      ];
+      if (psgs.isEmpty()) {
+        return;
+      }
+      Id psgId = psgs[0].Id;
+      Integer existing = [
+        SELECT COUNT() FROM PermissionSetAssignment
+        WHERE AssigneeId = :userId AND PermissionSetGroupId = :psgId
+      ];
+      if (existing == 0) {
+        insert new PermissionSetAssignment(
+          AssigneeId = userId,
+          PermissionSetGroupId = psgId
+        );
+      }
+    } catch (Exception e) {
+      // Non-fatal: log and continue; buyer entitlements are
+      // also set asynchronously via ensureB2BBuyerEntitlementsAsync
+      System.debug(LoggingLevel.WARN, 'assignCommerceBuyerGroup failed: ' + e.getMessage());
+    }
   }
 }

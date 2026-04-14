@@ -47,6 +47,7 @@ global without sharing class AutocreatedRegHandler1772220667704 implements Auth.
 					ensureBuyerAccess(existingBuyerId, DEFAULT_BUYER_GROUP_NAME);
 				}
 				enqueueB2BBuyerEntitlements(existingUser.Id);
+				assignCommerceBuyerGroup(existingUser.Id);
 				return existingUser;
 			}
 
@@ -59,6 +60,7 @@ global without sharing class AutocreatedRegHandler1772220667704 implements Auth.
 			Id buyerId = resolveExistingBuyerId(createdUser);
 			ensureBuyerAccess(buyerId != null ? buyerId : account.Id, DEFAULT_BUYER_GROUP_NAME);
 			enqueueB2BBuyerEntitlements(createdUser.Id);
+			assignCommerceBuyerGroup(createdUser.Id);
 			return createdUser;
 		} catch (Exception ex) {
 			Database.rollback(registrationSavepoint);
@@ -430,5 +432,34 @@ global without sharing class AutocreatedRegHandler1772220667704 implements Auth.
 		externalUserErrorOverride = null;
 		createdExternalUserIdOverride = null;
 		CommerceRegistrationProvisioning.resetTestState();
+	}
+
+	private static void assignCommerceBuyerGroup(Id userId) {
+		if (userId == null) {
+			return;
+		}
+		try {
+			List<PermissionSetGroup> psgs = [
+				SELECT Id FROM PermissionSetGroup WHERE DeveloperName = 'Commerce_Buyer' LIMIT 1
+			];
+			if (psgs.isEmpty()) {
+				return;
+			}
+			Id psgId = psgs[0].Id;
+			Integer existing = [
+				SELECT COUNT() FROM PermissionSetAssignment
+				WHERE AssigneeId = :userId AND PermissionSetGroupId = :psgId
+			];
+			if (existing == 0) {
+				insert new PermissionSetAssignment(
+					AssigneeId = userId,
+					PermissionSetGroupId = psgId
+				);
+			}
+		} catch (Exception e) {
+			// Non-fatal: log and continue; buyer entitlements are
+			// also set asynchronously via enqueueB2BBuyerEntitlements
+			System.debug(LoggingLevel.WARN, 'assignCommerceBuyerGroup failed: ' + e.getMessage());
+		}
 	}
 }
