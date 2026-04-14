@@ -256,8 +256,10 @@ export default class StateFilterLwc extends LightningElement {
           params.delete(this.facetsParam);
           params.delete(`search-facet-section-${this.refinementKey}`);
 
+          // Use abbreviation in URL, matching the rest of the URL convention
+          const abbrev = (STATE_ABBREVIATIONS[stateVal] || stateVal).toLowerCase();
           const target =
-            this.resultsAllPath +
+            `${this.resultsBasePath}/${encodeURIComponent(abbrev)}` +
             (params.toString() ? `?${params.toString()}` : "");
           const currentPathAndSearch =
             globalThis.location.pathname + globalThis.location.search;

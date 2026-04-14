@@ -373,7 +373,15 @@ export default class CustomHeader extends LightningElement {
       return "";
     }
 
-    return ALL_STATES.includes(resultsKeyword) ? resultsKeyword : "";
+    // Direct full state name match
+    if (ALL_STATES.includes(resultsKeyword)) return resultsKeyword;
+
+    // Reverse-lookup abbreviation (e.g. "ga" → "Georgia")
+    const kwLower = resultsKeyword.toLowerCase();
+    const fromAbbrev = ALL_STATES.find(
+      (s) => (STATE_ABBREVIATIONS[s] || "").toLowerCase() === kwLower
+    );
+    return fromAbbrev || "";
   }
 
   getStateFromRefinementsList(refinementsRaw) {
