@@ -8,6 +8,7 @@ public without sharing class BuyerSelfRegistrationService {
   private static final String DEFAULT_EMAIL_ENCODING = 'UTF-8';
   private static final String DEFAULT_LOCALE = 'en_US';
   private static final String DEFAULT_TIMEZONE = 'America/Chicago';
+  private static final Integer USERNAME_MAX_LENGTH = 80;
   private static final String USER_EXISTS_MESSAGE = 'An account with this email already exists. Please sign in or reset your password.';
   private static final String GENERIC_ERROR_MESSAGE = 'We could not create your account right now. Please try again or contact us at (888) 264-5877.';
   private static final Pattern EMAIL_PATTERN = Pattern.compile(
@@ -352,9 +353,10 @@ public without sharing class BuyerSelfRegistrationService {
   }
 
   private static User buildExternalUser(RegistrationRequest req, Id profileId) {
+    String normalizedEmail = normalizeEmail(req.email);
     User userToCreate = new User();
-    userToCreate.Username = normalizeEmail(req.email);
-    userToCreate.Email = normalizeEmail(req.email);
+    userToCreate.Username = buildExternalUsername(normalizedEmail);
+    userToCreate.Email = normalizedEmail;
     userToCreate.FirstName = safeTrim(req.firstName);
     userToCreate.LastName = safeTrim(req.lastName);
     userToCreate.ProfileId = profileId;
@@ -418,6 +420,30 @@ public without sharing class BuyerSelfRegistrationService {
     return nickname;
   }
 
+  @TestVisible
+  private static String buildExternalUsername(String normalizedEmail) {
+    if (String.isBlank(normalizedEmail) || !normalizedEmail.contains('@')) {
+      return normalizedEmail;
+    }
+
+    String localPart = normalizedEmail.substringBefore('@');
+    String domainPart = normalizedEmail.substringAfter('@');
+    String orgKey = safeTrim(UserInfo.getOrganizationId()).toLowerCase();
+    String suffix =
+      '+abcshop-' +
+      (String.isNotBlank(orgKey) ? orgKey.left(15) : 'storefront');
+    Integer maxLocalLength = Math.max(
+      1,
+      USERNAME_MAX_LENGTH - domainPart.length() - suffix.length() - 1
+    );
+
+    if (localPart.length() > maxLocalLength) {
+      localPart = localPart.left(maxLocalLength);
+    }
+
+    return localPart + suffix + '@' + domainPart;
+  }
+
   private static String resolveLocaleSidKey() {
     String locale = UserInfo.getLocale();
     return String.isNotBlank(locale) ? locale : DEFAULT_LOCALE;
@@ -467,14 +493,18 @@ public without sharing class BuyerSelfRegistrationService {
     }
     try {
       List<PermissionSetGroup> psgs = [
-        SELECT Id FROM PermissionSetGroup WHERE DeveloperName = 'Commerce_Buyer' LIMIT 1
+        SELECT Id
+        FROM PermissionSetGroup
+        WHERE DeveloperName = 'Commerce_Buyer'
+        LIMIT 1
       ];
       if (psgs.isEmpty()) {
         return;
       }
       Id psgId = psgs[0].Id;
       Integer existing = [
-        SELECT COUNT() FROM PermissionSetAssignment
+        SELECT COUNT()
+        FROM PermissionSetAssignment
         WHERE AssigneeId = :userId AND PermissionSetGroupId = :psgId
       ];
       if (existing == 0) {
@@ -486,7 +516,10 @@ public without sharing class BuyerSelfRegistrationService {
     } catch (Exception e) {
       // Non-fatal: log and continue; buyer entitlements are
       // also set asynchronously via ensureB2BBuyerEntitlementsAsync
-      System.debug(LoggingLevel.WARN, 'assignCommerceBuyerGroup failed: ' + e.getMessage());
+      System.debug(
+        LoggingLevel.WARN,
+        'assignCommerceBuyerGroup failed: ' + e.getMessage()
+      );
     }
   }
 }
