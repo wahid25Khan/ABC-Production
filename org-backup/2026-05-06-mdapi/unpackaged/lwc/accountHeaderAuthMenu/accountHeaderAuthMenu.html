@@ -1,0 +1,22 @@
+<template>
+    <template if:true={isAuthenticated}>
+        <lightning-button-menu
+            alternative-text={menuLabel}
+            class="account-menu"
+            icon-name="utility:user"
+            label={menuLabel}
+            menu-alignment="right"
+            onselect={handleMenuSelect}
+            variant="bare"
+        >
+            <lightning-menu-item label={accountLabel} value="account"></lightning-menu-item>
+            <lightning-menu-item label={logoutLabel} value="logout"></lightning-menu-item>
+        </lightning-button-menu>
+    </template>
+
+    <template if:false={isAuthenticated}>
+        <button class="login-link" onclick={handleLoginClick} type="button">
+            {loginLabel}
+        </button>
+    </template>
+</template>

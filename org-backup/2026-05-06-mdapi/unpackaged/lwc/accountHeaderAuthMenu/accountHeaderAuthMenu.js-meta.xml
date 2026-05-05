@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>66.0</apiVersion>
+    <isExposed>true</isExposed>
+    <targets>
+        <target>lightningCommunity__Page</target>
+        <target>lightningCommunity__Default</target>
+    </targets>
+    <targetConfigs>
+        <targetConfig targets="lightningCommunity__Default">
+            <property default="Account" label="Menu Label" name="menuLabel" type="String" />
+            <property default="Log In" label="Login Label" name="loginLabel" type="String" />
+            <property default="My Account" label="Account Label" name="accountLabel" type="String" />
+            <property default="Log Out" label="Logout Label" name="logoutLabel" type="String" />
+            <property default="/AmericanBookCompany/myprofile" label="Account URL" name="accountUrl" type="String" />
+            <property default="/AmericanBookCompany/login" label="Login URL" name="loginUrl" type="String" />
+            <property default="/AmericanBookCompany/secur/logout.jsp" label="Logout Path" name="logoutPath" type="String" />
+            <property default="/AmericanBookCompany/" label="Logout Redirect URL" name="logoutRedirectUrl" type="String" />
+        </targetConfig>
+    </targetConfigs>
+</LightningComponentBundle>

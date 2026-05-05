@@ -1,0 +1,39 @@
+<apex:page controller="AdminCheckoutRecoveryController"
+           showHeader="true"
+           sidebar="false"
+           standardStylesheets="true"
+           lightningStylesheets="true"
+           docType="html-5.0">
+    <apex:form >
+        <apex:pageBlock title="Authenticated Buyer Checkout Recovery (Admin Only)">
+            <apex:pageMessages />
+
+            <apex:pageBlockSection columns="1" title="Run Recovery">
+                <apex:outputText value="Paste a CartCheckoutSession Id for an authenticated buyer checkout. This page is intended for internal admin use only."/>
+                <apex:inputText value="{!checkoutSessionId}" label="Checkout Session Id" html-placeholder="2z9..." style="width: 32rem;"/>
+                <apex:commandButton value="Run Recovery" action="{!runRecovery}" rerender="resultsPanel" status="runStatus"/>
+                <apex:actionStatus id="runStatus">
+                    <apex:facet name="start">
+                        <span>Running recovery...</span>
+                    </apex:facet>
+                </apex:actionStatus>
+            </apex:pageBlockSection>
+
+            <apex:outputPanel id="resultsPanel">
+                <apex:pageBlockSection columns="1" title="Error" rendered="{!hasError}">
+                    <apex:outputText value="{!errorMessage}" style="color:#ba0517;font-weight:bold;"/>
+                </apex:pageBlockSection>
+
+                <apex:pageBlockSection columns="1" title="Recovery Result" rendered="{!hasResult}">
+                    <apex:outputText value="Success: {!resultSuccess}"/>
+                    <apex:outputText value="Duplicate Detected: {!resultDuplicateDetected}"/>
+                    <apex:outputText value="Message: {!resultMessage}"/>
+                    <apex:outputText value="Checkout Session Id: {!resultCheckoutSessionId}"/>
+                    <apex:outputText value="Effective Account Id: {!resultEffectiveAccountId}"/>
+                    <apex:outputText value="Order Id: {!resultOrderId}"/>
+                    <apex:outputText value="Order Reference Number: {!resultOrderReferenceNumber}"/>
+                </apex:pageBlockSection>
+            </apex:outputPanel>
+        </apex:pageBlock>
+    </apex:form>
+</apex:page>

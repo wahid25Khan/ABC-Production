@@ -1,0 +1,304 @@
+<apex:page controller="CartQuotePdfPageController" renderAs="pdf"
+           showHeader="false" sidebar="false"
+           standardStylesheets="false" applyHtmlTag="false" applyBodyTag="false">
+<html>
+<head>
+<style type="text/css">
+    @page {
+        size: letter;
+        margin: 0.75in;
+    }
+    body {
+        font-family: Arial, Helvetica, sans-serif;
+        color: #1e2a3a;
+        font-size: 11pt;
+        margin: 0;
+        padding: 0;
+    }
+    .header {
+        border-bottom: 3px solid #007cba;
+        padding-bottom: 14px;
+        margin-bottom: 24px;
+    }
+    .header-top {
+        width: 100%;
+    }
+    .header-top td {
+        vertical-align: top;
+    }
+    .company-name {
+        font-size: 18pt;
+        font-weight: bold;
+        color: #007cba;
+        margin: 0;
+    }
+    .company-info {
+        font-size: 9pt;
+        color: #555;
+        line-height: 1.5;
+        margin-top: 4px;
+    }
+    .quote-info {
+        text-align: right;
+        font-size: 10pt;
+        color: #555;
+    }
+    .quote-number {
+        font-size: 14pt;
+        font-weight: bold;
+        color: #007cba;
+        margin-bottom: 6px;
+    }
+    .quote-label {
+        font-size: 20pt;
+        font-weight: bold;
+        color: #1e2a3a;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        margin-bottom: 4px;
+    }
+    .customer-section {
+        margin-bottom: 22px;
+        font-size: 10pt;
+    }
+    .customer-grid {
+        width: 100%;
+    }
+    .customer-grid td {
+        vertical-align: top;
+        width: 50%;
+        padding-right: 12px;
+    }
+    .customer-card {
+        border: 1px solid #d4d8dc;
+        background: #f8fafc;
+        padding: 12px 14px;
+        min-height: 104px;
+    }
+    .customer-card-title {
+        font-size: 11pt;
+        font-weight: bold;
+        color: #007cba;
+        margin-bottom: 8px;
+    }
+    .customer-line {
+        margin-bottom: 4px;
+        line-height: 1.45;
+    }
+    .customer-line strong {
+        color: #1e2a3a;
+    }
+    table.items-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 8px;
+    }
+    table.items-table th {
+        background: #007cba;
+        color: #fff;
+        padding: 10px 12px;
+        text-align: left;
+        font-size: 10pt;
+        font-weight: 600;
+    }
+    table.items-table th.right {
+        text-align: right;
+    }
+    table.items-table td {
+        padding: 8px 12px;
+        border-bottom: 1px solid #d4d8dc;
+        font-size: 10pt;
+    }
+    table.items-table td.right {
+        text-align: right;
+    }
+    table.items-table tr.alt td {
+        background: #f4f7fa;
+    }
+    .totals-row {
+        width: 100%;
+        margin-top: 16px;
+    }
+    .totals-row td {
+        padding: 8px 12px;
+        font-size: 12pt;
+    }
+    .totals-row .total-label {
+        text-align: right;
+        font-weight: bold;
+        color: #1e2a3a;
+    }
+    .totals-row .total-value {
+        text-align: right;
+        font-weight: bold;
+        color: #007cba;
+        font-size: 14pt;
+        width: 140px;
+    }
+    .totals-row .grand-total-label,
+    .totals-row .grand-total-value {
+        border-top: 2px solid #d4d8dc;
+        padding-top: 12px;
+    }
+    .footer {
+        margin-top: 40px;
+        font-size: 9pt;
+        color: #76716b;
+        text-align: center;
+        border-top: 1px solid #d4d8dc;
+        padding-top: 12px;
+    }
+    .disclaimer {
+        font-style: italic;
+        margin-top: 6px;
+    }
+</style>
+</head>
+<body>
+
+    <!-- Header -->
+    <div class="header">
+        <table class="header-top" cellpadding="0" cellspacing="0">
+            <tr>
+                <td style="width:60%;">
+                    <div class="company-name">American Book Company</div>
+                    <div class="company-info">
+                        P.O. Box 2638, Woodstock, GA 30188-1383<br/>
+                        Phone: (888) 264-5877 &bull; Fax: (866) 827-3240<br/>
+                        Email: contact@abck12.com
+                    </div>
+                </td>
+                <td style="width:40%;">
+                    <div class="quote-info">
+                        <div class="quote-label">Quote</div>
+                        <div class="quote-number">{!quoteNumber}</div>
+                        <div>Date: {!quoteDate}</div>
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <!-- Customer Info -->
+    <div class="customer-section">
+        <table class="customer-grid" cellpadding="0" cellspacing="0">
+            <tr>
+                <td>
+                    <div class="customer-card">
+                        <div class="customer-card-title">Contact Information</div>
+                        <apex:outputPanel rendered="{!NOT(ISBLANK(contactName))}">
+                            <div class="customer-line"><strong>Contact:</strong> {!contactName}</div>
+                        </apex:outputPanel>
+                        <apex:outputPanel rendered="{!NOT(ISBLANK(organizationName))}">
+                            <div class="customer-line"><strong>Organization:</strong> {!organizationName}</div>
+                        </apex:outputPanel>
+                        <apex:outputPanel rendered="{!NOT(ISBLANK(contactEmail))}">
+                            <div class="customer-line"><strong>Email:</strong> {!contactEmail}</div>
+                        </apex:outputPanel>
+                        <apex:outputPanel rendered="{!NOT(ISBLANK(contactPhone))}">
+                            <div class="customer-line"><strong>Phone:</strong> {!contactPhone}</div>
+                        </apex:outputPanel>
+                    </div>
+                </td>
+                <td>
+                    <div class="customer-card">
+                        <div class="customer-card-title">Shipping Address</div>
+                        <apex:outputPanel rendered="{!NOT(ISBLANK(streetAddress))}">
+                            <div class="customer-line">{!streetAddress}</div>
+                        </apex:outputPanel>
+                        <apex:outputPanel rendered="{!NOT(ISBLANK(addressLine))}">
+                            <div class="customer-line">{!addressLine}</div>
+                        </apex:outputPanel>
+                        <div class="customer-line">
+                            <strong>Tax Status:</strong>
+                            <apex:outputText value="{!IF(taxExempt, 'Tax Exempt', 'Standard Tax')}"/>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <!-- Items Table -->
+    <table class="items-table">
+        <tr>
+            <th style="width:5%;">#</th>
+            <th style="width:40%;">Product</th>
+            <th style="width:15%;">ISBN / SKU</th>
+            <th class="right" style="width:10%;">Qty</th>
+            <th class="right" style="width:15%;">Unit Price</th>
+            <th class="right" style="width:15%;">Total</th>
+        </tr>
+        <apex:variable var="rowNum" value="{!1}" />
+        <apex:repeat value="{!lines}" var="line">
+            <tr class="{!IF(MOD(VALUE(TEXT(rowNum)),2)==0,'alt','')}">
+                <td><apex:outputText value="{!TEXT(rowNum)}" /></td>
+                <td>{!line.productName}</td>
+                <td>{!line.sku}</td>
+                <td class="right">
+                    <apex:outputText value="{0,number,###,##0}">
+                        <apex:param value="{!line.quantity}" />
+                    </apex:outputText>
+                </td>
+                <td class="right">
+                    <apex:outputText value="{0,number,currency}">
+                        <apex:param value="{!line.unitPrice}" />
+                    </apex:outputText>
+                </td>
+                <td class="right">
+                    <apex:outputText value="{0,number,currency}">
+                        <apex:param value="{!line.lineTotal}" />
+                    </apex:outputText>
+                </td>
+            </tr>
+            <apex:variable var="rowNum" value="{!VALUE(TEXT(rowNum)) + 1}" />
+        </apex:repeat>
+    </table>
+
+    <!-- Totals -->
+    <table class="totals-row" cellpadding="0" cellspacing="0">
+        <tr>
+            <td class="total-label">Subtotal:</td>
+            <td class="total-value">
+                <apex:outputText value="{0,number,currency}">
+                    <apex:param value="{!subtotal}" />
+                </apex:outputText>
+            </td>
+        </tr>
+        <tr>
+            <td class="total-label">Shipping:</td>
+            <td class="total-value">
+                <apex:outputText value="{0,number,currency}">
+                    <apex:param value="{!shippingAmount}" />
+                </apex:outputText>
+            </td>
+        </tr>
+        <tr>
+            <td class="total-label">Sales Tax:</td>
+            <td class="total-value">
+                <apex:outputText value="{0,number,currency}">
+                    <apex:param value="{!salesTaxAmount}" />
+                </apex:outputText>
+            </td>
+        </tr>
+        <tr>
+            <td class="total-label grand-total-label">Total:</td>
+            <td class="total-value grand-total-value">
+                <apex:outputText value="{0,number,currency}">
+                    <apex:param value="{!grandTotal}" />
+                </apex:outputText>
+            </td>
+        </tr>
+    </table>
+
+    <!-- Footer -->
+    <div class="footer">
+        American Book Company &bull; P.O. Box 2638, Woodstock, GA 30188-1383 &bull; (888) 264-5877
+        <div class="disclaimer">
+            This is a quote, not an invoice. Prices are subject to change. Valid for 30 days from date of issue.
+        </div>
+    </div>
+
+</body>
+</html>
+</apex:page>

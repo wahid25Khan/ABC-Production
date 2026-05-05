@@ -1,0 +1,245 @@
+<template>
+  <dialog
+    class="slds-modal slds-fade-in-open"
+    open
+    aria-modal="true"
+    aria-labelledby="modalHeading"
+  >
+    <div class="slds-modal__container modal-container">
+      <!-- Header -->
+      <header class="modal-header">
+        <button
+          class="close-btn"
+          type="button"
+          onclick={handleClose}
+          aria-label="Close"
+        >
+          <lightning-icon
+            icon-name="utility:close"
+            size="small"
+          ></lightning-icon>
+        </button>
+      </header>
+
+      <!-- Body -->
+      <div class="modal-body">
+        <template if:true={showLoadingOverlay}>
+          <div class="loader-overlay">
+            <lightning-spinner
+              alternative-text="Loading"
+              size="medium"
+            ></lightning-spinner>
+          </div>
+        </template>
+        <div class="content-grid">
+          <!-- Left: Cover -->
+          <div class="left-col">
+            <div class="cover-frame">
+              <template if:true={bookImageUrl}>
+                <img src={bookImageUrl} alt="Book cover" class="cover-img" />
+              </template>
+              <template if:false={bookImageUrl}>
+                <div class="cover-placeholder">
+                  <lightning-icon
+                    icon-name="utility:image"
+                    size="large"
+                  ></lightning-icon>
+                  <div class="ph-text">Book Cover</div>
+                </div>
+              </template>
+            </div>
+          </div>
+
+          <!-- Right: Details -->
+          <div class="right-col">
+            <div class="header-text">
+              <h2 id="modalHeading" class="title">{title}</h2>
+              <div class="subtitle">{isbn}</div>
+            </div>
+            <div class="divider"></div>
+            <!-- Tabs -->
+            <template if:true={hasMultipleVariations}>
+              <div
+                class="plan-toggle"
+                role="tablist"
+                aria-label="Format Options"
+              >
+                <template for:each={variations} for:item="v">
+                  <button
+                    key={v.index}
+                    class={v.tabClass}
+                    type="button"
+                    onclick={handleTabClick}
+                    data-index={v.index}
+                    role="tab"
+                    tabindex={v.tabIndex}
+                  >
+                    {v.label}
+                  </button>
+                </template>
+              </div>
+            </template>
+
+            <template if:true={showPricingError}>
+              <div class="pricing-error" role="alert">
+                Quick shop pricing is unavailable right now. You can still open
+                the full product page.
+              </div>
+            </template>
+
+            <!-- Pricing + Features -->
+            <div class="row-split">
+              <!-- Price table -->
+              <div class="price-card">
+                <div class="price-table-head">
+                  <div class="th">Quantity</div>
+                  <div class="th">Price</div>
+                </div>
+                <template if:true={hasTiers}>
+                  <template for:each={displayTiers} for:item="tier">
+                    <div key={tier.key} class="price-row">
+                      <div class="td">{tier.qtyLabel}</div>
+                      <div class={tier.priceClass}>{tier.formattedPrice}</div>
+                    </div>
+                  </template>
+                </template>
+                <template if:false={hasTiers}>
+                  <div class="price-row">
+                    <div class="td">{minQty}+</div>
+                    <div class="td price">{formattedUnitPrice}</div>
+                  </div>
+                </template>
+              </div>
+
+              <!-- Features (exact layout like image) -->
+              <div class="feature-cols">
+                <div class="feature-col">
+                  <template for:each={featuresLeft} for:item="f">
+                    <div key={f} class="feature-item">
+                      <lightning-icon
+                        icon-name="utility:check"
+                        size="x-small"
+                        class="check-icn"
+                      ></lightning-icon>
+                      <span>{f}</span>
+                    </div>
+                  </template>
+                </div>
+
+                <div class="feature-col right">
+                  <template for:each={featuresRight} for:item="f">
+                    <div key={f} class="feature-item">
+                      <lightning-icon
+                        icon-name="utility:check"
+                        size="x-small"
+                        class="check-icn"
+                      ></lightning-icon>
+                      <span>{f}</span>
+                    </div>
+                  </template>
+                </div>
+              </div>
+            </div>
+
+            <!-- Action strip -->
+            <div class="action-strip">
+              <div class="btns">
+                <div class="qty-wrap">
+                  <div class="qty-label">Quantity (min {minQty})</div>
+                  <div class="qty-stepper">
+                    <button
+                      type="button"
+                      class="qty-btn"
+                      onclick={handleQtyDecrement}
+                      disabled={isMinQty}
+                      aria-label="Decrease quantity"
+                    >
+                      &minus;
+                    </button>
+                    <input
+                      type="number"
+                      value={quantity}
+                      min={minQty}
+                      step={incrementQty}
+                      oninput={handleQtyChange}
+                      onblur={handleQtyBlur}
+                      class="qty-input"
+                    />
+                    <button
+                      type="button"
+                      class="qty-btn"
+                      onclick={handleQtyIncrement}
+                      disabled={isMaxQty}
+                      aria-label="Increase quantity"
+                    >
+                      &plus;
+                    </button>
+                  </div>
+                  <div class="order-total-line">
+                    Order Total: <strong>{totalPrice}</strong>
+                  </div>
+                </div>
+                <div class="btn-offset">
+                  <template if:true={cartError}>
+                    <p class="cart-error-msg">{cartError}</p>
+                  </template>
+                  <button
+                    class="btn-add"
+                    type="button"
+                    onclick={handleAddToCart}
+                    disabled={disableAddToCart}
+                  >
+                    Add to Cart
+                  </button>
+                </div>
+                <div class="btn-offset">
+                  <button
+                    class="btn-trial"
+                    type="button"
+                    onclick={handleTrial}
+                    disabled={disableViewDetails}
+                  >
+                    FREE Two-Week Trial!
+                  </button>
+                </div>
+                <button
+                  class="heart-btn"
+                  type="button"
+                  title="Save to favorites"
+                  aria-label="Save to favorites"
+                  disabled={isFavoriteDisabled}
+                  onclick={handleToggleFavorite}
+                >
+                  <lightning-icon
+                    icon-name={heartIcon}
+                    size="small"
+                  ></lightning-icon>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Bottom full-width button -->
+        <div class="footer-cta">
+          <button
+            class="details-btn"
+            type="button"
+            onclick={handleViewDetails}
+            disabled={disableViewDetails}
+          >
+            See Full Product Details
+          </button>
+        </div>
+      </div>
+    </div>
+  </dialog>
+
+  <!-- Backdrop -->
+  <button
+    type="button"
+    class="slds-backdrop slds-backdrop_open"
+    onclick={handleBackdropClick}
+    aria-label="Close modal"
+  ></button>
+</template>

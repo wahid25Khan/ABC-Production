@@ -1,0 +1,536 @@
+<template>
+  <section class="results-shell">
+    <template if:true={loading}>
+      <div class="loading-overlay" aria-live="polite" aria-busy="true">
+        <div class="loading-panel">
+          <lightning-spinner
+            alternative-text="Loading products"
+            size="medium"
+          ></lightning-spinner>
+        </div>
+      </div>
+    </template>
+
+    <div class="hero-block">
+      <h1 class="page-title">Shop All</h1>
+      <div class="page-subtitle">
+        Need to download a quote? Add items to your cart to begin.
+      </div>
+    </div>
+
+    <div class="top-controls">
+      <div class="left-controls">
+        <div class="left-controls-top">
+          <div class="search-box">
+            <input
+              type="search"
+              placeholder="Search..."
+              value={searchText}
+              onkeydown={handleSearchKeydown}
+              oninput={handleSearchInput}
+              onchange={handleSearchInput}
+            />
+            <span class="search-icon">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <circle cx="11" cy="11" r="7"></circle>
+                <line x1="16.65" y1="16.65" x2="21" y2="21"></line>
+              </svg>
+            </span>
+          </div>
+
+          <p class="results-summary">{resultsSummary}</p>
+        </div>
+
+        <div class="state-dropdown-wrap">
+          <div class="custom-select" data-dropdown="state">
+            <template if:true={isStateDropdownOpen}>
+              <button
+                type="button"
+                class="custom-select-trigger"
+                onclick={toggleStateDropdown}
+                aria-expanded="true"
+              >
+                <span class={stateDisplayClass}>{selectedStateLabel}</span>
+                <span class={stateChevronClass}></span>
+              </button>
+            </template>
+            <template if:false={isStateDropdownOpen}>
+              <button
+                type="button"
+                class="custom-select-trigger"
+                onclick={toggleStateDropdown}
+                aria-expanded="false"
+              >
+                <span class={stateDisplayClass}>{selectedStateLabel}</span>
+                <span class={stateChevronClass}></span>
+              </button>
+            </template>
+
+            <template if:true={isStateDropdownOpen}>
+              <div class="custom-select-menu">
+                <template for:each={stateOptionsForUi} for:item="opt">
+                  <button
+                    key={opt.value}
+                    type="button"
+                    class={opt.className}
+                    data-value={opt.value}
+                    onclick={handleStateOptionClick}
+                  >
+                    {opt.label}
+                  </button>
+                </template>
+              </div>
+            </template>
+          </div>
+        </div>
+      </div>
+
+      <div class="right-controls">
+        <div class="custom-select custom-select-sm" data-dropdown="sort">
+          <template if:true={isSortDropdownOpen}>
+            <button
+              type="button"
+              class="custom-select-trigger"
+              onclick={toggleSortDropdown}
+              aria-expanded="true"
+            >
+              <span>Sort</span>
+              <span class={sortChevronClass}></span>
+            </button>
+          </template>
+          <template if:false={isSortDropdownOpen}>
+            <button
+              type="button"
+              class="custom-select-trigger"
+              onclick={toggleSortDropdown}
+              aria-expanded="false"
+            >
+              <span>Sort</span>
+              <span class={sortChevronClass}></span>
+            </button>
+          </template>
+
+          <template if:true={isSortDropdownOpen}>
+            <div class="custom-select-menu custom-select-menu-sm">
+              <template for:each={sortOptionsForUi} for:item="opt">
+                <button
+                  key={opt.value}
+                  type="button"
+                  class={opt.className}
+                  data-value={opt.value}
+                  onclick={handleSortOptionClick}
+                >
+                  {opt.label}
+                </button>
+              </template>
+            </div>
+          </template>
+        </div>
+
+        <div class="custom-select custom-select-sm" data-dropdown="pageSize">
+          <template if:true={isPageSizeDropdownOpen}>
+            <button
+              type="button"
+              class="custom-select-trigger"
+              onclick={togglePageSizeDropdown}
+              aria-expanded="true"
+            >
+              <span>{selectedPageSizeLabel}</span>
+              <span class={pageSizeChevronClass}></span>
+            </button>
+          </template>
+          <template if:false={isPageSizeDropdownOpen}>
+            <button
+              type="button"
+              class="custom-select-trigger"
+              onclick={togglePageSizeDropdown}
+              aria-expanded="false"
+            >
+              <span>{selectedPageSizeLabel}</span>
+              <span class={pageSizeChevronClass}></span>
+            </button>
+          </template>
+
+          <template if:true={isPageSizeDropdownOpen}>
+            <div class="custom-select-menu custom-select-menu-sm">
+              <template for:each={pageSizeOptionsForUi} for:item="opt">
+                <button
+                  key={opt.value}
+                  type="button"
+                  class={opt.className}
+                  data-value={opt.value}
+                  onclick={handlePageSizeOptionClick}
+                >
+                  {opt.label}
+                </button>
+              </template>
+            </div>
+          </template>
+        </div>
+
+        <fieldset class="view-toggle">
+          <legend class="slds-assistive-text">View mode</legend>
+
+          <template if:true={isGridView}>
+            <button
+              type="button"
+              class="view-btn"
+              data-mode="grid"
+              aria-pressed="true"
+              onclick={handleViewMode}
+              title="Grid view"
+            >
+              <svg class="view-icon" viewBox="0 0 16 16" aria-hidden="true">
+                <rect x="1" y="1" width="6" height="6" rx="1"></rect>
+                <rect x="9" y="1" width="6" height="6" rx="1"></rect>
+                <rect x="1" y="9" width="6" height="6" rx="1"></rect>
+                <rect x="9" y="9" width="6" height="6" rx="1"></rect>
+              </svg>
+            </button>
+          </template>
+          <template if:false={isGridView}>
+            <button
+              type="button"
+              class="view-btn"
+              data-mode="grid"
+              aria-pressed="false"
+              onclick={handleViewMode}
+              title="Grid view"
+            >
+              <svg class="view-icon" viewBox="0 0 16 16" aria-hidden="true">
+                <rect x="1" y="1" width="6" height="6" rx="1"></rect>
+                <rect x="9" y="1" width="6" height="6" rx="1"></rect>
+                <rect x="1" y="9" width="6" height="6" rx="1"></rect>
+                <rect x="9" y="9" width="6" height="6" rx="1"></rect>
+              </svg>
+            </button>
+          </template>
+
+          <template if:true={isListView}>
+            <button
+              type="button"
+              class="view-btn"
+              data-mode="list"
+              aria-pressed="true"
+              onclick={handleViewMode}
+              title="List view"
+            >
+              <svg class="view-icon" viewBox="0 0 16 16" aria-hidden="true">
+                <rect x="1" y="2" width="14" height="2.4" rx="1"></rect>
+                <rect x="1" y="6.8" width="14" height="2.4" rx="1"></rect>
+                <rect x="1" y="11.6" width="14" height="2.4" rx="1"></rect>
+              </svg>
+            </button>
+          </template>
+          <template if:false={isListView}>
+            <button
+              type="button"
+              class="view-btn"
+              data-mode="list"
+              aria-pressed="false"
+              onclick={handleViewMode}
+              title="List view"
+            >
+              <svg class="view-icon" viewBox="0 0 16 16" aria-hidden="true">
+                <rect x="1" y="2" width="14" height="2.4" rx="1"></rect>
+                <rect x="1" y="6.8" width="14" height="2.4" rx="1"></rect>
+                <rect x="1" y="11.6" width="14" height="2.4" rx="1"></rect>
+              </svg>
+            </button>
+          </template>
+        </fieldset>
+      </div>
+    </div>
+
+    <div class="results-layout">
+      <aside class={filtersColumnClass}>
+        <!-- Collapsed trigger: visible on mobile when drawer is closed -->
+        <button
+          type="button"
+          class="mobile-filter-toggle"
+          onclick={handleToggleMobileFilters}
+        >
+          <span>Filter</span>
+          <svg
+            class="filter-toggle-icon"
+            viewBox="0 0 24 24"
+            aria-hidden="true"
+          >
+            <line x1="4" y1="7" x2="20" y2="7"></line>
+            <line x1="7" y1="12" x2="17" y2="12"></line>
+            <line x1="10" y1="17" x2="14" y2="17"></line>
+          </svg>
+        </button>
+
+        <!-- Drawer header: visible only when drawer is open on mobile -->
+        <div class="mobile-drawer-header">
+          <button
+            type="button"
+            class="mobile-drawer-close"
+            onclick={handleToggleMobileFilters}
+            aria-label="Close filters"
+          >
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <line x1="4" y1="4" x2="20" y2="20"></line>
+              <line x1="20" y1="4" x2="4" y2="20"></line>
+            </svg>
+          </button>
+          <span class="mobile-drawer-title">Filter</span>
+          <button
+            type="button"
+            class="mobile-drawer-clearall"
+            onclick={handleClearAllFilters}
+          >
+            Clear All
+          </button>
+        </div>
+
+        <!-- Filter content panel -->
+        <div class="mobile-filter-panel">
+          <!-- Search (mobile drawer only) -->
+          <div class="drawer-search-wrap">
+            <div class="search-box search-box--drawer">
+              <input
+                type="search"
+                placeholder="Search..."
+                value={searchText}
+                onkeydown={handleSearchKeydown}
+                oninput={handleSearchInput}
+                onchange={handleSearchInput}
+              />
+              <span class="search-icon">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <circle cx="11" cy="11" r="7"></circle>
+                  <line x1="16.65" y1="16.65" x2="21" y2="21"></line>
+                </svg>
+              </span>
+            </div>
+          </div>
+
+          <!-- State dropdown (mobile drawer only) -->
+          <div class="drawer-state-wrap">
+            <div class="custom-select" data-dropdown="state">
+              <template if:true={isStateDropdownOpen}>
+                <button
+                  type="button"
+                  class="custom-select-trigger"
+                  onclick={toggleStateDropdown}
+                  aria-expanded="true"
+                >
+                  <span class={stateDisplayClass}>{selectedStateLabel}</span>
+                  <span class={stateChevronClass}></span>
+                </button>
+              </template>
+              <template if:false={isStateDropdownOpen}>
+                <button
+                  type="button"
+                  class="custom-select-trigger"
+                  onclick={toggleStateDropdown}
+                  aria-expanded="false"
+                >
+                  <span class={stateDisplayClass}>{selectedStateLabel}</span>
+                  <span class={stateChevronClass}></span>
+                </button>
+              </template>
+              <template if:true={isStateDropdownOpen}>
+                <div class="custom-select-menu">
+                  <template for:each={stateOptionsForUi} for:item="opt">
+                    <button
+                      key={opt.value}
+                      type="button"
+                      class={opt.className}
+                      data-value={opt.value}
+                      onclick={handleStateOptionClick}
+                    >
+                      {opt.label}
+                    </button>
+                  </template>
+                </div>
+              </template>
+            </div>
+          </div>
+
+          <!-- Filter groups -->
+          <template for:each={filterGroups} for:item="group">
+            <section key={group.key} class="filter-group">
+              <template if:true={group.expanded}>
+                <button
+                  type="button"
+                  class="filter-header"
+                  data-field={group.key}
+                  onclick={handleToggleGroup}
+                  aria-expanded="true"
+                >
+                  <span>{group.label}</span>
+                  <span class="toggle-symbol">{group.toggleSymbol}</span>
+                </button>
+              </template>
+
+              <template if:false={group.expanded}>
+                <button
+                  type="button"
+                  class="filter-header"
+                  data-field={group.key}
+                  onclick={handleToggleGroup}
+                  aria-expanded="false"
+                >
+                  <span>{group.label}</span>
+                  <span class="toggle-symbol">{group.toggleSymbol}</span>
+                </button>
+              </template>
+
+              <div if:false={group.collapsed} class="filter-options">
+                <template if:true={group.showEmpty}>
+                  <p class="filter-empty">No values</p>
+                </template>
+
+                <template for:each={group.options} for:item="option">
+                  <label key={option.key} class={option.pillClass}>
+                    <input
+                      type="checkbox"
+                      checked={option.checked}
+                      data-field={group.key}
+                      data-value={option.value}
+                      onchange={handleFilterChange}
+                    />
+                    <span class="option-label">{option.label}</span>
+                    <span class="option-count">({option.count})</span>
+                  </label>
+                </template>
+              </div>
+            </section>
+          </template>
+        </div>
+
+        <!-- See results footer: mobile drawer only -->
+        <div class="mobile-drawer-footer">
+          <button
+            type="button"
+            class="see-results-btn"
+            onclick={handleToggleMobileFilters}
+          >
+            See results
+          </button>
+        </div>
+      </aside>
+
+      <div class="products-column">
+        <template if:true={hasResults}>
+          <div class={productsClass}>
+            <template for:each={visibleProducts} for:item="product">
+              <article key={product.id} class={product.cardClass}>
+                <div class="product-image-wrap">
+                  <button
+                    type="button"
+                    class="image-link image-button"
+                    data-pid={product.id}
+                    onclick={handleClickProduct}
+                  >
+                    <template if:true={product.imageUrl}>
+                      <img
+                        class="product-image"
+                        src={product.imageUrl}
+                        alt={product.name}
+                        loading="lazy"
+                      />
+                    </template>
+                    <template if:false={product.imageUrl}>
+                      <div class="img-placeholder">No image</div>
+                    </template>
+                  </button>
+
+                  <div class="card-overlay" aria-hidden="true">
+                    <button
+                      class="overlay-btn overlay-btn--look"
+                      type="button"
+                      onclick={handleLookInside}
+                      tabindex="-1"
+                    >
+                      Look Inside
+                    </button>
+                    <button
+                      class="overlay-btn overlay-btn--shop"
+                      type="button"
+                      data-pid={product.id}
+                      onclick={handleQuickShop}
+                      tabindex="-1"
+                    >
+                      Quick Shop
+                    </button>
+                  </div>
+                </div>
+
+                <div class="product-meta">
+                  <a href={product.productUrl} class="product-name"
+                    >{product.name}</a
+                  >
+                  <p class="starting-label">Starting at</p>
+                  <p class="price-label">{product.priceLabel}</p>
+                </div>
+              </article>
+            </template>
+          </div>
+
+          <div if:true={showPagination} class="pagination-row">
+            <button
+              type="button"
+              class="page-btn"
+              onclick={handlePrevPage}
+              disabled={disablePrev}
+            >
+              ‹
+            </button>
+            <span class="page-text">Page {currentPage} of {totalPages}</span>
+            <button
+              type="button"
+              class="page-btn"
+              onclick={handleNextPage}
+              disabled={disableNext}
+            >
+              ›
+            </button>
+          </div>
+        </template>
+
+        <template if:true={showEmptyState}>
+          <p class="empty-results">
+            No products found for the selected filters.
+          </p>
+        </template>
+      </div>
+    </div>
+
+    <template if:true={isModalOpen}>
+      <c-quick-shop-modal
+        title={modalTitle}
+        isbn={modalIsbn}
+        product-id={modalProductId}
+        book-image-url={modalImageUrl}
+        variation-pricing={modalVariationPricing}
+        pricing-loading={isModalPricingLoading}
+        pricing-error={modalPricingLoadError}
+        cart-error={modalCartError}
+        currency-iso-code={modalCurrencyIsoCode}
+        minimum-quantity={modalMinimumQuantity}
+        maximum-quantity={modalMaximumQuantity}
+        increment-quantity={modalIncrementQuantity}
+        onaddtocart={handleAddToCart}
+        ontrial={handleTrial}
+        onviewdetails={handleViewDetails}
+        onclose={handleModalClose}
+      >
+      </c-quick-shop-modal>
+    </template>
+
+    <template if:true={isSuccessModalOpen}>
+      <c-add-to-cart-success-modal
+        product-name={successProductName}
+        product-image-url={successProductImageUrl}
+        product-url={successProductUrl}
+        cart-url={successCartUrl}
+        onclose={handleSuccessModalClose}
+      >
+      </c-add-to-cart-success-modal>
+    </template>
+  </section>
+</template>

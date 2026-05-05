@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<PermissionSetGroup xmlns="http://soap.sforce.com/2006/04/metadata">
+    <hasActivationRequired>false</hasActivationRequired>
+    <label>Commerce_Buyer</label>
+    <permissionSets>AuthorizeNet_Checkout_Access</permissionSets>
+    <permissionSets>force__AuthenticatedPayer</permissionSets>
+    <permissionSets>force__B2BBuyer</permissionSets>
+    <status>Updated</status>
+</PermissionSetGroup>

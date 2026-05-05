@@ -1,0 +1,162 @@
+.wrap {
+  position: relative;
+  max-width: 320px;
+}
+
+.control {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  height: 40px;
+  border: 1px solid #d8dde6;
+  border-radius: 999px;
+  background: #fff;
+  padding: 0 44px 0 16px;
+  text-align: left;
+  cursor: pointer;
+  position: relative;
+}
+
+.control::after {
+  content: none;
+}
+
+.control:hover {
+  border-color: #c9cfd8;
+}
+
+.control:focus,
+.control:focus-visible {
+  outline: none;
+  border-color: #1b96ff;
+  box-shadow: 0 0 0 3px rgba(27, 150, 255, 0.15);
+}
+
+.value {
+  font-size: 14px;
+  line-height: 1;
+  display: inline-block;
+  color: #1f1f1f;
+  font-weight: 600;
+}
+
+.value.placeholder {
+  color: #6b6b6b;
+}
+
+.pin {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  color: #2b3442;
+  flex: 0 0 auto;
+}
+
+.pinIcon {
+  width: 20px;
+  height: 20px;
+  fill: currentColor;
+}
+
+.chev {
+  position: absolute;
+  right: 18px;
+  top: 50%;
+  width: 8px;
+  height: 8px;
+  border: solid #1f1f1f;
+  border-width: 0 2px 2px 0;
+  transform: translateY(-60%) rotate(45deg);
+}
+
+.menu {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: calc(100% + 6px);
+  border: 1px solid #d8dde6;
+  border-radius: 10px;
+  background: #fff;
+  z-index: 9999;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.12);
+}
+
+.menuInner {
+  max-height: 420px;
+  overflow-y: auto;
+  padding: 6px 0;
+}
+
+.option {
+  display: block;
+  width: 100%;
+  border: 0;
+  background: transparent;
+  padding: 10px 16px;
+  font-size: 14px;
+  cursor: pointer;
+  text-align: left;
+}
+
+.option:hover {
+  background: #f3f6fb;
+}
+
+.option.selected {
+  background: #eaf3ff;
+  font-weight: 600;
+}
+
+@media (max-width: 767px) {
+  .wrap {
+    max-width: 92px;
+  }
+
+  .control {
+    height: 50px;
+    border: none;
+    border-radius: 0;
+    background: transparent;
+    padding: 0 18px 0 0;
+    box-shadow: none;
+  }
+
+  .control:hover,
+  .control:focus,
+  .control:focus-visible {
+    border: none;
+    box-shadow: none;
+  }
+
+  .pin {
+    width: 24px;
+    height: 24px;
+  }
+
+  .pinIcon {
+    width: 24px;
+    height: 24px;
+  }
+
+  .value {
+    font-size: 15px;
+    font-weight: 500;
+    letter-spacing: 0.01em;
+  }
+
+  .chev {
+    right: 4px;
+    width: 7px;
+    height: 7px;
+    border-color: #7d7d7d;
+  }
+
+  .menu {
+    left: -8px;
+    right: auto;
+    min-width: 190px;
+  }
+}

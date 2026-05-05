@@ -1,0 +1,331 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>66.0</apiVersion>
+    <areMetricsLoggedToDataCloud>false</areMetricsLoggedToDataCloud>
+    <environments>Default</environments>
+    <formulas>
+        <name>FullName</name>
+        <dataType>String</dataType>
+        <expression>{!vFirstName} &amp; &quot; &quot; &amp; {!vLastName}</expression>
+    </formulas>
+    <formulas>
+        <name>StateFullName</name>
+        <dataType>String</dataType>
+        <expression>CASE(
+    UPPER({!vState}),
+    &quot;AL&quot;, &quot;Alabama&quot;,
+    &quot;AK&quot;, &quot;Alaska&quot;,
+    &quot;AZ&quot;, &quot;Arizona&quot;,
+    &quot;AR&quot;, &quot;Arkansas&quot;,
+    &quot;CA&quot;, &quot;California&quot;,
+    &quot;CO&quot;, &quot;Colorado&quot;,
+    &quot;CT&quot;, &quot;Connecticut&quot;,
+    &quot;DE&quot;, &quot;Delaware&quot;,
+    &quot;FL&quot;, &quot;Florida&quot;,
+    &quot;GA&quot;, &quot;Georgia&quot;,
+    &quot;HI&quot;, &quot;Hawaii&quot;,
+    &quot;ID&quot;, &quot;Idaho&quot;,
+    &quot;IL&quot;, &quot;Illinois&quot;,
+    &quot;IN&quot;, &quot;Indiana&quot;,
+    &quot;IA&quot;, &quot;Iowa&quot;,
+    &quot;KS&quot;, &quot;Kansas&quot;,
+    &quot;KY&quot;, &quot;Kentucky&quot;,
+    &quot;LA&quot;, &quot;Louisiana&quot;,
+    &quot;ME&quot;, &quot;Maine&quot;,
+    &quot;MD&quot;, &quot;Maryland&quot;,
+    &quot;MA&quot;, &quot;Massachusetts&quot;,
+    &quot;MI&quot;, &quot;Michigan&quot;,
+    &quot;MN&quot;, &quot;Minnesota&quot;,
+    &quot;MS&quot;, &quot;Mississippi&quot;,
+    &quot;MO&quot;, &quot;Missouri&quot;,
+    &quot;MT&quot;, &quot;Montana&quot;,
+    &quot;NE&quot;, &quot;Nebraska&quot;,
+    &quot;NV&quot;, &quot;Nevada&quot;,
+    &quot;NH&quot;, &quot;New Hampshire&quot;,
+    &quot;NJ&quot;, &quot;New Jersey&quot;,
+    &quot;NM&quot;, &quot;New Mexico&quot;,
+    &quot;NY&quot;, &quot;New York&quot;,
+    &quot;NC&quot;, &quot;North Carolina&quot;,
+    &quot;ND&quot;, &quot;North Dakota&quot;,
+    &quot;OH&quot;, &quot;Ohio&quot;,
+    &quot;OK&quot;, &quot;Oklahoma&quot;,
+    &quot;OR&quot;, &quot;Oregon&quot;,
+    &quot;PA&quot;, &quot;Pennsylvania&quot;,
+    &quot;RI&quot;, &quot;Rhode Island&quot;,
+    &quot;SC&quot;, &quot;South Carolina&quot;,
+    &quot;SD&quot;, &quot;South Dakota&quot;,
+    &quot;TN&quot;, &quot;Tennessee&quot;,
+    &quot;TX&quot;, &quot;Texas&quot;,
+    &quot;UT&quot;, &quot;Utah&quot;,
+    &quot;VT&quot;, &quot;Vermont&quot;,
+    &quot;VA&quot;, &quot;Virginia&quot;,
+    &quot;WA&quot;, &quot;Washington&quot;,
+    &quot;WV&quot;, &quot;West Virginia&quot;,
+    &quot;WI&quot;, &quot;Wisconsin&quot;,
+    &quot;WY&quot;, &quot;Wyoming&quot;,
+    {!vState}
+)</expression>
+    </formulas>
+    <interviewLabel>Submit a PO {!$Flow.CurrentDateTime}</interviewLabel>
+    <isAdditionalPermissionRequiredToRun>true</isAdditionalPermissionRequiredToRun>
+    <label>Submit Purchase Order</label>
+    <processMetadataValues>
+        <name>BuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>CanvasMode</name>
+        <value>
+            <stringValue>AUTO_LAYOUT_CANVAS</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>OriginBuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processType>AutoLaunchedFlow</processType>
+    <recordCreates>
+        <name>Create_Case</name>
+        <label>Create Case</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>Create_Content_Document_link</targetReference>
+        </connector>
+        <inputAssignments>
+            <field>City__c</field>
+            <value>
+                <elementReference>vCity</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Comments</field>
+            <value>
+                <elementReference>vComments</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Description</field>
+            <value>
+                <elementReference>vNotes</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Origin</field>
+            <value>
+                <stringValue>Web</stringValue>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Priority</field>
+            <value>
+                <stringValue>Medium</stringValue>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Purchase_Order_Number__c</field>
+            <value>
+                <elementReference>vPONumber</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Referral_Informaion__c</field>
+            <value>
+                <elementReference>vReferralInfo</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>State__c</field>
+            <value>
+                <elementReference>StateFullName</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Status</field>
+            <value>
+                <stringValue>New</stringValue>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Street__c</field>
+            <value>
+                <elementReference>vStreet</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>SuppliedCompany</field>
+            <value>
+                <elementReference>vOrganizationName</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>SuppliedEmail</field>
+            <value>
+                <elementReference>vEmail</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>SuppliedName</field>
+            <value>
+                <elementReference>FullName</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>SuppliedPhone</field>
+            <value>
+                <elementReference>vPhone</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Zip_Code__c</field>
+            <value>
+                <elementReference>vZipCode</elementReference>
+            </value>
+        </inputAssignments>
+        <object>Case</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordCreates>
+    <recordCreates>
+        <name>Create_Content_Document_link</name>
+        <label>Create Content Document link</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <inputAssignments>
+            <field>ContentDocumentId</field>
+            <value>
+                <elementReference>vUploadedContentDocumentId</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>LinkedEntityId</field>
+            <value>
+                <elementReference>Create_Case.Id</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>ShareType</field>
+            <value>
+                <stringValue>V</stringValue>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Visibility</field>
+            <value>
+                <stringValue>AllUsers</stringValue>
+            </value>
+        </inputAssignments>
+        <object>ContentDocumentLink</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordCreates>
+    <runInMode>SystemModeWithoutSharing</runInMode>
+    <start>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>Create_Case</targetReference>
+        </connector>
+    </start>
+    <status>Active</status>
+    <variables>
+        <name>vCity</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>true</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>vComments</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>true</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>vEmail</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>true</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>vFirstName</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>true</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>vLastName</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>true</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>vNotes</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>true</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>vOrganizationName</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>true</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>vPhone</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>true</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>vPONumber</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>true</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>vReferralInfo</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>true</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>vState</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>true</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>vStreet</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>true</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>vUploadedContentDocumentId</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>true</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>vZipCode</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>true</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+</Flow>

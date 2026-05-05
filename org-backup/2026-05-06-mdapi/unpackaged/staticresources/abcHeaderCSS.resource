@@ -1,0 +1,577 @@
+/* ═══════════════════════════════════════════════════════════════════
+   CUSTOM HEADER — hide legacy OOB header rows
+   After the c-custom-header LWC is placed in Experience Builder,
+   the old nav row and utility row must be hidden so only the custom
+   header is visible.  The legacy rows are kept in the page layout
+   (not deleted) so c-state-filter-lwc continues to run its cart
+   DOM patching logic in the background.
+   ═══════════════════════════════════════════════════════════════════ */
+
+[data-layout-site-region="header"] .abc-header-nav-row,
+[data-layout-site-region="header"] .abc-header-utility-row {
+  display: none !important;
+}
+
+
+/* ═══════════════════════════════════════════════════════════════════
+   ABC HEADER – responsive overrides  v7
+   Matches americanbookcompany.com 2-row layout:
+     Row 1 (.abc-header-nav-row):      Logo (auto) + drilldownNav (fills)
+     Row 2 (.abc-header-utility-row):  [~logo-width gap] + State | [auto gap] | Search (300px) | Cart
+
+   Shared header rows:
+     [data-layout-site-region="header"]
+       .abc-header-nav-row       ← 2-col row: Logo + Navigation
+         dxp_layout-column:nth-of-type(1)   ← Logo   (2/12)
+         dxp_layout-column:nth-of-type(2)   ← drilldownNavigation (10/12)
+       .abc-header-utility-row   ← 3-col utility row
+         dxp_layout-column:nth-of-type(1)   ← State  (2/12)
+         dxp_layout-column:nth-of-type(2)   ← Search (7/12)
+         dxp_layout-column:nth-of-type(3)   ← Cart   (3/12)
+
+   Component types in the header:
+     dxp_layout-columns / dxp_layout-column → Standard Salesforce LWR (no markup access)
+     commerce_builder-drilldown-navigation  → B2B Commerce managed package (no markup access)
+     c-state-filter-lwc                     → Custom LWC (full access)
+     Search bar, Mini-cart                  → B2B Commerce managed package (no markup access)
+
+   Styling mechanism:
+     All responsive overrides use global CSS targeting light DOM rendered by these components.
+     This file is loaded as Experience Builder Custom CSS.
+
+   OOB col-large-size breakpoint = 64em (1024px):
+     ≥ 1024px → desktop: Logo+nav in row 1, State+Search+Cart in row 2.
+     768–1023px → tablet: same 2-row layout, logo smaller, nav scrollable.
+     < 768px  → mobile: [Logo|hamburger] in row 1, [State|Cart] + [Search] in row 2.
+
+   ═══════════════════════════════════════════════════════════════════ */
+
+
+/* ------------------------------------------------------------------
+   CART PAGE  (all viewports)
+   commerce_ prefixes = B2B Commerce managed-package components.
+   No direct markup access; styles applied from outside via global CSS.
+   ------------------------------------------------------------------ */
+
+commerce_builder-b2b-cart-contents { padding-left: 60px !important; }
+commerce_builder-cart-summary { padding-right: 24px !important; }
+
+commerce_cart-header h1 {
+  font-size: 36px !important;
+  font-weight: 700 !important;
+  font-style: normal !important;
+  margin-bottom: 24px !important;
+  line-height: 1.4 !important;
+  color: #1e2a3a !important;
+}
+commerce_cart-header .header-labels { align-items: center !important; }
+
+commerce_cart-managed-contents article {
+  padding: 20px 0 !important;
+  border-bottom: 1px solid #d4d8dc !important;
+}
+commerce_cart-managed-contents .container.image {
+  grid-template-columns: 160px 1fr auto auto !important;
+  column-gap: 20px !important;
+}
+commerce_cart-managed-contents figure { margin-left: 0 !important; }
+commerce_cart-managed-contents figure img {
+  max-width: 150px !important;
+  border-radius: 0 !important;
+  border: 1px solid #d4d8dc !important;
+  box-shadow: 0 4px 6px -1px rgba(120, 120, 120, 0.15),
+              0 2px 4px -2px rgba(120, 120, 120, 0.15) !important;
+}
+commerce_cart-managed-contents .item-name a,
+commerce_cart-managed-contents .item-name a p {
+  font-size: 20px !important;
+  font-weight: 700 !important;
+  color: #1e2a3a !important;
+  text-decoration: none !important;
+  line-height: 1.25 !important;
+}
+commerce_cart-managed-contents .item-name a:hover,
+commerce_cart-managed-contents .item-name a:hover p { text-decoration: underline !important; }
+commerce_cart-managed-contents .product-sku {
+  font-size: 13px !important;
+  color: #76716b !important;
+}
+/* Hide the Quantity Help (ⓘ) popover button in the cart quantity selector */
+commerce-quantity-selector-popover {
+  display: none !important;
+}
+
+commerce_cart-managed-contents .item-unit-price {
+  font-size: 16px !important;
+  font-weight: 700 !important;
+  color: #1e2a3a !important;
+}
+commerce_cart-managed-contents .item-prices {
+  font-size: 16px !important;
+  font-weight: 700 !important;
+  color: #1e2a3a !important;
+}
+commerce_cart-managed-contents .item-actions button {
+  color: #2e609c !important;
+  font-size: 14px !important;
+}
+commerce_cart-managed-contents .item-actions {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  flex-wrap: wrap !important;
+  gap: 4px 12px !important;
+}
+commerce_cart-managed-contents .item-actions .abc-cart-wishlist-button {
+  background: transparent !important;
+  border: 0 !important;
+  padding: 0 !important;
+  color: #2e609c !important;
+  font-size: 14px !important;
+  line-height: 1.3 !important;
+  cursor: pointer !important;
+}
+commerce_cart-managed-contents .item-actions .abc-cart-wishlist-button:hover {
+  text-decoration: underline !important;
+}
+commerce_cart-managed-contents .item-actions .abc-cart-wishlist-button[disabled] {
+  opacity: 0.65 !important;
+  cursor: default !important;
+  text-decoration: none !important;
+}
+commerce_builder-cart-summary > div {
+  background: #f4f7fa !important;
+  padding: 20px !important;
+  border-radius: 4px !important;
+}
+commerce_builder-cart-summary h2 {
+  font-size: 24px !important;
+  font-weight: 700 !important;
+  color: #1e2a3a !important;
+  margin-bottom: 12px !important;
+}
+commerce_builder-cart-summary dt p { font-size: 15px !important; }
+commerce_builder-cart-summary dd { font-size: 15px !important; }
+commerce_builder-cart-summary button,
+button.checkout-btn {
+  border-radius: 9999px !important;
+  font-size: 16px !important;
+  padding: 12px 24px !important;
+}
+commerce_builder-cart-summary a { font-size: 14px !important; color: #2e609c !important; }
+commerce_cart-managed-contents .item-unit-price .visually-hidden ~ span,
+commerce_cart-managed-contents .item-prices .visually-hidden ~ span {
+  font-size: 16px !important;
+  font-weight: 700 !important;
+}
+
+body[data-abc-cart-empty="true"] commerce_builder-b2b-cart-contents {
+  padding-left: 0 !important;
+}
+
+body[data-abc-cart-empty="true"] community_layout-column.col-large-size_7-of-12 {
+  flex: 0 0 100% !important;
+  max-width: 100% !important;
+}
+
+body[data-abc-cart-empty="true"] community_layout-column.col-large-size_1-of-12,
+body[data-abc-cart-empty="true"] community_layout-column.col-large-size_4-of-12,
+body[data-abc-cart-empty="true"] c-cart-action-buttons,
+body[data-abc-cart-empty="true"] [data-automation="clearCart"] {
+  display: none !important;
+}
+
+body[data-abc-cart-empty="true"] section[data-automation="cartBody"] > svg {
+  display: none !important;
+}
+
+body[data-abc-cart-empty="true"] .abc-cart-empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 72px;
+  max-width: 1320px;
+  margin: 0 auto;
+  padding: 0 0 48px;
+}
+
+body[data-abc-cart-empty="true"] .abc-cart-empty-message {
+  margin: 0;
+  width: auto;
+  font-size: 16px;
+  line-height: 1.5;
+  text-align: center;
+  color: #57534e;
+}
+
+body[data-abc-cart-empty="true"] .abc-cart-empty-image {
+  display: block;
+  width: min(960px, 100%);
+  max-width: 960px;
+  height: auto;
+}
+
+body:not([data-abc-cart-empty="true"])
+  community_layout-column.col-large-size_7-of-12
+  > .column-content:has(> commerce_builder-b2b-cart-contents) {
+  display: block !important;
+  width: 100% !important;
+}
+
+
+/* ------------------------------------------------------------------
+   CART ICON – increase size (all viewports)
+   Scale the managed mini-cart host to match the live-site icon size
+   without relying on SLDS internals.
+   ------------------------------------------------------------------ */
+commerce_builder-mini-cart {
+  display: inline-block !important;
+  transform: scale(1.4);
+  transform-origin: center right;
+}
+
+
+/* ------------------------------------------------------------------
+   SHARED HEADER ROWS
+   ------------------------------------------------------------------ */
+[data-layout-site-region="header"] .abc-header-nav-row,
+[data-layout-site-region="header"] .abc-header-utility-row {
+  background: #fff !important;
+}
+
+[data-layout-site-region="header"] .abc-header-nav-row > .columns-content > .columns,
+[data-layout-site-region="header"] .abc-header-utility-row > .columns-content > .columns {
+  width: 100% !important;
+}
+
+[data-layout-site-region="header"] .abc-header-nav-row nav {
+  position: relative !important;
+  width: 100% !important;
+}
+
+[data-layout-site-region="header"] .abc-header-nav-row nav ul {
+  display: flex !important;
+  align-items: center !important;
+  width: 100% !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  list-style: none !important;
+}
+
+[data-layout-site-region="header"] .abc-header-nav-row nav ul li {
+  flex: 0 0 auto !important;
+}
+
+[data-layout-site-region="header"] .abc-header-nav-row nav ul li:last-child {
+  z-index: 2;
+}
+
+[data-layout-site-region="header"] .abc-header-nav-row nav ul li:last-child a,
+[data-layout-site-region="header"] .abc-header-nav-row nav ul li:last-child button {
+  text-align: center !important;
+}
+
+/* Nav row: vertically center Logo + drilldownNavigation */
+[data-layout-site-region="header"] .abc-header-nav-row > .columns-content > .columns {
+  align-items: center !important;
+}
+
+/* Nav row col 1 – Logo */
+[data-layout-site-region="header"] .abc-header-nav-row > .columns-content > .columns > dxp_layout-column:nth-of-type(1) {
+  flex: 0 0 auto !important;
+  width: auto !important;
+}
+
+[data-layout-site-region="header"] .abc-header-nav-row > .columns-content > .columns > dxp_layout-column:nth-of-type(1) img {
+  display: block;
+  max-width: 200px !important;
+  height: auto !important;
+}
+
+/* Utility row */
+[data-layout-site-region="header"] .abc-header-utility-row > .columns-content > .columns {
+  align-items: center !important;
+}
+
+/* Utility row col 3 – Cart (right-aligned) */
+[data-layout-site-region="header"] .abc-header-utility-row > .columns-content > .columns > dxp_layout-column:nth-of-type(3) {
+  display: flex !important;
+  justify-content: flex-end !important;
+}
+
+
+/* ------------------------------------------------------------------
+   TABLET  (768px – 1023px)
+   Force both header rows into compact single horizontal rows.
+   ------------------------------------------------------------------ */
+@media only screen and (min-width: 48em) and (max-width: 63.9375em) {
+
+  [data-layout-site-region="header"] {
+    padding: 4px 12px !important;
+  }
+
+  /* Nav row col 1 – Logo (tablet) */
+  [data-layout-site-region="header"] .abc-header-nav-row > .columns-content > .columns > dxp_layout-column:nth-of-type(1) {
+    flex: 0 0 auto !important;
+    width: auto !important;
+    max-width: 110px !important;
+    padding: 0 8px 0 0 !important;
+  }
+  [data-layout-site-region="header"] .abc-header-nav-row > .columns-content > .columns > dxp_layout-column:nth-of-type(1) img {
+    max-height: 52px !important;
+    width: auto !important;
+  }
+
+  /* Force 3-col utility row to go horizontal */
+  [data-layout-site-region="header"] .abc-header-utility-row > .columns-content > .columns {
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
+    align-items: center !important;
+  }
+
+  [data-layout-site-region="header"] .abc-header-utility-row dxp_layout-column-spacer {
+    display: none !important;
+  }
+
+  /* Utility col 1 – State (tablet): margin-left:auto pushes the entire State+Search+Cart group to the right */
+  [data-layout-site-region="header"] .abc-header-utility-row > .columns-content > .columns > dxp_layout-column:nth-of-type(1) {
+    flex: 0 0 auto !important;
+    width: auto !important;
+    max-width: 155px !important;
+    margin-left: auto !important;
+    padding: 0 8px !important;
+  }
+  [data-layout-site-region="header"] .abc-header-utility-row c-state-filter-lwc .wrap {
+    max-width: 140px !important;
+  }
+
+  /* Utility col 2 – Search (tablet): fixed width, immediately after State */
+  [data-layout-site-region="header"] .abc-header-utility-row > .columns-content > .columns > dxp_layout-column:nth-of-type(2) {
+    flex: 0 0 auto !important;
+    width: 210px !important;
+    min-width: 0 !important;
+    padding: 0 8px !important;
+  }
+
+  /* Utility col 3 – Cart (tablet): hugs right edge, under My Account */
+  [data-layout-site-region="header"] .abc-header-utility-row > .columns-content > .columns > dxp_layout-column:nth-of-type(3) {
+    flex: 0 0 auto !important;
+    width: auto !important;
+    max-width: 72px !important;
+    padding: 0 0 0 12px !important;
+    display: flex !important;
+    justify-content: flex-end !important;
+  }
+
+  /* Nav: horizontally scrollable on tablet */
+  [data-layout-site-region="header"] .abc-header-nav-row nav ul {
+    position: relative !important;
+    padding-right: 8rem !important;
+    flex-wrap: nowrap !important;
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+
+  [data-layout-site-region="header"] .abc-header-nav-row nav ul li:last-child {
+    position: absolute !important;
+    right: 0 !important;
+    top: 50% !important;
+    transform: translateY(-50%) !important;
+  }
+
+  [data-layout-site-region="header"] .abc-header-nav-row nav ul::-webkit-scrollbar {
+    display: none;
+  }
+  [data-layout-site-region="header"] .abc-header-nav-row nav ul li a,
+  [data-layout-site-region="header"] .abc-header-nav-row nav ul li button {
+    font-size: 12px !important;
+    padding: 6px 8px !important;
+    white-space: nowrap !important;
+  }
+
+  [data-layout-site-region="header"] .abc-header-nav-row nav ul li:last-child a,
+  [data-layout-site-region="header"] .abc-header-nav-row nav ul li:last-child button {
+    min-width: 6.5rem !important;
+    justify-content: center !important;
+  }
+}
+
+
+/* ------------------------------------------------------------------
+   DESKTOP  (>= 1024px)
+   Logo left of nav; My Account pinned far-right above cart.
+   ------------------------------------------------------------------ */
+@media only screen and (min-width: 64em) {
+
+  /* Nav row col 1 – Logo (desktop) */
+  [data-layout-site-region="header"] .abc-header-nav-row > .columns-content > .columns > dxp_layout-column:nth-of-type(1) {
+    flex: 0 0 auto !important;
+    width: auto !important;
+    padding: 0 16px 0 0 !important;
+  }
+  [data-layout-site-region="header"] .abc-header-nav-row > .columns-content > .columns > dxp_layout-column:nth-of-type(1) img {
+    max-height: 64px !important;
+    width: auto !important;
+  }
+
+  [data-layout-site-region="header"] .abc-header-nav-row nav ul {
+    position: relative !important;
+    gap: 0.1rem !important;
+    padding-right: 8rem !important;
+  }
+
+  [data-layout-site-region="header"] .abc-header-nav-row nav ul li:last-child {
+    position: absolute !important;
+    right: 0 !important;
+    top: 50% !important;
+    transform: translateY(-50%) !important;
+  }
+
+  [data-layout-site-region="header"] .abc-header-nav-row nav ul li a,
+  [data-layout-site-region="header"] .abc-header-nav-row nav ul li button {
+    font-size: 12px !important;
+    white-space: nowrap !important;
+  }
+
+  [data-layout-site-region="header"] .abc-header-nav-row nav ul li:last-child a,
+  [data-layout-site-region="header"] .abc-header-nav-row nav ul li:last-child button {
+    min-width: 6.5rem !important;
+    justify-content: center !important;
+  }
+
+  /* Utility col 1 – State (desktop): margin-left:auto is the key —
+     it collapses ALL the empty space to the LEFT of State, so the
+     entire State → Search → Cart group is pushed to the right side,
+     with Cart landing directly under "My Account". */
+  [data-layout-site-region="header"] .abc-header-utility-row > .columns-content > .columns > dxp_layout-column:nth-of-type(1) {
+    flex: 0 0 auto !important;
+    width: auto !important;
+    margin-left: auto !important;
+    padding-right: 12px !important;
+  }
+
+  /* Utility col 2 – Search (desktop): fixed width, sits immediately after State.
+     No auto margin here — the group stays tight. */
+  [data-layout-site-region="header"] .abc-header-utility-row > .columns-content > .columns > dxp_layout-column:nth-of-type(2) {
+    flex: 0 0 auto !important;
+    width: 280px !important;
+    min-width: 0 !important;
+    padding: 0 12px !important;
+  }
+
+  /* Utility col 3 – Cart (desktop): immediately right of Search, under My Account */
+  [data-layout-site-region="header"] .abc-header-utility-row > .columns-content > .columns > dxp_layout-column:nth-of-type(3) {
+    flex: 0 0 auto !important;
+    width: auto !important;
+    min-width: 0 !important;
+    display: flex !important;
+    justify-content: flex-end !important;
+  }
+}
+
+
+/* ------------------------------------------------------------------
+   MOBILE  (< 768px)
+   Nav row:     [Logo (small, left)] | [hamburger + My Account (right)]
+   Utility row: [State | Cart] in row 1, [Search bar] in row 2
+   ------------------------------------------------------------------ */
+@media only screen and (max-width: 47.9375em) {
+
+  [data-layout-site-region="header"] {
+    padding: 0 !important;
+    background: #fff !important;
+    border-bottom: 1px solid #e5e7eb !important;
+  }
+
+  /* --- Nav row (mobile): Logo left + hamburger right --- */
+  [data-layout-site-region="header"] .abc-header-nav-row > .columns-content > .columns {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    padding: 6px 12px !important;
+  }
+
+  /* Nav row col 1 – Logo (mobile, small) */
+  [data-layout-site-region="header"] .abc-header-nav-row > .columns-content > .columns > dxp_layout-column:nth-of-type(1) {
+    flex: 0 0 auto !important;
+    width: auto !important;
+    max-width: 72px !important;
+    padding: 0 8px 0 0 !important;
+  }
+  [data-layout-site-region="header"] .abc-header-nav-row > .columns-content > .columns > dxp_layout-column:nth-of-type(1) img {
+    max-height: 44px !important;
+    width: auto !important;
+    max-width: 68px !important;
+  }
+
+  /* Nav row col 2 – drilldownNavigation (hamburger + My Account) */
+  [data-layout-site-region="header"] .abc-header-nav-row > .columns-content > .columns > dxp_layout-column:nth-of-type(2) {
+    flex: 1 1 0% !important;
+    width: auto !important;
+    min-width: 0 !important;
+  }
+
+  /* --- Utility row (mobile): State + Cart in row 1; Search in row 2 --- */
+  [data-layout-site-region="header"] .abc-header-utility-row > .columns-content > .columns {
+    flex-direction: row !important;
+    flex-wrap: wrap !important;
+    align-items: center !important;
+    row-gap: 6px !important;
+    padding: 4px 12px 8px !important;
+  }
+
+  [data-layout-site-region="header"] .abc-header-utility-row dxp_layout-column-spacer {
+    display: none !important;
+  }
+
+  /* Utility col 1 – State (row 1, left) */
+  [data-layout-site-region="header"] .abc-header-utility-row > .columns-content > .columns > dxp_layout-column:nth-of-type(1) {
+    order: 1 !important;
+    flex: 1 1 0% !important;
+    width: auto !important;
+    max-width: 200px !important;
+    padding: 0 8px 0 0 !important;
+  }
+  [data-layout-site-region="header"] .abc-header-utility-row c-state-filter-lwc .wrap {
+    max-width: 180px !important;
+  }
+
+  /* Utility col 3 – Cart (row 1, far right) */
+  [data-layout-site-region="header"] .abc-header-utility-row > .columns-content > .columns > dxp_layout-column:nth-of-type(3) {
+    order: 2 !important;
+    flex: 0 0 auto !important;
+    width: auto !important;
+    max-width: 64px !important;
+    padding: 0 !important;
+    display: flex !important;
+    justify-content: flex-end !important;
+  }
+
+  /* Utility col 2 – Search (row 2, full width) */
+  [data-layout-site-region="header"] .abc-header-utility-row > .columns-content > .columns > dxp_layout-column:nth-of-type(2) {
+    order: 3 !important;
+    flex: 0 0 100% !important;
+    width: 100% !important;
+    padding: 0 !important;
+  }
+  [data-layout-site-region="header"] .abc-header-utility-row > .columns-content > .columns > dxp_layout-column:nth-of-type(2) input,
+  [data-layout-site-region="header"] .abc-header-utility-row > .columns-content > .columns > dxp_layout-column:nth-of-type(2) [type="search"] {
+    min-height: 44px !important;
+    border-radius: 999px !important;
+    border: 1px solid #d5dbe3 !important;
+    background: #fff !important;
+    padding-left: 18px !important;
+    padding-right: 48px !important;
+    font-size: 15px !important;
+  }
+
+  /* Cart page – reduce padding on narrow screens */
+  commerce_builder-b2b-cart-contents { padding-left: 16px !important; }
+  commerce_builder-cart-summary { padding-right: 0 !important; }
+  commerce_cart-managed-contents .container.image {
+    grid-template-columns: 90px 1fr auto !important;
+    column-gap: 12px !important;
+  }
+  commerce_cart-managed-contents figure img { max-width: 80px !important; }
+}

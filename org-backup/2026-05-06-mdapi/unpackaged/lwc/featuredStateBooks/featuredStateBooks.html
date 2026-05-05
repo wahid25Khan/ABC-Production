@@ -1,0 +1,197 @@
+<template>
+  <section class="featured-state-books" aria-live="polite">
+    <template if:true={loading}>
+      <p class="loading-msg">Loading books...</p>
+    </template>
+
+    <template if:false={loading}>
+      <div class="heading-row">
+        <div class="heading-line" aria-hidden="true"></div>
+        <h2 class="heading-text" style="font-size: 1.5rem;">{headingText}</h2>
+        <div class="heading-line" aria-hidden="true"></div>
+      </div>
+
+      <div class="shop-all-row">
+        <a
+          href={resolvedShopAllUrl}
+          class="shop-all-btn"
+          onclick={handleShopAll}
+          aria-label="Shop all books"
+        >
+          Shop All Books
+        </a>
+      </div>
+
+      <template if:true={showProducts}>
+        <div class="content-layout">
+          <template if:true={featuredProduct}>
+            <div class="featured-col">
+              <article class="featured-card" data-pid={featuredProduct.id}>
+                <div class="featured-badge" aria-label="Featured">Featured</div>
+
+                <div class="featured-image-wrap">
+                  <button
+                    type="button"
+                    class="featured-image-frame clickable-frame"
+                    data-pid={featuredProduct.id}
+                    onclick={handleClickProduct}
+                  >
+                    <template if:true={featuredProduct.imageUrl}>
+                      <img
+                        class="featured-image"
+                        src={featuredProduct.imageUrl}
+                        alt={featuredProduct.name}
+                        loading="lazy"
+                      />
+                    </template>
+                    <template if:false={featuredProduct.imageUrl}>
+                      <div class="image-placeholder">No image</div>
+                    </template>
+                  </button>
+
+                  <div class="card-overlay" aria-hidden="true">
+                    <button
+                      class="overlay-btn overlay-btn--look"
+                      type="button"
+                      onclick={handleLookInside}
+                      tabindex="-1"
+                    >
+                      Look Inside
+                    </button>
+                    <button
+                      class="overlay-btn overlay-btn--shop"
+                      type="button"
+                      data-pid={featuredProduct.id}
+                      onclick={handleQuickShop}
+                      tabindex="-1"
+                    >
+                      Quick Shop
+                    </button>
+                  </div>
+                </div>
+
+                <button
+                  class="featured-name-button"
+                  type="button"
+                  data-pid={featuredProduct.id}
+                  onclick={handleClickProduct}
+                >
+                  {featuredProduct.name}
+                </button>
+
+                <div class="score-logo-wrap desktop-logo">
+                  <img
+                    src={scoreGuaranteeLogo}
+                    alt="Score Improvement Guarantee"
+                    class="score-logo"
+                  />
+                </div>
+              </article>
+            </div>
+          </template>
+
+          <div class={gridClass}>
+            <template for:each={gridProducts} for:item="product">
+              <article key={product.id} class="grid-card">
+                <div class="grid-image-wrap">
+                  <button
+                    type="button"
+                    class="image-frame clickable-frame"
+                    data-pid={product.id}
+                    onclick={handleClickProduct}
+                  >
+                    <template if:true={product.imageUrl}>
+                      <img
+                        class="product-image"
+                        src={product.imageUrl}
+                        alt={product.name}
+                        loading="lazy"
+                      />
+                    </template>
+                    <template if:false={product.imageUrl}>
+                      <div class="image-placeholder">No image</div>
+                    </template>
+                  </button>
+
+                  <div class="card-overlay" aria-hidden="true">
+                    <button
+                      class="overlay-btn overlay-btn--look"
+                      type="button"
+                      onclick={handleLookInside}
+                      tabindex="-1"
+                    >
+                      Look Inside
+                    </button>
+                    <button
+                      class="overlay-btn overlay-btn--shop"
+                      type="button"
+                      data-pid={product.id}
+                      onclick={handleQuickShop}
+                      tabindex="-1"
+                    >
+                      Quick Shop
+                    </button>
+                  </div>
+                </div>
+
+                <button
+                  class="name-button"
+                  type="button"
+                  data-pid={product.id}
+                  onclick={handleClickProduct}
+                >
+                  {product.name}
+                </button>
+              </article>
+            </template>
+          </div>
+          <div class="score-logo-wrap mobile-logo">
+            <img
+              src={scoreGuaranteeLogo}
+              alt="Score Improvement Guarantee"
+              class="score-logo"
+            />
+          </div>
+        </div>
+
+        <template if:true={isModalOpen}>
+          <c-quick-shop-modal
+            title={modalTitle}
+            isbn={modalIsbn}
+            product-id={modalProductId}
+            book-image-url={modalImageUrl}
+            variation-pricing={modalVariationPricing}
+            pricing-loading={isModalPricingLoading}
+            pricing-error={modalPricingLoadError}
+            currency-iso-code={modalCurrencyIsoCode}
+            minimum-quantity={modalMinimumQuantity}
+            maximum-quantity={modalMaximumQuantity}
+            increment-quantity={modalIncrementQuantity}
+            onaddtocart={handleAddToCart}
+            ontrial={handleTrial}
+            onviewdetails={handleViewDetails}
+            onclose={handleModalClose}
+          >
+          </c-quick-shop-modal>
+        </template>
+
+        <template if:true={isSuccessModalOpen}>
+          <c-add-to-cart-success-modal
+            product-name={successProductName}
+            product-image-url={successProductImageUrl}
+            product-url={successProductUrl}
+            cart-url={successCartUrl}
+            onclose={handleSuccessModalClose}
+          >
+          </c-add-to-cart-success-modal>
+        </template>
+      </template>
+
+      <template if:true={showEmptyState}>
+        <div class="empty-state">
+          <p class="empty-state-text">{emptyStateMessage}</p>
+        </div>
+      </template>
+    </template>
+  </section>
+</template>

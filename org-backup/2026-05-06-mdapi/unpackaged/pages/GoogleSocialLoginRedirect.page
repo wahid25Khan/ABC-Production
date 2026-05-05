@@ -1,0 +1,1 @@
+<apex:page controller="GoogleSocialLoginRedirectController" action="{!forward}" showHeader="false" sidebar="false" standardStylesheets="false" cache="false" />

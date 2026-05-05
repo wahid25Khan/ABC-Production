@@ -1,0 +1,149 @@
+.card-style {
+  background-color: #ffffff;
+  border-radius: 8px;
+  border: 1px solid #eaeaea;
+  box-shadow: 0px 12px 15px rgba(0, 0, 0, 0.15);
+  padding: 16px;
+}
+.back-white {
+  background-color: white;
+}
+
+.back-grey {
+  background-color: #f4f7fa !important;
+}
+
+.border-rad {
+  border-radius: 10px;
+}
+
+/* Shop All Button Hover */
+.shop-all-btn:hover {
+  background-color: #1175bc !important;
+  color: white !important;
+}
+
+/* Card Hover Logic (Show/Hide Buttons) */
+.book-card .btn-container {
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease;
+}
+.book-card:hover .btn-container {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* Quick Shop Button Hover */
+.quick-shop-btn:hover {
+  background-color: #eaf3fb !important;
+}
+
+/* ── Structural layout overrides ──────────────────────────────── */
+.grid-outer {
+  max-width: 1300px;
+  margin: 0 auto;
+  padding: 40px 20px;
+  font-family: 'Arial', sans-serif;
+  box-sizing: border-box;
+}
+
+.grid-flex-wrap {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 40px;
+  align-items: flex-start;
+  justify-content: center;
+}
+
+.grid-featured-card {
+  flex: 0 0 300px;
+  max-width: 320px;
+  position: relative;
+}
+
+.grid-books-wrap {
+  flex: 1 1 600px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 25px;
+  justify-content: flex-start;
+}
+
+.book-card {
+  width: 190px;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ── Tablet (768px – 1023px) ──────────────────────────────────── */
+@media (max-width: 1023px) {
+  .grid-featured-card {
+    flex: 0 0 240px;
+    max-width: 240px;
+  }
+
+  .book-card {
+    width: calc(33.333% - 18px) !important;
+    min-width: 140px;
+  }
+
+  .grid-books-wrap {
+    gap: 18px !important;
+  }
+}
+
+/* ── Small tablet / large mobile (641px – 767px) ─────────────── */
+@media (max-width: 767px) {
+  .grid-outer {
+    padding: 24px 16px;
+  }
+
+  .grid-flex-wrap {
+    gap: 28px;
+    flex-direction: column;
+  }
+
+  .grid-featured-card {
+    flex: 0 0 100% !important;
+    max-width: 100% !important;
+    width: 100%;
+  }
+
+  .grid-books-wrap {
+    flex: 0 0 100% !important;
+    width: 100%;
+    gap: 16px !important;
+  }
+
+  .book-card {
+    width: calc(50% - 8px) !important;
+  }
+}
+
+/* ── Mobile (≤480px) ─────────────────────────────────────────── */
+@media (max-width: 480px) {
+  .grid-outer {
+    padding: 20px 12px;
+  }
+
+  .grid-flex-wrap {
+    gap: 20px;
+  }
+
+  .grid-books-wrap {
+    gap: 12px !important;
+  }
+
+  .book-card {
+    width: calc(50% - 6px) !important;
+  }
+}
+
+/* ── Touch devices: always show action buttons ───────────────── */
+@media (hover: none) {
+  .book-card .btn-container {
+    opacity: 1;
+    visibility: visible;
+  }
+}

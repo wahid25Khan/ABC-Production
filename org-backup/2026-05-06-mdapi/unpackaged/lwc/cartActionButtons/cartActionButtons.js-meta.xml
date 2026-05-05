@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>62.0</apiVersion>
+    <isExposed>true</isExposed>
+    <masterLabel>Cart Action Buttons</masterLabel>
+    <description>Download Quote, Checkout, and PO submission buttons for the cart page.</description>
+    <targets>
+        <target>lightningCommunity__Page</target>
+        <target>lightningCommunity__Default</target>
+    </targets>
+    <targetConfigs>
+        <targetConfig targets="lightningCommunity__Default">
+            <property name="checkoutUrl" type="String" default="/checkout" label="Checkout Page URL" />
+            <property name="loginUrl" type="String" default="/AmericanBookCompany/login" label="Login Page URL" />
+            <property name="poSubmissionUrl" type="String" default="/submit-a-po" label="PO Submission Page URL" />
+        </targetConfig>
+    </targetConfigs>
+</LightningComponentBundle>

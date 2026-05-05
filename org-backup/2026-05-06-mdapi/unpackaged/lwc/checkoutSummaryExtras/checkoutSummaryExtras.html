@@ -1,0 +1,17 @@
+<template>
+    <template if:true={showPlaceholderExtras}>
+        <div class="summary-extras">
+            <button class="shipping-help-link" type="button" onclick={toggleShippingHelp}>
+                How are shipping rates calculated?
+            </button>
+            <template if:true={showShippingHelp}>
+                <p class="shipping-help-copy">
+                    Shipping rates are calculated after the shipping address is entered and available delivery options are returned.
+                </p>
+            </template>
+            <button class="place-order-placeholder" type="button" disabled>
+                Place Order
+            </button>
+        </div>
+    </template>
+</template>

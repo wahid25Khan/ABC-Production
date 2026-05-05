@@ -1,0 +1,368 @@
+<template>
+  <div class="po-page">
+    <template if:false={isSubmitted}>
+      <div class="po-container">
+        <h1 class="page-title">Submit purchase order</h1>
+
+        <p class="page-subtitle">
+          Please upload your purchase order and fill out any required details.
+          If you have any questions, please contact our Customer Service team at
+          <a href="tel:18882645877">(888) 264-5877</a>.
+        </p>
+
+        <section class="section section-first">
+          <h2 class="section-title upload-section-title">
+            Upload your purchase order file
+          </h2>
+          <p class="section-help">PO file needs to be in PDF format.</p>
+
+          <div class="upload-box">
+            <div class="upload-icon">⇪</div>
+
+            <div class="upload-title">
+              <template if:true={fileName}>{fileName}</template>
+              <template if:false={fileName}
+                >Drag and drop your PO file here</template
+              >
+            </div>
+
+            <div class="upload-subtitle">or</div>
+
+            <div class="upload-button-row">
+              <label class="file-btn" for="poFileInput">Browse Files</label>
+              <input
+                id="poFileInput"
+                class="native-file-input"
+                type="file"
+                accept=".pdf,application/pdf"
+                onchange={handleFileChange}
+              />
+            </div>
+
+            <template if:true={fileName}>
+              <p class="file-selected">Selected file: {fileName}</p>
+            </template>
+
+            <template if:true={fileError}>
+              <div class="error-text">{fileError}</div>
+            </template>
+          </div>
+        </section>
+
+        <section class="section">
+          <template if:false={personalCollapsed}>
+            <div class="section-header">
+              <h2 class="section-title">Personal details</h2>
+            </div>
+
+            <div class="form-grid two-col">
+              <div class="field">
+                <label class="field-label" for="firstName"
+                  >First Name <span>*</span></label
+                >
+                <input
+                  id="firstName"
+                  class="field-input"
+                  type="text"
+                  name="firstName"
+                  value={form.firstName}
+                  data-required="true"
+                  oninput={handleChange}
+                />
+              </div>
+
+              <div class="field">
+                <label class="field-label" for="lastName"
+                  >Last Name <span>*</span></label
+                >
+                <input
+                  id="lastName"
+                  class="field-input"
+                  type="text"
+                  name="lastName"
+                  value={form.lastName}
+                  data-required="true"
+                  oninput={handleChange}
+                />
+              </div>
+
+              <div class="field">
+                <label class="field-label" for="email"
+                  >Email <span>*</span></label
+                >
+                <input
+                  id="email"
+                  class="field-input"
+                  type="email"
+                  name="email"
+                  value={form.email}
+                  data-required="true"
+                  oninput={handleChange}
+                />
+              </div>
+
+              <div class="field">
+                <label class="field-label" for="phone"
+                  >Phone <span>*</span></label
+                >
+                <input
+                  id="phone"
+                  class="field-input"
+                  type="text"
+                  name="phone"
+                  value={form.phone}
+                  data-required="true"
+                  oninput={handleChange}
+                />
+              </div>
+            </div>
+
+            <template if:true={personalErrorMessage}>
+              <div class="section-inline-error">{personalErrorMessage}</div>
+            </template>
+
+            <div class="section-action-row">
+              <button
+                type="button"
+                class="outline-btn"
+                onclick={handlePersonalClose}
+              >
+                Close
+              </button>
+            </div>
+          </template>
+
+          <template if:true={personalCollapsed}>
+            <div class="summary-card">
+              <div class="summary-card-top">
+                <h2 class="section-title summary-title">Personal details</h2>
+                <button
+                  type="button"
+                  class="edit-link"
+                  onclick={handlePersonalEdit}
+                >
+                  Edit
+                </button>
+              </div>
+
+              <div class="summary-content">
+                <p>{fullName}</p>
+                <p>{form.email}</p>
+              </div>
+            </div>
+          </template>
+        </section>
+
+        <section class="section">
+          <h2 class="section-title">Organization details</h2>
+
+          <div class="form-grid">
+            <div class="field full-width">
+              <label class="field-label" for="organizationName"
+                >Organization name <span>*</span></label
+              >
+              <input
+                id="organizationName"
+                class="field-input"
+                type="text"
+                name="organizationName"
+                value={form.organizationName}
+                data-required="true"
+                oninput={handleChange}
+              />
+            </div>
+
+            <div class="field full-width">
+              <label class="field-label" for="street"
+                >Street <span>*</span></label
+              >
+              <input
+                id="street"
+                class="field-input"
+                type="text"
+                name="street"
+                value={form.street}
+                placeholder="Enter your address"
+                data-required="true"
+                oninput={handleChange}
+              />
+            </div>
+
+            <div class="field full-width">
+              <label class="field-label" for="street2"
+                >Street 2</label
+              >
+              <input
+                id="street2"
+                class="field-input"
+                type="text"
+                name="street2"
+                value={form.street2}
+                placeholder="Apartment, suite, etc."
+                oninput={handleChange}
+              />
+            </div>
+
+            <div class="field">
+              <label class="field-label" for="city">City <span>*</span></label>
+              <input
+                id="city"
+                class="field-input"
+                type="text"
+                name="city"
+                value={form.city}
+                data-required="true"
+                oninput={handleChange}
+              />
+            </div>
+
+            <div class="field">
+              <label class="field-label" for="state"
+                >State <span>*</span></label
+              >
+              <select
+                id="state"
+                class="field-input field-select"
+                name="state"
+                data-required="true"
+                onchange={handleChange}
+              >
+                <option value="">Select</option>
+                <template for:each={stateOptions} for:item="stateOpt">
+                  <option key={stateOpt.value} value={stateOpt.value}>
+                    {stateOpt.label}
+                  </option>
+                </template>
+              </select>
+            </div>
+
+            <div class="field">
+              <label class="field-label" for="zipCode"
+                >ZIP code <span>*</span></label
+              >
+              <input
+                id="zipCode"
+                class="field-input"
+                type="text"
+                name="zipCode"
+                value={form.zipCode}
+                data-required="true"
+                oninput={handleChange}
+              />
+            </div>
+          </div>
+        </section>
+
+        <section class="section">
+          <h2 class="section-title">Purchase order details</h2>
+
+          <div class="form-grid">
+            <div class="field full-width">
+              <label class="field-label" for="poNumber"
+                >Purchase Order Number <span>*</span></label
+              >
+              <input
+                id="poNumber"
+                class="field-input"
+                type="text"
+                name="poNumber"
+                value={form.poNumber}
+                data-required="true"
+                oninput={handleChange}
+              />
+            </div>
+
+            <div class="field full-width">
+              <label class="field-label" for="notes">Notes</label>
+              <textarea
+                id="notes"
+                class="field-input field-textarea"
+                name="notes"
+                oninput={handleChange}
+              >{form.notes}</textarea>
+            </div>
+          </div>
+        </section>
+
+        <section class="section">
+          <h2 class="section-title">
+            Referral details <span class="optional">(optional)</span>
+          </h2>
+
+          <div class="form-grid">
+            <div class="field full-width">
+              <label class="field-label" for="referralInfo"
+                >Referral Information</label
+              >
+              <input
+                id="referralInfo"
+                class="field-input"
+                type="text"
+                name="referralInfo"
+                value={form.referralInfo}
+                oninput={handleChange}
+              />
+            </div>
+
+            <div class="field full-width">
+              <label class="field-label" for="comments">Comments</label>
+              <textarea
+                id="comments"
+                class="field-input field-textarea"
+                name="comments"
+                oninput={handleChange}
+              >{form.comments}</textarea>
+            </div>
+          </div>
+        </section>
+
+        <template if:true={errorMessage}>
+          <div class="error-banner">{errorMessage}</div>
+        </template>
+
+        <div class="submit-row">
+          <button
+            type="button"
+            class="primary-btn"
+            onclick={handleSubmit}
+            disabled={isLoading}
+          >
+            {submitButtonLabel}
+          </button>
+        </div>
+
+        <template if:true={isLoading}>
+          <div class="spinner-wrap">
+            <lightning-spinner
+              alternative-text="Submitting"
+              size="medium"
+            ></lightning-spinner>
+          </div>
+        </template>
+      </div>
+    </template>
+
+    <template if:true={isSubmitted}>
+      <div class="success-container">
+        <h1 class="success-title">Thank You!</h1>
+        <p class="success-subtitle">Your PO has been submitted.</p>
+
+        <div class="success-banner">
+          If you have any questions, please contact us at contact@abck12.com, or
+          call our office at 1-888-264-5877.
+        </div>
+
+        <div class="contact-info">
+          <h2>Your contact information</h2>
+          <p>{fullName}</p>
+          <p>{form.email}</p>
+          <p>{form.phone}</p>
+          <br />
+          <p>{form.organizationName}</p>
+          <p>{form.street}</p>
+          <p>{formattedAddress}</p>
+        </div>
+      </div>
+    </template>
+  </div>
+</template>

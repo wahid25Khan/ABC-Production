@@ -1,0 +1,93 @@
+<template>
+    <div class="account-orders-page">
+        <template if:true={isLoading}>
+            <lightning-spinner alternative-text="Loading order history" size="medium"></lightning-spinner>
+        </template>
+
+        <template if:false={isLoading}>
+            <div class="page-header-row">
+                <h1>{heading}</h1>
+                <select class="toolbar-select" onchange={handleRangeChange}>
+                    <template for:each={rangeOptions} for:item="option">
+                        <option key={option.value} value={option.value} selected={option.selected}>{option.label}</option>
+                    </template>
+                </select>
+            </div>
+
+            <p class="subtitle">{subtitle}</p>
+
+            <template if:true={errorMessage}>
+                <div class="state-card error-state">
+                    <h2>Something went wrong</h2>
+                    <p>{errorMessage}</p>
+                </div>
+            </template>
+
+            <template if:true={showEmptyState}>
+                <div class="state-card empty-state">
+                    <h2>We couldn't find any orders from that period of time.</h2>
+                    <p>Try changing your filter settings.</p>
+                    <a class="primary-link" href={continueShoppingUrl}>Continue Shopping</a>
+                </div>
+            </template>
+
+            <template if:true={hasOrders}>
+                <ul class="orders-list">
+                    <template for:each={orders} for:item="order">
+                        <li key={order.id} class="order-card">
+                            <div class="order-card-body">
+                                <!-- LEFT: Line items -->
+                                <div class="order-items-col">
+                                    <template for:each={order.lineItems} for:item="item">
+                                        <div key={item.itemId} class="line-item">
+                                            <div class="line-item-image">
+                                                <template if:true={item.imageUrl}>
+                                                    <img src={item.imageUrl} alt={item.name} loading="lazy">
+                                                </template>
+                                                <template if:false={item.imageUrl}>
+                                                    <template if:true={isHydrating}>
+                                                        <div class="shimmer-block"></div>
+                                                    </template>
+                                                    <template if:false={isHydrating}>
+                                                        <div class="img-placeholder">No image</div>
+                                                    </template>
+                                                </template>
+                                            </div>
+                                            <div class="line-item-details">
+                                                <p class="item-name">{item.name}</p>
+                                                <p class="item-meta"><strong>Quantity:</strong> {item.quantity}</p>
+                                                <p class="item-meta"><strong>Unit Price:</strong> {item.displayUnitPrice}</p>
+                                            </div>
+                                        </div>
+                                        <template if:false={item.isLast}>
+                                            <hr key={item.itemId} class="line-item-divider">
+                                        </template>
+                                    </template>
+                                </div>
+
+                                <!-- RIGHT: Order summary sidebar -->
+                                <div class="order-summary-col">
+                                    <div class="summary-field">
+                                        <p class="summary-label">{order.displayStatus}</p>
+                                        <p class="summary-value">{order.displayDate}</p>
+                                    </div>
+                                    <hr class="summary-divider">
+                                    <div class="summary-field">
+                                        <p class="summary-label">Order Number</p>
+                                        <p class="summary-value">{order.orderNumber}</p>
+                                    </div>
+                                    <hr class="summary-divider">
+                                    <div class="summary-field">
+                                        <p class="summary-label">Order Total</p>
+                                        <p class="summary-value">{order.displayTotal}</p>
+                                    </div>
+                                    <p class="summary-note"><em>Note: Quote orders are not charged.</em></p>
+                                </div>
+                            </div>
+                        </li>
+                    </template>
+                </ul>
+            </template>
+        </template>
+    </div>
+</template>

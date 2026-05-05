@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
+  <apiVersion>62.0</apiVersion>
+  <isExposed>true</isExposed>
+  <targets>
+    <target>lightningCommunity__Page</target>
+    <target>lightningCommunity__Default</target>
+  </targets>
+  <targetConfigs>
+    <targetConfig targets="lightningCommunity__Default">
+
+      <property
+        name="storeName"
+        type="String"
+        label="Store Name"
+        default="AmericanBookCompany"
+      />
+
+      <property
+        name="webStoreId"
+        type="String"
+        label="Web Store ID"
+        default="0ZEam000004dJDNGA2"
+      />
+
+      <property
+        name="defaultSearchTerm"
+        type="String"
+        label="Default Search Term"
+        default="all"
+      />
+
+      <property
+        name="stateFieldApiName"
+        type="String"
+        label="State Field API Name"
+        default="State__c"
+      />
+
+      <property
+        name="filterFieldApiNames"
+        type="String"
+        label="Filter Field API Names (comma separated)"
+        default="Grade_Level__c,Category__c,Series__c"
+      />
+
+      <property
+        name="filterFieldLabels"
+        type="String"
+        label="Filter Labels (comma separated)"
+        default="Grade Level,Subject,Series"
+      />
+
+      <property
+        name="searchFieldApiNames"
+        type="String"
+        label="Additional Search Fields (comma separated)"
+        default="StockKeepingUnit,Price__c,Color_Price__c,Color_Price_25__c,BW_Price__c,BW_Price_25__c,CurrencyIsoCode"
+      />
+
+      <property
+        name="pageSizeOptions"
+        type="String"
+        label="Page Size Options (comma separated)"
+        default="20,40,60"
+      />
+
+      <property
+        name="defaultPageSize"
+        type="Integer"
+        label="Default Page Size"
+        default="20"
+        min="1"
+        max="120"
+      />
+
+      <property
+        name="fetchPageSize"
+        type="Integer"
+        label="Fetch Page Size"
+        default="120"
+        min="20"
+        max="200"
+      />
+
+      <property
+        name="maxFetchPages"
+        type="Integer"
+        label="Max Fetch Pages"
+        default="20"
+        min="1"
+        max="20"
+      />
+
+      <property
+        name="stateStorageKey"
+        type="String"
+        label="State Local Storage Key"
+        default="abc_selected_state"
+      />
+
+    </targetConfig>
+  </targetConfigs>
+</LightningComponentBundle>

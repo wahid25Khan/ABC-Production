@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fields>
+        <fullName>APILoginId__c</fullName>
+        <externalId>false</externalId>
+        <fieldManageability>DeveloperControlled</fieldManageability>
+        <label>APILoginId</label>
+        <length>255</length>
+        <required>true</required>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>TransactionKey__c</fullName>
+        <externalId>false</externalId>
+        <fieldManageability>DeveloperControlled</fieldManageability>
+        <label>TransactionKey</label>
+        <length>255</length>
+        <required>true</required>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>UseSandbox__c</fullName>
+        <defaultValue>true</defaultValue>
+        <fieldManageability>DeveloperControlled</fieldManageability>
+        <label>UseSandbox</label>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>WebhookSigningKey__c</fullName>
+        <externalId>false</externalId>
+        <fieldManageability>DeveloperControlled</fieldManageability>
+        <label>Webhook Signing Key</label>
+        <length>255</length>
+        <required>false</required>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <label>AuthorizeNet Config</label>
+    <pluralLabel>AuthorizeNet Configs</pluralLabel>
+    <visibility>Public</visibility>
+</CustomObject>

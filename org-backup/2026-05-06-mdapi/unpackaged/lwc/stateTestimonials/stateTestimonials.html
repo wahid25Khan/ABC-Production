@@ -1,0 +1,70 @@
+<template>
+
+  <template if:true={isLoading}>
+    <div style="text-align:center; padding: 2rem;">
+      <lightning-spinner alternative-text="Loading" size="medium"></lightning-spinner>
+    </div>
+  </template>
+
+  <template if:false={isLoading}>
+    <div lwc:if={hasData}>
+
+      <div class="carousel-wrapper">
+      <div class="swiper" lwc:ref="swiperContainer">
+        <div class="swiper-wrapper">
+
+          <template for:each={formattedSlides} for:item="slide">
+            <div key={slide.Id} class="swiper-slide card">
+
+              <div class="top-media-section">
+                <template if:true={slide.isVideo}>
+                  <iframe src={slide.Video_URL__c} title="YouTube video player" frameborder="0"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowfullscreen class="video-iframe"></iframe>
+                </template>
+
+                <template if:true={slide.isText}>
+                  <div class="quote-text">"{slide.Testimonial_Text__c}"</div>
+                </template>
+              </div>
+
+              <div class="bottom-author-section">
+                <div class="logo-container">
+                  <img src={logoUrl} alt="ABC Logo" class="logo-img" />
+                </div>
+
+                <div class="author-details">
+                  <div class="author-name">
+                    {slide.Author_Name__c}
+                    <template if:true={slide.Designation__c}>
+                      <span class="designation"> {slide.Designation__c}</span>
+                    </template>
+                  </div>
+
+                  <template if:true={slide.School_Name__c}>
+                    <div class="school-name">{slide.School_Name__c}</div>
+                  </template>
+
+                  <template if:true={slide.Red_Display_Text__c}>
+                    <div class="red-state-text">{slide.Red_Display_Text__c}</div>
+                  </template>
+                </div>
+              </div>
+
+            </div>
+          </template>
+
+        </div>
+
+        <div class="swiper-button-next"></div>
+        <div class="swiper-button-prev"></div>
+
+      </div>
+      </div>
+    </div>
+    <div lwc:else>
+      <div class="empty">No testimonials found for {currentState}.</div>
+    </div>
+  </template>
+
+</template>

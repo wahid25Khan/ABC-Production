@@ -1,0 +1,28 @@
+<template>
+    <div class="actions-panel">
+        <button class="btn-outline" onclick={handleDownloadQuote} disabled={isDownloading}>
+            <template lwc:if={isDownloading}>
+                <lightning-spinner alternative-text="Generating quote" size="small"></lightning-spinner>
+            </template>
+            <template lwc:else>
+                Download a Quote
+            </template>
+        </button>
+
+        <button class="btn-primary" onclick={handleProceedToCheckout}>
+            Proceed to Checkout
+        </button>
+
+        <button class="po-link" onclick={handleSubmitPO}>
+            Need to submit a PO?
+        </button>
+
+        <template lwc:if={showInlineErrorBanner}>
+            <div class="error-banner" role="alert">{errorMessage}</div>
+        </template>
+        <template lwc:if={downloadSuccess}>
+            <output class="success-banner">Quote downloaded successfully.</output>
+        </template>
+    </div>
+
+</template>

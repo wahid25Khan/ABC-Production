@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>62.0</apiVersion>
+    <isExposed>true</isExposed>
+    <targets>
+        <target>lightningCommunity__Page</target>
+        <target>lightningCommunity__Default</target>
+    </targets>
+    <targetConfigs>
+        <targetConfig targets="lightningCommunity__Default">
+            <property name="cartUrl" type="String" default="/cart" label="Cart URL" />
+            <property name="signInUrl" type="String" default="/login" label="Sign In URL" />
+            <property name="webStoreId" type="String" label="Web Store Id" description="Commerce Web Store Id used for checkout/cart/order API calls. Leave blank to use component default." />
+        </targetConfig>
+    </targetConfigs>
+</LightningComponentBundle>

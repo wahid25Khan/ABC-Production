@@ -1,0 +1,239 @@
+<template>
+  <section class="trial-shell">
+    <template if:true={loading}>
+      <div class="loading-wrap">
+        <lightning-spinner alternative-text="Loading" size="medium"></lightning-spinner>
+      </div>
+    </template>
+
+    <template if:false={loading}>
+      <h1 class="page-heading">Try free for two weeks</h1>
+
+      <!-- Product Card -->
+      <div class="product-card">
+        <div class="product-image-wrap">
+          <a href={productDetailUrl} class="product-card-link">
+            <template if:true={bookImageUrl}>
+              <img src={bookImageUrl} alt={productName} class="product-image" />
+            </template>
+            <template if:false={bookImageUrl}>
+              <div class="image-placeholder">
+                <lightning-icon icon-name="utility:image" size="large"></lightning-icon>
+                <span class="ph-text">Book Cover</span>
+              </div>
+            </template>
+          </a>
+        </div>
+        <div class="product-info">
+          <a href={productDetailUrl} class="product-name-link">
+            <h2 class="product-name">{productName}</h2>
+          </a>
+        </div>
+      </div>
+
+      <!-- Form -->
+      <div class="form-area">
+        <!-- Sample Type -->
+        <h2 class="section-heading">Sample Type</h2>
+        <div class="field-group">
+          <div class="select-wrap">
+            <select
+              class="field-select"
+              data-field="sampleType"
+              name="sampleType"
+              onchange={handleFieldChange}
+            >
+              <option value="print" selected={isPrintSelected}>Print Workbook</option>
+              <option value="digital" selected={isDigitalSelected}>Digital access to testing &amp; eBook</option>
+              <option value="both" selected={isBothSelected}>Both</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Personal Details -->
+        <h2 class="section-heading">Personal details</h2>
+        <div class="form-grid">
+          <label class="form-field">
+            <span class="field-label">First Name *</span>
+            <input
+              class="field-input"
+              data-field="firstName"
+              type="text"
+              name="firstName"
+              value={form.firstName}
+              oninput={handleInputChange}
+            />
+          </label>
+          <label class="form-field">
+            <span class="field-label">Last Name *</span>
+            <input
+              class="field-input"
+              data-field="lastName"
+              type="text"
+              name="lastName"
+              value={form.lastName}
+              oninput={handleInputChange}
+            />
+          </label>
+          <label class="form-field">
+            <span class="field-label">Email *</span>
+            <input
+              class="field-input"
+              data-field="email"
+              type="email"
+              name="email"
+              value={form.email}
+              oninput={handleInputChange}
+            />
+          </label>
+          <label class="form-field">
+            <span class="field-label">Phone *</span>
+            <input
+              class="field-input"
+              data-field="phone"
+              type="tel"
+              name="phone"
+              value={form.phone}
+              oninput={handleInputChange}
+            />
+          </label>
+        </div>
+
+        <!-- Organization Details -->
+        <h2 class="section-heading">Organization details</h2>
+        <div class="form-grid">
+          <label class="form-field full-width">
+            <span class="field-label">Organization name *</span>
+            <input
+              class="field-input"
+              data-field="organizationName"
+              type="text"
+              name="organizationName"
+              value={form.organizationName}
+              oninput={handleInputChange}
+            />
+          </label>
+          <label class="form-field full-width">
+            <span class="field-label">Street Address *</span>
+            <input
+              class="field-input"
+              data-field="streetAddress"
+              type="text"
+              name="streetAddress"
+              value={form.streetAddress}
+              oninput={handleInputChange}
+            />
+          </label>
+          <label class="form-field">
+            <span class="field-label">City *</span>
+            <input
+              class="field-input"
+              data-field="city"
+              type="text"
+              name="city"
+              value={form.city}
+              oninput={handleInputChange}
+            />
+          </label>
+          <label class="form-field">
+            <span class="field-label">State *</span>
+            <div class="select-wrap">
+              <select
+                class="field-select"
+                data-field="stateCode"
+                name="stateCode"
+                onchange={handleFieldChange}
+              >
+                <option value=""></option>
+                <template for:each={usStates} for:item="st">
+                  <option key={st.value} value={st.value} selected={st.selected}>{st.label}</option>
+                </template>
+              </select>
+            </div>
+          </label>
+          <label class="form-field zip-field">
+            <span class="field-label">ZIP Code *</span>
+            <input
+              class="field-input"
+              data-field="postalCode"
+              type="text"
+              name="postalCode"
+              maxlength="10"
+              value={form.postalCode}
+              oninput={handleInputChange}
+            />
+          </label>
+        </div>
+
+        <!-- Referral Details -->
+        <h2 class="section-heading">Referral details</h2>
+        <div class="form-grid">
+          <label class="form-field full-width">
+            <span class="field-label">Referral information</span>
+            <input
+              class="field-input"
+              data-field="referralInfo"
+              type="text"
+              name="referralInfo"
+              value={form.referralInfo}
+              oninput={handleInputChange}
+            />
+          </label>
+          <label class="form-field full-width">
+            <span class="field-label">Comments</span>
+            <textarea
+              class="field-input field-textarea"
+              data-field="comments"
+              name="comments"
+              oninput={handleInputChange}
+            ></textarea>
+          </label>
+        </div>
+
+        <!-- Checkboxes -->
+        <div class="checkbox-group">
+          <label class="checkbox-label">
+            <input
+              type="checkbox"
+              class="checkbox-input"
+              data-field="agreeTerms"
+              onchange={handleCheckboxChange}
+            />
+            <span class="checkbox-text">I agree to the terms and conditions of the ABC free trial</span>
+          </label>
+          <label class="checkbox-label">
+            <input
+              type="checkbox"
+              class="checkbox-input"
+              data-field="consentEmails"
+              checked
+              onchange={handleCheckboxChange}
+            />
+            <span class="checkbox-text">I consent to receive periodic emails and promotion from American Book Company.</span>
+          </label>
+        </div>
+
+        <!-- Order Total -->
+        <h2 class="order-total">Order total: <span class="free-label">FREE</span></h2>
+
+        <template if:true={errorMessage}>
+          <div class="error-banner" role="alert">{errorMessage}</div>
+        </template>
+
+        <template if:true={successMessage}>
+          <div class="success-banner" role="status">{successMessage}</div>
+        </template>
+
+        <button
+          class="btn-submit"
+          type="button"
+          onclick={handleSubmit}
+          disabled={isSubmitting}
+        >
+          <template if:true={isSubmitting}>Submitting...</template>
+          <template if:false={isSubmitting}>Start my free trial</template>
+        </button>
+      </div>
+    </template>
+  </section>
+</template>

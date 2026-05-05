@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>66.0</apiVersion>
+    <isExposed>true</isExposed>
+    <targets>
+        <target>lightningCommunity__Page</target>
+        <target>lightningCommunity__Default</target>
+    </targets>
+    <targetConfigs>
+        <targetConfig targets="lightningCommunity__Default">
+            <property
+        name="googleAuthUrl"
+        type="String"
+        default="/services/auth/sso/Google_Login"
+        label="Google Auth URL"
+      />
+            <property
+        name="microsoftAuthUrl"
+        type="String"
+        default="/services/auth/sso/Microsoft_Login"
+        label="Microsoft Auth URL"
+      />
+            <property
+        name="loginActionUrl"
+        type="String"
+        default="/AmericanBookCompany/login"
+        label="Login Action URL"
+      />
+            <property
+        name="defaultStartUrl"
+        type="String"
+        default="/myprofile"
+        label="Default Post-Registration Start URL"
+      />
+            <property
+        name="socialAuthSiteUrl"
+        type="String"
+        default="https://americanbookcompany.my.site.com/AmericanBookCompanyvforcesite"
+        label="Social Auth Site URL or Path"
+      />
+        </targetConfig>
+    </targetConfigs>
+</LightningComponentBundle>

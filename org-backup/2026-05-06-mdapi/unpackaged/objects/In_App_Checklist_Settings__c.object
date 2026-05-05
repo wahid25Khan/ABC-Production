@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <customSettingsType>Hierarchy</customSettingsType>
+    <description>This custom settings contains all attributes used in In App Checklist</description>
+    <enableFeeds>false</enableFeeds>
+    <fields>
+        <fullName>ProfileKey__c</fullName>
+        <externalId>false</externalId>
+        <label>ProfileKey</label>
+        <length>255</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Sales_Cloud_In_App_Page__c</fullName>
+        <label>Sales Cloud In App Page</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Url</type>
+    </fields>
+    <label>In App Checklist Settings</label>
+    <visibility>Protected</visibility>
+</CustomObject>
