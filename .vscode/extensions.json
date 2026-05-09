@@ -22,6 +22,9 @@
     "salesforce.salesforcedx-vscode-ui-preview",
     "salesforce.salesforcedx-vscode-expanded",
     "salesforce.salesforcedx-vscode-soql",
-    "salesforce.salesforcedx-vscode-visualforce"
+    "salesforce.salesforcedx-vscode-visualforce",
+    "ms-edgedevtools.vscode-edge-devtools",
+    "ecmel.vscode-html-css",
+    "pranaygp.vscode-css-peek"
   ]
 }
