@@ -3,7 +3,15 @@
   max-width: 80rem;
   margin: 0 auto;
   padding: 0 1rem 3rem;
-  font-family: Lato, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  font-family:
+    Lato,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    Roboto,
+    Helvetica,
+    Arial,
+    sans-serif;
   color: #1f2937;
 }
 
@@ -16,7 +24,8 @@
   font-size: 1.875rem;
   line-height: 1.2;
   font-weight: 700;
-  color: #111827;
+  color: #143f73;
+  font-family: "Lato", Arial, sans-serif;
 }
 
 .loading-state,
@@ -81,7 +90,9 @@
   border-bottom: 1px solid #d1d5db;
   opacity: 1;
   transform: translateY(0);
-  transition: opacity 0.25s ease, transform 0.25s ease;
+  transition:
+    opacity 0.25s ease,
+    transform 0.25s ease;
 }
 
 .cart-item.removing {
@@ -281,7 +292,8 @@
   font-size: 1.25rem;
   line-height: 1.2;
   font-weight: 700;
-  color: #111827;
+  color: #143f73;
+  font-family: "Lato", Arial, sans-serif;
 }
 
 .summary-copy {
@@ -356,23 +368,32 @@
 
 @media (max-width: 640px) {
   .cart-item {
-    grid-template-columns: 1fr;
+    grid-template-columns: 6rem 1fr;
+    grid-template-rows: auto auto;
+    gap: 0.75rem;
   }
 
   .image-link {
-    max-width: 8rem;
+    grid-column: 1;
+    grid-row: 1;
+    max-width: 6rem;
   }
 
-  .item-copy,
-  .item-pricing {
-    grid-column: auto;
+  .item-copy {
+    grid-column: 2;
+    grid-row: 1;
   }
 
   .item-pricing {
-    align-items: stretch;
+    grid-column: 1 / -1;
+    grid-row: 2;
+    align-items: flex-start;
+    min-width: 0;
+    padding-top: 0.5rem;
+    border-top: 1px solid #e5e7eb;
   }
 
   .qty-input {
-    width: 100%;
+    width: 6rem;
   }
 }
