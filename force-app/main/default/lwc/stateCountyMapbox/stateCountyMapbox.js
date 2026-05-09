@@ -2,7 +2,7 @@ import { LightningElement, api } from "lwc";
 import US_GEOJSON from "@salesforce/resourceUrl/US_GeoJson";
 import MAPBOX_GL_JS_RESOURCE from "@salesforce/resourceUrl/mapbox_gl";
 import MAPBOX_GL_CSS_RESOURCE from "@salesforce/resourceUrl/mapbox_glcss";
-import ABC_LOGO from "@salesforce/resourceUrl/ABCLogo";
+import ABC_LOGO from "@salesforce/resourceUrl/ABCLogoSvg";
 
 const MAPBOX_GL_JS = MAPBOX_GL_JS_RESOURCE;
 const MAPBOX_GL_CSS = MAPBOX_GL_CSS_RESOURCE;
@@ -14,8 +14,6 @@ const COUNTY_NAME_LAYER_ID = "county-name";
 const STORAGE_KEY = "abc_selected_state";
 const STATE_REFINEMENT_KEY = "State__c";
 const REFINEMENTS_PARAM = "refinements";
-const DEFAULT_MAPBOX_ACCESS_TOKEN =
-  "pk.eyJ1IjoiYWthc2h0aGVsb2Rlc3RvbmVncm91cCIsImEiOiJjbW05bG5kaGMwMHQ1Mm9zM3lrM25ydTRwIn0.pSVyEJv1yK_Z8_U1tXKHTA";
 
 const ROLE_PREVIEW = "preview";
 const ROLE_MODAL = "modal";
@@ -139,7 +137,7 @@ const STATE_FIPS_TO_ABBR = {
 };
 
 export default class StateCountyMapbox extends LightningElement {
-  @api mapboxAccessToken = DEFAULT_MAPBOX_ACCESS_TOKEN;
+  @api mapboxAccessToken = "";
   @api geoJsonPath;
   @api stateFips = "";
   @api titleYear = "2026";
@@ -176,21 +174,24 @@ export default class StateCountyMapbox extends LightningElement {
     this._boundStateEventHandler = (event) =>
       this.handleExternalStateChange(event);
     this._boundKeyDownHandler = (event) => this.handleWindowKeyDown(event);
-    window.addEventListener("abcstatechange", this._boundStateEventHandler);
-    window.addEventListener("statechange", this._boundStateEventHandler);
-    window.addEventListener("keydown", this._boundKeyDownHandler);
+    globalThis.addEventListener("abcstatechange", this._boundStateEventHandler);
+    globalThis.addEventListener("statechange", this._boundStateEventHandler);
+    globalThis.addEventListener("keydown", this._boundKeyDownHandler);
   }
 
   disconnectedCallback() {
     if (this._boundStateEventHandler) {
-      window.removeEventListener(
+      globalThis.removeEventListener(
         "abcstatechange",
         this._boundStateEventHandler
       );
-      window.removeEventListener("statechange", this._boundStateEventHandler);
+      globalThis.removeEventListener(
+        "statechange",
+        this._boundStateEventHandler
+      );
     }
     if (this._boundKeyDownHandler) {
-      window.removeEventListener("keydown", this._boundKeyDownHandler);
+      globalThis.removeEventListener("keydown", this._boundKeyDownHandler);
     }
     this.destroyMap(ROLE_MODAL);
     this.destroyMap(ROLE_PREVIEW);
@@ -277,7 +278,7 @@ export default class StateCountyMapbox extends LightningElement {
 
   applySelectedStateFromContext() {
     const urlState = this.getSelectedStateFromUrl();
-    const storedState = window.localStorage.getItem(STORAGE_KEY);
+    const storedState = globalThis.localStorage.getItem(STORAGE_KEY);
     const resolved = this.getValidStateName(
       urlState || storedState || this._selectedState
     );
@@ -411,7 +412,7 @@ export default class StateCountyMapbox extends LightningElement {
       return;
     }
 
-    window.requestAnimationFrame(() => {
+    globalThis.requestAnimationFrame(() => {
       map.resize();
       this.hideMapboxBranding(map);
       if (this.lastFeatureCollection?.features?.length) {
@@ -617,7 +618,7 @@ export default class StateCountyMapbox extends LightningElement {
         return {
           ...feature,
           properties: {
-            ...(feature.properties || {}),
+            ...feature.properties,
             countyName,
             metricValue: value
           }
@@ -1003,11 +1004,11 @@ export default class StateCountyMapbox extends LightningElement {
 
   escapeHtml(value) {
     return String(value || "")
-      .replace(/&/g, "&amp;")
-      .replace(/</g, "&lt;")
-      .replace(/>/g, "&gt;")
-      .replace(/"/g, "&quot;")
-      .replace(/'/g, "&#039;");
+      .replaceAll("&", "&amp;")
+      .replaceAll("<", "&lt;")
+      .replaceAll(">", "&gt;")
+      .replaceAll('"', "&quot;")
+      .replaceAll("'", "&#039;");
   }
 
   fitToFeatures(map, features, role) {
@@ -1125,12 +1126,12 @@ export default class StateCountyMapbox extends LightningElement {
   toTitleCase(value) {
     return String(value || "")
       .toLowerCase()
-      .replace(/\b\w/g, (character) => character.toUpperCase());
+      .replaceAll(/\b\w/g, (character) => character.toUpperCase());
   }
 
   getSelectedStateFromUrl() {
     try {
-      const url = new URL(window.location.href);
+      const url = new URL(globalThis.location.href);
 
       const pathState = this.getSelectedStateFromPath(url.pathname);
       if (pathState) {
@@ -1181,7 +1182,7 @@ export default class StateCountyMapbox extends LightningElement {
       return "";
     }
 
-    return decodeURIComponent(rawState).replace(/\+/g, " ");
+    return decodeURIComponent(rawState).replaceAll("+", " ");
   }
 
   decodeDeep(value) {
