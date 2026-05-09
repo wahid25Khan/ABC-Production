@@ -41,7 +41,7 @@
                         class="featured-image"
                         src={featuredProduct.imageUrl}
                         alt={featuredProduct.name}
-                        loading="lazy"
+                        loading="eager"
                       />
                     </template>
                     <template if:false={featuredProduct.imageUrl}>
@@ -105,7 +105,7 @@
                         class="product-image"
                         src={product.imageUrl}
                         alt={product.name}
-                        loading="lazy"
+                        loading="eager"
                       />
                     </template>
                     <template if:false={product.imageUrl}>
