@@ -389,6 +389,7 @@ private class BuyerSelfRegistrationServiceTest {
 
       BuyerSelfRegistrationService.externalUserOutcomeOverride = outcome;
       BuyerSelfRegistrationService.accountOwnerIdOverride = UserInfo.getUserId();
+      BuyerSelfRegistrationService.profileIdOverride = UserInfo.getProfileId();
       CommerceRegistrationProvisioning.buyerGroupIdOverride = existingAccount.Id;
       CommerceRegistrationProvisioning.permissionSetIdOverride = UserInfo.getProfileId();
       CommerceRegistrationProvisioning.permissionSetLicenseIdOverride = UserInfo.getProfileId();
@@ -513,6 +514,7 @@ private class BuyerSelfRegistrationServiceTest {
     System.runAs(runAsUser) {
       BuyerSelfRegistrationService.resetTestState();
       BuyerSelfRegistrationService.accountOwnerIdOverride = UserInfo.getUserId();
+      BuyerSelfRegistrationService.profileIdOverride = UserInfo.getProfileId();
       CommerceRegistrationProvisioning.buyerGroupIdOverride = UserInfo.getUserId();
       BuyerSelfRegistrationService.externalUserErrorOverride = 'Registration service unavailable.';
 
@@ -558,6 +560,7 @@ private class BuyerSelfRegistrationServiceTest {
 
       BuyerSelfRegistrationService.externalUserOutcomeOverride = outcome;
       BuyerSelfRegistrationService.accountOwnerIdOverride = UserInfo.getUserId();
+      BuyerSelfRegistrationService.profileIdOverride = UserInfo.getProfileId();
       CommerceRegistrationProvisioning.buyerGroupIdOverride = existingAccount.Id;
       CommerceRegistrationProvisioning.buyerMembershipExistsOverride = true;
       CommerceRegistrationProvisioning.permissionSetIdOverride = UserInfo.getProfileId();
