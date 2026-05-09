@@ -1,5 +1,6 @@
 import { LightningElement, api } from "lwc";
 import getHostedPaymentToken from "@salesforce/apex/AuthorizeNetAcceptHostedTokenService.getHostedPaymentToken";
+import { applyStorefrontRequestParams } from "c/utils";
 
 const API_VERSION = "v66.0";
 
@@ -87,9 +88,12 @@ export default class AuthorizeNetCheckoutButton extends LightningElement {
 
   async fetchCartDetails(webstoreId, cartIdOrActive) {
     const response = await fetch(
-      `/AmericanBookCompany/webruntime/api/services/data/${API_VERSION}/commerce/webstores/${webstoreId}/carts/${cartIdOrActive}`,
+      this.buildStorefrontApiUrl(
+        `/commerce/webstores/${webstoreId}/carts/${cartIdOrActive}`
+      ),
       {
         method: "GET",
+        credentials: "include",
         headers: {
           Accept: "application/json"
         }
@@ -106,9 +110,12 @@ export default class AuthorizeNetCheckoutButton extends LightningElement {
   async clearActiveCheckoutIfPresent(webstoreId) {
     try {
       const response = await fetch(
-        `/AmericanBookCompany/webruntime/api/services/data/${API_VERSION}/commerce/webstores/${webstoreId}/checkouts/active`,
+        this.buildStorefrontApiUrl(
+          `/commerce/webstores/${webstoreId}/checkouts/active`
+        ),
         {
           method: "GET",
+          credentials: "include",
           headers: { Accept: "application/json" }
         }
       );
@@ -118,9 +125,12 @@ export default class AuthorizeNetCheckoutButton extends LightningElement {
       }
       // An active checkout exists; delete it so we can create a fresh one.
       await fetch(
-        `/AmericanBookCompany/webruntime/api/services/data/${API_VERSION}/commerce/webstores/${webstoreId}/checkouts/active`,
+        this.buildStorefrontApiUrl(
+          `/commerce/webstores/${webstoreId}/checkouts/active`
+        ),
         {
           method: "DELETE",
+          credentials: "include",
           headers: { Accept: "application/json" }
         }
       );
@@ -131,9 +141,10 @@ export default class AuthorizeNetCheckoutButton extends LightningElement {
 
   async startCheckout(webstoreId, cartId) {
     const response = await fetch(
-      `/AmericanBookCompany/webruntime/api/services/data/${API_VERSION}/commerce/webstores/${webstoreId}/checkouts`,
+      this.buildStorefrontApiUrl(`/commerce/webstores/${webstoreId}/checkouts`),
       {
         method: "POST",
+        credentials: "include",
         headers: {
           Accept: "application/json",
           "Content-Type": "application/json"
@@ -145,6 +156,15 @@ export default class AuthorizeNetCheckoutButton extends LightningElement {
     );
 
     return this.parseResponse(response, "Failed to start checkout.");
+  }
+
+  buildStorefrontApiUrl(path) {
+    const params = applyStorefrontRequestParams(new URLSearchParams());
+    const suffix = params.toString();
+
+    return `/AmericanBookCompany/webruntime/api/services/data/${API_VERSION}${path}${
+      suffix ? `?${suffix}` : ""
+    }`;
   }
 
   async parseResponse(response, defaultMessage) {

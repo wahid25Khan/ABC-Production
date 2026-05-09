@@ -40,9 +40,13 @@
       return; // ignore non-JSON messages
     }
 
-    // Forward to the top-level LWC page (our checkout page)
-    if (window.parent && window.parent !== window) {
-      window.parent.postMessage(JSON.stringify(msg), window.location.origin);
+    // The communicator iframe sits inside the AN payment iframe which sits
+    // inside our LWC page.  We need to relay UP to the top-level window
+    // (the Experience Cloud page hosting the LWC).
+    // Use window.top so the message reaches the LWC's postMessage listener.
+    var target = window.top || window.parent;
+    if (target && target !== window) {
+      target.postMessage(JSON.stringify(msg), '*');
     }
   }, false);
 </script>
