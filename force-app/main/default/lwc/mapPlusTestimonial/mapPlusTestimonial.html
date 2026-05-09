@@ -91,7 +91,9 @@
                       ></iframe>
                     </template>
                     <template if:true={slide.isText}>
-                      <div class="quote-text">"{slide.Testimonial_Text__c}"</div>
+                      <div class="quote-text">
+                        "{slide.Testimonial_Text__c}"
+                      </div>
                     </template>
                   </div>
                   <div class="bottom-author-section">
@@ -122,33 +124,14 @@
                 </div>
               </template>
 
-              <div class="swiper-slide swiper-slide--map">
-                <article class={mapSlideCardClass}>
-                  <button
-                    if:true={isExpandable}
-                    type="button"
-                    class="card-hit-area"
-                    onclick={openModal}
-                    aria-label={expandButtonLabel}
-                    title={expandButtonLabel}
-                  >
-                    <span class="assistive-text">{expandButtonLabel}</span>
-                  </button>
-
-                  <div class="map-card__media">
-                    <template if:true={errorMessage}>
-                      <div class="error error--card">{errorMessage}</div>
-                    </template>
-
-                    <div
-                      class="map map--card"
-                      data-map-role="preview"
-                      lwc:dom="manual"
-                    ></div>
-                  </div>
-
-                  <div class="map-card__caption">{compactTitle}</div>
-                </article>
+              <div class="swiper-slide swiper-slide--promo">
+                <div class="promo-card">
+                  <img
+                    src={promoImageUrl}
+                    alt="American Book Company"
+                    class="promo-img"
+                  />
+                </div>
               </div>
 
               <template for:each={trailingTestimonials} for:item="slide">
@@ -162,7 +145,9 @@
                       ></iframe>
                     </template>
                     <template if:true={slide.isText}>
-                      <div class="quote-text">"{slide.Testimonial_Text__c}"</div>
+                      <div class="quote-text">
+                        "{slide.Testimonial_Text__c}"
+                      </div>
                     </template>
                   </div>
                   <div class="bottom-author-section">

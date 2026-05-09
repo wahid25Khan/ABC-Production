@@ -2,6 +2,7 @@ import { LightningElement, api, track } from "lwc";
 import { loadScript, loadStyle } from "lightning/platformResourceLoader";
 import getCarouselData from "@salesforce/apex/TestimonialCarouselController.getCarouselData";
 import LOGO_URL from "@salesforce/resourceUrl/testimonialsLogo";
+import ABOUT_ABC_IMG from "@salesforce/resourceUrl/AboutABC";
 import SWIPER from "@salesforce/resourceUrl/SwiperJS";
 import US_GEOJSON from "@salesforce/resourceUrl/US_GeoJson";
 import MAPBOX_GL_JS_RESOURCE from "@salesforce/resourceUrl/mapbox_gl";
@@ -17,8 +18,7 @@ const COUNTY_NAME_LAYER_ID = "county-name";
 const STORAGE_KEY = "abc_selected_state";
 const STATE_REFINEMENT_KEY = "State__c";
 const REFINEMENTS_PARAM = "refinements";
-const DEFAULT_MAPBOX_ACCESS_TOKEN = // NOSONAR — default for @api mapboxAccessToken; configurable in Experience Builder
-  "pk.eyJ1IjoiYWthc2h0aGVsb2Rlc3RvbmVncm91cCIsImEiOiJjbW05bG5kaGMwMHQ1Mm9zM3lrM25ydTRwIn0.pSVyEJv1yK_Z8_U1tXKHTA";
+const DEFAULT_MAPBOX_ACCESS_TOKEN = "";
 
 const ROLE_PREVIEW = "preview";
 const ROLE_MODAL = "modal";
@@ -235,6 +235,10 @@ export default class MapPlusTestimonial extends LightningElement {
     return LOGO_URL;
   }
 
+  get promoImageUrl() {
+    return ABOUT_ABC_IMG;
+  }
+
   get isCompact() {
     return true;
   }
@@ -244,9 +248,7 @@ export default class MapPlusTestimonial extends LightningElement {
   }
 
   get cardClass() {
-    return this.isExpandable
-      ? "map-card map-card--interactive"
-      : "map-card";
+    return this.isExpandable ? "map-card map-card--interactive" : "map-card";
   }
 
   get mapSlideCardClass() {
@@ -353,6 +355,10 @@ export default class MapPlusTestimonial extends LightningElement {
   }
 
   async initialize() {
+    if (!this.getResolvedAccessToken()) {
+      this.errorMessage = "Map unavailable: no Mapbox access token configured.";
+      return;
+    }
     try {
       await this.loadMapboxAssets();
       this.assetsReady = true;
@@ -1301,7 +1307,7 @@ export default class MapPlusTestimonial extends LightningElement {
         this.isLoading = false;
         globalThis.setTimeout(() => {
           this.setupOrUpdateSwiper();
-        }, 0);
+        }, 300);
       });
   }
 
@@ -1350,12 +1356,14 @@ export default class MapPlusTestimonial extends LightningElement {
       },
       breakpoints: {
         768: { slidesPerView: 2 },
-        1440: { slidesPerView: 3 }
+        1024: { slidesPerView: 3 }
       },
       on: {
         init: () => {
           globalThis.setTimeout(async () => {
-            await this.syncMapInstances();
+            if (this.assetsReady) {
+              await this.syncMapInstances();
+            }
             this.refreshRenderedMaps();
           }, 500);
         },
