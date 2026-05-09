@@ -8,6 +8,7 @@ import isGuestUser from "@salesforce/user/isGuest";
 import apexAddCartItem from "@salesforce/apex/CartItemController.addCartItem";
 
 const DEFAULT_STORE_NAME = "AmericanBookCompany";
+export const WEBSITE_MINIMUM_QUANTITY = 25;
 export const CART_UPDATED_EVENT_NAME = "abccartupdated";
 
 export const STOREFRONT_GUEST_REQUEST_PARAMS = Object.freeze({
@@ -101,9 +102,9 @@ export function resolveProductImageUrl(item) {
   }
 
   const mediaGroups = Array.isArray(item?.mediaGroups) ? item.mediaGroups : [];
-  const allMediaItems = mediaGroups.flatMap((g) =>
-    g && Array.isArray(g.mediaItems) ? g.mediaItems : []
-  );
+  const allMediaItems = mediaGroups.flatMap((g) => {
+    return g && Array.isArray(g.mediaItems) ? g.mediaItems : [];
+  });
 
   for (const media of allMediaItems) {
     const url = media && (media.url || media.image?.url);
@@ -427,6 +428,37 @@ export function parsePositiveInteger(value) {
   return Number.isFinite(parsed) && parsed > 0 ? parsed : null;
 }
 
+export function enforceWebsiteMinimumQuantity(value) {
+  const parsed = parsePositiveInteger(value);
+  if (parsed === null) {
+    return WEBSITE_MINIMUM_QUANTITY;
+  }
+  return Math.max(parsed, WEBSITE_MINIMUM_QUANTITY);
+}
+
+export function filterWebsitePricingTiers(tiers) {
+  if (!Array.isArray(tiers)) {
+    return [];
+  }
+  return tiers
+    .map((tier) => {
+      const lower = toNumber(tier?.lowerBound);
+      const upper = toNumber(tier?.upperBound);
+      const hasUpperBound = upper !== null;
+      if (hasUpperBound && upper < WEBSITE_MINIMUM_QUANTITY) {
+        return null;
+      }
+      return {
+        ...tier,
+        lowerBound:
+          lower === null
+            ? WEBSITE_MINIMUM_QUANTITY
+            : Math.max(lower, WEBSITE_MINIMUM_QUANTITY)
+      };
+    })
+    .filter(Boolean);
+}
+
 export function dispatchCartUpdated(detail = {}) {
   if (
     typeof globalThis.dispatchEvent !== "function" ||
@@ -445,7 +477,6 @@ export function dispatchCartUpdated(detail = {}) {
 export async function addProductToCart({
   productId,
   quantity,
-  storeName = DEFAULT_STORE_NAME,
   webStoreId
 } = {}) {
   const normalizedProductId = String(productId || "").trim();
@@ -459,10 +490,7 @@ export async function addProductToCart({
   }
 
   try {
-    const result = await addItemToCart(
-      normalizedProductId,
-      normalizedQuantity
-    );
+    const result = await addItemToCart(normalizedProductId, normalizedQuantity);
 
     dispatchCartUpdated({
       productId: normalizedProductId,
@@ -507,7 +535,11 @@ export async function addProductToCart({
     } catch (apexError) {
       return {
         ok: false,
-        error: new Error(apexError?.body?.message || apexError?.message || "Could not add to cart."),
+        error: new Error(
+          apexError?.body?.message ||
+            apexError?.message ||
+            "Could not add to cart."
+        ),
         primaryError
       };
     }
@@ -521,7 +553,11 @@ export async function addProductToCart({
  * @param {number} [defaultMinQty=10] — Fallback minimum quantity.
  * @returns {number|null} The resolved price or null.
  */
-export function resolveUnitPriceForQuantity(variation, quantity, defaultMinQty = 10) {
+export function resolveUnitPriceForQuantity(
+  variation,
+  quantity,
+  defaultMinQty = 10
+) {
   if (!variation) {
     return null;
   }

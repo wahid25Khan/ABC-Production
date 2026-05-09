@@ -9,11 +9,13 @@ export {
   ALL_STATES,
   STATE_ABBREVIATIONS,
   ABBREVIATION_TO_STATE,
+  normalizeStateName,
   readStateFromStorage,
   writeStateToStorage,
   dispatchStateChange,
   decodeUrlValue,
-  getCurrentProductId
+  getCurrentProductId,
+  resolveSelectedStateFromLocation
 } from "./stateHelper";
 
 export {
@@ -41,6 +43,8 @@ export {
   resolveStockKeepingUnit,
   resolveCurrencyIsoCode,
   parsePositiveInteger,
+  enforceWebsiteMinimumQuantity,
+  filterWebsitePricingTiers,
   resolveUnitPriceForQuantity,
   addProductToCart,
   dispatchCartUpdated
