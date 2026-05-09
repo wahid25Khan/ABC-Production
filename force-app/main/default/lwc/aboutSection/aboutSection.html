@@ -1,23 +1,20 @@
 <template>
-  <section class="about-section">
-    <div class="about-wrapper">
-      <div class="left-panel">
-        <img src={leftImage} alt="About ABC" class="left-image" />
-
-        <div class="stat-card stat-card-top">
-          <div class="stat-number">27<span class="plus">+</span></div>
-          <div class="stat-label">Years in Business</div>
-        </div>
-
-        <div class="stat-card stat-card-bottom">
-          <div class="stat-number">5395</div>
-          <div class="stat-label">Schools Served</div>
-        </div>
+  <!-- ═══════════════════════════════════════════════════════════
+       1. HERO / WHO WE ARE
+  ═══════════════════════════════════════════════════════════════ -->
+  <section class="hero-section">
+    <div class="hero-inner">
+      <div class="hero-image-col">
+        <img
+          src={heroImage}
+          alt="About American Book Company"
+          class="hero-img"
+        />
       </div>
 
-      <div class="right-panel">
-        <h2>Who We Are</h2>
-        <p>
+      <div class="hero-text-col">
+        <h1 class="hero-heading">Who We Are</h1>
+        <p class="hero-body">
           American Book Company (ABC) was created by two educators who saw a
           need to improve the selection of quality educational resources in the
           classroom. That vision has driven us to create innovative content that
@@ -27,7 +24,218 @@
           across all subjects — Mathematics, English Language Arts, Science, and
           Social Studies.
         </p>
+
+        <div class="stat-row">
+          <div class="stat-card">
+            <div class="stat-number">27<span class="stat-plus">+</span></div>
+            <div class="stat-label">Years in Business</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-number">5395</div>
+            <div class="stat-label">Schools Served</div>
+          </div>
+        </div>
       </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════
+       2. STICKY SECTION NAVIGATION
+  ═══════════════════════════════════════════════════════════════ -->
+  <nav class="section-nav" aria-label="About page sections">
+    <div class="section-nav-inner">
+      <a
+        class="section-nav-link"
+        href="#ourStaff"
+        data-anchor="ourStaff"
+        onclick={handleNavClick}
+        >Our Staff</a
+      >
+      <a
+        class="section-nav-link"
+        href="#diversityAndCulture"
+        data-anchor="diversityAndCulture"
+        onclick={handleNavClick}
+        >Diversity &amp; Culture</a
+      >
+      <a
+        class="section-nav-link"
+        href="#abcCares"
+        data-anchor="abcCares"
+        onclick={handleNavClick}
+        >ABC Cares</a
+      >
+      <a
+        class="section-nav-link"
+        href="#environment"
+        data-anchor="environment"
+        onclick={handleNavClick}
+        >Environment</a
+      >
+      <a
+        class="section-nav-link"
+        href="#testimonials"
+        data-anchor="testimonials"
+        onclick={handleNavClick}
+        >Testimonials</a
+      >
+    </div>
+  </nav>
+
+  <!-- ═══════════════════════════════════════════════════════════
+       3. OUR STAFF
+  ═══════════════════════════════════════════════════════════════ -->
+  <section class="content-section" data-section="ourStaff">
+    <div class="section-inner">
+      <h2 class="section-heading">Our Staff</h2>
+
+      <div class="staff-grid">
+        <template for:each={staffList} for:item="member">
+          <div key={member.id} class="staff-card">
+            <div class="staff-avatar-wrap">
+              <template if:true={member.image}>
+                <img src={member.image} alt={member.name} class="staff-photo" />
+              </template>
+              <template if:false={member.image}>
+                <div class="staff-initials">{member.initials}</div>
+              </template>
+            </div>
+            <p class="staff-name">{member.name}</p>
+            <p class="staff-title">{member.title}</p>
+          </div>
+        </template>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════
+       4. DIVERSITY & CULTURE
+  ═══════════════════════════════════════════════════════════════ -->
+  <section
+    class="content-section content-section--gray"
+    data-section="diversityAndCulture"
+  >
+    <div class="section-inner">
+      <h2 class="section-heading">Diversity &amp; Culture</h2>
+
+      <div class="text-image-row">
+        <div class="text-block">
+          <p>
+            At American Book Company, our people are our greatest strength. We
+            celebrate the diverse backgrounds, experiences, and perspectives
+            that every team member brings to our work. Our commitment to
+            building an inclusive, equitable culture drives everything we do —
+            from how we hire and collaborate internally to the classroom
+            resources we create for students across America.
+          </p>
+          <p>
+            We are an equal opportunity employer and proud to maintain a
+            workplace where every individual is respected, supported, and
+            empowered to contribute. We actively work to ensure that our teams
+            reflect the diversity of the students and educators we serve.
+          </p>
+          <p>
+            ABC is committed to developing accessible, culturally responsive
+            educational materials. Our curriculum spans Mathematics, English
+            Language Arts, Science, and Social Studies — designed to meet
+            students where they are and help every learner succeed, regardless
+            of background or ability.
+          </p>
+        </div>
+        <div class="section-img-col">
+          <div class="img-placeholder img-placeholder--tall"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════
+       5. ABC CARES
+  ═══════════════════════════════════════════════════════════════ -->
+  <section class="content-section" data-section="abcCares">
+    <div class="section-inner">
+      <h2 class="section-heading">ABC Cares</h2>
+      <p class="section-intro">
+        At American Book Company, we believe in giving back to the communities
+        that inspire us every day. Through partnerships, sponsorships, and
+        ongoing support, we invest in education, youth development, and
+        community growth.
+      </p>
+
+      <div class="cares-grid">
+        <template for:each={abcCaresList} for:item="item">
+          <div key={item.id} class="cares-card">
+            <div class="cares-img-wrap">
+              <template if:true={item.image}>
+                <img src={item.image} alt={item.title} class="cares-img" />
+              </template>
+              <template if:false={item.image}>
+                <div class="img-placeholder img-placeholder--cares"></div>
+              </template>
+            </div>
+            <div class="cares-body">
+              <h3 class="cares-title">{item.title}</h3>
+              <p class="cares-text">{item.text}</p>
+            </div>
+          </div>
+        </template>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════
+       6. ENVIRONMENT
+  ═══════════════════════════════════════════════════════════════ -->
+  <section
+    class="content-section content-section--gray"
+    data-section="environment"
+  >
+    <div class="section-inner">
+      <h2 class="section-heading">Environment</h2>
+      <p class="section-intro">
+        American Book Company is committed to reducing our environmental impact.
+        We continually evaluate our operations to minimize energy consumption,
+        reduce waste, and implement sustainable practices across every part of
+        our business.
+      </p>
+
+      <div class="env-grid">
+        <template for:each={environmentList} for:item="item">
+          <div key={item.id} class="env-card">
+            <div class="env-img-wrap">
+              <template if:true={item.image}>
+                <img src={item.image} alt={item.title} class="env-img" />
+              </template>
+              <template if:false={item.image}>
+                <div class="img-placeholder img-placeholder--env"></div>
+              </template>
+            </div>
+            <h3 class="env-title">{item.title}</h3>
+            <p class="env-text">{item.text}</p>
+          </div>
+        </template>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════
+       7. TESTIMONIALS
+  ═══════════════════════════════════════════════════════════════ -->
+  <section
+    class="content-section testimonials-section"
+    data-section="testimonials"
+  >
+    <div class="section-inner">
+      <h2 class="section-heading">Testimonials</h2>
+      <blockquote class="testimonial-block">
+        <p class="testimonial-quote">
+          &#8220;everything the student needs&#8230; self-explanatory&#8230;
+          wonderful books.&#8221;
+        </p>
+        <footer class="testimonial-attribution">
+          &#8722;&nbsp;Joyce Harvey, McDonough High School, Louisiana
+        </footer>
+      </blockquote>
     </div>
   </section>
 </template>
