@@ -1,0 +1,36 @@
+<template>
+  <section class="section">
+    <div class="section-inner">
+      <!-- Section heading with decorative lines -->
+      <div class="heading-row">
+        <span class="heading-line"></span>
+        <h2 class="section-heading">What's New at ABC</h2>
+        <span class="heading-line"></span>
+      </div>
+
+      <!-- Article card -->
+      <div class="card">
+        <div class="card-image-wrap">
+          <template lwc:if={hasImage}>
+            <img
+              class="card-img"
+              src={resolvedImageUrl}
+              alt={articleTitle}
+              data-try="0"
+            />
+          </template>
+          <template lwc:else>
+            <div class="card-img-placeholder"></div>
+          </template>
+          <span class="blob blob--yellow"></span>
+          <span class="blob blob--red"></span>
+          <span class="blob blob--blue"></span>
+        </div>
+        <div class="card-body">
+          <h3 class="card-title">{articleTitle}</h3>
+          <p class="card-text">{articleText}</p>
+        </div>
+      </div>
+    </div>
+  </section>
+</template>
