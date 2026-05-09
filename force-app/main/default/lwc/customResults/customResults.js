@@ -23,10 +23,12 @@ import {
   ABBREVIATION_TO_STATE,
   DEFAULT_WEBSTORE_ID,
   DEFAULT_STORE_NAME,
-  STATE_STORAGE_KEY
+  STATE_STORAGE_KEY,
+  STATE_CHANGE_EVENT_NAMES
 } from "c/utils";
 
 const DEFAULT_PAGE_SIZE = 20;
+const DEFAULT_REMOTE_SEARCH_TERM = "all";
 const SEARCH_MARKER = "/global-search/";
 const URL_WATCH_INTERVAL_MS = 250;
 const URL_WATCH_DEBOUNCE_MS = 120;
@@ -204,11 +206,28 @@ export default class CustomResults extends LightningElement {
   urlWatchId = null;
   urlWatchDebounceId = null;
   docClickHandler = null;
+  _boundHeaderStateHandler = null;
 
   connectedCallback() {
     this.captureCurrentRouteState();
     this.initialize();
     this.startUrlWatcher();
+
+    this._boundHeaderStateHandler = (event) => {
+      const nextState = String(
+        event?.detail?.state || event?.detail?.selectedState || ""
+      ).trim();
+      if (
+        !nextState ||
+        !ALL_STATES.includes(nextState) ||
+        nextState === this.selectedState
+      )
+        return;
+      this.handleStateChange({ detail: { value: nextState } });
+    };
+    STATE_CHANGE_EVENT_NAMES.forEach((name) =>
+      globalThis.addEventListener(name, this._boundHeaderStateHandler)
+    );
 
     this.docClickHandler = (event) => {
       if (!this.template.contains(event.target)) {
@@ -220,6 +239,12 @@ export default class CustomResults extends LightningElement {
 
   disconnectedCallback() {
     this.stopUrlWatcher();
+    if (this._boundHeaderStateHandler) {
+      STATE_CHANGE_EVENT_NAMES.forEach((name) =>
+        globalThis.removeEventListener(name, this._boundHeaderStateHandler)
+      );
+      this._boundHeaderStateHandler = null;
+    }
     if (this.docClickHandler) {
       document.removeEventListener("click", this.docClickHandler);
       this.docClickHandler = null;
@@ -247,6 +272,48 @@ export default class CustomResults extends LightningElement {
 
   get showPagination() {
     return this.totalPages > 1;
+  }
+
+  get paginationPages() {
+    const total = this.totalPages;
+    const current = this.currentPage;
+    if (total <= 1) return [];
+
+    const visible = new Set([1, total]);
+    for (
+      let i = Math.max(2, current - 2);
+      i <= Math.min(total - 1, current + 2);
+      i++
+    ) {
+      visible.add(i);
+    }
+
+    const sorted = [...visible].sort((a, b) => a - b);
+    const pages = [];
+    let prev = 0;
+
+    sorted.forEach((page) => {
+      if (prev && page - prev > 1) {
+        pages.push({
+          key: `ellipsis-${page}`,
+          label: "…",
+          page: 0,
+          btnClass: "page-num-btn page-ellipsis-btn",
+          disabled: true
+        });
+      }
+      pages.push({
+        key: `pg-${page}`,
+        label: String(page),
+        page,
+        btnClass:
+          page === current ? "page-num-btn page-num-active" : "page-num-btn",
+        disabled: false
+      });
+      prev = page;
+    });
+
+    return pages;
   }
 
   get resultsSummary() {
@@ -432,7 +499,8 @@ export default class CustomResults extends LightningElement {
     try {
       this.filterDefinitions = this.buildFilterDefinitions();
       this.pageSizeValue = this.resolveInitialPageSize();
-      this.selectedState = readStateFromStorage();
+      this.selectedState = readStateFromStorage() || "Georgia";
+      this.updateResultsUrlForState(this.selectedState);
 
       const initialResponse = await this.loadStateProducts();
       this.stateProducts = initialResponse.products;
@@ -536,9 +604,22 @@ export default class CustomResults extends LightningElement {
   }
 
   async loadStateProducts() {
-    const response = await this.fetchAllProducts(
-      this.buildStateSearchCriteria()
-    );
+    let response;
+
+    if (this.selectedState) {
+      response = await this.fetchAllProducts(this.buildStateSearchCriteria());
+    } else {
+      response = await this.fetchAllProducts(
+        this.buildAllProductsSearchCriteria()
+      );
+
+      // Fallback: if Commerce Search API does not return all products for
+      // searchTerm=all, fetch by each state individually and merge unique products.
+      if (!toArray(response.products).length) {
+        response = await this.fetchProductsAcrossAllStates();
+      }
+    }
+
     const productIds = toArray(response.products)
       .map((item) => String(item?.id || "").trim())
       .filter(Boolean);
@@ -556,6 +637,41 @@ export default class CustomResults extends LightningElement {
     return {
       facets: response.facets,
       products
+    };
+  }
+
+  buildAllProductsSearchCriteria() {
+    return {
+      searchTerm: DEFAULT_REMOTE_SEARCH_TERM,
+      refinements: {}
+    };
+  }
+
+  async fetchProductsAcrossAllStates() {
+    const productById = new Map();
+    let mergedFacets = [];
+
+    for (const state of ALL_STATES) {
+      // eslint-disable-next-line no-await-in-loop
+      const response = await this.fetchAllProducts({
+        searchTerm: state,
+        refinements: { [this.stateFieldApiName]: [state] }
+      });
+
+      if (!mergedFacets.length && response.facets?.length) {
+        mergedFacets = response.facets;
+      }
+
+      toArray(response.products).forEach((product) => {
+        const id = String(product?.id || "").trim();
+        if (!id || productById.has(id)) return;
+        productById.set(id, product);
+      });
+    }
+
+    return {
+      products: Array.from(productById.values()),
+      facets: mergedFacets
     };
   }
 
@@ -748,7 +864,7 @@ export default class CustomResults extends LightningElement {
       })
     );
 
-    params.set("fields", PRODUCT_DETAIL_FIELDS.join(","));
+    PRODUCT_DETAIL_FIELDS.forEach((field) => params.append("fields", field));
     return `${base}?${params.toString()}`;
   }
 
@@ -766,7 +882,7 @@ export default class CustomResults extends LightningElement {
     this.applyRefinementsToParams(params, criteria.refinements);
 
     const fieldList = this.getSearchFields();
-    if (fieldList.length) params.set("fields", fieldList.join(","));
+    fieldList.forEach((field) => params.append("fields", field));
 
     return `${base}?${params.toString()}`;
   }
@@ -784,34 +900,15 @@ export default class CustomResults extends LightningElement {
   }
 
   composeRemoteStateSearchTerm() {
-    const terms = [];
+    const selectedState = String(this.selectedState || "").trim();
+    if (selectedState) return selectedState;
 
     const configuredTerm = String(this.defaultSearchTerm || "").trim();
-    if (configuredTerm && configuredTerm.toLowerCase() !== "all") {
-      terms.push(configuredTerm);
+    if (!configuredTerm || configuredTerm.toLowerCase() === "*") {
+      return DEFAULT_REMOTE_SEARCH_TERM;
     }
 
-    if (this.selectedState) {
-      terms.push(this.selectedState);
-    }
-
-    const deduped = [];
-    const seen = new Set();
-
-    terms.forEach((term) => {
-      const normalized = String(term || "").trim();
-      if (!normalized) return;
-
-      const key = normalized.toLowerCase();
-      if (!seen.has(key)) {
-        seen.add(key);
-        deduped.push(normalized);
-      }
-    });
-
-    if (deduped.length) return deduped.join(" ");
-    const fallback = String(this.defaultSearchTerm || "").trim();
-    return fallback || "all";
+    return configuredTerm;
   }
 
   getPathSearchToken() {
@@ -1347,7 +1444,9 @@ export default class CustomResults extends LightningElement {
     const filterValues = product?.filterValues || {};
 
     if (state) {
-      const stateValues = this.resolveProductTextValues(product, ["fields.State__c"]);
+      const stateValues = this.resolveProductTextValues(product, [
+        "fields.State__c"
+      ]);
 
       if (stateValues.includes(state)) {
         score += 100;
@@ -1583,6 +1682,14 @@ export default class CustomResults extends LightningElement {
     this.applyPaginationAndSort();
   }
 
+  handlePageButtonClick(event) {
+    const page = Number.parseInt(event.currentTarget.dataset.page, 10);
+    if (!Number.isFinite(page) || page < 1 || page > this.totalPages) return;
+    if (page === this.currentPage) return;
+    this.currentPage = page;
+    this.applyPaginationAndSort();
+  }
+
   getProductById(productId) {
     if (!productId) return null;
     return (
@@ -1702,7 +1809,8 @@ export default class CustomResults extends LightningElement {
           error?.message || "Could not add to cart. Please try again.";
       }
     } catch (err) {
-      this.addToCartError = err?.message || "Could not add to cart. Please try again.";
+      this.addToCartError =
+        err?.message || "Could not add to cart. Please try again.";
     } finally {
       this.isAddingToCart = false;
     }

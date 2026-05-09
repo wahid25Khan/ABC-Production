@@ -367,6 +367,165 @@
             </div>
           </div>
 
+          <!-- Sort / Page-size / View toggle (drawer only – hidden on desktop) -->
+          <div class="drawer-controls-wrap">
+            <div
+              class="custom-select drawer-control-select"
+              data-dropdown="sort"
+            >
+              <template if:true={isSortDropdownOpen}>
+                <button
+                  type="button"
+                  class="custom-select-trigger"
+                  onclick={toggleSortDropdown}
+                  aria-expanded="true"
+                >
+                  <span>Sort</span>
+                  <span class={sortChevronClass}></span>
+                </button>
+              </template>
+              <template if:false={isSortDropdownOpen}>
+                <button
+                  type="button"
+                  class="custom-select-trigger"
+                  onclick={toggleSortDropdown}
+                  aria-expanded="false"
+                >
+                  <span>Sort</span>
+                  <span class={sortChevronClass}></span>
+                </button>
+              </template>
+              <template if:true={isSortDropdownOpen}>
+                <div class="custom-select-menu custom-select-menu-sm">
+                  <template for:each={sortOptionsForUi} for:item="opt">
+                    <button
+                      key={opt.value}
+                      type="button"
+                      class={opt.className}
+                      data-value={opt.value}
+                      onclick={handleSortOptionClick}
+                    >
+                      {opt.label}
+                    </button>
+                  </template>
+                </div>
+              </template>
+            </div>
+
+            <div
+              class="custom-select drawer-control-select"
+              data-dropdown="pageSize"
+            >
+              <template if:true={isPageSizeDropdownOpen}>
+                <button
+                  type="button"
+                  class="custom-select-trigger"
+                  onclick={togglePageSizeDropdown}
+                  aria-expanded="true"
+                >
+                  <span>{selectedPageSizeLabel}</span>
+                  <span class={pageSizeChevronClass}></span>
+                </button>
+              </template>
+              <template if:false={isPageSizeDropdownOpen}>
+                <button
+                  type="button"
+                  class="custom-select-trigger"
+                  onclick={togglePageSizeDropdown}
+                  aria-expanded="false"
+                >
+                  <span>{selectedPageSizeLabel}</span>
+                  <span class={pageSizeChevronClass}></span>
+                </button>
+              </template>
+              <template if:true={isPageSizeDropdownOpen}>
+                <div class="custom-select-menu custom-select-menu-sm">
+                  <template for:each={pageSizeOptionsForUi} for:item="opt">
+                    <button
+                      key={opt.value}
+                      type="button"
+                      class={opt.className}
+                      data-value={opt.value}
+                      onclick={handlePageSizeOptionClick}
+                    >
+                      {opt.label}
+                    </button>
+                  </template>
+                </div>
+              </template>
+            </div>
+
+            <fieldset class="view-toggle">
+              <legend class="slds-assistive-text">View mode</legend>
+              <template if:true={isGridView}>
+                <button
+                  type="button"
+                  class="view-btn"
+                  data-mode="grid"
+                  aria-pressed="true"
+                  onclick={handleViewMode}
+                  title="Grid view"
+                >
+                  <svg class="view-icon" viewBox="0 0 16 16" aria-hidden="true">
+                    <rect x="1" y="1" width="6" height="6" rx="1"></rect>
+                    <rect x="9" y="1" width="6" height="6" rx="1"></rect>
+                    <rect x="1" y="9" width="6" height="6" rx="1"></rect>
+                    <rect x="9" y="9" width="6" height="6" rx="1"></rect>
+                  </svg>
+                </button>
+              </template>
+              <template if:false={isGridView}>
+                <button
+                  type="button"
+                  class="view-btn"
+                  data-mode="grid"
+                  aria-pressed="false"
+                  onclick={handleViewMode}
+                  title="Grid view"
+                >
+                  <svg class="view-icon" viewBox="0 0 16 16" aria-hidden="true">
+                    <rect x="1" y="1" width="6" height="6" rx="1"></rect>
+                    <rect x="9" y="1" width="6" height="6" rx="1"></rect>
+                    <rect x="1" y="9" width="6" height="6" rx="1"></rect>
+                    <rect x="9" y="9" width="6" height="6" rx="1"></rect>
+                  </svg>
+                </button>
+              </template>
+              <template if:true={isListView}>
+                <button
+                  type="button"
+                  class="view-btn"
+                  data-mode="list"
+                  aria-pressed="true"
+                  onclick={handleViewMode}
+                  title="List view"
+                >
+                  <svg class="view-icon" viewBox="0 0 16 16" aria-hidden="true">
+                    <rect x="1" y="2" width="14" height="2.4" rx="1"></rect>
+                    <rect x="1" y="6.8" width="14" height="2.4" rx="1"></rect>
+                    <rect x="1" y="11.6" width="14" height="2.4" rx="1"></rect>
+                  </svg>
+                </button>
+              </template>
+              <template if:false={isListView}>
+                <button
+                  type="button"
+                  class="view-btn"
+                  data-mode="list"
+                  aria-pressed="false"
+                  onclick={handleViewMode}
+                  title="List view"
+                >
+                  <svg class="view-icon" viewBox="0 0 16 16" aria-hidden="true">
+                    <rect x="1" y="2" width="14" height="2.4" rx="1"></rect>
+                    <rect x="1" y="6.8" width="14" height="2.4" rx="1"></rect>
+                    <rect x="1" y="11.6" width="14" height="2.4" rx="1"></rect>
+                  </svg>
+                </button>
+              </template>
+            </fieldset>
+          </div>
+
           <!-- Filter groups -->
           <template for:each={filterGroups} for:item="group">
             <section key={group.key} class="filter-group">
@@ -486,18 +645,35 @@
           <div if:true={showPagination} class="pagination-row">
             <button
               type="button"
-              class="page-btn"
+              class="page-btn page-nav-btn"
               onclick={handlePrevPage}
               disabled={disablePrev}
+              title="Previous page"
             >
               ‹
             </button>
-            <span class="page-text">Page {currentPage} of {totalPages}</span>
+
+            <div class="page-numbers">
+              <template for:each={paginationPages} for:item="pg">
+                <button
+                  key={pg.key}
+                  type="button"
+                  class={pg.btnClass}
+                  data-page={pg.page}
+                  onclick={handlePageButtonClick}
+                  disabled={pg.disabled}
+                >
+                  {pg.label}
+                </button>
+              </template>
+            </div>
+
             <button
               type="button"
-              class="page-btn"
+              class="page-btn page-nav-btn"
               onclick={handleNextPage}
               disabled={disableNext}
+              title="Next page"
             >
               ›
             </button>
