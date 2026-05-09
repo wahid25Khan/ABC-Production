@@ -49,3 +49,6 @@ $RECYCLE.BIN/
 
 # Local analysis backups containing org-exported data
 .artifacts/backups/
+
+# Local documentation and UAT files
+Doc/
