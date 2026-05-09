@@ -35,6 +35,7 @@ export default class ProductDetailComponent extends LightningElement {
   @api productId = "";
   @api cartStateOrId = "current";
   @api minimumQuantity = 10;
+  @api maximumQuantity = 50;
   @api trialUrl = "";
   @api showTrialButton;
 
@@ -53,7 +54,12 @@ export default class ProductDetailComponent extends LightningElement {
   successModalData = null;
 
   featuresLeft = ["Answer Key", "Posttest", "Pretest"];
-  featuresRight = ["eBook"];
+  featuresRight = [
+    "eBook",
+    "Table of Content",
+    "Teacher Guide",
+    "CourseWave Online Testing"
+  ];
 
   connectedCallback() {
     this.quantity = this.minQty;
@@ -135,7 +141,11 @@ export default class ProductDetailComponent extends LightningElement {
   }
 
   get selectedUnitPrice() {
-    return resolveUnitPriceForQuantity(this.selectedVariation, this.quantity, this.minQty);
+    return resolveUnitPriceForQuantity(
+      this.selectedVariation,
+      this.quantity,
+      this.minQty
+    );
   }
 
   get selectedProductId() {
@@ -152,7 +162,10 @@ export default class ProductDetailComponent extends LightningElement {
           ? `${tier.lowerBound}+`
           : `${tier.lowerBound}\u2013${tier.upperBound}`,
 
-      formattedPrice: formatCurrency(toNumber(tier.price), this.currencyIsoCode || DEFAULT_CURRENCY),
+      formattedPrice: formatCurrency(
+        toNumber(tier.price),
+        this.currencyIsoCode || DEFAULT_CURRENCY
+      ),
       priceClass: `td price${index > 0 ? " price-red" : ""}`
     }));
   }
@@ -179,7 +192,7 @@ export default class ProductDetailComponent extends LightningElement {
     const variationMax = parsePositiveInteger(
       this.selectedVariation?.maximumQuantity
     );
-    if (variationMax !== null) {
+    if (variationMax !== null && variationMax <= 9999) {
       return variationMax;
     }
 
@@ -187,7 +200,9 @@ export default class ProductDetailComponent extends LightningElement {
     const ruleMax = rule?.maximum ?? rule?.Maximum ?? null;
     if (Number.isFinite(ruleMax) && ruleMax > 0 && ruleMax <= 9999)
       return ruleMax;
-    return 99999;
+
+    const apiMax = parsePositiveInteger(this.maximumQuantity);
+    return apiMax !== null ? apiMax : 99999;
   }
 
   get incrementQty() {
@@ -211,7 +226,10 @@ export default class ProductDetailComponent extends LightningElement {
   }
 
   get formattedUnitPrice() {
-    return formatCurrency(toNumber(this.selectedUnitPrice), this.currencyIsoCode || DEFAULT_CURRENCY);
+    return formatCurrency(
+      toNumber(this.selectedUnitPrice),
+      this.currencyIsoCode || DEFAULT_CURRENCY
+    );
   }
 
   // Live order total: current tier unit price × total quantity
@@ -259,7 +277,11 @@ export default class ProductDetailComponent extends LightningElement {
         // variation pricing unavailable
       }
 
-      await syncFavoriteState(this, this.selectedProductId || currentProductId, this.webStoreId || DEFAULT_WEBSTORE_ID);
+      await syncFavoriteState(
+        this,
+        this.selectedProductId || currentProductId,
+        this.webStoreId || DEFAULT_WEBSTORE_ID
+      );
     } catch {
       this.product = null;
       this.errorMessage = "Unable to load product details.";
@@ -283,8 +305,7 @@ export default class ProductDetailComponent extends LightningElement {
       globalThis.window.location.search || ""
     );
     const fromExtraParams =
-      queryParams.get("productId") ||
-      queryParams.get("product_id");
+      queryParams.get("productId") || queryParams.get("product_id");
     if (fromExtraParams) {
       return String(fromExtraParams).trim();
     }
@@ -420,7 +441,11 @@ export default class ProductDetailComponent extends LightningElement {
       const variation = this.variationsList[index];
       const nextProductId = variation?.productId || this.product?.id || "";
       if (nextProductId && nextProductId !== this.favoriteProductId) {
-        syncFavoriteState(this, nextProductId, this.webStoreId || DEFAULT_WEBSTORE_ID);
+        syncFavoriteState(
+          this,
+          nextProductId,
+          this.webStoreId || DEFAULT_WEBSTORE_ID
+        );
       }
     }
   }
@@ -435,8 +460,8 @@ export default class ProductDetailComponent extends LightningElement {
 
   handleQtyChange(event) {
     const raw = event?.target?.value;
-    if (raw === '') return;
-    const parsed = parseInt(raw, 10);
+    if (raw === "") return;
+    const parsed = Number.parseInt(raw, 10);
     if (Number.isFinite(parsed) && parsed > 0) {
       this.quantity = parsed;
     }

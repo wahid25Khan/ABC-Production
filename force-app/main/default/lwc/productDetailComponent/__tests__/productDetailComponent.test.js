@@ -3,6 +3,7 @@ import ProductDetailComponent from "c/productDetailComponent";
 import getVariationPricing from "@salesforce/apex/ProductVariationController.getVariationPricing";
 import getFavoriteState from "@salesforce/apex/WishlistController.getFavoriteState";
 import toggleFavorite from "@salesforce/apex/WishlistController.toggleFavorite";
+import { addItemToCart } from "commerce/cartApi";
 
 // ─── Mock Apex ───────────────────────────────────────────────────────────────
 
@@ -280,6 +281,7 @@ describe("c-product-detail-component", () => {
     const input = el.shadowRoot.querySelector(".qty-input");
     input.value = "2";
     input.dispatchEvent(new Event("input"));
+    input.dispatchEvent(new Event("blur"));
     await flushPromises();
     expect(Number(input.value)).toBe(10);
   });
@@ -361,22 +363,12 @@ describe("c-product-detail-component", () => {
 
   // ── handleAddToCart ────────────────────────────────────────────────────────
 
-  it("calls the cart-items API with productId, quantity and type=Product", async () => {
+  it("calls addItemToCart with productId and quantity", async () => {
+    addItemToCart.mockResolvedValue({ cartId: "0aN000001" });
     const el = await createInitialized();
     el.shadowRoot.querySelector(".btn-add").click();
     await flushPromises();
-    const cartCall = globalThis.fetch.mock.calls.find(([url]) =>
-      url.includes("/cart-items")
-    );
-    expect(cartCall).toBeDefined();
-    const cartUrl = new URL(cartCall[0], "https://example.com");
-    const body = JSON.parse(cartCall[1].body);
-    expect(cartUrl.searchParams.get("language")).toBe("en-US");
-    expect(cartUrl.searchParams.get("asGuest")).toBe("true");
-    expect(cartUrl.searchParams.get("htmlEncode")).toBe("false");
-    expect(body.productId).toBe(PRODUCT_ID);
-    expect(body.quantity).toBe(10);
-    expect(body.type).toBe("Product");
+    expect(addItemToCart).toHaveBeenCalledWith(PRODUCT_ID, 10);
   });
 
   it("calls products and pricing APIs with guest storefront parameters", async () => {
