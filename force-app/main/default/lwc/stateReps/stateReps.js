@@ -1,10 +1,14 @@
-import { LightningElement, track } from "lwc";
-import { STATE_STORAGE_KEY } from "c/utils";
+import { LightningElement } from "lwc";
+import {
+  STATE_CHANGE_EVENT_NAMES,
+  normalizeStateName,
+  readStateFromStorage
+} from "c/utils";
 import repsAssets from "@salesforce/resourceUrl/abc_reps";
+import badgesAssets from "@salesforce/resourceUrl/abc_badges";
 
 const ZIP_ROOT_FOLDER = "abc_reps";
-const RESULTS_SEG = "/global-search";
-
+const DEFAULT_STATE = "Georgia";
 const DEFAULT_PHONE = "(888) 264-5877";
 
 const STATES = new Set([
@@ -78,15 +82,15 @@ function toTelHref(phone) {
 function decodeDeep(str) {
   if (!str) return "";
   let out = str;
-  for (let i = 0; i < 3; i++) {
+  let prev;
+  do {
+    prev = out;
     try {
-      const dec = decodeURIComponent(out);
-      if (dec === out) break;
-      out = dec;
+      out = decodeURIComponent(out);
     } catch {
       break;
     }
-  }
+  } while (out !== prev);
   return out;
 }
 
@@ -100,6 +104,23 @@ const PLACEHOLDER_SVG =
 `);
 
 const SHARED_ABC_LOGO_BASE = "abc-sales-team";
+
+const BADGES = [
+  { key: "usfcr", file: "usfcr.png", alt: "USFCR Verified Vendor" },
+  {
+    key: "gachamber",
+    file: "gachamber.png",
+    alt: "Georgia Chamber of Commerce"
+  },
+  { key: "bbb", file: "bbb.png", alt: "BBB A+ Accredited Business" },
+  { key: "aap", file: "aap.png", alt: "AAP Pre K-12 Learning Proud Member" },
+  {
+    key: "wbenc",
+    file: "wbenc.png",
+    alt: "Certified WBENC Women's Business Enterprise"
+  },
+  { key: "essa", file: "essa.png", alt: "Instructure Level 4 ESSA 2025" }
+];
 
 const REPS_BY_STATE = {
   Georgia: [
@@ -332,15 +353,20 @@ function buildUrl({ folder, base, ext, forceShared }) {
 }
 
 export default class StateReps extends LightningElement {
-  @track selectedState = "";
-  @track reps = [];
+  selectedState = "";
+  reps = [];
 
   _watchId;
   _lastHref = "";
+  _boundStateChangeHandler;
 
   connectedCallback() {
     this._lastHref = globalThis.location.href;
     this.updateFromUrl();
+    this._boundStateChangeHandler = (event) => this.handleStateChange(event);
+    STATE_CHANGE_EVENT_NAMES.forEach((eventName) => {
+      globalThis.addEventListener(eventName, this._boundStateChangeHandler);
+    });
 
     this._watchId = globalThis.setInterval(() => {
       const href = globalThis.location.href;
@@ -354,24 +380,30 @@ export default class StateReps extends LightningElement {
   disconnectedCallback() {
     globalThis.clearInterval(this._watchId);
     this._watchId = null;
+    if (this._boundStateChangeHandler) {
+      STATE_CHANGE_EVENT_NAMES.forEach((eventName) => {
+        globalThis.removeEventListener(
+          eventName,
+          this._boundStateChangeHandler
+        );
+      });
+      this._boundStateChangeHandler = null;
+    }
   }
 
   get hasState() {
     return !!this.selectedState;
   }
 
-  getStoredState() {
-    try {
-      const v = globalThis.localStorage.getItem(STATE_STORAGE_KEY) || "";
-      return STATES.has(v) ? v : "";
-    } catch {
-      return "";
-    }
+  get helpCardStyle() {
+    return `background-image: url(${badgesAssets}/help_bg.png); background-size: cover; background-position: right top;`;
   }
 
-  isHomePage(url) {
-    const parts = (url.pathname || "").split("/").filter(Boolean);
-    return parts.length <= 1;
+  badges = BADGES.map((b) => ({ ...b, src: `${badgesAssets}/${b.file}` }));
+
+  getStoredState() {
+    const normalized = normalizeStateName(readStateFromStorage());
+    return STATES.has(normalized) ? normalized : "";
   }
 
   updateFromUrl() {
@@ -385,22 +417,12 @@ export default class StateReps extends LightningElement {
     const fromParams = this.getStateFromParams(url);
     if (fromParams) return fromParams;
 
-    // B6 fix: Check localStorage before falling back to hardcoded default
-    if ((url.pathname || "").includes(RESULTS_SEG)) {
-      return this.getStoredState() || "Georgia";
-    }
-
-    const hashState = decodeURIComponent(
-      (url.hash || "").replace("#", "").trim()
-    );
-    const validHashState = STATES.has(hashState) ? hashState : "";
     const storedState = this.getStoredState();
+    const hashState = normalizeStateName(
+      decodeURIComponent((url.hash || "").replace("#", "").trim())
+    );
 
-    if (this.isHomePage(url)) {
-      return validHashState || "Georgia";
-    }
-
-    return storedState || validHashState || "Georgia";
+    return storedState || hashState || DEFAULT_STATE;
   }
 
   getStateFromParams(url) {
@@ -413,21 +435,31 @@ export default class StateReps extends LightningElement {
           ? list.find((r) => r?.nameOrId === "State__c")
           : null;
         if (entry && Array.isArray(entry.values) && entry.values.length) {
-          const v = entry.values[0];
-          return STATES.has(v) ? v : "";
+          return normalizeStateName(entry.values[0]);
         }
       }
 
       const singleRef = url.searchParams.get("refinement");
       const decoded = singleRef ? decodeDeep(singleRef) : "";
       if (decoded.startsWith("State__c:")) {
-        const v = decoded.substring("State__c:".length);
-        return STATES.has(v) ? v : "";
+        return normalizeStateName(decoded.substring("State__c:".length));
       }
     } catch {
       // ignore
     }
     return "";
+  }
+
+  handleStateChange(event) {
+    const nextState = normalizeStateName(
+      event?.detail?.state || event?.detail?.selectedState || ""
+    );
+    if (!nextState || nextState === this.selectedState) {
+      return;
+    }
+
+    this.selectedState = nextState;
+    this.reps = this.buildReps(nextState);
   }
 
   buildReps(state) {
@@ -467,46 +499,19 @@ export default class StateReps extends LightningElement {
     const base = img.dataset.imagebase;
     const forceShared = img.dataset.forceshared === "true";
 
-    let t = Number(img.dataset.try || "0");
-    t += 1;
+    const t = Number(img.dataset.try || "0") + 1;
     img.dataset.try = String(t);
 
-    const sharedWebp = `${repsAssets}/${ZIP_ROOT_FOLDER}/shared/${base}.webp`;
-    const rootWebp = `${repsAssets}/${ZIP_ROOT_FOLDER}/${base}.webp`;
+    const R = `${repsAssets}/${ZIP_ROOT_FOLDER}`;
+    const fallbacks = forceShared
+      ? [`${R}/shared/${base}.png`, PLACEHOLDER_SVG]
+      : [
+          `${R}/shared/${base}.webp`,
+          `${R}/${folder}/${base}.png`,
+          `${R}/shared/${base}.png`,
+          PLACEHOLDER_SVG
+        ];
 
-    const statePng = `${repsAssets}/${ZIP_ROOT_FOLDER}/${folder}/${base}.png`;
-    const sharedPng = `${repsAssets}/${ZIP_ROOT_FOLDER}/shared/${base}.png`;
-    const rootPng = `${repsAssets}/${ZIP_ROOT_FOLDER}/${base}.png`;
-
-    const stateJpg = `${repsAssets}/${ZIP_ROOT_FOLDER}/${folder}/${base}.jpg`;
-    const sharedJpg = `${repsAssets}/${ZIP_ROOT_FOLDER}/shared/${base}.jpg`;
-    const rootJpg = `${repsAssets}/${ZIP_ROOT_FOLDER}/${base}.jpg`;
-
-    if (t === 1) {
-      img.src = sharedWebp;
-      return;
-    }
-    if (t === 2) {
-      img.src = rootWebp;
-      return;
-    }
-    if (t === 3) {
-      img.src = forceShared ? sharedPng : statePng;
-      return;
-    }
-    if (t === 4) {
-      img.src = forceShared ? sharedJpg : stateJpg;
-      return;
-    }
-    if (t === 5) {
-      img.src = rootPng;
-      return;
-    }
-    if (t === 6) {
-      img.src = rootJpg;
-      return;
-    }
-
-    img.src = PLACEHOLDER_SVG;
+    img.src = fallbacks[t - 1] ?? PLACEHOLDER_SVG;
   }
 }
