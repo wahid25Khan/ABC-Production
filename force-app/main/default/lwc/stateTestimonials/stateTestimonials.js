@@ -3,8 +3,11 @@ import { loadScript, loadStyle } from "lightning/platformResourceLoader";
 import getCarouselData from "@salesforce/apex/TestimonialCarouselController.getCarouselData";
 import LOGO_URL from "@salesforce/resourceUrl/testimonialsLogo";
 import SWIPER from "@salesforce/resourceUrl/SwiperJS";
-
-const STORAGE_KEY = "abc_selected_state";
+import {
+  STATE_CHANGE_EVENT_NAMES,
+  normalizeStateName,
+  readStateFromStorage
+} from "c/utils";
 
 export default class TestimonialCarousel extends LightningElement {
   logoUrl = LOGO_URL;
@@ -18,6 +21,7 @@ export default class TestimonialCarousel extends LightningElement {
 
   _watchId;
   _lastHash = "";
+  _boundStateChangeHandler;
 
   connectedCallback() {
     this.updateStateFromUrlOrStorage();
@@ -25,10 +29,23 @@ export default class TestimonialCarousel extends LightningElement {
     this.fetchCarouselData();
 
     this.startHashWatcher();
+    this._boundStateChangeHandler = (event) => this.handleStateChange(event);
+    STATE_CHANGE_EVENT_NAMES.forEach((eventName) => {
+      globalThis.addEventListener(eventName, this._boundStateChangeHandler);
+    });
   }
 
   disconnectedCallback() {
     this.stopHashWatcher();
+    if (this._boundStateChangeHandler) {
+      STATE_CHANGE_EVENT_NAMES.forEach((eventName) => {
+        globalThis.removeEventListener(
+          eventName,
+          this._boundStateChangeHandler
+        );
+      });
+      this._boundStateChangeHandler = null;
+    }
   }
 
   get hasData() {
@@ -38,22 +55,22 @@ export default class TestimonialCarousel extends LightningElement {
   // --- State Management ---
 
   updateStateFromUrlOrStorage() {
-    let hashState = this.getStateFromHash();
+    let nextState = this.getStateFromHash();
 
-    if (!hashState) {
-      hashState = window.localStorage.getItem(STORAGE_KEY);
+    if (!nextState) {
+      nextState = normalizeStateName(readStateFromStorage());
     }
 
-    if (hashState) {
-      this.currentState = hashState;
+    if (nextState) {
+      this.currentState = nextState;
     }
   }
 
   getStateFromHash() {
     try {
-      const h = (window.location.hash || "").replace(/^#/, "").trim();
+      const h = (globalThis.location.hash || "").replace(/^#/, "").trim();
       if (!h) return "";
-      return decodeURIComponent(h);
+      return normalizeStateName(decodeURIComponent(h));
     } catch {
       return "";
     }
@@ -62,10 +79,10 @@ export default class TestimonialCarousel extends LightningElement {
   // --- Hash Watcher ---
 
   startHashWatcher() {
-    this._lastHash = window.location.hash;
+    this._lastHash = globalThis.location.hash;
 
-    this._watchId = window.setInterval(() => {
-      const currentHash = window.location.hash;
+    this._watchId = globalThis.setInterval(() => {
+      const currentHash = globalThis.location.hash;
       if (currentHash !== this._lastHash) {
         this._lastHash = currentHash;
 
@@ -80,9 +97,21 @@ export default class TestimonialCarousel extends LightningElement {
 
   stopHashWatcher() {
     if (this._watchId) {
-      window.clearInterval(this._watchId);
+      globalThis.clearInterval(this._watchId);
       this._watchId = null;
     }
+  }
+
+  handleStateChange(event) {
+    const nextState = normalizeStateName(
+      event?.detail?.state || event?.detail?.selectedState || ""
+    );
+    if (!nextState || nextState === this.currentState) {
+      return;
+    }
+
+    this.currentState = nextState;
+    this.fetchCarouselData();
   }
 
   // --- Data Fetching (Apex) ---
@@ -118,34 +147,35 @@ export default class TestimonialCarousel extends LightningElement {
   // --- Swiper Initialization & Update ---
 
   setupOrUpdateSwiper() {
-    if (!window.Swiper) {
-      Promise.all([
-        loadScript(this, SWIPER + "/SwiperJS/swiper-bundle.min.js"),
-        loadStyle(this, SWIPER + "/SwiperJS/swiper-bundle.min.css")
-      ])
-        .then(() => {
-          this.initSwiper();
-        })
-        .catch((error) => {
-          console.error("Error loading Swiper files: ", error);
-        });
-    } else {
+    if (globalThis.Swiper) {
       setTimeout(() => {
         this.initSwiper();
       }, 0);
+      return;
     }
+
+    Promise.all([
+      loadScript(this, SWIPER + "/SwiperJS/swiper-bundle.min.js"),
+      loadStyle(this, SWIPER + "/SwiperJS/swiper-bundle.min.css")
+    ])
+      .then(() => {
+        this.initSwiper();
+      })
+      .catch((error) => {
+        console.error("Error loading Swiper files: ", error);
+      });
   }
 
   initSwiper() {
     const swiperContainer = this.template.querySelector(".swiper");
 
-    if (swiperContainer && window.Swiper) {
+    if (swiperContainer && globalThis.Swiper) {
       if (this.swiperInstance) {
         this.swiperInstance.destroy(true, true);
       }
 
       this.swiperInitialized = true;
-      this.swiperInstance = new window.Swiper(swiperContainer, {
+      this.swiperInstance = new globalThis.Swiper(swiperContainer, {
         slidesPerView: 1,
         spaceBetween: 15,
         navigation: {
