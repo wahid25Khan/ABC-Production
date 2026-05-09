@@ -1,5 +1,6 @@
 import { LightningElement, api } from "lwc";
 import {
+  applyStorefrontRequestParams,
   normalizeProduct,
   extractProductList,
   buildProductDetailPath,
@@ -19,14 +20,41 @@ export default class ProductRecommendation extends LightningElement {
   products = [];
   loading = false;
   showProducts = false;
+  loadError = false;
   currentIndex = 0;
+  _boundRouteRefreshHandler = null;
 
   connectedCallback() {
+    this._boundRouteRefreshHandler = () => {
+      this.loadProductRecommendations();
+    };
+    globalThis.addEventListener("hashchange", this._boundRouteRefreshHandler);
+    globalThis.addEventListener("popstate", this._boundRouteRefreshHandler);
+    globalThis.addEventListener("pageshow", this._boundRouteRefreshHandler);
     this.loadProductRecommendations();
   }
 
+  disconnectedCallback() {
+    if (this._boundRouteRefreshHandler) {
+      globalThis.removeEventListener(
+        "hashchange",
+        this._boundRouteRefreshHandler
+      );
+      globalThis.removeEventListener(
+        "popstate",
+        this._boundRouteRefreshHandler
+      );
+      globalThis.removeEventListener(
+        "pageshow",
+        this._boundRouteRefreshHandler
+      );
+      this._boundRouteRefreshHandler = null;
+    }
+  }
+
   get headingText() {
-    return "Recently Viewed";
+    const count = this.products.length;
+    return `Recently Viewed (${count})`;
   }
 
   get normalizedMaxProducts() {
@@ -65,8 +93,19 @@ export default class ProductRecommendation extends LightningElement {
     return `products-track columns-${this.normalizedVisibleColumns}`;
   }
 
+  get showEmptyState() {
+    return !this.loading && !this.showProducts;
+  }
+
+  get emptyStateText() {
+    return this.loadError
+      ? "We couldn't load your recently viewed books right now."
+      : "Browse a few books and your recently viewed books will appear here.";
+  }
+
   async loadProductRecommendations() {
     this.loading = true;
+    this.loadError = false;
 
     try {
       const endpoint = this.buildEndpoint();
@@ -90,10 +129,16 @@ export default class ProductRecommendation extends LightningElement {
 
       this.showProducts = this.products.length > 0;
       this.currentIndex = 0;
-      scrollCarouselToIndex(this.template, this.currentIndex, "auto");
-    } catch {
+      if (this.showProducts) {
+        scrollCarouselToIndex(this.template, this.currentIndex, "auto");
+      }
+    } catch (error) {
+      // Keep the section visible instead of silently disappearing when the API fails.
+      // eslint-disable-next-line no-console
+      console.error("Failed to load recently viewed products", error);
       this.products = [];
       this.showProducts = false;
+      this.loadError = true;
       this.currentIndex = 0;
     } finally {
       this.loading = false;
@@ -111,7 +156,10 @@ export default class ProductRecommendation extends LightningElement {
       return;
     }
 
-    globalThis.location.href = buildProductDetailPath(product, this.storeName || DEFAULT_STORE_NAME);
+    globalThis.location.href = buildProductDetailPath(
+      product,
+      this.storeName || DEFAULT_STORE_NAME
+    );
   }
 
   handlePrev() {
@@ -141,11 +189,11 @@ export default class ProductRecommendation extends LightningElement {
     const webStoreId = this.webStoreId || DEFAULT_WEBSTORE_ID;
     const baseUrl = `/${storeName}/webruntime/api/services/data/v66.0/commerce/webstores/${webStoreId}/ai/recommendations`;
     const recommendersToSend = this.recommender || "RecentlyViewed";
-    const params = new URLSearchParams({
-      language: "en-US",
-      asGuest: "true",
-      recommender: recommendersToSend
-    });
+    const params = applyStorefrontRequestParams(
+      new URLSearchParams({
+        recommender: recommendersToSend
+      })
+    );
 
     if (this.anchorValues) {
       params.append("anchorValues", this.anchorValues);
