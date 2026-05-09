@@ -1,3 +1,41 @@
 :root {
-    /*! put your custom css here */
+  /*! put your custom css here */
+}
+
+.abc-credentials-row {
+  width: min(1216px, calc(100% - 48px));
+  margin: 0 auto 36px !important;
+  align-items: center !important;
+}
+
+.abc-credentials-row img {
+  max-height: 84px;
+  width: auto;
+  max-width: 150px;
+  object-fit: contain;
+}
+
+@media (max-width: 768px) {
+  .abc-credentials-row {
+    width: min(358px, calc(100% - 32px));
+    margin: 0 auto 32px !important;
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 28px 36px !important;
+  }
+
+  .abc-credentials-row > * {
+    width: auto !important;
+    max-width: none !important;
+    flex: none !important;
+  }
+
+  .abc-credentials-row p {
+    margin: 0 !important;
+  }
+
+  .abc-credentials-row img {
+    max-width: 120px;
+    max-height: 78px;
+  }
 }
