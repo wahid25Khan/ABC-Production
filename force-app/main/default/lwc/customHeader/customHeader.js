@@ -1,10 +1,12 @@
 import { LightningElement, wire } from "lwc";
 import isGuestUser from "@salesforce/user/isGuest";
 import logoResource from "@salesforce/resourceUrl/ABCLogo";
-import {
-  CartSummaryAdapter,
-  refreshCartSummary
-} from "commerce/cartApi";
+import bars_light from "@salesforce/resourceUrl/bars_light";
+import rectangle_xmark_light from "@salesforce/resourceUrl/rectangle_xmark_light";
+import location_dot_light from "@salesforce/resourceUrl/location_dot_light";
+import user_light from "@salesforce/resourceUrl/user_light";
+import cart_shopping_light from "@salesforce/resourceUrl/cart_shopping_light";
+import { CartSummaryAdapter, refreshCartSummary } from "commerce/cartApi";
 import {
   decodeUrlValue,
   dispatchStateChange,
@@ -18,13 +20,8 @@ import {
   CART_UPDATED_EVENT_NAME
 } from "c/utils";
 
-// Module-level flag: ensures Lato <link> is injected only once per page lifetime
-// (avoids document.querySelector which is forbidden by @lwc/lwc/no-document-query)
 let _latoFontInjected = false;
 
-// ─────────────────────────────────────────────────────────────────
-//  Constants
-// ─────────────────────────────────────────────────────────────────
 const BASE = "/AmericanBookCompany";
 const RESULTS_BASE = `${BASE}/global-search`;
 const RESULTS_ALL = `${BASE}/global-search/all`;
@@ -38,12 +35,19 @@ const CLEAN_URL_DELAY_MS = 250;
 const RESULTS_PATH_RE = /\/global-search(\/|$)/;
 const HOME_PATH_RE = /\/AmericanBookCompany\/?$/;
 
-// 8 nav links matching standard navigation menu
 const NAV_LINKS = [
-  { id: "shop", label: "SHOP ALL", url: RESULTS_ALL, target: "_self", rel: "" },
+  {
+    id: "shop",
+    label: "SHOP ALL",
+    mobileLabel: "Shop All",
+    url: RESULTS_ALL,
+    target: "_self",
+    rel: ""
+  },
   {
     id: "catalog",
     label: "GET CATALOG",
+    mobileLabel: "Get Catalog",
     url: `${BASE}/catalog`,
     target: "_self",
     rel: ""
@@ -51,6 +55,7 @@ const NAV_LINKS = [
   {
     id: "about",
     label: "ABOUT ABC",
+    mobileLabel: "About ABC",
     url: `${BASE}/about-abc`,
     target: "_self",
     rel: ""
@@ -58,6 +63,7 @@ const NAV_LINKS = [
   {
     id: "coursewave",
     label: "COURSEWAVE",
+    mobileLabel: "CourseWave",
     url: "https://coursewave.com/",
     target: "_blank",
     rel: "noopener noreferrer"
@@ -65,6 +71,7 @@ const NAV_LINKS = [
   {
     id: "certification",
     label: "CERTIFICATION",
+    mobileLabel: "Certification",
     url: `${BASE}/certification`,
     target: "_self",
     rel: ""
@@ -72,14 +79,23 @@ const NAV_LINKS = [
   {
     id: "ordering-docs",
     label: "ORDERING DOCS",
+    mobileLabel: "Ordering Docs",
     url: `${BASE}/ordering-docs`,
     target: "_self",
     rel: ""
   },
-  { id: "blog", label: "BLOG", url: `${BASE}/blog`, target: "_self", rel: "" },
+  {
+    id: "blog",
+    label: "BLOG",
+    mobileLabel: "Blog",
+    url: `${BASE}/blog`,
+    target: "_self",
+    rel: ""
+  },
   {
     id: "podcast",
     label: "PODCAST",
+    mobileLabel: "Podcast",
     url: `${BASE}/podcast`,
     target: "_self",
     rel: ""
@@ -88,18 +104,17 @@ const NAV_LINKS = [
 
 const DEFAULT_STATE = "Georgia";
 
-// ─────────────────────────────────────────────────────────────────
-//  Component
-// ─────────────────────────────────────────────────────────────────
 export default class CustomHeader extends LightningElement {
-  // ── Public read-only data ──
   logoUrl = logoResource;
   isGuest = isGuestUser;
-  navLinks = NAV_LINKS;
   storeName = DEFAULT_STORE_NAME;
   webStoreId = DEFAULT_WEBSTORE_ID;
+  barslight = bars_light;
+  rectangleXmarkLight = rectangle_xmark_light;
+  locationDotLight = location_dot_light;
+  userLight = user_light;
+  cartShoppingLight = cart_shopping_light;
 
-  // ── URL helpers ──
   loginUrl = `${BASE}/login`;
   createAccountUrl = `${BASE}/create-account`;
   accountUrl = `${BASE}/myprofile`;
@@ -108,10 +123,10 @@ export default class CustomHeader extends LightningElement {
   wishlistUrl = `${BASE}/mylists`;
   cartUrl = `${BASE}/cart`;
 
-  // ── Reactive state ──
   selectedState = DEFAULT_STATE;
   accountMenuOpen = false;
   mobileMenuOpen = false;
+  mobileAccountMenuOpen = false;
   searchTerm = "";
   cartCount = 0;
 
@@ -122,15 +137,12 @@ export default class CustomHeader extends LightningElement {
   _boundCartRefreshHandler;
   _cleanupTimerId;
 
-  // ─────────────────────────────────────────────────────────────
-  //  Lifecycle
-  // ─────────────────────────────────────────────────────────────
   connectedCallback() {
+    this.mobileMenuOpen = false;
+    this.mobileAccountMenuOpen = false;
     this.syncSelectedStateFromUrl();
     this.scheduleUrlCleanupIfNeeded();
 
-    // Inject Lato font once per page (LWC CSS cannot use @import url()
-    // and @lwc/lwc/no-document-query forbids document.querySelector)
     if (!_latoFontInjected) {
       const link = document.createElement("link");
       link.rel = "stylesheet";
@@ -140,7 +152,6 @@ export default class CustomHeader extends LightningElement {
       _latoFontInjected = true;
     }
 
-    // Global outside-click handler to collapse open dropdowns
     this._boundCloseDropdowns = this._closeDropdowns.bind(this);
     this._boundExternalStateHandler = (event) =>
       this.handleExternalStateChange(event);
@@ -150,11 +161,14 @@ export default class CustomHeader extends LightningElement {
       if (document.visibilityState === "hidden") {
         return;
       }
-
       this.refreshCartCount();
     };
+
     document.addEventListener("click", this._boundCloseDropdowns);
-    document.addEventListener("visibilitychange", this._boundCartRefreshHandler);
+    document.addEventListener(
+      "visibilitychange",
+      this._boundCartRefreshHandler
+    );
     globalThis.addEventListener(
       "abcstatechange",
       this._boundExternalStateHandler
@@ -181,7 +195,10 @@ export default class CustomHeader extends LightningElement {
       "abcstatechange",
       this._boundExternalStateHandler
     );
-    globalThis.removeEventListener("statechange", this._boundExternalStateHandler);
+    globalThis.removeEventListener(
+      "statechange",
+      this._boundExternalStateHandler
+    );
     globalThis.removeEventListener("storage", this._boundStorageHandler);
     globalThis.removeEventListener("hashchange", this._boundUrlHandler);
     globalThis.removeEventListener("popstate", this._boundUrlHandler);
@@ -194,9 +211,30 @@ export default class CustomHeader extends LightningElement {
     globalThis.clearTimeout(this._cleanupTimerId);
   }
 
-  // ─────────────────────────────────────────────────────────────
-  //  Getters (template bindings)
-  // ─────────────────────────────────────────────────────────────
+  get navLinks() {
+    const stateAbbrev = (
+      STATE_ABBREVIATIONS[this.selectedState] || "GA"
+    ).toLowerCase();
+    const shopAllUrl = `${RESULTS_BASE}/${stateAbbrev}`;
+    const dynamicLinks = NAV_LINKS.map((link) => {
+      return link.id === "shop" ? { ...link, url: shopAllUrl } : link;
+    });
+
+    if (this.isGuest) return dynamicLinks;
+
+    return [
+      ...dynamicLinks,
+      {
+        id: "wishlist",
+        label: "My Wishlist",
+        mobileLabel: "My Wishlist",
+        url: this.wishlistUrl,
+        target: "_self",
+        rel: ""
+      }
+    ];
+  }
+
   get stateOptions() {
     return ALL_STATES.map((name) => ({
       name,
@@ -212,7 +250,6 @@ export default class CustomHeader extends LightningElement {
     if (this.cartCount <= 0) {
       return "Cart";
     }
-
     const itemLabel = this.cartCount === 1 ? "item" : "items";
     return `Cart: ${this.cartCount} ${itemLabel}`;
   }
@@ -227,6 +264,18 @@ export default class CustomHeader extends LightningElement {
     return this.mobileMenuOpen
       ? "abc-mobile-drawer abc-mobile-drawer--open"
       : "abc-mobile-drawer";
+  }
+
+  get mobileAccountDrawerClass() {
+    return this.mobileAccountMenuOpen
+      ? "abc-mobile-account-drawer abc-mobile-account-drawer--open"
+      : "abc-mobile-account-drawer";
+  }
+
+  get mobileAccountButtonClass() {
+    return this.mobileAccountMenuOpen
+      ? "abc-mob-account-btn abc-mob-account-btn--active"
+      : "abc-mob-account-btn";
   }
 
   @wire(CartSummaryAdapter)
@@ -259,7 +308,9 @@ export default class CustomHeader extends LightningElement {
     }
 
     const cartItems =
-      cartData?.cartItems || cartData?.items || cartData?.cartSummary?.cartItems;
+      cartData?.cartItems ||
+      cartData?.items ||
+      cartData?.cartSummary?.cartItems;
     if (Array.isArray(cartItems)) {
       return cartItems.reduce((total, item) => {
         const quantity = this.normalizeCartCount(
@@ -278,14 +329,9 @@ export default class CustomHeader extends LightningElement {
   }
 
   get hamburgerClass() {
-    return this.mobileMenuOpen
-      ? "abc-hamburger abc-hamburger--open"
-      : "abc-hamburger";
+    return "abc-hamburger";
   }
 
-  // ─────────────────────────────────────────────────────────────
-  //  State filter — native <select> onchange handler
-  // ─────────────────────────────────────────────────────────────
   handleStateChange(event) {
     const value = event.target.value;
     if (!value || !ALL_STATES.includes(value)) return;
@@ -311,7 +357,6 @@ export default class CustomHeader extends LightningElement {
     if (event?.key !== STATE_STORAGE_KEY) {
       return;
     }
-
     this.syncSelectedStateFromUrl();
   }
 
@@ -373,10 +418,8 @@ export default class CustomHeader extends LightningElement {
       return "";
     }
 
-    // Direct full state name match
     if (ALL_STATES.includes(resultsKeyword)) return resultsKeyword;
 
-    // Reverse-lookup abbreviation (e.g. "ga" → "Georgia")
     const kwLower = resultsKeyword.toLowerCase();
     const fromAbbrev = ALL_STATES.find(
       (s) => (STATE_ABBREVIATIONS[s] || "").toLowerCase() === kwLower
@@ -471,12 +514,6 @@ export default class CustomHeader extends LightningElement {
     }, CLEAN_URL_DELAY_MS);
   }
 
-  /**
-   * Mirrors stateFilterLwc.applyToUrl():
-   *  • On the search/results page → refreshes results with the new state refinement
-   *  • On the home page           → updates the URL hash to #StateName
-   *  • On all other pages         → stays on current path, updates URL params
-   */
   _applyStateToUrl(stateVal) {
     const current = new URL(globalThis.location.href);
     const params = new URLSearchParams(current.search);
@@ -486,7 +523,6 @@ export default class CustomHeader extends LightningElement {
     params.delete(FACETS_PARAM);
     params.delete(`search-facet-section-${REFINEMENT_KEY}`);
 
-    // Compat-mode refinements JSON (matches stateFilterLwc urlMode='compat')
     const refinementsList = [
       {
         nameOrId: REFINEMENT_KEY,
@@ -501,10 +537,9 @@ export default class CustomHeader extends LightningElement {
     );
 
     if (this.isResultsPage(current)) {
-      // On search/results page: re-run results with new state
-      const kw = this.getResultsKeyword(current) || "all";
-      // Preserve non-state keywords; use abbreviation only when writing a new state path
-      const pathToken = (STATE_ABBREVIATIONS[stateVal] || stateVal).toLowerCase();
+      const pathToken = (
+        STATE_ABBREVIATIONS[stateVal] || stateVal
+      ).toLowerCase();
       const target = `${RESULTS_BASE}/${encodeURIComponent(pathToken)}`;
       globalThis.location.assign(
         target + (params.toString() ? `?${params.toString()}` : "")
@@ -521,19 +556,43 @@ export default class CustomHeader extends LightningElement {
     }
   }
 
-  // ─────────────────────────────────────────────────────────────
-  //  Account menu
-  // ─────────────────────────────────────────────────────────────
   toggleAccountMenu(event) {
     event.stopPropagation();
     this.accountMenuOpen = !this.accountMenuOpen;
     if (this.accountMenuOpen) {
       this.mobileMenuOpen = false;
+      this.mobileAccountMenuOpen = false;
     }
   }
 
   closeAccountMenu() {
     this.accountMenuOpen = false;
+  }
+
+  toggleMobileMenu(event) {
+    event.stopPropagation();
+    this.mobileMenuOpen = !this.mobileMenuOpen;
+    if (this.mobileMenuOpen) {
+      this.accountMenuOpen = false;
+      this.mobileAccountMenuOpen = false;
+    }
+  }
+
+  closeMobileMenu() {
+    this.mobileMenuOpen = false;
+  }
+
+  toggleMobileAccountMenu(event) {
+    event.stopPropagation();
+    this.mobileAccountMenuOpen = !this.mobileAccountMenuOpen;
+    if (this.mobileAccountMenuOpen) {
+      this.mobileMenuOpen = false;
+      this.accountMenuOpen = false;
+    }
+  }
+
+  closeMobileAccountMenu() {
+    this.mobileAccountMenuOpen = false;
   }
 
   handleLogout() {
@@ -543,9 +602,6 @@ export default class CustomHeader extends LightningElement {
     );
   }
 
-  // ─────────────────────────────────────────────────────────────
-  //  Search
-  // ─────────────────────────────────────────────────────────────
   handleSearchInput(event) {
     this.searchTerm = event.target.value;
   }
@@ -560,28 +616,15 @@ export default class CustomHeader extends LightningElement {
     );
   }
 
-  // ─────────────────────────────────────────────────────────────
-  //  Mobile menu
-  // ─────────────────────────────────────────────────────────────
-  toggleMobileMenu(event) {
-    event.stopPropagation();
-    this.mobileMenuOpen = !this.mobileMenuOpen;
-    if (this.mobileMenuOpen) {
-      this.accountMenuOpen = false;
-    }
-  }
-
-  closeMobileMenu() {
-    this.mobileMenuOpen = false;
-  }
-
-  // ─────────────────────────────────────────────────────────────
-  //  Outside-click collapse handler
-  // ─────────────────────────────────────────────────────────────
   _closeDropdowns(event) {
-    // If the click origin is inside this component's DOM, skip
     if (this.template.host.contains(event.target)) return;
     this.accountMenuOpen = false;
-    // Leave mobileMenuOpen alone — it has its own toggle button
+    this.mobileAccountMenuOpen = false;
+  }
+
+  get stateAbbreviation() {
+    return (
+      STATE_ABBREVIATIONS[this.selectedState || "Georgia"] || "GA"
+    ).toUpperCase();
   }
 }
