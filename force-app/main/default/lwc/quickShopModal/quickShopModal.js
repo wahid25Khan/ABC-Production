@@ -101,7 +101,11 @@ export default class QuickShopModal extends LightningElement {
   }
 
   get selectedUnitPrice() {
-    return resolveUnitPriceForQuantity(this.selectedVariation, this.quantity, this.minQty);
+    return resolveUnitPriceForQuantity(
+      this.selectedVariation,
+      this.quantity,
+      this.minQty
+    );
   }
 
   get displayTiers() {
@@ -114,7 +118,10 @@ export default class QuickShopModal extends LightningElement {
           ? `${tier.lowerBound}+`
           : `${tier.lowerBound}\u2013${tier.upperBound}`,
 
-      formattedPrice: formatCurrency(toNumber(tier.price), this.currencyIsoCode || "USD"),
+      formattedPrice: formatCurrency(
+        toNumber(tier.price),
+        this.currencyIsoCode || "USD"
+      ),
       priceClass: `td price${index > 0 ? " price-red" : ""}`
     }));
   }
@@ -147,7 +154,7 @@ export default class QuickShopModal extends LightningElement {
     const variationMax = parsePositiveInteger(
       this.selectedVariation?.maximumQuantity
     );
-    if (variationMax !== null) {
+    if (variationMax !== null && variationMax <= 9999) {
       return variationMax;
     }
 
@@ -172,7 +179,10 @@ export default class QuickShopModal extends LightningElement {
   }
 
   get formattedUnitPrice() {
-    return formatCurrency(this.selectedUnitPrice, this.currencyIsoCode || "USD");
+    return formatCurrency(
+      this.selectedUnitPrice,
+      this.currencyIsoCode || "USD"
+    );
   }
 
   get heartIcon() {
@@ -235,7 +245,7 @@ export default class QuickShopModal extends LightningElement {
 
   handleQtyChange(e) {
     const raw = e.target.value;
-    if (raw === '') return;
+    if (raw === "") return;
     const parsed = parseInt(raw, 10);
     if (Number.isFinite(parsed) && parsed > 0) {
       this.quantity = parsed;
@@ -319,7 +329,11 @@ export default class QuickShopModal extends LightningElement {
   }
 
   handleToggleFavorite() {
-    doToggleFavorite(this, this.selectedProductId, this.webStoreId || DEFAULT_WEBSTORE_ID);
+    doToggleFavorite(
+      this,
+      this.selectedProductId,
+      this.webStoreId || DEFAULT_WEBSTORE_ID
+    );
   }
 
   // ESC close

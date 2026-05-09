@@ -297,6 +297,7 @@ describe("c-quick-shop-modal", () => {
     const input = el.shadowRoot.querySelector(".qty-input");
     input.value = "3";
     input.dispatchEvent(new Event("input"));
+    input.dispatchEvent(new Event("blur"));
     await flushPromises();
     expect(Number(input.value)).toBe(10);
   });
@@ -307,6 +308,7 @@ describe("c-quick-shop-modal", () => {
     const input = el.shadowRoot.querySelector(".qty-input");
     input.value = "999";
     input.dispatchEvent(new Event("input"));
+    input.dispatchEvent(new Event("blur"));
     await flushPromises();
     expect(Number(input.value)).toBe(50);
   });
@@ -331,6 +333,7 @@ describe("c-quick-shop-modal", () => {
     // Type 13 → nearest valid step = 10 + round((13-10)/5)*5 = 10+5=15
     input.value = "13";
     input.dispatchEvent(new Event("input"));
+    input.dispatchEvent(new Event("blur"));
     await flushPromises();
     expect(Number(input.value)).toBe(15);
   });
