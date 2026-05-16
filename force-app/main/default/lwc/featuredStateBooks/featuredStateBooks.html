@@ -7,7 +7,7 @@
     <template if:false={loading}>
       <div class="heading-row">
         <div class="heading-line" aria-hidden="true"></div>
-        <h2 class="heading-text">{headingText}</h2>
+        <h2 class="heading-text" style="font-size: 1.5rem;">{headingText}</h2>
         <div class="heading-line" aria-hidden="true"></div>
       </div>
 
@@ -41,7 +41,7 @@
                         class="featured-image"
                         src={featuredProduct.imageUrl}
                         alt={featuredProduct.name}
-                        loading="eager"
+                        loading="lazy"
                       />
                     </template>
                     <template if:false={featuredProduct.imageUrl}>
@@ -79,7 +79,7 @@
                   {featuredProduct.name}
                 </button>
 
-                <div class="score-logo-wrap">
+                <div class="score-logo-wrap desktop-logo">
                   <img
                     src={scoreGuaranteeLogo}
                     alt="Score Improvement Guarantee"
@@ -105,7 +105,7 @@
                         class="product-image"
                         src={product.imageUrl}
                         alt={product.name}
-                        loading="eager"
+                        loading="lazy"
                       />
                     </template>
                     <template if:false={product.imageUrl}>
@@ -144,6 +144,13 @@
                 </button>
               </article>
             </template>
+          </div>
+          <div class="score-logo-wrap mobile-logo">
+            <img
+              src={scoreGuaranteeLogo}
+              alt="Score Improvement Guarantee"
+              class="score-logo"
+            />
           </div>
         </div>
 

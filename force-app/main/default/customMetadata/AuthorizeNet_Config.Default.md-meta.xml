@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomMetadata xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <label>Default</label>
+    <protected>false</protected>
+    <values>
+        <field>APILoginId__c</field>
+        <value xsi:type="xsd:string">PENDING_PRODUCTION_KEY</value>
+    </values>
+    <values>
+        <field>TransactionKey__c</field>
+        <value xsi:type="xsd:string">PENDING_PRODUCTION_KEY</value>
+    </values>
+    <values>
+        <field>UseSandbox__c</field>
+        <value xsi:type="xsd:boolean">true</value>
+    </values>
+    <values>
+        <field>WebhookSigningKey__c</field>
+        <value xsi:type="xsd:string">1508749A19EEC380F549E9408AA267E0F4D0C9D5AEC194B2E928D3B40EA99D569F2A054449E6229EA9A71C99772EADA4EBB184B7AF8A803D0971555DF671F20A</value>
+    </values>
+</CustomMetadata>

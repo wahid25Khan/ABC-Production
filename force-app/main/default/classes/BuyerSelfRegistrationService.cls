@@ -429,9 +429,9 @@ public without sharing class BuyerSelfRegistrationService {
     String localPart = normalizedEmail.substringBefore('@');
     String domainPart = normalizedEmail.substringAfter('@');
     String orgKey = safeTrim(UserInfo.getOrganizationId()).toLowerCase();
-    String suffix =
-      '+abcshop-' +
-      (String.isNotBlank(orgKey) ? orgKey.left(15) : 'storefront');
+    String suffix = '+abcshop-' + (
+      String.isNotBlank(orgKey) ? orgKey.left(15) : 'storefront'
+    );
     Integer maxLocalLength = Math.max(
       1,
       USERNAME_MAX_LENGTH - domainPart.length() - suffix.length() - 1
@@ -493,18 +493,14 @@ public without sharing class BuyerSelfRegistrationService {
     }
     try {
       List<PermissionSetGroup> psgs = [
-        SELECT Id
-        FROM PermissionSetGroup
-        WHERE DeveloperName = 'Commerce_Buyer'
-        LIMIT 1
+        SELECT Id FROM PermissionSetGroup WHERE DeveloperName = 'Commerce_Buyer' LIMIT 1
       ];
       if (psgs.isEmpty()) {
         return;
       }
       Id psgId = psgs[0].Id;
       Integer existing = [
-        SELECT COUNT()
-        FROM PermissionSetAssignment
+        SELECT COUNT() FROM PermissionSetAssignment
         WHERE AssigneeId = :userId AND PermissionSetGroupId = :psgId
       ];
       if (existing == 0) {
@@ -516,10 +512,7 @@ public without sharing class BuyerSelfRegistrationService {
     } catch (Exception e) {
       // Non-fatal: log and continue; buyer entitlements are
       // also set asynchronously via ensureB2BBuyerEntitlementsAsync
-      System.debug(
-        LoggingLevel.WARN,
-        'assignCommerceBuyerGroup failed: ' + e.getMessage()
-      );
+      System.debug(LoggingLevel.WARN, 'assignCommerceBuyerGroup failed: ' + e.getMessage());
     }
   }
 }

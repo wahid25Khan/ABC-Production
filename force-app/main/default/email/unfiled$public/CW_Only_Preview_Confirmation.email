@@ -1,0 +1,157 @@
+<messaging:emailTemplate subject="Your ABC Digital Preview Access – Order #{!relatedTo.OrderNumber}" recipientType="Contact" relatedToType="Order">
+
+  <messaging:htmlEmailBody >
+    <style type="text/css">
+      table.blueTable {
+        border: 1px solid #1C6EA4;
+        background-color: #FFFFFF;
+        width: 100%;
+        border-collapse: collapse;
+      }
+      table.blueTable td, table.blueTable th {
+        border: 1px solid #0071BC;
+        padding: 3px 2px;
+      }
+      table.blueTable tbody td {
+        font-size: 13px;
+        word-wrap: break-word;
+        padding: 5px;
+      }
+      table.blueTable tr.alt-row {
+        background: #D0E4F5;
+      }
+      table.blueTable thead {
+        background: #0071BC;
+        background: linear-gradient(to bottom, #0071BC 0%, #327cad 66%, #1C6EA4 100%);
+      }
+      table.blueTable thead th {
+        font-size: 15px;
+        font-weight: bold;
+        color: #FFFFFF;
+        border-left: 2px solid #D0E4F5;
+      }
+      .es-button {
+        text-decoration:none!important;
+        color:#FFFFFF;
+        background:#0071bc;
+        padding:10px 50px;
+        display:inline-block;
+        border-radius:1px;
+        font-family:arial, sans-serif;
+        font-size:18px;
+        text-align:center;
+      }
+    </style>
+
+    <table width="100%" cellspacing="0" cellpadding="0" style="background-color:transparent; font-family:arial, sans-serif;">
+      <tr>
+        <td align="center">
+          <table width="600" cellspacing="0" cellpadding="0" style="background-color:transparent;">
+            
+            <tr>
+              <td align="right" style="padding:10px;">
+                <a href="#" style="font-size:12px; color:#0b5394; text-decoration:none;">Click here to view in browser</a>
+              </td>
+            </tr>
+
+            
+            <tr>
+              <td align="center" style="padding-top:15px;">
+                <h2 style="color:#0071bc; font-size:20px; margin:0;">Hello {!recipient.FirstName},</h2>
+                <p style="padding:15px; margin:0; font-size:14px; color:#333333; line-height:1.4;">
+                  Thank you for choosing ABC as a partner in student success! Your trial resources are listed below, along with your trial access codes.
+                </p>
+              </td>
+            </tr>
+
+            <tr>
+              <td style="padding:10px 20px 20px 20px;">
+                <div style="border-bottom:1px solid #0071bc;"></div>
+              </td>
+            </tr>
+
+            <tr>
+              <td style="padding:0 20px 15px 20px;">
+                <table class="blueTable">
+                  <thead>
+                    <tr>
+                      <th style="width:22%;">ISBN</th>
+                      <th>TITLE</th>
+                      <th style="width:22%;">CODE</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <apex:variable value="{!0}" var="rowNum"/>
+                    <apex:repeat value="{!relatedTo.OrderItems}" var="oi">
+                      <tr class="{!IF(MOD(rowNum, 2) == 0, '', 'alt-row')}">
+                        <td align="center" style="font-weight:bold;">{!oi.Product2.ProductCode}</td>
+                        <td align="left">{!oi.Product2.Name}</td>
+                        <td align="center" style="font-weight:bold; color:#0071bc;">{!oi.Product2.00Nam00001444Bt}</td>
+                      </tr>
+                      <apex:variable var="rowNum" value="{!rowNum + 1}"/>
+                    </apex:repeat>
+                  </tbody>
+                </table>
+              </td>
+            </tr>
+
+            <tr>
+              <td align="center" style="padding-bottom:20px;">
+                <a href="https://staging.coursewave.com/login" class="es-button">Login</a>
+              </td>
+            </tr>
+
+            <tr>
+              <td style="padding:10px 20px;">
+                <div style="border-bottom:1px solid #0071bc;"></div>
+              </td>
+            </tr>
+
+            <tr>
+              <td align="left" style="padding:15px 20px;">
+                <p style="color:#3d85c6; font-weight:bold; margin:0; text-align: center;">Redeeming your codes is a simple process:</p>
+                <ol style="font-size:14px; color:#333333; line-height:1.6; margin-top:10px;">
+                  <li>Go to Coursewave.com and log in or create an account.</li>
+                  <li>On your dashboard, select <strong><span style="color:#0071BC; font-weight:bold;">“Add Code”</span></strong> in the upper right corner.</li>
+                  <li>Enter the code you would like to redeem, and enter your name in the student name field. No additional fields are required.</li>
+                  <li>When the prompt asks if you entered an email address, select <strong><span style="color:#0071BC; font-weight:bold;">“no”</span></strong>.</li>
+                  <li>The resources will be added to your teacher dashboard.</li>
+                </ol>
+                <p style="font-size:14px; color:#333333; margin-top:10px; text-align: center;">
+                  To view the resource as a student, log out, and then enter the code when you return to the login screen.
+                </p>
+              </td>
+            </tr>
+
+            <tr>
+              <td align="center" style="padding:15px 20px; font-size:14px; color:#333333;">
+                If you have any questions, or if you would like to request a quote, please contact us at 
+                <a href="mailto:contact@abck12.com" style="color:#3366ff; text-decoration:none; font-weight:bold;">contact@abck12.com</a> 
+                or call our office at <strong><span style="color:#0071BC; font-weight:bold;">888-264-5877</span></strong>.
+              </td>
+            </tr>
+            
+            <tr>
+              <td style="padding:10px 20px;">
+                <div style="border-bottom:1px solid #0071bc;"></div>
+              </td>
+            </tr>
+
+            <tr>
+              <td align="center" style="padding:20px;">
+                <a href="https://gl1kzmhy.sibpages.com/" class="es-button">Join our Newsletter</a>
+              </td>
+            </tr>
+
+            <tr>
+              <td align="center" bgcolor="#0071bc" style="padding:10px;">
+                <a href="https://www.americanbookcompany.com" style="color:#ffffff; text-decoration:none; font-size:12px;">www.americanbookcompany.com</a>
+              </td>
+            </tr>
+
+          </table>
+        </td>
+      </tr>
+    </table>
+  </messaging:htmlEmailBody>
+</messaging:emailTemplate>

@@ -9,7 +9,6 @@ import {
   DEFAULT_WEBSTORE_ID,
   dispatchWishlistUpdated,
   fetchStorefrontProductDetails,
-  normalizeImageUrl,
   parsePositiveInteger,
   resolveProductImageUrl,
   WISHLIST_UPDATED_EVENT_NAME
@@ -131,7 +130,8 @@ export default class CartWishlistShelf extends LightningElement {
 
         return {
           ...item,
-          imageUrl: normalizeImageUrl(resolveProductImageUrl(product)),
+          // imageUrl: normalizeImageUrl(resolveProductImageUrl(product)),
+          imageUrl: resolveProductImageUrl(product),
           minimumQuantity,
           cardClass: item.isRemoving ? "wishlist-card removing" : "wishlist-card"
         };

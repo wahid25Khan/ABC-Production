@@ -176,4 +176,12 @@
         <name>standard__EasyMarketing</name>
         <type>CustomApplication</type>
     </appMenuItems>
+    <appMenuItems>
+        <name>tbid_digital_salesforce_com</name>
+        <type>ConnectedApp</type>
+    </appMenuItems>
+    <appMenuItems>
+        <name>Pardot_SSO</name>
+        <type>ConnectedApp</type>
+    </appMenuItems>
 </AppMenu>

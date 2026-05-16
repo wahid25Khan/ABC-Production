@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomMetadata xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <label>Default</label>
+    <protected>false</protected>
+    <values>
+        <field>Access_Token__c</field>
+        <value xsi:type="xsd:string">pk.eyJ1IjoiYWthc2h0aGVsb2Rlc3RvbmVncm91cCIsImEiOiJjbW05bG5kaGMwMHQ1Mm9zM3lrM25ydTRwIn0.pSVyEJv1yK_Z8_U1tXKHTA</value>
+    </values>
+</CustomMetadata>

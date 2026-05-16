@@ -1,0 +1,31 @@
+{
+  "type" : "sfdc_cms__email",
+  "title" : "Welcome Email",
+  "contentBody" : {
+    "sfdc_cms:block" : {
+      "definition" : "sfdc_cms/rootContentBlock",
+      "id" : "99e0ab63-42b1-4dd7-84c6-7b4f3d87a688",
+      "type" : "block",
+      "children" : [ ]
+    },
+    "sfdc_cms:description" : "",
+    "messagePurpose" : "promotional",
+    "subjectLine" : "Welcome to American Book Company",
+    "backgroundColor" : "#EEF4FF",
+    "preheader" : "",
+    "sfdc_cms:title" : "Welcome Email",
+    "lightning:dataProviders" : [ ],
+    "lightning:expressions" : [ ],
+    "lightning:backgroundImage" : {
+      "repeat" : "no-repeat",
+      "position" : "center center",
+      "size" : "cover"
+    },
+    "sfdc_cms:attachments" : [ ],
+    "sfdc_cms:variants" : [ ],
+    "lightning:brandSource" : {
+      "defaultBrandOption" : "sfdcBrand"
+    }
+  },
+  "urlName" : "welcome-email"
+}

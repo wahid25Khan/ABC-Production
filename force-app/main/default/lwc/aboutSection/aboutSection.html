@@ -1,241 +1,309 @@
 <template>
-  <!-- ═══════════════════════════════════════════════════════════
-       1. HERO / WHO WE ARE
-  ═══════════════════════════════════════════════════════════════ -->
   <section class="hero-section">
     <div class="hero-inner">
-      <div class="hero-image-col">
-        <img
-          src={heroImage}
-          alt="About American Book Company"
-          class="hero-img"
-        />
-      </div>
+      <div class="hero-text-rail">
+        <div class="hero-copy">
+          <h1 class="hero-heading">Who We Are</h1>
+          <p class="hero-body">
+            American Book Company (ABC) was created by two educators who saw a need
+            to improve the selection of quality educational resources in the
+            classroom. That vision has driven us to create innovative content that
+            has helped students achieve success in and out of the classroom for over
+            30 years. We pride ourselves in writing books that are accurate,
+            effective, easy-to-read, and engaging for students and teachers alike,
+            across all subjects - Mathematics, English Language Arts, Science, and
+            Social Studies.
+          </p>
+        </div>
 
-      <div class="hero-text-col">
-        <h1 class="hero-heading">Who We Are</h1>
-        <p class="hero-body">
-          American Book Company (ABC) was created by two educators who saw a
-          need to improve the selection of quality educational resources in the
-          classroom. That vision has driven us to create innovative content that
-          has helped students achieve success in and out of the classroom for
-          over 27 years. We pride ourselves in writing books that are accurate,
-          effective, easy-to-read, and engaging for students and teachers alike,
-          across all subjects — Mathematics, English Language Arts, Science, and
-          Social Studies.
-        </p>
-
-        <div class="stat-row">
+        <div class="hero-stats" aria-label="American Book Company statistics">
           <div class="stat-card">
-            <div class="stat-number">27<span class="stat-plus">+</span></div>
+            <div class="stat-number">30<span class="stat-plus">+</span></div>
             <div class="stat-label">Years in Business</div>
           </div>
-          <div class="stat-card">
+          <div class="stat-card stat-card--offset">
             <div class="stat-number">5395</div>
             <div class="stat-label">Schools Served</div>
           </div>
         </div>
       </div>
+
+      <div class="hero-image-col">
+        <img src={heroImage} alt="About Us Hero" class="hero-img" />
+      </div>
     </div>
   </section>
 
-  <!-- ═══════════════════════════════════════════════════════════
-       2. STICKY SECTION NAVIGATION
-  ═══════════════════════════════════════════════════════════════ -->
   <nav class="section-nav" aria-label="About page sections">
-    <div class="section-nav-inner">
-      <a
-        class="section-nav-link"
-        href="#ourStaff"
-        data-anchor="ourStaff"
-        onclick={handleNavClick}
-        >Our Staff</a
-      >
-      <a
-        class="section-nav-link"
-        href="#diversityAndCulture"
-        data-anchor="diversityAndCulture"
-        onclick={handleNavClick}
-        >Diversity &amp; Culture</a
-      >
-      <a
-        class="section-nav-link"
-        href="#abcCares"
-        data-anchor="abcCares"
-        onclick={handleNavClick}
-        >ABC Cares</a
-      >
-      <a
-        class="section-nav-link"
-        href="#environment"
-        data-anchor="environment"
-        onclick={handleNavClick}
-        >Environment</a
-      >
-      <a
-        class="section-nav-link"
-        href="#testimonials"
-        data-anchor="testimonials"
-        onclick={handleNavClick}
-        >Testimonials</a
-      >
-    </div>
+    <ul class="section-nav-inner">
+      <template for:each={tabList} for:item="tab">
+        <li key={tab.key} class="section-nav-item">
+          <button
+            type="button"
+            class={tab.className}
+            data-key={tab.key}
+            onclick={handleTabClick}
+          >
+            {tab.label}
+          </button>
+        </li>
+      </template>
+    </ul>
   </nav>
 
-  <!-- ═══════════════════════════════════════════════════════════
-       3. OUR STAFF
-  ═══════════════════════════════════════════════════════════════ -->
-  <section class="content-section" data-section="ourStaff">
-    <div class="section-inner">
-      <h2 class="section-heading">Our Staff</h2>
+  <section id="ourStaff" data-section="ourStaff" class="panel">
+    <div class="panel-inner">
+      <h2 class="panel-heading">Our Staff</h2>
+      <div
+        class="carousel-shell carousel-shell--staff"
+        data-carousel="staff"
+        ontouchstart={handleCarouselTouchStart}
+        ontouchmove={handleCarouselTouchMove}
+        ontouchend={handleCarouselTouchEnd}
+        ontouchcancel={handleCarouselTouchCancel}
+      >
+        <button
+          type="button"
+          class="carousel-arrow"
+          aria-label="Previous staff members"
+          onclick={handleStaffPrevious}
+        >
+          &#8249;
+        </button>
 
-      <div class="staff-grid">
-        <template for:each={staffList} for:item="member">
-          <div key={member.id} class="staff-card">
-            <div class="staff-avatar-wrap">
-              <template if:true={member.image}>
-                <img src={member.image} alt={member.name} class="staff-photo" />
-              </template>
-              <template if:false={member.image}>
-                <div class="staff-initials">{member.initials}</div>
-              </template>
-            </div>
-            <p class="staff-name">{member.name}</p>
-            <p class="staff-title">{member.title}</p>
-          </div>
-        </template>
+        <div class="staff-track" style={staffTrackStyle}>
+          <template for:each={visibleStaffMembers} for:item="member">
+            <article key={member.id} class="staff-card">
+              <div class="staff-avatar-wrap">
+                <img
+                  src={member.image}
+                  alt={member.name}
+                  class="staff-photo"
+                  loading="lazy"
+                />
+              </div>
+              <div class="staff-name">{member.name}</div>
+              <div class="staff-title">{member.title}</div>
+              <div class="staff-actions">
+                <template if:true={member.phone}>
+                  <a href={member.phone} aria-label={member.name}>
+                    <img src={phoneIconUrl} alt="" class="staff-icon" />
+                  </a>
+                </template>
+                <template if:true={member.email}>
+                  <a href={member.email} aria-label={member.name}>
+                    <img src={mailIconUrl} alt="" class="staff-icon" />
+                  </a>
+                </template>
+              </div>
+            </article>
+          </template>
+        </div>
+
+        <button
+          type="button"
+          class="carousel-arrow"
+          aria-label="Next staff members"
+          onclick={handleStaffNext}
+        >
+          &#8250;
+        </button>
       </div>
     </div>
   </section>
 
-  <!-- ═══════════════════════════════════════════════════════════
-       4. DIVERSITY & CULTURE
-  ═══════════════════════════════════════════════════════════════ -->
   <section
-    class="content-section content-section--gray"
+    id="diversityAndCulture"
     data-section="diversityAndCulture"
+    class="panel panel--muted"
   >
-    <div class="section-inner">
-      <h2 class="section-heading">Diversity &amp; Culture</h2>
-
-      <div class="text-image-row">
-        <div class="text-block">
-          <p>
-            At American Book Company, our people are our greatest strength. We
-            celebrate the diverse backgrounds, experiences, and perspectives
-            that every team member brings to our work. Our commitment to
-            building an inclusive, equitable culture drives everything we do —
-            from how we hire and collaborate internally to the classroom
-            resources we create for students across America.
-          </p>
-          <p>
-            We are an equal opportunity employer and proud to maintain a
-            workplace where every individual is respected, supported, and
-            empowered to contribute. We actively work to ensure that our teams
-            reflect the diversity of the students and educators we serve.
-          </p>
-          <p>
-            ABC is committed to developing accessible, culturally responsive
-            educational materials. Our curriculum spans Mathematics, English
-            Language Arts, Science, and Social Studies — designed to meet
-            students where they are and help every learner succeed, regardless
-            of background or ability.
-          </p>
-        </div>
-        <div class="section-img-col">
-          <div class="img-placeholder img-placeholder--tall"></div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ═══════════════════════════════════════════════════════════
-       5. ABC CARES
-  ═══════════════════════════════════════════════════════════════ -->
-  <section class="content-section" data-section="abcCares">
-    <div class="section-inner">
-      <h2 class="section-heading">ABC Cares</h2>
-      <p class="section-intro">
-        At American Book Company, we believe in giving back to the communities
-        that inspire us every day. Through partnerships, sponsorships, and
-        ongoing support, we invest in education, youth development, and
-        community growth.
-      </p>
-
-      <div class="cares-grid">
-        <template for:each={abcCaresList} for:item="item">
-          <div key={item.id} class="cares-card">
-            <div class="cares-img-wrap">
-              <template if:true={item.image}>
-                <img src={item.image} alt={item.title} class="cares-img" />
-              </template>
-              <template if:false={item.image}>
-                <div class="img-placeholder img-placeholder--cares"></div>
-              </template>
-            </div>
-            <div class="cares-body">
-              <h3 class="cares-title">{item.title}</h3>
-              <p class="cares-text">{item.text}</p>
-            </div>
-          </div>
+    <div class="panel-inner diversity-layout">
+      <div class="diversity-copy">
+        <h2 class="panel-heading panel-heading--left">Diversity &amp; Culture</h2>
+        <template for:each={diversityParagraphs} for:item="item">
+          <p key={item.id} class="panel-copy">{item.paragraph}</p>
         </template>
       </div>
-    </div>
-  </section>
 
-  <!-- ═══════════════════════════════════════════════════════════
-       6. ENVIRONMENT
-  ═══════════════════════════════════════════════════════════════ -->
-  <section
-    class="content-section content-section--gray"
-    data-section="environment"
-  >
-    <div class="section-inner">
-      <h2 class="section-heading">Environment</h2>
-      <p class="section-intro">
-        American Book Company is committed to reducing our environmental impact.
-        We continually evaluate our operations to minimize energy consumption,
-        reduce waste, and implement sustainable practices across every part of
-        our business.
-      </p>
-
-      <div class="env-grid">
-        <template for:each={environmentList} for:item="item">
-          <div key={item.id} class="env-card">
-            <div class="env-img-wrap">
-              <template if:true={item.image}>
-                <img src={item.image} alt={item.title} class="env-img" />
-              </template>
-              <template if:false={item.image}>
-                <div class="img-placeholder img-placeholder--env"></div>
-              </template>
-            </div>
-            <h3 class="env-title">{item.title}</h3>
-            <p class="env-text">{item.text}</p>
-          </div>
-        </template>
+      <div class="diversity-image-wrap">
+        <picture>
+          <source media="(max-width: 767px)" srcset={diversityMobileImage} />
+          <img
+            src={diversityDesktopImage}
+            alt="Diversity and culture at American Book Company"
+            class="diversity-image"
+          />
+        </picture>
       </div>
     </div>
   </section>
 
-  <!-- ═══════════════════════════════════════════════════════════
-       7. TESTIMONIALS
-  ═══════════════════════════════════════════════════════════════ -->
+  <section id="abcCares" data-section="abcCares" class="panel">
+    <div class="panel-inner">
+      <h2 class="panel-heading">ABC Cares</h2>
+      <p class="panel-copy panel-copy--center">
+        ABC cares about our communities and the schools we serve. We know that
+        curriculum is only one part of student success and that strong
+        communities and make all the difference. In our home state of Georgia
+        and the other states we serve, we believe in being part of those strong
+        communities.
+      </p>
+      <p class="panel-copy panel-copy--center panel-copy--spaced">
+        From backpack drives to charity tournaments to helping students and
+        teachers get back on their feet after natural disasters, we will be here
+        to help.
+      </p>
+
+      <div
+        class="carousel-shell"
+        data-carousel="abcCares"
+        ontouchstart={handleCarouselTouchStart}
+        ontouchmove={handleCarouselTouchMove}
+        ontouchend={handleCarouselTouchEnd}
+        ontouchcancel={handleCarouselTouchCancel}
+      >
+        <button
+          type="button"
+          class="carousel-arrow"
+          aria-label="Previous ABC Cares story"
+          onclick={handleAbcCaresPrevious}
+        >
+          &#8249;
+        </button>
+
+        <article class="feature-card">
+          <div class="feature-media">
+            <img
+              src={currentAbcCaresItem.image}
+              alt={currentAbcCaresItem.title}
+              class="feature-image"
+              loading="lazy"
+            />
+          </div>
+
+          <div class="feature-content">
+            <img src={bubbleImage} alt="" class="feature-bubbles" />
+            <div class="feature-copy-block">
+              <h3 class="feature-heading">{currentAbcCaresItem.title}</h3>
+              <p class="feature-text">{currentAbcCaresItem.text}</p>
+            </div>
+          </div>
+        </article>
+
+        <button
+          type="button"
+          class="carousel-arrow"
+          aria-label="Next ABC Cares story"
+          onclick={handleAbcCaresNext}
+        >
+          &#8250;
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <section id="environment" data-section="environment" class="panel panel--muted">
+    <div class="panel-inner">
+      <h2 class="panel-heading">Environment</h2>
+      <p class="panel-copy panel-copy--center">
+        ABC cares about the impact of our manufacturing processes and we take
+        efforts to reduce energy consumption and waste.
+      </p>
+
+      <div
+        class="carousel-shell"
+        data-carousel="environment"
+        ontouchstart={handleCarouselTouchStart}
+        ontouchmove={handleCarouselTouchMove}
+        ontouchend={handleCarouselTouchEnd}
+        ontouchcancel={handleCarouselTouchCancel}
+      >
+        <button
+          type="button"
+          class="carousel-arrow"
+          aria-label="Previous environment story"
+          onclick={handleEnvironmentPrevious}
+        >
+          &#8249;
+        </button>
+
+        <article class="feature-card">
+          <div class="feature-media">
+            <img
+              src={currentEnvironmentItem.image}
+              alt={currentEnvironmentItem.title}
+              class="feature-image"
+              loading="lazy"
+            />
+          </div>
+
+          <div class="feature-content">
+            <img src={bubbleImage} alt="" class="feature-bubbles" />
+            <div class="feature-copy-block">
+              <h3 class="feature-heading">{currentEnvironmentItem.title}</h3>
+              <p class="feature-text">{currentEnvironmentItem.text}</p>
+            </div>
+          </div>
+        </article>
+
+        <button
+          type="button"
+          class="carousel-arrow"
+          aria-label="Next environment story"
+          onclick={handleEnvironmentNext}
+        >
+          &#8250;
+        </button>
+      </div>
+    </div>
+  </section>
+
   <section
-    class="content-section testimonials-section"
+    id="testimonials"
     data-section="testimonials"
+    class="panel panel--muted testimonials-panel"
   >
-    <div class="section-inner">
-      <h2 class="section-heading">Testimonials</h2>
-      <blockquote class="testimonial-block">
-        <p class="testimonial-quote">
-          &#8220;everything the student needs&#8230; self-explanatory&#8230;
-          wonderful books.&#8221;
+    <div class="panel-inner panel-inner--wide">
+      <div class="quote-banner">
+        <p class="quote-banner-text">
+          "everything the student needs... self-explanatory... wonderful books."
         </p>
-        <footer class="testimonial-attribution">
-          &#8722;&nbsp;Joyce Harvey, McDonough High School, Louisiana
-        </footer>
-      </blockquote>
+        <p class="quote-banner-attribution">
+          - Joyce Harvey, McDonough High School, Louisiana
+        </p>
+      </div>
+
+      <h2 class="panel-heading">Testimonials</h2>
+
+      <div class="testimonial-grid">
+        <template for:each={testimonials} for:item="item">
+          <article key={item.id} class="testimonial-card">
+            <div class="testimonial-video-wrap">
+              <iframe
+                src={item.video}
+                title={item.name}
+                class="testimonial-video"
+                loading="lazy"
+                allow={iframeAllow}
+                allowfullscreen
+              ></iframe>
+            </div>
+
+            <div class="testimonial-card-body">
+              <img src={testimonialIconUrl} alt="" class="testimonial-icon" />
+              <div class="testimonial-copy">
+                <div class="testimonial-name">{item.name}</div>
+                <template if:true={item.school}>
+                  <div class="testimonial-school">{item.school}</div>
+                </template>
+                <template if:true={item.state}>
+                  <div class="testimonial-state">{item.state}</div>
+                </template>
+              </div>
+            </div>
+          </article>
+        </template>
+      </div>
     </div>
   </section>
 </template>

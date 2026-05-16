@@ -85,12 +85,7 @@
 .blob--yellow {
   width: 140px;
   height: 140px;
-  background: radial-gradient(
-    circle,
-    #f9d94b 0%,
-    #f5c518 60%,
-    transparent 100%
-  );
+  background: radial-gradient(circle, #f9d94b 0%, #f5c518 60%, transparent 100%);
   top: -40px;
   right: -40px;
   border-radius: 50%;
@@ -102,12 +97,7 @@
 .blob--red {
   width: 100px;
   height: 100px;
-  background: radial-gradient(
-    circle,
-    #e8403a 0%,
-    #c0392b 60%,
-    transparent 100%
-  );
+  background: radial-gradient(circle, #e8403a 0%, #c0392b 60%, transparent 100%);
   top: 50%;
   left: -30px;
   transform: translateY(-50%);
@@ -120,12 +110,7 @@
 .blob--blue {
   width: 80px;
   height: 160px;
-  background: radial-gradient(
-    ellipse,
-    #3b82f6 0%,
-    #1d4ed8 50%,
-    transparent 100%
-  );
+  background: radial-gradient(ellipse, #3b82f6 0%, #1d4ed8 50%, transparent 100%);
   top: 50%;
   right: -24px;
   transform: translateY(-50%);

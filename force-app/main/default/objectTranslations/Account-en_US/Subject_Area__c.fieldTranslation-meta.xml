@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <label><!-- Subject Area --></label>
+    <name>Subject_Area__c</name>
+    <picklistValues>
+        <masterLabel>ELA</masterLabel>
+        <translation><!-- ELA --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Math</masterLabel>
+        <translation><!-- Math --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Other</masterLabel>
+        <translation><!-- Other --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Science</masterLabel>
+        <translation><!-- Science --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Social Studies</masterLabel>
+        <translation><!-- Social Studies --></translation>
+    </picklistValues>
+</CustomFieldTranslation>

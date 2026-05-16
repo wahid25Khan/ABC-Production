@@ -1,0 +1,157 @@
+<messaging:emailTemplate subject="Your ABC Shipping Confirmation for Order {!relatedTo.OrderNumber}"
+                         recipientType="Contact"
+                         relatedToType="Order">
+
+  <messaging:htmlEmailBody >
+    <html>
+      <body style="margin:0; padding:0; background:#ffffff; font-family: Arial, sans-serif;">
+        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#ffffff;">
+          <tr>
+            <td align="center" style="padding:20px 10px;">
+
+              <table role="presentation" width="600" cellpadding="0" cellspacing="0" border="0"
+                     style="width:600px; border:1px solid #d9d9d9; background:#ffffff;">
+
+                <!-- Greeting -->
+                <tr>
+                  <td style="padding:18px 20px 6px 20px; text-align:center; font-size:14px; color:#111;">
+                    Hello {!relatedTo.Acc_Name__c},<br/>
+                    <span style="display:inline-block; margin-top:6px;">
+                      Great news - your ABC samples are on the way!
+                    </span>
+                  </td>
+                </tr>
+
+                <!-- Track Package (NOT clickable) -->
+                <tr>
+                  <td align="center" style="padding:12px 20px 6px 20px;">
+                    <span style="display:inline-block; padding:10px 18px; background:#0b5cab; color:#ffffff; border-radius:2px; font-size:13px; font-weight:bold;">
+                      Track Package
+                    </span>
+                  </td>
+                </tr>
+
+                <!-- ABC Order Number -->
+                <tr>
+                  <td align="center" style="padding:10px 20px 2px 20px;">
+                    <div style="color:#0b5cab; font-weight:bold; font-size:13px;">ABC Order Number</div>
+                    <div style="margin-top:6px; font-size:14px; color:#111;">{!relatedTo.OrderNumber}</div>
+                  </td>
+                </tr>
+
+                <!-- Blue bar (before tracking section) -->
+                <tr>
+                  <td style="padding:16px 20px 0 20px;">
+                    <div style="height:14px; background:#0b5cab; line-height:14px; font-size:0;">&nbsp;</div>
+                  </td>
+                </tr>
+
+                <!-- FedEx Tracking Number -->
+                <tr>
+                  <td align="center" style="padding:16px 20px 14px 20px;">
+                    <div style="color:#0b5cab; font-weight:bold; font-size:20px;">FedEx Tracking Number</div>
+                    <div style="margin-top:10px; font-size:18px;">
+                      <a href="https://www.fedex.com/fedextrack/?trknbr=398558290490"
+                         style="color:#0b5cab; text-decoration:underline; font-weight:bold;">
+                        398558290490
+                      </a>
+                    </div>
+                  </td>
+                </tr>
+
+                <!-- (REMOVED EXTRA BLUE BAR HERE) -->
+
+                <!-- Contact email -->
+                <tr>
+                  <td align="center" style="padding:10px 30px 14px 30px; font-size:12px; color:#333; line-height:1.4;">
+                    If you have any question in the meantime, please don't hesitate to reach out to
+                    <a href="mailto:gdavenport@americanbookcompany.com" style="color:#0b5cab; text-decoration:underline;">
+                      gdavenport@americanbookcompany.com
+                    </a>
+                  </td>
+                </tr>
+
+                <!-- Blue bar (above shipped to) -->
+                <tr>
+                  <td style="padding:0 20px;">
+                    <div style="height:14px; background:#0b5cab; line-height:14px; font-size:0;">&nbsp;</div>
+                  </td>
+                </tr>
+
+                <!-- Shipped to -->
+                <tr>
+                  <td align="center" style="padding:18px 20px 8px 20px;">
+                    <div style="color:#0b5cab; font-weight:bold; font-size:20px;">Shipped to</div>
+                    <div style="margin-top:14px; font-size:13px; color:#111; line-height:1.5;">
+                      {!relatedTo.Acc_Name__c}<br/>
+                      {!relatedTo.ShippingStreet}<br/>
+                      {!relatedTo.ShippingCity}, {!relatedTo.ShippingState} {!relatedTo.ShippingPostalCode}<br/>
+                      {!relatedTo.ShippingCountry}
+                    </div>
+                  </td>
+                </tr>
+
+                <!-- Products table -->
+                <tr>
+                  <td style="padding:14px 20px 10px 20px;">
+                    <table width="100%" cellpadding="10" cellspacing="0" border="0"
+                           style="border-collapse:collapse; font-size:13px; border:2px solid #0b5cab;">
+                      <thead>
+                        <tr style="background:#f2f6fb;">
+                          <th align="center" style="border:2px solid #0b5cab;">GRADE</th>
+                          <th align="center" style="border:2px solid #0b5cab;">SUBJECT</th>
+                          <th align="center" style="border:2px solid #0b5cab;">TITLE</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <apex:repeat value="{!relatedTo.OrderItems}" var="oi">
+                          <tr>
+                            <td align="center" style="border:2px solid #0b5cab;">{!oi.Product2.Grade__c}</td>
+                            <td align="center" style="border:2px solid #0b5cab;">{!oi.Product2.Category__c}</td>
+                            <td align="left"   style="border:2px solid #0b5cab;">{!oi.Product2.Name}</td>
+                          </tr>
+                        </apex:repeat>
+                      </tbody>
+                    </table>
+                  </td>
+                </tr>
+
+                <!-- Newsletter button -->
+                <tr>
+                  <td align="center" style="padding:16px 20px 18px 20px;">
+                    <a href="https://gl1kzmhy.sibpages.com/"
+                       style="display:inline-block; padding:12px 22px; background:#0b5cab; color:#ffffff; text-decoration:none; border-radius:2px; font-size:13px; font-weight:bold;">
+                      Join our Newsletter
+                    </a>
+                  </td>
+                </tr>
+
+                <!-- (REMOVED FOOTER EXTRA BLUE BAR HERE) -->
+
+                <!-- Footer -->
+                <tr>
+                  <td align="center" style="padding:16px 20px; background:#0b5cab;">
+                    <a href="https://www.americanbookcompany.com"
+                       style="color:#ffffff; text-decoration:underline; font-size:13px; font-weight:bold;">
+                      www.americanbookcompany.com
+                    </a>
+                  </td>
+                </tr>
+
+                <!-- Copyright -->
+                <tr>
+                  <td align="center" style="padding:10px 20px 18px 20px; font-size:11px; color:#666;">
+                    © American Book Company. All rights reserved.
+                  </td>
+                </tr>
+
+              </table>
+
+            </td>
+          </tr>
+        </table>
+      </body>
+    </html>
+  </messaging:htmlEmailBody>
+
+</messaging:emailTemplate>

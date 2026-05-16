@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<NavigationMenu xmlns="http://soap.sforce.com/2006/04/metadata">
+    <container>American Book Company</container>
+    <containerType>Network</containerType>
+    <label>Default My Account Menu</label>
+    <navigationMenuItem>
+        <label>My Account</label>
+        <position>1</position>
+        <publiclyAvailable>true</publiclyAvailable>
+        <target>/login</target>
+        <type>InternalLink</type>
+    </navigationMenuItem>
+    <navigationMenuItem>
+        <label>My Wishlist</label>
+        <position>2</position>
+        <publiclyAvailable>true</publiclyAvailable>
+        <target>/mylists</target>
+        <type>InternalLink</type>
+    </navigationMenuItem>
+    <navigationMenuItem>
+        <label>CourseWave</label>
+        <position>3</position>
+        <publiclyAvailable>true</publiclyAvailable>
+        <target>https://coursewave.com/</target>
+        <targetPreference>OpenExternalLinkInSameTab</targetPreference>
+        <type>ExternalLink</type>
+    </navigationMenuItem>
+</NavigationMenu>

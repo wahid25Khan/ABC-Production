@@ -3,37 +3,7 @@
   "title" : "Checkout",
   "contentBody" : {
     "component" : {
-      "children" : [ {
-        "attributes" : {
-          "dxpStyle" : {
-            "margin" : {
-              "bottom" : "0%",
-              "left" : "0%",
-              "right" : "0%",
-              "top" : "0%"
-            }
-          }
-        },
-        "id" : "b553be76-b697-43e6-bae6-5043d1d0ccda"
-      }, {
-        "attributes" : {
-          "dxpStyle" : {
-            "margin" : {
-              "bottom" : "0%",
-              "left" : "0%",
-              "right" : "0%",
-              "top" : "0%"
-            },
-            "padding" : {
-              "bottom" : "0.5rem",
-              "left" : "0.5rem",
-              "right" : "0.5rem",
-              "top" : "0.5rem"
-            }
-          }
-        },
-        "id" : "35fdf82b-f298-43ca-b15f-c8eaebea4559"
-      } ]
+      "children" : [ ]
     }
   },
   "urlName" : "checkout"

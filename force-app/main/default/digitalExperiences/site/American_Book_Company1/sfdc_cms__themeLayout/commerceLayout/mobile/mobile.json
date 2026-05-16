@@ -12,7 +12,9 @@
               "right" : "8%",
               "top" : "3%"
             }
-          }
+          },
+          "sectionColumnGutterWidth" : "",
+          "componentSpacerSize" : ""
         },
         "id" : "b77e224e-d087-4694-911c-f7788e4a1c4e"
       }, {
@@ -37,6 +39,66 @@
           "columnVerticalAlign" : "center",
           "dxpStyle" : {
             "isVisible" : true
+          }
+        }
+      }, {
+        "id" : "e84e501e-6eb1-496d-aea1-c132ac3b9f60",
+        "attributes" : {
+          "dxpStyle" : {
+            "margin" : {
+              "top" : "15px",
+              "right" : "",
+              "bottom" : "20px",
+              "left" : ""
+            }
+          }
+        }
+      }, {
+        "id" : "4089c0da-d0ad-4847-9da0-d78813511e96",
+        "attributes" : {
+          "dxpStyle" : {
+            "margin" : {
+              "top" : "",
+              "right" : "",
+              "bottom" : "20px",
+              "left" : ""
+            }
+          }
+        }
+      }, {
+        "id" : "abe38efa-df8c-4f31-8cec-412a35eb1ada",
+        "attributes" : {
+          "dxpStyle" : {
+            "margin" : {
+              "top" : "",
+              "right" : "",
+              "bottom" : "20px",
+              "left" : ""
+            }
+          }
+        }
+      }, {
+        "id" : "669bf180-1465-4133-9295-65b90f462c1a",
+        "attributes" : {
+          "dxpStyle" : {
+            "margin" : {
+              "top" : "",
+              "right" : "",
+              "bottom" : "",
+              "left" : ""
+            }
+          }
+        }
+      }, {
+        "id" : "11cf27ca-9099-414d-ba6b-f0772528fc7c",
+        "attributes" : {
+          "dxpStyle" : {
+            "margin" : {
+              "top" : "10%",
+              "right" : "50%",
+              "bottom" : "10%",
+              "left" : "0%"
+            }
           }
         }
       } ]

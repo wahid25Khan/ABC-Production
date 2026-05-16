@@ -32,7 +32,7 @@
         name="minimumQuantity"
         type="Integer"
         label="Minimum Quantity"
-        default="10"
+        default="25"
         min="1"
         max="999" />
       <property

@@ -1,5 +1,6 @@
 <template>
   <section class="wrap">
+
     <!-- Row 1: spans both columns (colspan) -->
     <div class="badges-row">
       <template for:each={badges} for:item="badge">
@@ -19,9 +20,7 @@
         Your {selectedState} representatives are here to personally help you
         determine the best solution for you.
       </p>
-      <a class="help-btn" href="mailto:contact@americanbookcompany.com"
-        >Email Our Sales Team</a
-      >
+      <a class="help-btn" href="mailto:contact@americanbookcompany.com">Email Our Sales Team</a>
       <p class="help-contact">Phone: (888) 264-5877</p>
       <p class="help-contact">Fax: (866) 827-3240</p>
     </div>
@@ -46,16 +45,10 @@
               <div class="role">{rep.title}</div>
               <div class="icons">
                 <a class="iconBtn" href={rep.telHref} aria-label="Call">
-                  <lightning-icon
-                    icon-name="utility:call"
-                    size="x-small"
-                  ></lightning-icon>
+                  <lightning-icon icon-name="utility:call" size="x-small"></lightning-icon>
                 </a>
                 <a class="iconBtn" href={rep.mailHref} aria-label="Email">
-                  <lightning-icon
-                    icon-name="utility:email"
-                    size="x-small"
-                  ></lightning-icon>
+                  <lightning-icon icon-name="utility:email" size="x-small"></lightning-icon>
                 </a>
               </div>
             </div>
@@ -66,5 +59,6 @@
         <div class="empty">Select a State to see representatives.</div>
       </template>
     </div>
+
   </section>
 </template>

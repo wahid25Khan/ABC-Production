@@ -1,0 +1,74 @@
+{
+  "type" : "sfdc_cms__view",
+  "title" : "Free-Trial",
+  "contentBody" : {
+    "component" : {
+      "children" : [ {
+        "children" : [ {
+          "attributes" : {
+            "backgroundImageConfig" : "",
+            "backgroundImageOverlay" : "rgba(0,0,0,0)",
+            "componentSpacerSize" : "",
+            "dxpStyle" : { },
+            "layoutDirectionDesktop" : "row",
+            "layoutDirectionMobile" : "column",
+            "layoutDirectionTablet" : "column",
+            "maxContentWidth" : "",
+            "sectionColumnGutterWidth" : "",
+            "sectionConfig" : "{\"UUID\":\"83478925-0124-4cf3-b289-dc39a36fcb19\",\"columns\":[{\"UUID\":\"57848673-63e0-4136-96da-6576777c90e2\",\"columnName\":\"Column 1\",\"columnKey\":\"col1\",\"columnWidth\":\"12\",\"seedComponents\":[]}]}",
+            "sectionMinHeight" : "",
+            "sectionVerticalAlign" : "flex-start"
+          },
+          "children" : [ {
+            "children" : [ {
+              "attributes" : {
+                "dxpStyle" : { },
+                "loginUrl" : "/login",
+                "storeName" : "AmericanBookCompany",
+                "webStoreId" : "0ZEam000004dJDNGA2"
+              },
+              "definition" : "c:freeTrialPage",
+              "id" : "12a28368-48ed-4da3-a4e4-fe30b1ee3c37",
+              "type" : "component"
+            } ],
+            "id" : "57848673-63e0-4136-96da-6576777c90e2",
+            "name" : "col1",
+            "title" : "Column 1",
+            "type" : "region"
+          } ],
+          "definition" : "community_layout:section",
+          "id" : "83478925-0124-4cf3-b289-dc39a36fcb19",
+          "type" : "component"
+        } ],
+        "id" : "49109c96-5deb-4f36-8d42-ef2cb4324bfb",
+        "name" : "content",
+        "title" : "Content",
+        "type" : "region"
+      }, {
+        "children" : [ {
+          "attributes" : {
+            "customHeadTags" : "",
+            "description" : "",
+            "dxpStyle" : { },
+            "pageTitle" : "Free-Trial",
+            "recordId" : "{!recordId}"
+          },
+          "definition" : "community_builder:seoAssistant",
+          "id" : "fbfafd87-8a05-4738-877c-04289b6cb883",
+          "type" : "component"
+        } ],
+        "id" : "0a5f8b7e-29f0-4354-8701-4cd26c094bbd",
+        "name" : "sfdcHiddenRegion",
+        "title" : "sfdcHiddenRegion",
+        "type" : "region"
+      } ],
+      "definition" : "community_layout:sldsFlexibleLayout",
+      "id" : "433f3208-c18f-4996-88b2-ed53e38fe3de",
+      "type" : "component"
+    },
+    "dataProviders" : [ ],
+    "themeLayoutType" : "Inner",
+    "viewType" : "custom-free-trial"
+  },
+  "urlName" : "free-trial"
+}

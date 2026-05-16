@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<DigitalExperienceConfig xmlns="http://soap.sforce.com/2006/04/metadata">
+    <label>American Book Company</label>
+    <site>
+        <urlPathPrefix>AmericanBookCompany</urlPathPrefix>
+    </site>
+    <space>site/American_Book_Company1</space>
+</DigitalExperienceConfig>

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<DataStreamDefinition xmlns="http://soap.sforce.com/2006/04/metadata">
+    <areHeadersIncludedInFile>false</areHeadersIncludedInFile>
+    <bulkIngest>false</bulkIngest>
+    <creationType>Custom</creationType>
+    <dataConnector>WebEngagementEventsV2_00Dam00001aloiT_655f5066_d953_490c_9179_db83ff88392c</dataConnector>
+    <dataConnectorType>IngestApi</dataConnectorType>
+    <dataExtractMethods>FULL_REFRESH</dataExtractMethods>
+    <dataPlatformDataSetItemName>INGESTAPI</dataPlatformDataSetItemName>
+    <dataSource>WebEngagementEventsV2_00Dam00001aloiT_655f5066_d953_490c_9179_db83ff88392c</dataSource>
+    <isLimitedToNewFiles>false</isLimitedToNewFiles>
+    <isMissingFileFailure>false</isMissingFileFailure>
+    <masterLabel>WebEngagementEventsV2_00Dam00001aloiT-DeviceToIndividualMatch</masterLabel>
+    <mktDataLakeObject>WebEngagementEventsV2_00Dam0000_888BEE7C__dll</mktDataLakeObject>
+    <mktDataTranObject>WebEngagementEventsV2_00Dam0000_888BEE7C</mktDataTranObject>
+</DataStreamDefinition>

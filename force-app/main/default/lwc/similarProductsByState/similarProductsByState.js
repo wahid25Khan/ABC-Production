@@ -93,8 +93,8 @@ export default class SimilarProductsByState extends LightningElement {
   get headingText() {
     const state = (this.selectedState || "").trim();
     return state
-      ? `Looking for additional ${state} books?`
-      : "Looking for additional books?";
+      ? `Looking for additional ${state} Coursebooks?` /* `Looking for additional ${state} books?` */
+      : "Looking for additional Coursebooks?"; /* "Looking for additional books?" */
   }
 
   async initialize() {

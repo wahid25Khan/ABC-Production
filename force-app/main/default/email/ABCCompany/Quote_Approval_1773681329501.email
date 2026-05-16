@@ -1,0 +1,21 @@
+<html>
+<head>
+	<title></title>
+</head>
+<body style="height: auto; min-height: auto;">Hello Admin,<br />
+<br />
+A Quote has been submitted for your approval.<br />
+<br />
+Quote Details:<br />
+Quote Name:&nbsp;{{{Quote.Name}}}<br />
+Quote Number:&nbsp;{{{Quote.QuoteNumber}}}<br />
+Subtotal:&nbsp;{{{Quote.Subtotal}}}<br />
+Shipping &amp; Handling:&nbsp;{{{Quote.ShippingHandling}}}<br />
+Status:&nbsp;{{{Quote.Status}}}<br />
+<br />
+This quote requires approval because the shipping amount is below the allowed threshold.<br />
+<br />
+Please review the approval request in Salesforce and approve or reject it accordingly.<br />
+<br />
+Thank you</body>
+</html>

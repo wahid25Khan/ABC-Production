@@ -102,16 +102,16 @@
             });
         </script>
         
-        <script type="text/javascript" nonce="d110d870-6650-4d38-af03-f3d671412245">!function(){"use strict";const e=`/webruntime${"/log/errors"}`;const n="UNKNOWN_ERROR";function t(){return e="basePath",document?.querySelector(`meta[name="${e}"]`)?.getAttribute("content")||"";var e}const{window:o}=globalThis;function r({subject:r,error:s={},extra:a}){let i,c,d;s?(i=s.message,c=s.stack,d=s.wcstack):a&&(i=a.message);const{pathname:u,hostname:l}=o.location,m={subject:r,message:i,stack:c,wcstack:d,extra:a,location:{pathname:u,hostname:l}},v=t();!function(e){document.dispatchEvent(new CustomEvent("client-error",{detail:{error:e,type:n}}))}(m),function(e,n){const t=JSON.stringify(n);if(!(window&&window.navigator&&window.navigator.sendBeacon&&window.navigator.sendBeacon(e,t))){const n=new XMLHttpRequest;n.open("POST",e,!0),n.setRequestHeader("Content-Type","text/plain;charset=UTF-8"),n.send(t)}}(globalThis.location.origin+v+e,m)}const s=(e={})=>{const{reason:n={}}=e;r({subject:"unhandledrejection",error:n})};function a(e={},n={}){const{message:t,filename:o,lineno:s,colno:a,error:i}=e;r({subject:"window error",error:i,extra:{message:t,filename:o,lineno:s,colno:a},...n})}o?.addEventListener("error",a),o?.addEventListener("unhandledrejection",s),o?.addEventListener("removeErrorReporting",function(){o?.removeEventListener("unhandledrejection",s),o?.removeEventListener("error",a),o?.removeEventListener("removeErrorReporting",this)})}();
+        <script type="text/javascript" nonce="45920050-34cc-47bb-a6e1-16bb31ec8197">!function(){"use strict";const e=`/webruntime${"/log/errors"}`;const n="UNKNOWN_ERROR";function t(){return e="basePath",document?.querySelector(`meta[name="${e}"]`)?.getAttribute("content")||"";var e}const{window:o}=globalThis;function r({subject:r,error:s={},extra:a}){let i,c,d;s?(i=s.message,c=s.stack,d=s.wcstack):a&&(i=a.message);const{pathname:u,hostname:l}=o.location,m={subject:r,message:i,stack:c,wcstack:d,extra:a,location:{pathname:u,hostname:l}},v=t();!function(e){document.dispatchEvent(new CustomEvent("client-error",{detail:{error:e,type:n}}))}(m),function(e,n){const t=JSON.stringify(n);if(!(window&&window.navigator&&window.navigator.sendBeacon&&window.navigator.sendBeacon(e,t))){const n=new XMLHttpRequest;n.open("POST",e,!0),n.setRequestHeader("Content-Type","text/plain;charset=UTF-8"),n.send(t)}}(globalThis.location.origin+v+e,m)}const s=(e={})=>{const{reason:n={}}=e;r({subject:"unhandledrejection",error:n})};function a(e={},n={}){const{message:t,filename:o,lineno:s,colno:a,error:i}=e;r({subject:"window error",error:i,extra:{message:t,filename:o,lineno:s,colno:a},...n})}o?.addEventListener("error",a),o?.addEventListener("unhandledrejection",s),o?.addEventListener("removeErrorReporting",function(){o?.removeEventListener("unhandledrejection",s),o?.removeEventListener("error",a),o?.removeEventListener("removeErrorReporting",this)})}();
 </script>
-        <script type="text/javascript" nonce="d110d870-6650-4d38-af03-f3d671412245">!function(){"use strict";const e="webruntime";function t(t){return`/${e}${t}`}const o=t("/log/metrics"),n=t("/log/errors");function r(e,t){const o=JSON.stringify(t);if(!(window&&window.navigator&&window.navigator.sendBeacon&&window.navigator.sendBeacon(e,o))){const t=new XMLHttpRequest;t.open("POST",e,!0),t.setRequestHeader("Content-Type","text/plain;charset=UTF-8"),t.send(o)}}function a(e){return document?.querySelector(`meta[name="${e}"]`)?.getAttribute("content")||""}function s(){return a("basePath")}function i(){return a("deployTarget")||"CORE"}const c=`${e}-app-bootstrap`;function l(e){!function(e){const t=e?.detail||{};t.name=t.name||"",t.duration=t.duration||"",c===t.name&&(t.deployTarget=i(),r(s()+o,{webruntimeBootstrap:t,info:"lwr.bootstrap.end"}))}(e),globalThis?.removeEventListener("bootstrapLoaded",this)}globalThis?.addEventListener("bootstrapLoaded",l),globalThis.LWR=globalThis.LWR||{},globalThis.LWR&&Object.isExtensible(globalThis.LWR)&&(globalThis.LWR.onError=e=>{!function(e){const{message:t,stack:o,wcstack:a}=e,{pathname:c,hostname:l}=globalThis.location;let d=[];try{globalThis.performance&&globalThis.performance.getEntriesByType&&(d=globalThis.performance.getEntriesByType("resource").map(e=>({name:e.name,entryType:e.entryType,startTime:e.startTime,duration:e.duration,fetchStart:e.fetchStart,domainLookupStart:e.domainLookupStart,domainLookupEnd:e.domainLookupEnd,connectStart:e.connectStart,connectEnd:e.connectEnd,requestStart:e.requestStart,responseStart:e.responseStart,responseEnd:e.responseEnd,responseStatus:e.responseStatus,transferSize:e.transferSize,encodedBodySize:e.encodedBodySize,decodedBodySize:e.decodedBodySize,initiatorType:e.initiatorType,nextHopProtocol:e.nextHopProtocol,failed:e.failed||!1})))}catch(e){globalThis.console&&globalThis.console.error&&globalThis.console.error("Error collecting resource performance data",e)}r(s()+n,{subject:"bootstrap error",webruntimeBootstrap:{deployTarget:i(),resources:d,resourceCount:d.length},message:t,stack:o,wcstack:a,location:{pathname:c,hostname:l}})}(e),globalThis.launchModal&&launchModal({id:"webruntime-client-bootstrap-error-failed-to-load-lwr",titleLabel:"Oops!",contentLabel:"Something went wrong. Please try refreshing the app",buttonLabel:"Refresh",callback:function(){var e=new URL(window.location);e.searchParams.set("lwr.cachebust",(new Date).getTime()),window.location=e.href}}),globalThis?.removeEventListener("bootstrapLoaded",l),globalThis?.dispatchEvent(new CustomEvent("removeErrorReporting")),delete globalThis.LWR.onError})}();
+        <script type="text/javascript" nonce="45920050-34cc-47bb-a6e1-16bb31ec8197">!function(){"use strict";const e="webruntime";function t(t){return`/${e}${t}`}const o=t("/log/metrics"),n=t("/log/errors");function r(e,t){const o=JSON.stringify(t);if(!(window&&window.navigator&&window.navigator.sendBeacon&&window.navigator.sendBeacon(e,o))){const t=new XMLHttpRequest;t.open("POST",e,!0),t.setRequestHeader("Content-Type","text/plain;charset=UTF-8"),t.send(o)}}function a(e){return document?.querySelector(`meta[name="${e}"]`)?.getAttribute("content")||""}function s(){return a("basePath")}function i(){return a("deployTarget")||"CORE"}const c=`${e}-app-bootstrap`;function l(e){!function(e){const t=e?.detail||{};t.name=t.name||"",t.duration=t.duration||"",c===t.name&&(t.deployTarget=i(),r(s()+o,{webruntimeBootstrap:t,info:"lwr.bootstrap.end"}))}(e),globalThis?.removeEventListener("bootstrapLoaded",this)}globalThis?.addEventListener("bootstrapLoaded",l),globalThis.LWR=globalThis.LWR||{},globalThis.LWR&&Object.isExtensible(globalThis.LWR)&&(globalThis.LWR.onError=e=>{!function(e){const{message:t,stack:o,wcstack:a}=e,{pathname:c,hostname:l}=globalThis.location;let d=[];try{globalThis.performance&&globalThis.performance.getEntriesByType&&(d=globalThis.performance.getEntriesByType("resource").map(e=>({name:e.name,entryType:e.entryType,startTime:e.startTime,duration:e.duration,fetchStart:e.fetchStart,domainLookupStart:e.domainLookupStart,domainLookupEnd:e.domainLookupEnd,connectStart:e.connectStart,connectEnd:e.connectEnd,requestStart:e.requestStart,responseStart:e.responseStart,responseEnd:e.responseEnd,responseStatus:e.responseStatus,transferSize:e.transferSize,encodedBodySize:e.encodedBodySize,decodedBodySize:e.decodedBodySize,initiatorType:e.initiatorType,nextHopProtocol:e.nextHopProtocol,failed:e.failed||!1})))}catch(e){globalThis.console&&globalThis.console.error&&globalThis.console.error("Error collecting resource performance data",e)}r(s()+n,{subject:"bootstrap error",webruntimeBootstrap:{deployTarget:i(),resources:d,resourceCount:d.length},message:t,stack:o,wcstack:a,location:{pathname:c,hostname:l}})}(e),globalThis.launchModal&&launchModal({id:"webruntime-client-bootstrap-error-failed-to-load-lwr",titleLabel:"Oops!",contentLabel:"Something went wrong. Please try refreshing the app",buttonLabel:"Refresh",callback:function(){var e=new URL(window.location);e.searchParams.set("lwr.cachebust",(new Date).getTime()),window.location=e.href}}),globalThis?.removeEventListener("bootstrapLoaded",l),globalThis?.dispatchEvent(new CustomEvent("removeErrorReporting")),delete globalThis.LWR.onError})}();
 </script>
-        <script type="text/javascript" nonce="d110d870-6650-4d38-af03-f3d671412245">({})?.a?.a;window.supportsOptionalChaining=true;
+        <script type="text/javascript" nonce="45920050-34cc-47bb-a6e1-16bb31ec8197">({})?.a?.a;window.supportsOptionalChaining=true;
 </script>
-        <script type="text/javascript" nonce="d110d870-6650-4d38-af03-f3d671412245">!function(){const e={documentCreateElement:Document.prototype.createElement,elementSetAttribute:Element.prototype.setAttribute,elementAttachShadow:Element.prototype.attachShadow,elementAppendChild:Element.prototype.appendChild,htmlelementAddEventListener:Element.prototype.addEventListener,iframeContentDocumentGet:Object.getOwnPropertyDescriptor(HTMLIFrameElement.prototype,"contentDocument").get,iframeContentWindowGet:Object.getOwnPropertyDescriptor(HTMLIFrameElement.prototype,"contentWindow").get};Object.freeze(e),Object.defineProperty(window,"originalDomApis",{writable:!1,value:e});const t=window.frames;Object.defineProperty(window,"frames",{get:function(){const e=[];for(let n=0;n<t.length;n++)try{t[n].frameElement.getRootNode().nodeType===Node.DOCUMENT_FRAGMENT_NODE||e.push(t[n])}catch(o){e.push(t[n])}return e.length===t.length?t:e}})}();</script>
-        <script type="text/javascript" nonce="d110d870-6650-4d38-af03-f3d671412245">!function(){"use strict";window.isBrowserSupportedByWebruntime=function(){const n="performance"in window&&"mark"in window.performance,i="customElements"in window;return n&&i&&void 0!==window.supportsOptionalChaining}()}();
+        <script type="text/javascript" nonce="45920050-34cc-47bb-a6e1-16bb31ec8197">!function(){const e={documentCreateElement:Document.prototype.createElement,elementSetAttribute:Element.prototype.setAttribute,elementAttachShadow:Element.prototype.attachShadow,elementAppendChild:Element.prototype.appendChild,htmlelementAddEventListener:Element.prototype.addEventListener,iframeContentDocumentGet:Object.getOwnPropertyDescriptor(HTMLIFrameElement.prototype,"contentDocument").get,iframeContentWindowGet:Object.getOwnPropertyDescriptor(HTMLIFrameElement.prototype,"contentWindow").get};Object.freeze(e),Object.defineProperty(window,"originalDomApis",{writable:!1,value:e});const t=window.frames;Object.defineProperty(window,"frames",{get:function(){const e=[];for(let n=0;n<t.length;n++)try{t[n].frameElement.getRootNode().nodeType===Node.DOCUMENT_FRAGMENT_NODE||e.push(t[n])}catch(o){e.push(t[n])}return e.length===t.length?t:e}})}();</script>
+        <script type="text/javascript" nonce="45920050-34cc-47bb-a6e1-16bb31ec8197">!function(){"use strict";window.isBrowserSupportedByWebruntime=function(){const n="performance"in window&&"mark"in window.performance,i="customElements"in window;return n&&i&&void 0!==window.supportsOptionalChaining}()}();
 </script>
-        <script type="text/javascript" nonce="d110d870-6650-4d38-af03-f3d671412245">globalThis.lwcRuntimeFlags = globalThis.lwcRuntimeFlags || {};
+        <script type="text/javascript" nonce="45920050-34cc-47bb-a6e1-16bb31ec8197">globalThis.lwcRuntimeFlags = globalThis.lwcRuntimeFlags || {};
 globalThis.lwcRuntimeFlags = { ...globalThis.lwcRuntimeFlags, ...{"ENABLE_LEGACY_SCOPE_TOKENS":false,"ENABLE_FORCE_SHADOW_MIGRATE_MODE":false,"ENABLE_MIXED_SHADOW_MODE":false,"LEGACY_LOCKER_ENABLED":false,"ENABLE_LEGACY_SIGNAL_CONTEXT_VALIDATION":false,"DISABLE_LEGACY_VALIDATION":false,"ENABLE_EXPERIMENTAL_SIGNALS":false,"DISABLE_SYNTHETIC_SHADOW":false,"DISABLE_SCOPE_TOKEN_VALIDATION":false,"DISABLE_DETACHED_REHYDRATION":true,"DISABLE_LIGHT_DOM_UNSCOPED_CSS":false,"ENABLE_LEGACY_CONTEXT_CONNECTION":false,"ENABLE_SLOT_FORWARDING_FIX":true,"DISABLE_NATIVE_CUSTOM_ELEMENT_LIFECYCLE":true,"DISABLE_TEMPORARY_V5_COMPILER_SUPPORT":true} };
 globalThis.LWR = globalThis.LWR || {};
 globalThis.LWR.initDeferDOM = false;
@@ -128,7 +128,7 @@ globalThis.LWR.customInit = (lwr) => {
         LWR.define('@app/routes', [], function() { return [{"devName":"Service_Not_Available","label":"Service Not Available","createdOnVersion":null,"isPublic":true,"viewId":"e649a938-22de-4f39-8910-02a5e614d86b","hasVanityURL":false,"patternMap":{},"id":"48ef6400-0218-4fd7-9254-3dfc63ce069f","path":"/maintenance.html","view":"serviceNotAvailable","isRoot":true,"isDefault":true,"page":{"type":"comm__namedPage","attributes":{"name":"Service_Not_Available"}}}]; });
         LWR.define('@app/templateDevName', [], function() { return "b2b-storefront"; });
         LWR.define('@app/uiBasePath', [], function() { return ""; });
-        LWR.define('@app/versionKey', [], function() { return "0DBam000001Nwdp:859"; });
+        LWR.define('@app/versionKey', [], function() { return "0DBam000001Nwdp:1285"; });
         LWR.define('@app/viewToThemeLayoutMap', [], function() { return {"serviceNotAvailable":"snaThemeLayout"}; });
         LWR.define('@app/webruntimeFrameworkVersion', [], function() { return "260.70"; });
         LWR.define('@salesforce/community/Id', [], function() { return "0DBam000001NwdpGAC"; });
@@ -142,10 +142,10 @@ LWR.define('@salesforce/user/Id', ['@app/user'], function(m) { return (m && type
 LWR.define('@salesforce/user/isGuest', ['@app/user'], function(m) { return (m && typeof m === 'object' && 'default' in m ? m.default : m)['isGuest'] });
 lwr.initializeApp();
 globalThis.process = { env: { NODE_ENV: "dev" } };};</script>
-        <script type="text/javascript" nonce="d110d870-6650-4d38-af03-f3d671412245">globalThis.CLWR = globalThis.CLWR || {};
+        <script type="text/javascript" nonce="45920050-34cc-47bb-a6e1-16bb31ec8197">globalThis.CLWR = globalThis.CLWR || {};
 globalThis.CLWR.gates = {"enableLwrLinkInfoProvider":false,"enableLwrRouteValidation":false};
 </script>
-        <script type="text/javascript" nonce="d110d870-6650-4d38-af03-f3d671412245">globalThis.LWR = globalThis.LWR || {};
+        <script type="text/javascript" nonce="45920050-34cc-47bb-a6e1-16bb31ec8197">globalThis.LWR = globalThis.LWR || {};
 Object.assign(globalThis.LWR, {
   "bootstrapModule": "@lwrjs/app-service/communities_app/module/amd/v/0_20_6",
   "autoBoot": false,
@@ -182,7 +182,7 @@ Object.assign(globalThis.LWR, {
   }
 });</script>
         <script src="webruntime/framework/1e7fb74fd8/prod/lwr_loader"></script>
-        <script type="text/javascript" nonce="d110d870-6650-4d38-af03-f3d671412245">/**
+        <script type="text/javascript" nonce="45920050-34cc-47bb-a6e1-16bb31ec8197">/**
 * Copyright (c) 2021, salesforce.com, inc.
 * All rights reserved.
 * SPDX-License-Identifier: MIT
@@ -195,8 +195,8 @@ Object.assign(globalThis.LWR, {
         <script src="webruntime/framework/744f7852ef/prod/lwr_app_bootstrap_hook"></script>
         <script src="webruntime/framework/9faac7844c/prod/lwr_lwc"></script>
         <script src="webruntime/framework/267c7bc833/prod/lwr_app"></script>
-        <script type="text/javascript" nonce="d110d870-6650-4d38-af03-f3d671412245">LWR.define('lwc', ['lwc/v/8_25_1'], function(m) { return m && typeof m === 'object' && 'default' in m ? m.default : m; });</script>
-        <script type="text/javascript" nonce="d110d870-6650-4d38-af03-f3d671412245">
+        <script type="text/javascript" nonce="45920050-34cc-47bb-a6e1-16bb31ec8197">LWR.define('lwc', ['lwc/v/8_25_1'], function(m) { return m && typeof m === 'object' && 'default' in m ? m.default : m; });</script>
+        <script type="text/javascript" nonce="45920050-34cc-47bb-a6e1-16bb31ec8197">
         LWR.define('@app/authenticationCookieName', [], function() { return "__Secure-has-sid"; });
         LWR.define('@app/extraRouteParams', [], function() { return {}; });
         LWR.define('@app/imageOpt', [], function() { return "none"; });
@@ -204,37 +204,37 @@ Object.assign(globalThis.LWR, {
         LWR.define('@app/user', [], function() { return {"isGuest":true,"id":null,"csrfToken":null}; });
         LWR.define('@salesforce/user/Id', [], function() { return null; });
         LWR.define('@salesforce/user/isGuest', [], function() { return true; });</script>
-        <script type="text/javascript" nonce="d110d870-6650-4d38-af03-f3d671412245">LWR.define('@app/apexApiBasePath/v/1', ['@app/apexApiBasePath'], function(m) { return m && typeof m === 'object' && 'default' in m ? m.default : m; });</script>
-        <script type="text/javascript" nonce="d110d870-6650-4d38-af03-f3d671412245">LWR.define('@app/apiBasePath/v/1', ['@app/apiBasePath'], function(m) { return m && typeof m === 'object' && 'default' in m ? m.default : m; });</script>
-        <script type="text/javascript" nonce="d110d870-6650-4d38-af03-f3d671412245">LWR.define('@app/authenticationCookieName/v/1', ['@app/authenticationCookieName'], function(m) { return m && typeof m === 'object' && 'default' in m ? m.default : m; });</script>
-        <script type="text/javascript" nonce="d110d870-6650-4d38-af03-f3d671412245">LWR.define('@app/basePath/v/1', ['@app/basePath'], function(m) { return m && typeof m === 'object' && 'default' in m ? m.default : m; });</script>
-        <script type="text/javascript" nonce="d110d870-6650-4d38-af03-f3d671412245">LWR.define('@app/csrfToken/v/1', ['@app/csrfToken'], function(m) { return m && typeof m === 'object' && 'default' in m ? m.default : m; });</script>
-        <script type="text/javascript" nonce="d110d870-6650-4d38-af03-f3d671412245">LWR.define('@app/deployTarget/v/1', ['@app/deployTarget'], function(m) { return m && typeof m === 'object' && 'default' in m ? m.default : m; });</script>
-        <script type="text/javascript" nonce="d110d870-6650-4d38-af03-f3d671412245">LWR.define('@app/extraRouteParams/v/1', ['@app/extraRouteParams'], function(m) { return m && typeof m === 'object' && 'default' in m ? m.default : m; });</script>
-        <script type="text/javascript" nonce="d110d870-6650-4d38-af03-f3d671412245">LWR.define('@app/guestUuidCookieName/v/1', ['@app/guestUuidCookieName'], function(m) { return m && typeof m === 'object' && 'default' in m ? m.default : m; });</script>
-        <script type="text/javascript" nonce="d110d870-6650-4d38-af03-f3d671412245">LWR.define('@app/imageOpt/v/1', ['@app/imageOpt'], function(m) { return m && typeof m === 'object' && 'default' in m ? m.default : m; });</script>
-        <script type="text/javascript" nonce="d110d870-6650-4d38-af03-f3d671412245">LWR.define('@app/isDesignMode/v/1', ['@app/isDesignMode'], function(m) { return m && typeof m === 'object' && 'default' in m ? m.default : m; });</script>
-        <script type="text/javascript" nonce="d110d870-6650-4d38-af03-f3d671412245">LWR.define('@app/isMobileAppMode/v/1', ['@app/isMobileAppMode'], function(m) { return m && typeof m === 'object' && 'default' in m ? m.default : m; });</script>
-        <script type="text/javascript" nonce="d110d870-6650-4d38-af03-f3d671412245">LWR.define('@app/isPreviewMode/v/1', ['@app/isPreviewMode'], function(m) { return m && typeof m === 'object' && 'default' in m ? m.default : m; });</script>
-        <script type="text/javascript" nonce="d110d870-6650-4d38-af03-f3d671412245">LWR.define('@app/isSsrCodeTypeEnabled/v/1', ['@app/isSsrCodeTypeEnabled'], function(m) { return m && typeof m === 'object' && 'default' in m ? m.default : m; });</script>
-        <script type="text/javascript" nonce="d110d870-6650-4d38-af03-f3d671412245">LWR.define('@app/o11yApiEndpoint/v/1', ['@app/o11yApiEndpoint'], function(m) { return m && typeof m === 'object' && 'default' in m ? m.default : m; });</script>
-        <script type="text/javascript" nonce="d110d870-6650-4d38-af03-f3d671412245">LWR.define('@app/o11yConfiguration/v/1', ['@app/o11yConfiguration'], function(m) { return m && typeof m === 'object' && 'default' in m ? m.default : m; });</script>
-        <script type="text/javascript" nonce="d110d870-6650-4d38-af03-f3d671412245">LWR.define('@app/o11yFalconEnabled/v/1', ['@app/o11yFalconEnabled'], function(m) { return m && typeof m === 'object' && 'default' in m ? m.default : m; });</script>
-        <script type="text/javascript" nonce="d110d870-6650-4d38-af03-f3d671412245">LWR.define('@app/o11yGuestToken/v/1', ['@app/o11yGuestToken'], function(m) { return m && typeof m === 'object' && 'default' in m ? m.default : m; });</script>
-        <script type="text/javascript" nonce="d110d870-6650-4d38-af03-f3d671412245">LWR.define('@app/o11ySamplingRate/v/1', ['@app/o11ySamplingRate'], function(m) { return m && typeof m === 'object' && 'default' in m ? m.default : m; });</script>
-        <script type="text/javascript" nonce="d110d870-6650-4d38-af03-f3d671412245">LWR.define('@app/routes/v/1', ['@app/routes'], function(m) { return m && typeof m === 'object' && 'default' in m ? m.default : m; });</script>
-        <script type="text/javascript" nonce="d110d870-6650-4d38-af03-f3d671412245">LWR.define('@app/templateDevName/v/1', ['@app/templateDevName'], function(m) { return m && typeof m === 'object' && 'default' in m ? m.default : m; });</script>
-        <script type="text/javascript" nonce="d110d870-6650-4d38-af03-f3d671412245">LWR.define('@app/uiBasePath/v/1', ['@app/uiBasePath'], function(m) { return m && typeof m === 'object' && 'default' in m ? m.default : m; });</script>
-        <script type="text/javascript" nonce="d110d870-6650-4d38-af03-f3d671412245">LWR.define('@app/user/v/1', ['@app/user'], function(m) { return m && typeof m === 'object' && 'default' in m ? m.default : m; });</script>
-        <script type="text/javascript" nonce="d110d870-6650-4d38-af03-f3d671412245">LWR.define('@app/versionKey/v/1', ['@app/versionKey'], function(m) { return m && typeof m === 'object' && 'default' in m ? m.default : m; });</script>
-        <script type="text/javascript" nonce="d110d870-6650-4d38-af03-f3d671412245">LWR.define('@app/viewToThemeLayoutMap/v/1', ['@app/viewToThemeLayoutMap'], function(m) { return m && typeof m === 'object' && 'default' in m ? m.default : m; });</script>
-        <script type="text/javascript" nonce="d110d870-6650-4d38-af03-f3d671412245">LWR.define('@app/webruntimeFrameworkVersion/v/1', ['@app/webruntimeFrameworkVersion'], function(m) { return m && typeof m === 'object' && 'default' in m ? m.default : m; });</script>
-        <script type="text/javascript" nonce="d110d870-6650-4d38-af03-f3d671412245">LWR.define('@salesforce/community/Id/v/1', ['@salesforce/community/Id'], function(m) { return m && typeof m === 'object' && 'default' in m ? m.default : m; });</script>
-        <script type="text/javascript" nonce="d110d870-6650-4d38-af03-f3d671412245">LWR.define('@salesforce/i18n/lang/v/1', ['@salesforce/i18n/lang'], function(m) { return m && typeof m === 'object' && 'default' in m ? m.default : m; });</script>
-        <script type="text/javascript" nonce="d110d870-6650-4d38-af03-f3d671412245">LWR.define('@salesforce/site/activeLanguages/v/1', ['@salesforce/site/activeLanguages'], function(m) { return m && typeof m === 'object' && 'default' in m ? m.default : m; });</script>
-        <script type="text/javascript" nonce="d110d870-6650-4d38-af03-f3d671412245">LWR.define('@salesforce/site/Id/v/1', ['@salesforce/site/Id'], function(m) { return m && typeof m === 'object' && 'default' in m ? m.default : m; });</script>
-        <script type="text/javascript" nonce="d110d870-6650-4d38-af03-f3d671412245">LWR.define('@salesforce/webstore/Id/v/1', ['@salesforce/webstore/Id'], function(m) { return m && typeof m === 'object' && 'default' in m ? m.default : m; });</script>
-        <script type="text/javascript" nonce="d110d870-6650-4d38-af03-f3d671412245">LWR.define('webruntime/dispatcher/v/1', ['webruntime/dispatcher'], function(m) { return m && typeof m === 'object' && 'default' in m ? m.default : m; });</script>
+        <script type="text/javascript" nonce="45920050-34cc-47bb-a6e1-16bb31ec8197">LWR.define('@app/apexApiBasePath/v/1', ['@app/apexApiBasePath'], function(m) { return m && typeof m === 'object' && 'default' in m ? m.default : m; });</script>
+        <script type="text/javascript" nonce="45920050-34cc-47bb-a6e1-16bb31ec8197">LWR.define('@app/apiBasePath/v/1', ['@app/apiBasePath'], function(m) { return m && typeof m === 'object' && 'default' in m ? m.default : m; });</script>
+        <script type="text/javascript" nonce="45920050-34cc-47bb-a6e1-16bb31ec8197">LWR.define('@app/authenticationCookieName/v/1', ['@app/authenticationCookieName'], function(m) { return m && typeof m === 'object' && 'default' in m ? m.default : m; });</script>
+        <script type="text/javascript" nonce="45920050-34cc-47bb-a6e1-16bb31ec8197">LWR.define('@app/basePath/v/1', ['@app/basePath'], function(m) { return m && typeof m === 'object' && 'default' in m ? m.default : m; });</script>
+        <script type="text/javascript" nonce="45920050-34cc-47bb-a6e1-16bb31ec8197">LWR.define('@app/csrfToken/v/1', ['@app/csrfToken'], function(m) { return m && typeof m === 'object' && 'default' in m ? m.default : m; });</script>
+        <script type="text/javascript" nonce="45920050-34cc-47bb-a6e1-16bb31ec8197">LWR.define('@app/deployTarget/v/1', ['@app/deployTarget'], function(m) { return m && typeof m === 'object' && 'default' in m ? m.default : m; });</script>
+        <script type="text/javascript" nonce="45920050-34cc-47bb-a6e1-16bb31ec8197">LWR.define('@app/extraRouteParams/v/1', ['@app/extraRouteParams'], function(m) { return m && typeof m === 'object' && 'default' in m ? m.default : m; });</script>
+        <script type="text/javascript" nonce="45920050-34cc-47bb-a6e1-16bb31ec8197">LWR.define('@app/guestUuidCookieName/v/1', ['@app/guestUuidCookieName'], function(m) { return m && typeof m === 'object' && 'default' in m ? m.default : m; });</script>
+        <script type="text/javascript" nonce="45920050-34cc-47bb-a6e1-16bb31ec8197">LWR.define('@app/imageOpt/v/1', ['@app/imageOpt'], function(m) { return m && typeof m === 'object' && 'default' in m ? m.default : m; });</script>
+        <script type="text/javascript" nonce="45920050-34cc-47bb-a6e1-16bb31ec8197">LWR.define('@app/isDesignMode/v/1', ['@app/isDesignMode'], function(m) { return m && typeof m === 'object' && 'default' in m ? m.default : m; });</script>
+        <script type="text/javascript" nonce="45920050-34cc-47bb-a6e1-16bb31ec8197">LWR.define('@app/isMobileAppMode/v/1', ['@app/isMobileAppMode'], function(m) { return m && typeof m === 'object' && 'default' in m ? m.default : m; });</script>
+        <script type="text/javascript" nonce="45920050-34cc-47bb-a6e1-16bb31ec8197">LWR.define('@app/isPreviewMode/v/1', ['@app/isPreviewMode'], function(m) { return m && typeof m === 'object' && 'default' in m ? m.default : m; });</script>
+        <script type="text/javascript" nonce="45920050-34cc-47bb-a6e1-16bb31ec8197">LWR.define('@app/isSsrCodeTypeEnabled/v/1', ['@app/isSsrCodeTypeEnabled'], function(m) { return m && typeof m === 'object' && 'default' in m ? m.default : m; });</script>
+        <script type="text/javascript" nonce="45920050-34cc-47bb-a6e1-16bb31ec8197">LWR.define('@app/o11yApiEndpoint/v/1', ['@app/o11yApiEndpoint'], function(m) { return m && typeof m === 'object' && 'default' in m ? m.default : m; });</script>
+        <script type="text/javascript" nonce="45920050-34cc-47bb-a6e1-16bb31ec8197">LWR.define('@app/o11yConfiguration/v/1', ['@app/o11yConfiguration'], function(m) { return m && typeof m === 'object' && 'default' in m ? m.default : m; });</script>
+        <script type="text/javascript" nonce="45920050-34cc-47bb-a6e1-16bb31ec8197">LWR.define('@app/o11yFalconEnabled/v/1', ['@app/o11yFalconEnabled'], function(m) { return m && typeof m === 'object' && 'default' in m ? m.default : m; });</script>
+        <script type="text/javascript" nonce="45920050-34cc-47bb-a6e1-16bb31ec8197">LWR.define('@app/o11yGuestToken/v/1', ['@app/o11yGuestToken'], function(m) { return m && typeof m === 'object' && 'default' in m ? m.default : m; });</script>
+        <script type="text/javascript" nonce="45920050-34cc-47bb-a6e1-16bb31ec8197">LWR.define('@app/o11ySamplingRate/v/1', ['@app/o11ySamplingRate'], function(m) { return m && typeof m === 'object' && 'default' in m ? m.default : m; });</script>
+        <script type="text/javascript" nonce="45920050-34cc-47bb-a6e1-16bb31ec8197">LWR.define('@app/routes/v/1', ['@app/routes'], function(m) { return m && typeof m === 'object' && 'default' in m ? m.default : m; });</script>
+        <script type="text/javascript" nonce="45920050-34cc-47bb-a6e1-16bb31ec8197">LWR.define('@app/templateDevName/v/1', ['@app/templateDevName'], function(m) { return m && typeof m === 'object' && 'default' in m ? m.default : m; });</script>
+        <script type="text/javascript" nonce="45920050-34cc-47bb-a6e1-16bb31ec8197">LWR.define('@app/uiBasePath/v/1', ['@app/uiBasePath'], function(m) { return m && typeof m === 'object' && 'default' in m ? m.default : m; });</script>
+        <script type="text/javascript" nonce="45920050-34cc-47bb-a6e1-16bb31ec8197">LWR.define('@app/user/v/1', ['@app/user'], function(m) { return m && typeof m === 'object' && 'default' in m ? m.default : m; });</script>
+        <script type="text/javascript" nonce="45920050-34cc-47bb-a6e1-16bb31ec8197">LWR.define('@app/versionKey/v/1', ['@app/versionKey'], function(m) { return m && typeof m === 'object' && 'default' in m ? m.default : m; });</script>
+        <script type="text/javascript" nonce="45920050-34cc-47bb-a6e1-16bb31ec8197">LWR.define('@app/viewToThemeLayoutMap/v/1', ['@app/viewToThemeLayoutMap'], function(m) { return m && typeof m === 'object' && 'default' in m ? m.default : m; });</script>
+        <script type="text/javascript" nonce="45920050-34cc-47bb-a6e1-16bb31ec8197">LWR.define('@app/webruntimeFrameworkVersion/v/1', ['@app/webruntimeFrameworkVersion'], function(m) { return m && typeof m === 'object' && 'default' in m ? m.default : m; });</script>
+        <script type="text/javascript" nonce="45920050-34cc-47bb-a6e1-16bb31ec8197">LWR.define('@salesforce/community/Id/v/1', ['@salesforce/community/Id'], function(m) { return m && typeof m === 'object' && 'default' in m ? m.default : m; });</script>
+        <script type="text/javascript" nonce="45920050-34cc-47bb-a6e1-16bb31ec8197">LWR.define('@salesforce/i18n/lang/v/1', ['@salesforce/i18n/lang'], function(m) { return m && typeof m === 'object' && 'default' in m ? m.default : m; });</script>
+        <script type="text/javascript" nonce="45920050-34cc-47bb-a6e1-16bb31ec8197">LWR.define('@salesforce/site/activeLanguages/v/1', ['@salesforce/site/activeLanguages'], function(m) { return m && typeof m === 'object' && 'default' in m ? m.default : m; });</script>
+        <script type="text/javascript" nonce="45920050-34cc-47bb-a6e1-16bb31ec8197">LWR.define('@salesforce/site/Id/v/1', ['@salesforce/site/Id'], function(m) { return m && typeof m === 'object' && 'default' in m ? m.default : m; });</script>
+        <script type="text/javascript" nonce="45920050-34cc-47bb-a6e1-16bb31ec8197">LWR.define('@salesforce/webstore/Id/v/1', ['@salesforce/webstore/Id'], function(m) { return m && typeof m === 'object' && 'default' in m ? m.default : m; });</script>
+        <script type="text/javascript" nonce="45920050-34cc-47bb-a6e1-16bb31ec8197">LWR.define('webruntime/dispatcher/v/1', ['webruntime/dispatcher'], function(m) { return m && typeof m === 'object' && 'default' in m ? m.default : m; });</script>
         <script src="webruntime/view/79b1652db7bb9bbfd6330d2219ff80a1/prod/en_US/serviceNotAvailable_view"></script>
         <script src="webruntime/component/5b8557d8725fba2dbf2e6a4968ec430c/prod/en_US/force/luvioRuntimeWebruntime_cmp"></script>
         <script src="webruntime/view/6bfbd31387fb8f5a66905e37f2e217b7/prod/en_US/snaThemeLayout_view"></script>
@@ -243,20 +243,25 @@ Object.assign(globalThis.LWR, {
         <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><style type="text/css" id="webruntime-branding">:root{--dxp-g-brand:#0B5FA5;--dxp-s-text-heading-medium-letter-spacing:0;--dxp-s-form-element-text-font-family:var(--dxp-s-html-font-family);--dxp-s-form-element-spacing-horizontal-start:12px;--dxp-s-text-heading-small-text-decoration:none;--dxp-s-dropdown-text-color:#1C1C1C;--dxp-s-tertiary-button-text-color:var(--dxp-s-button-color);--dxp-s-form-element-caption-text-font-family:var(--dxp-s-html-font-family);--dxp-s-form-element-spacing-block-start:0px;--dxp-g-neutral-contrast-3:#fff;--dxp-s-text-heading-medium-text-transform:none;--dxp-g-neutral-contrast-2:#000;--dxp-g-neutral-contrast-1:#000;--dxp-s-button-color-focus-contrast:var(--dxp-s-button-color-contrast-1);--dxp-s-tertiary-button-border-color-1:rgba(0,0,0,0);--dxp-s-button-border-color-active:var(--dxp-s-button-border-color-focus);--dxp-s-link-text-color-1:rgb(8, 73, 127);--dxp-s-form-element-label-font-style:normal;--dxp-g-info:#16325c;--dxp-g-root:rgb(255, 255, 255);--dxp-s-tertiary-button-text-color-focus:var(--dxp-s-tertiary-button-text-color-1);--dxp-s-form-element-text-text-decoration:none;--dxp-s-form-element-caption-text-font-weight:400;--dxp-s-body-line-height:1.28;--dxp-s-text-heading-extra-small-font-style:normal;--dxp-s-button-large-padding-block-end:0.875rem;--dxp-s-body-text-decoration:none;--dxp-s-section-content-spacing-inline-end-mobile:0rem;--dxp-s-form-element-text-font-weight:400;--dxp-s-tertiary-button-color-1:rgba(0,0,0,0);--dxp-s-text-heading-medium-font-style:normal;--dxp-s-form-checkbox-color-background-checked:var(--dxp-s-form-checkbox-color-background);--dxp-s-secondary-button-color-focus:var(--dxp-s-secondary-button-color-1);--dxp-s-text-heading-extra-extra-small-line-height:1.25;--dxp-g-warning-2:rgb(226, 125, 0);--dxp-g-warning-3:rgb(103, 57, 0);--dxp-s-form-element-color-border:rgb(112, 114, 117);--dxp-g-warning-1:rgb(255, 165, 52);--dxp-s-header-content-max-width-mobile:none;--dxp-s-secondary-button-color-hover:var(--dxp-s-secondary-button-color-1);--dxp-s-text-heading-large-letter-spacing:0;--dxp-s-button-padding-inline-end:1.125rem;--dxp-s-tertiary-button-border-color-hover:var(--dxp-s-tertiary-button-border-color-1);--dxp-s-tertiary-button-border-color-focus:var(--dxp-s-tertiary-button-border-color-1);--dxp-s-body-font-style:normal;--dxp-g-warning-contrast:#000;--dxp-s-form-element-text-text-transform:none;--dxp-s-button-large-padding-inline-start:1.0rem;--dxp-s-text-heading-medium-line-height:1.36;--dxp-s-column-spacer-size:0rem;--dxp-s-text-heading-large-text-transform:none;--dxp-s-secondary-button-border-color:var(--dxp-s-button-color);--dxp-s-text-heading-extra-large-letter-spacing:0;--dxp-s-text-heading-large-font-size:1.75rem;--dxp-s-secondary-button-text-color:var(--dxp-s-button-color);--dxp-s-form-element-text-font-style:normal;--dxp-s-button-font-family:var(--dxp-s-html-font-family);--dxp-s-form-element-placeholder-text-color:var(--dxp-g-neutral-3);--dxp-s-form-element-color-background:#FFF;--dxp-s-tertiary-button-border-color-active:var(--dxp-s-tertiary-button-border-color-focus);--dxp-s-button-padding-block-start:0.75rem;--dxp-s-text-heading-extra-extra-small-font-style:normal;--dxp-s-button-font-weight:600;--dxp-s-body-font-weight:400;--dxp-s-body-small-line-height:1.28;--dxp-s-html-font-family:"Lato";--dxp-g-offline:#444444;--dxp-s-button-small-font-size:0.9rem;--dxp-s-button-radius-border:40px;--dxp-s-button-small-padding-block-end:0.5rem;--dxp-s-component-wrapper-spacer-size-mobile:0rem;--dxp-s-form-element-label-font-size:1rem;--dxp-s-text-heading-extra-small-line-height:1.25;--dxp-s-text-heading-small-line-height:1.25;--dxp-s-section-content-spacing-block-end:2.375rem;--dxp-s-secondary-button-text-color-focus:var(--dxp-s-secondary-button-text-color-1);--dxp-g-success-3:rgb(7, 25, 15);--dxp-g-warning:#ffb75d;--dxp-g-success-2:rgb(35, 119, 71);--dxp-g-success-1:rgb(54, 182, 108);--dxp-s-button-small-padding-inline-end:0.625rem;--dxp-s-column-spacer-size-mobile:0rem;--dxp-s-text-heading-small-font-family:var(--dxp-s-html-font-family);--dxp-s-text-heading-large-font-style:normal;--dxp-g-info-contrast-3:#fff;--dxp-s-form-checkbox-color-border-checked:var(--dxp-s-form-checkbox-color-border);--dxp-s-button-color-active:var(--dxp-s-button-color-focus);--dxp-s-section-content-spacing-inline-start-mobile:0rem;--dxp-s-section-content-spacing-block-end-mobile:0.625rem;--dxp-s-html-font-size:1rem;--dxp-s-body-font-family:var(--dxp-s-html-font-family);--dxp-s-link-text-decoration-focus:underline;--dxp-g-info-contrast-1:#fff;--dxp-s-dropdown-text-color-hover:#707275;--dxp-g-info-contrast-2:#fff;--dxp-s-text-heading-extra-large-font-family:var(--dxp-s-html-font-family);--dxp-s-text-heading-medium-text-decoration:none;--dxp-s-secondary-button-color-active:var(--dxp-s-secondary-button-color-focus);--dxp-s-form-element-label-line-height:1.5;--dxp-s-text-heading-extra-extra-small-font-family:var(--dxp-s-html-font-family);--dxp-s-text-heading-small-font-weight:400;--dxp-s-text-heading-large-font-weight:400;--dxp-s-form-element-text-color:var(--dxp-g-root-contrast);--dxp-g-destructive-contrast:#fff;--dxp-s-form-checkbox-radius-border:4px;--dxp-g-destructive-contrast-1:#fff;--dxp-g-destructive-contrast-2:#fff;--dxp-g-root-1:rgb(235, 235, 235);--dxp-g-destructive-contrast-3:#fff;--dxp-g-root-2:rgb(194, 194, 194);--dxp-s-section-content-spacing-inline-start:1.75rem;--dxp-g-root-3:rgb(133, 133, 133);--dxp-s-button-color-1:rgb(8, 73, 127);--dxp-s-form-element-color-background-active:var(--dxp-s-form-element-color-background);--dxp-s-body-text-color:var(--dxp-g-root-contrast);--dxp-s-footer-content-max-width-mobile:none;--dxp-g-brand-contrast:#FFFFFF;--dxp-s-button-border-color-hover:var(--dxp-s-button-color-hover);--dxp-s-text-heading-extra-small-letter-spacing:0em;--dxp-s-form-element-width-border:1px;--dxp-s-body-small-text-color:var(--dxp-g-root-contrast);--dxp-s-form-checkbox-width-border:1px;--dxp-s-button-color-active-contrast:var(--dxp-s-button-color-focus-contrast);--dxp-s-button-line-height:1.55;--dxp-s-button-small-padding-inline-start:0.625rem;--dxp-s-site-logo-url:url(sfsites/c/cms/delivery/media/MC4QTRQSJKANAUHBMX63F4LPYPMA);--dxp-s-text-heading-extra-extra-small-text-transform:none;--dxp-s-form-element-color-border-focus:#177EAB;--dxp-s-button-large-radius-border:40px;--dxp-s-text-heading-extra-extra-small-font-weight:600;--dxp-s-button-border-color:var(--dxp-s-button-color);--dxp-s-secondary-button-color:var(--dxp-g-root);--dxp-s-text-heading-extra-small-text-decoration:none;--dxp-s-text-heading-extra-extra-small-color:var(--dxp-g-root-contrast);--dxp-s-form-element-radius-border:4px;--dxp-s-form-element-text-color-focus:var(--dxp-s-form-element-text-color);--dxp-s-tertiary-button-border-color:rgba(0,0,0,0);--dxp-g-destructive:#c23934;--dxp-s-tertiary-button-color-active:var(--dxp-s-tertiary-button-color-focus);--dxp-s-dropdown-color-border:#D9DFE7;--dxp-g-offline-contrast:#fff;--dxp-s-text-heading-large-color:var(--dxp-g-root-contrast);--dxp-s-button-large-padding-block-start:0.875rem;--dxp-s-link-text-decoration-hover:underline;--dxp-s-button-color-focus:var(--dxp-s-button-color-1);--dxp-s-form-element-text-line-height:1.5;--dxp-s-form-element-caption-text-line-height:1.5;--dxp-s-site-logo-path:sfsites/c/cms/delivery/media/MC4QTRQSJKANAUHBMX63F4LPYPMA;--dxp-s-body-small-font-family:var(--dxp-s-html-font-family);--dxp-s-body-small-letter-spacing:0;--dxp-s-text-heading-extra-large-text-transform:none;--dxp-s-form-element-label-text-transform:none;--dxp-g-success:#4bca81;--dxp-s-form-checkbox-color-background:var(--dxp-s-form-element-color-background);--dxp-s-form-element-label-letter-spacing:0;--dxp-s-form-element-label-font-weight:400;--dxp-s-button-text-decoration:none;--dxp-s-text-heading-extra-large-line-height:1.48;--dxp-s-button-border-color-focus:var(--dxp-s-button-color-focus);--dxp-g-warning-contrast-3:#fff;--dxp-s-button-large-font-size:1.0rem;--dxp-s-button-small-radius-border:40px;--dxp-s-body-font-size:0.875rem;--dxp-s-dropdown-color-background:var(--dxp-g-root);--dxp-s-body-small-text-decoration:none;--dxp-s-secondary-button-text-color-active:var(--dxp-s-secondary-button-text-color-focus);--dxp-s-text-heading-large-line-height:1.36;--dxp-s-button-color-hover:var(--dxp-s-button-color-1);--dxp-s-button-font-size:1.0rem;--dxp-s-button-letter-spacing:0;--dxp-g-warning-contrast-2:#000;--dxp-g-warning-contrast-1:#000;--dxp-s-button-padding-inline-start:1.125rem;--dxp-g-root-contrast-1:rgb(16, 23, 31);--dxp-g-root-contrast:#1E2A3A;--dxp-g-root-contrast-2:rgb(0, 0, 0);--dxp-g-root-contrast-3:rgb(0, 0, 0);--dxp-s-header-content-max-width:1971px;--dxp-s-section-columns-max-width:1971px;--dxp-s-form-element-spacing-block-end:0px;--dxp-s-button-text-transform:none;--dxp-s-body-text-transform:none;--dxp-s-form-element-label-font-family:var(--dxp-s-html-font-family);--dxp-s-form-checkbox-color-border:var(--dxp-s-form-element-color-border);--dxp-s-form-element-caption-text-text-transform:none;--dxp-s-body-letter-spacing:0;--dxp-s-form-element-caption-text-letter-spacing:0;--dxp-s-tertiary-button-color:rgba(0,0,0,0);--dxp-s-body-small-font-style:normal;--dxp-s-text-heading-small-font-style:normal;--dxp-s-text-heading-extra-extra-small-font-size:0.625rem;--dxp-s-text-heading-small-color:var(--dxp-g-root-contrast);--dxp-s-section-content-spacing-block-start:2.375rem;--dxp-s-html-font-size-mobile:1rem;--dxp-s-section-content-spacing-inline-end:1.75rem;--dxp-s-body-small-font-weight:400;--dxp-g-offline-3:rgb(0, 0, 0);--dxp-g-offline-2:rgb(7, 7, 7);--dxp-g-offline-1:rgb(48, 48, 48);--dxp-s-button-color-contrast-1:var(--dxp-g-brand-contrast-1);--dxp-s-secondary-button-border-color-active:var(--dxp-s-secondary-button-border-color-focus);--dxp-s-text-heading-extra-extra-small-letter-spacing:0em;--dxp-s-text-heading-extra-large-text-decoration:none;--dxp-g-success-contrast:#000;--dxp-s-text-heading-small-font-size:1.0rem;--dxp-s-button-font-style:normal;--dxp-s-body-small-text-transform:none;--dxp-g-brand-contrast-1:#FFFFFF;--dxp-g-brand-contrast-3:#FFFFFF;--dxp-s-button-color-hover-contrast:var(--dxp-s-button-color-contrast-1);--dxp-g-brand-contrast-2:#FFFFFF;--dxp-g-brand-1:rgb(8, 73, 127);--dxp-g-brand-2:rgb(3, 29, 50);--dxp-g-brand-3:rgb(0, 0, 0);--dxp-s-secondary-button-text-color-1:rgb(8, 73, 127);--dxp-s-link-text-color-hover:var(--dxp-s-link-text-color-1);--dxp-g-offline-contrast-3:#fff;--dxp-g-offline-contrast-2:#fff;--dxp-s-button-small-padding-block-start:0.5rem;--dxp-s-tertiary-button-color-hover:var(--dxp-s-tertiary-button-color-1);--dxp-s-text-heading-extra-small-font-family:var(--dxp-s-html-font-family);--dxp-s-form-element-caption-text-text-decoration:none;--dxp-s-body-small-font-size:0.75rem;--dxp-g-destructive-1:rgb(162, 48, 43);--dxp-g-offline-contrast-1:#fff;--dxp-s-text-heading-small-text-transform:none;--dxp-s-tertiary-button-text-color-1:rgb(8, 73, 127);--dxp-g-info-contrast:#fff;--dxp-s-link-text-color:var(--dxp-g-brand);--dxp-s-text-heading-extra-extra-small-text-decoration:none;--dxp-g-neutral:#ecebea;--dxp-g-destructive-2:rgb(97, 29, 26);--dxp-g-destructive-3:rgb(1, 0, 0);--dxp-s-form-element-label-color:#707275;--dxp-s-text-heading-extra-large-font-weight:400;--dxp-s-text-heading-large-font-family:var(--dxp-s-html-font-family);--dxp-s-text-heading-extra-large-font-style:normal;--dxp-s-tertiary-button-text-color-active:var(--dxp-s-tertiary-button-text-color-focus);--dxp-s-text-heading-extra-small-text-transform:none;--dxp-s-text-heading-extra-small-font-weight:600;--dxp-s-form-element-text-font-size:1rem;--dxp-s-secondary-button-border-color-hover:var(--dxp-s-secondary-button-border-color-1);--dxp-s-button-large-padding:1.0rem;--dxp-g-info-2:rgb(0, 0, 0);--dxp-g-info-3:rgb(0, 0, 0);--dxp-s-secondary-button-border-color-focus:var(--dxp-s-secondary-button-border-color-1);--dxp-s-text-heading-medium-font-weight:400;--dxp-g-info-1:rgb(14, 32, 59);--dxp-g-neutral-contrast:#000;--dxp-s-dropdown-color-background-hover:#FFF;--dxp-s-button-color:var(--dxp-g-brand);--dxp-g-neutral-3:rgb(118, 113, 107);--dxp-g-neutral-2:rgb(178, 174, 170);--dxp-s-text-heading-extra-large-color:var(--dxp-g-root-contrast);--dxp-g-neutral-1:rgb(217, 215, 213);--dxp-s-secondary-button-color-1:rgb(235, 235, 235);--dxp-g-success-contrast-3:#fff;--dxp-g-success-contrast-2:#fff;--dxp-s-text-heading-extra-large-font-size:2.875rem;--dxp-s-secondary-button-border-color-1:rgb(8, 73, 127);--dxp-s-tertiary-button-color-focus:var(--dxp-s-tertiary-button-color-1);--dxp-s-form-element-caption-text-font-size:0.75rem;--dxp-s-form-element-spacing-horizontal-end:12px;--dxp-g-success-contrast-1:#000;--dxp-s-component-wrapper-spacer-size:0rem;--dxp-s-button-large-padding-inline-end:1.0rem;--dxp-s-text-heading-extra-small-color:var(--dxp-g-root-contrast);--dxp-s-tertiary-button-text-color-hover:var(--dxp-s-tertiary-button-text-color-1);--dxp-s-link-text-decoration:none;--dxp-s-text-heading-medium-font-size:1.375rem;--dxp-s-form-element-label-text-decoration:none;--dxp-s-text-heading-extra-small-font-size:0.8125rem;--dxp-s-button-color-contrast:var(--dxp-g-brand-contrast);--dxp-s-button-padding-block-end:0.75rem;--dxp-s-section-columns-max-width-mobile:none;--dxp-s-text-heading-medium-color:var(--dxp-g-root-contrast);--dxp-s-button-small-padding:0.625rem;--dxp-s-text-heading-large-text-decoration:none;--dxp-s-form-element-caption-text-font-style:normal;--dxp-s-button-padding:1.125rem;--dxp-s-secondary-button-text-color-hover:var(--dxp-s-secondary-button-text-color-1);--dxp-s-text-heading-medium-font-family:var(--dxp-s-html-font-family);--dxp-s-footer-content-max-width:1971px;--dxp-s-text-heading-small-letter-spacing:0;--dxp-s-form-element-text-letter-spacing:0;--dxp-s-section-content-spacing-block-start-mobile:0.625rem;--dxp-g-brand-h:207;--dxp-g-brand-s:88%;--dxp-g-brand-l:35%;--dxp-g-brand-a:1.0;--dxp-s-dropdown-text-color-h:0;--dxp-s-dropdown-text-color-s:0%;--dxp-s-dropdown-text-color-l:11%;--dxp-s-dropdown-text-color-a:1.0;--dxp-g-info-h:216;--dxp-g-info-s:61%;--dxp-g-info-l:22%;--dxp-g-info-a:1.0;--dxp-g-root-h:0;--dxp-g-root-s:0%;--dxp-g-root-l:100%;--dxp-g-root-a:1.0;--dxp-s-form-element-color-border-h:216;--dxp-s-form-element-color-border-s:2%;--dxp-s-form-element-color-border-l:45%;--dxp-s-form-element-color-border-a:1.0;--dxp-g-warning-contrast-h:0;--dxp-g-warning-contrast-s:0%;--dxp-g-warning-contrast-l:0%;--dxp-g-warning-contrast-a:1.0;--dxp-s-form-element-color-background-h:0;--dxp-s-form-element-color-background-s:0%;--dxp-s-form-element-color-background-l:100%;--dxp-s-form-element-color-background-a:1.0;--dxp-g-offline-h:0;--dxp-g-offline-s:0%;--dxp-g-offline-l:27%;--dxp-g-offline-a:1.0;--dxp-g-warning-h:33;--dxp-g-warning-s:100%;--dxp-g-warning-l:68%;--dxp-g-warning-a:1.0;--dxp-s-dropdown-text-color-hover-h:216;--dxp-s-dropdown-text-color-hover-s:2%;--dxp-s-dropdown-text-color-hover-l:45%;--dxp-s-dropdown-text-color-hover-a:1.0;--dxp-g-destructive-contrast-h:0;--dxp-g-destructive-contrast-s:0%;--dxp-g-destructive-contrast-l:100%;--dxp-g-destructive-contrast-a:1.0;--dxp-g-brand-contrast-h:0;--dxp-g-brand-contrast-s:0%;--dxp-g-brand-contrast-l:100%;--dxp-g-brand-contrast-a:1.0;--dxp-s-form-element-color-border-focus-h:198;--dxp-s-form-element-color-border-focus-s:76%;--dxp-s-form-element-color-border-focus-l:38%;--dxp-s-form-element-color-border-focus-a:1.0;--dxp-s-tertiary-button-border-color-h:0;--dxp-s-tertiary-button-border-color-s:0%;--dxp-s-tertiary-button-border-color-l:0%;--dxp-s-tertiary-button-border-color-a:0.0;--dxp-g-destructive-h:2;--dxp-g-destructive-s:58%;--dxp-g-destructive-l:48%;--dxp-g-destructive-a:1.0;--dxp-s-dropdown-color-border-h:214;--dxp-s-dropdown-color-border-s:23%;--dxp-s-dropdown-color-border-l:88%;--dxp-s-dropdown-color-border-a:1.0;--dxp-g-offline-contrast-h:0;--dxp-g-offline-contrast-s:0%;--dxp-g-offline-contrast-l:100%;--dxp-g-offline-contrast-a:1.0;--dxp-g-success-h:146;--dxp-g-success-s:55%;--dxp-g-success-l:54%;--dxp-g-success-a:1.0;--dxp-g-root-contrast-h:214;--dxp-g-root-contrast-s:32%;--dxp-g-root-contrast-l:17%;--dxp-g-root-contrast-a:1.0;--dxp-s-tertiary-button-color-h:0;--dxp-s-tertiary-button-color-s:0%;--dxp-s-tertiary-button-color-l:0%;--dxp-s-tertiary-button-color-a:0.0;--dxp-g-success-contrast-h:0;--dxp-g-success-contrast-s:0%;--dxp-g-success-contrast-l:0%;--dxp-g-success-contrast-a:1.0;--dxp-g-info-contrast-h:0;--dxp-g-info-contrast-s:0%;--dxp-g-info-contrast-l:100%;--dxp-g-info-contrast-a:1.0;--dxp-g-neutral-h:30;--dxp-g-neutral-s:5%;--dxp-g-neutral-l:92%;--dxp-g-neutral-a:1.0;--dxp-s-form-element-label-color-h:216;--dxp-s-form-element-label-color-s:2%;--dxp-s-form-element-label-color-l:45%;--dxp-s-form-element-label-color-a:1.0;--dxp-g-neutral-contrast-h:0;--dxp-g-neutral-contrast-s:0%;--dxp-g-neutral-contrast-l:0%;--dxp-g-neutral-contrast-a:1.0;--dxp-s-dropdown-color-background-hover-h:0;--dxp-s-dropdown-color-background-hover-s:0%;--dxp-s-dropdown-color-background-hover-l:100%;--dxp-s-dropdown-color-background-hover-a:1.0;}</style> <!-- branding stylesheets -->
 
-<link rel="stylesheet" href="assets/styles/salesforce-lightning-design-system.min.css?0DBam000001Nwdp:859">
-<link rel="stylesheet" href="assets/styles/dxp-site-spacing-styling-hooks.min.css?0DBam000001Nwdp:859">
-<link rel="stylesheet" href="assets/styles/dxp-styling-hooks.min.css?0DBam000001Nwdp:859">
-<link rel="stylesheet" href="assets/styles/dxp-slds-extensions.min.css?0DBam000001Nwdp:859">
+<link rel="stylesheet" href="assets/styles/salesforce-lightning-design-system.min.css?0DBam000001Nwdp:1285">
+<link rel="stylesheet" href="assets/styles/dxp-site-spacing-styling-hooks.min.css?0DBam000001Nwdp:1285">
+<link rel="stylesheet" href="assets/styles/dxp-styling-hooks.min.css?0DBam000001Nwdp:1285">
+<link rel="stylesheet" href="assets/styles/dxp-slds-extensions.min.css?0DBam000001Nwdp:1285">
 
 <!-- branding stylesheets -->
 
 <!-- General -->
-<link rel="shortcut icon" href="assets/favicon.ico?0DBam000001Nwdp:859">
-<link rel="stylesheet" href="assets/css/theme2.css?0DBam000001Nwdp:859">
-<link rel="stylesheet" href="sfsites/c/cms/delivery/media/MC6KKRVHXUYJCGVIDALJFIYL5HVY?version=3.1&preloadAs=style">
-<link rel="stylesheet" href="/sfsites/c/resource/abcHeaderCSS?0DBam000001Nwdp:859">
+<link rel="shortcut icon" href="assets/favicon.ico?0DBam000001Nwdp:1285">
+<link rel="stylesheet" href="assets/css/theme2.css?0DBam000001Nwdp:1285">
+<link rel="stylesheet" href="sfsites/c/cms/delivery/media/MC6KKRVHXUYJCGVIDALJFIYL5HVY?version=4.1&preloadAs=style">
+<link rel="stylesheet" href="/sfsites/c/resource/abcHeaderCSS?0DBam000001Nwdp:1285">
 <link rel="icon" type="image/png" href="/sfsites/c/resource/MyFavicon">
 <style>
+    
+    .header[data-f6-region] {
+        background-color: #fff;
+        padding: 0 !important;
+    }
     
     .wtw-H{
         color:#000!important;
@@ -265,6 +270,90 @@ Object.assign(globalThis.LWR, {
         font-weight:700!important
     }
     
+    @media only screen and (min-width: 48em) and (max-width: 63.9375em) {
+    	[data-layout-site-region="header"] {
+        	padding: 0 !important;
+    	}
+	}
+    
+   .abc-home-hero-copy {
+  background: #ffffff;
+  padding: 32px 0 40px;
+  box-sizing: border-box;
+  font-family: Lato, Arial, Helvetica, sans-serif;
+}
+
+.abc-home-hero-inner {
+  width: 100%;
+  max-width: 560px;
+  margin: 0 auto;
+  color: #13294b;
+}
+
+/* Default Desktop Alignment: Left */
+.abc-home-hero-title,
+.abc-home-hero-body,
+.abc-home-hero-btn-wrap {
+  text-align: left;
+}
+
+.abc-home-hero-title {
+  font-size: 46px;
+  line-height: 1.1;
+  margin: 0 0 18px 0;
+  text-align: left;  
+}
+
+.abc-home-hero-body {
+  font-size: 16px;
+  line-height: 1.65;
+  font-weight: 400;
+  margin: 0 auto 24px auto;
+  max-width: 700px;
+ text-align: left;   
+}
+    
+    .accredited img {
+        height: 56px !important;
+        --dxp-c-image-height: 56px;
+    }
+
+/* Tablet & Mobile Alignment: Center (1024px and below) */
+@media (max-width: 1024px) {
+  .abc-home-hero-title,
+  .abc-home-hero-body,
+  .abc-home-hero-btn-wrap {
+    text-align: center !important;
+  }
+  
+  .abc-home-hero-cta {
+    padding: 10px 28px !important;
+  }
+}
+
+/* Specific Mobile Padding Tweaks (767px and below) */
+@media (max-width: 767px) {
+  .abc-home-hero-copy {
+    padding: 24px 0 32px;
+  }
+
+  .abc-home-hero-inner {
+    max-width: 100%;
+  }
+
+  .abc-home-hero-title {
+    margin: 0 0 16px 0;
+  }
+
+  .abc-home-hero-body {
+    margin: 0 auto 22px auto;
+    max-width: 520px;
+  }
+
+  .abc-home-hero-cta {
+    padding: 8px 24px !important;
+  }
+}
     
     .card-style {
       background-color: #ffffff;
@@ -405,13 +494,109 @@ Object.assign(globalThis.LWR, {
         overflow: hidden;
         text-overflow: ellipsis;
     }
+    
     .slds-icon_small {
     	width: 200% !important;
     	height: 100% !important;
+	}
+    
+    .slds-icon-utility-favorite .slds-icon_small,
+    .slds-icon-utility-favorite-alt .slds-icon_small,
+    .slds-icon-utility-close .slds-icon_small {
+        width: 1.5rem !important;
+        height: 1.5rem !important;
+    }
+    
+    .dxp_layout-tab-bar > ul > li {
+        width: 103%;
+    }
 }
     
-    .dxp_layout-tab-bar > ul > li {width: 103%;}
+    /*=============================================================================================================================*/
+    /* Need Help Section */
+    
+@media (max-width: 768px) {
+  .help-container {
+    padding: 60px 20px 80px 20px !important;
+  }
+  .yellow-shape {
+    display: none !important;
+  }
+  .help-heading {
+    font-size: 28px !important;
+  }
+  .help-text {
+    font-size: 16px !important;
+    padding-top: 10px !important;
+    margin-bottom: 25px !important;
+  }
+  .email-btn {
+    padding: 12px 24px !important;
+    font-size: 15px !important;
+  }
+  .contact-info {
+    margin-top: 25px !important;
+  }
+  .mobile-waves {
+    display: block !important;
+  }
 }
+    
+</style>
+
+<style>
+/* Sirf podcast ke HTML editor ko target kare */
+.podcast-html-tight {
+    display: inline-block !important;
+    width: auto !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    vertical-align: top !important;
+}
+
+/* Experience Cloud rich text wrappers */
+.podcast-html-tight .forceCommunityRichText,
+.podcast-html-tight .uiOutputRichText,
+.podcast-html-tight .slds-rich-text-editor,
+.podcast-html-tight [data-component-id*="richTextEditor"] {
+    display: inline-block !important;
+    width: auto !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+}
+
+/* Andar ka actual text content */
+.podcast-html-tight p,
+.podcast-html-tight div,
+.podcast-html-tight span {
+    max-width: 100% !important;
+}
+
+/* Mobile par full width ho jaye */
+@media only screen and (max-width: 768px) {
+    .podcast-html-tight,
+    .podcast-html-tight .forceCommunityRichText,
+    .podcast-html-tight .uiOutputRichText,
+    .podcast-html-tight .slds-rich-text-editor,
+    .podcast-html-tight [data-component-id*="richTextEditor"] {
+        display: block !important;
+        width: 100% !important;
+    }
+}
+
+    /*---*/
+        
+    @media only screen and (max-width: 767px) {
+        
+        .mobile-heading-fix h1,
+        .mobile-heading-fix .dynamic-text {
+            font-size: 1.5rem !important; 
+            line-height: 1.2 !important;
+            margin-bottom: 1.5rem !important;
+        }
+    }
+    
+    
 </style>
     </head>
     <body id="main">

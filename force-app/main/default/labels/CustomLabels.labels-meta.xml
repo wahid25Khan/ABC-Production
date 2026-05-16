@@ -1,0 +1,409 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomLabels xmlns="http://soap.sforce.com/2006/04/metadata">
+    <labels>
+        <fullName>Cannot_Create_And_Release_Error</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Cannot Create and Release Reservation in one Interaction.</shortDescription>
+        <value>This change order has both cancellations and additions. Reservations cannot be created and released in the same interaction.</value>
+    </labels>
+    <labels>
+        <fullName>Create_Invoice_Error</fullName>
+        <categories>CreateInvoiceEnsureFundsFlow</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Create Invoice Error Message</shortDescription>
+        <value>The Create Invoice action returned one or more errors. The Description field contains the errors.</value>
+    </labels>
+    <labels>
+        <fullName>Ensure_Funds_Error</fullName>
+        <categories>CreateInvoiceEnsureFundsFlow</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Ensure Funds Error Message</shortDescription>
+        <value>The Ensure Funds action returned one or more errors. The Description field contains the errors.</value>
+    </labels>
+    <labels>
+        <fullName>FlowErrors_invocableErrorMessage</fullName>
+        <categories>FulfillFlow</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>FlowErrors Invocable Error Message</shortDescription>
+        <value>Please close this window and check the Order Summary page for updated information.</value>
+    </labels>
+    <labels>
+        <fullName>FlowErrors_locationGroupIsNotEnabledErrorDescription</fullName>
+        <categories>FulfillFlow</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Location or Group Unsynced Error Description</shortDescription>
+        <value>The assigned location or location group isn&apos;t configured to sync with Omnichannel Inventory.</value>
+    </labels>
+    <labels>
+        <fullName>FlowErrors_locationGroupIsNotEnabledErrorMessage</fullName>
+        <categories>FulfillFlow</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Location or Group Unsynced Error Message</shortDescription>
+        <value>The location or group {0} isn&apos;t configured to sync with Omnichannel Inventory.</value>
+    </labels>
+    <labels>
+        <fullName>FlowErrors_locationGroupMissMatchErrorDescription</fullName>
+        <categories>FulfillFlow</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Location or Group Mismatch Error Description</shortDescription>
+        <value>Some products in the delivery group have different fulfillment locations or location groups.</value>
+    </labels>
+    <labels>
+        <fullName>FlowErrors_locationGroupMissMatchErrorMessage</fullName>
+        <categories>FulfillFlow</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Location or Group Mismatch Error Message</shortDescription>
+        <value>Product {0} has a different fulfillment location or location group than other products in the delivery group.</value>
+    </labels>
+    <labels>
+        <fullName>FlowErrors_locationGroupUnavailableErrorMessage</fullName>
+        <categories>FulfillFlow</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>No Location Groups Found Error Message</shortDescription>
+        <value>You can only run this flow in an org with at least one location group.</value>
+    </labels>
+    <labels>
+        <fullName>FlowErrors_locationGroupUnavailableErrorTitle</fullName>
+        <categories>FulfillFlow</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>No Location Groups Found Error Title</shortDescription>
+        <value>No Location Groups Found</value>
+    </labels>
+    <labels>
+        <fullName>FlowErrors_locationUnavailableErrorMessage</fullName>
+        <categories>FulfillFlow</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>No Locations Found Error Message</shortDescription>
+        <value>You can only run this flow in an org with at least one location.</value>
+    </labels>
+    <labels>
+        <fullName>FlowErrors_locationUnavailableErrorTitle</fullName>
+        <categories>FulfillFlow</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>No Locations Found Error Title</shortDescription>
+        <value>No Locations Found</value>
+    </labels>
+    <labels>
+        <fullName>FlowErrors_lockedOrderSummaryErrorMessage</fullName>
+        <categories>FulfillFlow</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Locked Order Summary Error Message</shortDescription>
+        <value>This order summary is locked while background processes run. Try again later.</value>
+    </labels>
+    <labels>
+        <fullName>FlowErrors_lockedOrderSummaryErrorTitle</fullName>
+        <categories>FulfillFlow</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Locked Order Summary Error Title</shortDescription>
+        <value>Order Summary is Locked.</value>
+    </labels>
+    <labels>
+        <fullName>FlowErrors_noDeliveryGroupsToFulfill</fullName>
+        <categories>FulfillFlow</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>No Delivery Groups To Fulfill Empty State Message</shortDescription>
+        <value>When an order has items to fulfill, you&apos;ll find them here.</value>
+    </labels>
+    <labels>
+        <fullName>FlowErrors_noDeliveryGroupsToFulfillTitle</fullName>
+        <categories>FulfillFlow</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>No Delivery Groups To Fulfill Empty State Title</shortDescription>
+        <value>Nothing to Fulfill</value>
+    </labels>
+    <labels>
+        <fullName>FlowErrors_orderDeliveryGroupEntityMessage</fullName>
+        <categories>FulfillFlow</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>OrderDeliveryGroup Not Found Error Message</shortDescription>
+        <value>We couldn&apos;t find the order delivery group. Try again. If this problem continues, ask your admin for help.</value>
+    </labels>
+    <labels>
+        <fullName>FlowErrors_orderDeliveryGroupEntityTitle</fullName>
+        <categories>FulfillFlow</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>OrderDeliveryGroup Not Found Error Title</shortDescription>
+        <value>Order Delivery Group Unavailable</value>
+    </labels>
+    <labels>
+        <fullName>FlowErrors_orderSummaryEntityMessage</fullName>
+        <categories>FulfillFlow</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>OrderSummary Not Found Error Message</shortDescription>
+        <value>We couldn&apos;t find the order summary. Try again. If this problem continues, ask your admin for help.</value>
+    </labels>
+    <labels>
+        <fullName>FlowErrors_orderSummaryEntityTitle</fullName>
+        <categories>FulfillFlow</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>OrderSummary Not Found Error Title</shortDescription>
+        <value>Order Summary Unavailable</value>
+    </labels>
+    <labels>
+        <fullName>FlowErrors_reservedAtLocationIdIsNotSetErrorDescription</fullName>
+        <categories>FulfillFlow</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>ReservedAtLocationId Not Set Error Description</shortDescription>
+        <value>Every product must have a reserved at location or location group.</value>
+    </labels>
+    <labels>
+        <fullName>FlowErrors_reservedAtLocationIdIsNotSetErrorMessage</fullName>
+        <categories>FulfillFlow</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>ReservedAtLocationId Not Set Error Message</shortDescription>
+        <value>Product {0} doesn&apos;t have a reserved at location or location group specified.</value>
+    </labels>
+    <labels>
+        <fullName>FlowErrors_unmanagedOrderErrorMessage</fullName>
+        <categories>FulfillFlow</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Unmanaged Order Error Message</shortDescription>
+        <value>You can only run this flow on a managed order summary.</value>
+    </labels>
+    <labels>
+        <fullName>FlowErrors_unmanagedOrderErrorTitle</fullName>
+        <categories>FulfillFlow</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Unmanaged Order Error Title</shortDescription>
+        <value>Unmanaged Order Summary</value>
+    </labels>
+    <labels>
+        <fullName>FlowErrors_unsuccessfulFulfillmentOrderCreationErrorMessage</fullName>
+        <categories>FulfillFlow</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Fulfillment Order Creation Screen Error Message</shortDescription>
+        <value>The system encountered an error.</value>
+    </labels>
+    <labels>
+        <fullName>FlowErrors_unsuccessfulFulfillmentOrderCreationErrorTitle</fullName>
+        <categories>FulfillFlow</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Fulfillment Order Creation Screen Error Title</shortDescription>
+        <value>No Fulfillment Orders Created</value>
+    </labels>
+    <labels>
+        <fullName>FulfillFlow_doNotIncludeShippingCharges</fullName>
+        <categories>FulfillFlow</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Do Not Include Shipping Charges Button Label</shortDescription>
+        <value>Don&apos;t include shipping charges</value>
+    </labels>
+    <labels>
+        <fullName>FulfillFlow_includeShippingCharges</fullName>
+        <categories>FulfillFlow</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Include Shipping Charges Button Label</shortDescription>
+        <value>Include shipping charges</value>
+    </labels>
+    <labels>
+        <fullName>FulfillFlow_selectDeliveryGroupHeader</fullName>
+        <categories>FulfillFlow</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Select Delivery Group Title</shortDescription>
+        <value>Select Shipping Address</value>
+    </labels>
+    <labels>
+        <fullName>FulfillFlow_selectFulfillLocationHeader</fullName>
+        <categories>FulfillFlow</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Select Fulfillment Locations Title</shortDescription>
+        <value>Select Fulfillment Locations</value>
+    </labels>
+    <labels>
+        <fullName>FulfillFlow_selectProductsHeader</fullName>
+        <categories>FulfillFlow</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Select Products Title</shortDescription>
+        <value>Select Products to Fulfill</value>
+    </labels>
+    <labels>
+        <fullName>FulfillFlow_selectShippingChargesHeader</fullName>
+        <categories>FulfillFlow</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Include Shipping Charges Title</shortDescription>
+        <value>Include Remaining Shipping Charges</value>
+    </labels>
+    <labels>
+        <fullName>FulfillFlow_successMessage</fullName>
+        <categories>FulfillFlow</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Fulfillment Orders Success Title</shortDescription>
+        <value>Fulfillment Order Creation Succeeded</value>
+    </labels>
+    <labels>
+        <fullName>Invalid_Interaction_Order_Summary_Configuration</fullName>
+        <categories>FulfillFlow</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Multiple Locations Error Description</shortDescription>
+        <value>An interaction order can&apos;t include items with different fulfillment locations.</value>
+    </labels>
+    <labels>
+        <fullName>No_Reservation_Location_For_Item_Error</fullName>
+        <categories>FulfillFlow</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>No Reservation Location for Item</shortDescription>
+        <value>The item does not have a ReservedAtLocation set, so no reservation has been created.</value>
+    </labels>
+    <labels>
+        <fullName>OCIConnectionFailedAttempts</fullName>
+        <categories>FulfillFlow</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Max Connection Failures Error Description</shortDescription>
+        <value>The number of unsuccessful attempts to send transfer requests to Omnichannel Inventory has reached the limit.</value>
+    </labels>
+    <labels>
+        <fullName>OCICreateReservationError</fullName>
+        <categories>CreateReservationReshipFlow</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Create Reservation Error Message</shortDescription>
+        <value>The Create Reservation action returned one or more errors. For more information, see the Message field.</value>
+    </labels>
+    <labels>
+        <fullName>OCIFOsCreationError</fullName>
+        <categories>FulfillFlow</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Fulfillment Order Creation Error Description</shortDescription>
+        <value>The Create Fulfillment Order action returned an error.</value>
+    </labels>
+    <labels>
+        <fullName>OCIReleaseReservationError</fullName>
+        <categories>CancelFOItemFlow,ReleaseReservationReshipFlow</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Release Reservation Error Message</shortDescription>
+        <value>The Release Reservation action returned one or more errors. The Description field contains the errors.</value>
+    </labels>
+    <labels>
+        <fullName>OCITransferReservationError</fullName>
+        <categories>CancelFOItemFlow</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Transfer Reservation Error Message</shortDescription>
+        <value>The Transfer Reservation action returned one or more errors. The Description field contains the errors.</value>
+    </labels>
+    <labels>
+        <fullName>OCIUnableGetResponse</fullName>
+        <categories>FulfillFlow</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Max Connection Failures Error Message</shortDescription>
+        <value>The Transfer Reservation action returned an error the maximum allowable number of times.</value>
+    </labels>
+    <labels>
+        <fullName>OCI_Find_Routes_With_Fewest_Splits_Output_Error</fullName>
+        <categories>FulfillFlow</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Find Routes With Fewest Splits Output Error Message</shortDescription>
+        <value>The Find Routes with Fewest Splits action didn&apos;t return any routes.</value>
+    </labels>
+    <labels>
+        <fullName>OCI_Find_Routes_With_Fewest_Splits_Output_Error_Description</fullName>
+        <categories>FulfillFlow</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Find Routes With Fewest Splits Error Description</shortDescription>
+        <value>The Find Routes with Fewest Splits action failed.</value>
+    </labels>
+    <labels>
+        <fullName>OCI_Get_Availability_Output_Error</fullName>
+        <categories>FulfillFlow</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Get Availability Output Error Message</shortDescription>
+        <value>The Get Availability action didn&apos;t return any available inventory.</value>
+    </labels>
+    <labels>
+        <fullName>OCI_Get_Availability_Output_Error_Description</fullName>
+        <categories>FulfillFlow</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Get Availability Error Description</shortDescription>
+        <value>The Get Availability action failed.</value>
+    </labels>
+    <labels>
+        <fullName>OCI_Rank_by_Average_Distance_Output_Error</fullName>
+        <categories>FulfillFlow</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Rank by Average Distance Error Message</shortDescription>
+        <value>The Rank by Average Distance action didn&apos;t return a valid response.</value>
+    </labels>
+    <labels>
+        <fullName>OCI_Rank_by_Average_Distance_Output_Error_Description</fullName>
+        <categories>FulfillFlow</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Rank by Average Distance Error Description</shortDescription>
+        <value>The Rank by Average Distance action failed.</value>
+    </labels>
+    <labels>
+        <fullName>Omnichannel_Get_Location_Error</fullName>
+        <categories>RoutingFlow</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Get Location Error</shortDescription>
+        <value>We couldn&apos;t find location {0} in this org.</value>
+    </labels>
+    <labels>
+        <fullName>Omnichannel_Get_Location_Error_Description</fullName>
+        <categories>RoutingFlow</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Get Location Error Description</shortDescription>
+        <value>Exception caused by Get Location element.</value>
+    </labels>
+    <labels>
+        <fullName>RoutingLocationFault</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Routing Location Fault</shortDescription>
+        <value>The item&apos;s location is missing or not configured to sync with Omnichannel Inventory.</value>
+    </labels>
+    <labels>
+        <fullName>Unable_To_Create_Fulfillment_Order</fullName>
+        <categories>FulfillFlow</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Multiple Locations Error Message</shortDescription>
+        <value>Some of the items specified for the interaction order have different fulfillment locations.</value>
+    </labels>
+</CustomLabels>

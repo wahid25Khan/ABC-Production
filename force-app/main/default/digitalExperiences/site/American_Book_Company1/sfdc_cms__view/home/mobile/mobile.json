@@ -9,9 +9,9 @@
           "dxpStyle" : {
             "padding" : {
               "top" : "40px",
-              "right" : "20px",
+              "right" : "16px",
               "bottom" : "0px",
-              "left" : "20px"
+              "left" : "16px"
             },
             "margin" : {
               "bottom" : "",
@@ -32,25 +32,6 @@
               "top" : "0%"
             },
             "isVisible" : true
-          }
-        }
-      }, {
-        "id" : "5b788b7c-cb7a-4ed4-80ed-db0191339f15",
-        "attributes" : {
-          "dxpStyle" : {
-            "margin" : {
-              "top" : "0px",
-              "right" : "",
-              "bottom" : "0px",
-              "left" : ""
-            }
-          }
-        }
-      }, {
-        "id" : "ea0bd0ab-cf1a-484b-a7a1-801eacd8a95c",
-        "attributes" : {
-          "dxpStyle" : {
-            "isVisible" : false
           }
         }
       } ]

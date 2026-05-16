@@ -10,7 +10,7 @@
             "dxpStyle" : { }
           },
           "definition" : "c:customHeader",
-          "id" : "1e8850e0-48cd-41fc-9fd1-3c6b2626140d",
+          "id" : "e7d26a29-90cd-4ad1-b337-61f1df5ba8e7",
           "type" : "component"
         } ],
         "id" : "05a4561e-654c-427b-97ab-e32cf30977aa",
@@ -64,7 +64,7 @@
                   "attributes" : {
                     "dxpStyle" : { },
                     "imageInfos" : "",
-                    "richTextValue" : "<p><span style=\"color: rgb(187, 187, 187); font-size: 12px;\">American Book Company</span></p><p><span style=\"color: rgb(187, 187, 187); font-size: 12px;\">103 Executive Drive</span></p><p><span style=\"color: rgb(187, 187, 187); font-size: 12px;\">Woodstock GA 30188-1383</span></p><p><a href=\"mailto:contact@americanbookcompany.com\" rel=\"noopener noreferrer\" target=\"_self\" style=\"background-color: rgb(26, 47, 74); font-size: 12px; font-family: lato, sans-serif; color: rgb(187, 187, 187);\"><img src=\"https://americanbookcompany.com/_ipx/_/images/footer/email.svg\">  contact@americanbookcompany.com</a></p><p><a href=\"tel:18882645877\" rel=\"noopener noreferrer\" target=\"_self\" style=\"background-color: rgb(26, 47, 74); font-size: 12px; font-family: lato, sans-serif; color: rgb(187, 187, 187);\"><img src=\"https://americanbookcompany.com/_ipx/_/images/footer/phone.svg\">  1-888-264-5877</a></p>"
+                    "richTextValue" : "<p><span style=\"font-size: 12px; color: rgb(187, 187, 187);\">American Book Company</span></p><p><span style=\"font-size: 12px; color: rgb(187, 187, 187);\">103 Executive Drive</span></p><p><span style=\"font-size: 12px; color: rgb(187, 187, 187);\">Woodstock GA 30188-1383</span></p><p><a href=\"mailto:contact@americanbookcompany.com\" rel=\"noopener noreferrer\" target=\"_self\" style=\"color: rgb(187, 187, 187); font-family: lato, sans-serif; font-size: 12px; background-color: rgb(26, 47, 74);\"><img src=\"https://americanbookcompany.com/_ipx/_/images/footer/email.svg\"> contact@americanbookcompany.com</a></p><p><a href=\"null\" rel=\"noopener noreferrer\" target=\"_self\" style=\"color: rgb(187, 187, 187); font-family: lato, sans-serif; font-size: 12px; background-color: rgb(26, 47, 74);\"><img src=\"https://americanbookcompany.com/_ipx/_/images/footer/phone.svg\"></a><a href=\"null\" rel=\"noopener noreferrer\" target=\"_self\" style=\"color: rgb(187, 187, 187); font-family: lato, sans-serif; font-size: 12px; background-color: rgb(26, 47, 74);\"> 1-888-264-5877</a></p>"
                   },
                   "definition" : "community_builder:richTextEditor",
                   "id" : "e84e501e-6eb1-496d-aea1-c132ac3b9f60",
@@ -122,7 +122,7 @@
               }, {
                 "children" : [ {
                   "attributes" : {
-                    "alignment" : "center",
+                    "alignment" : "left",
                     "dxpStyle" : { },
                     "fit" : "contain",
                     "height" : 350,
@@ -131,6 +131,7 @@
                     "position" : "center center",
                     "width" : 48
                   },
+                  "customCssClasses" : "accredited",
                   "definition" : "dxp_base:image",
                   "id" : "11cf27ca-9099-414d-ba6b-f0772528fc7c",
                   "type" : "component"

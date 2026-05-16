@@ -1,0 +1,594 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomApplication xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionOverrides>
+        <actionName>View</actionName>
+        <comment>Action override created by Lightning App Builder during activation.</comment>
+        <content>Lead_Record_Page</content>
+        <formFactor>Large</formFactor>
+        <skipRecordTypeSelect>false</skipRecordTypeSelect>
+        <type>Flexipage</type>
+        <pageOrSobjectType>Lead</pageOrSobjectType>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <comment>Action override created by Lightning App Builder during activation.</comment>
+        <content>Lead_Record_Page</content>
+        <formFactor>Small</formFactor>
+        <skipRecordTypeSelect>false</skipRecordTypeSelect>
+        <type>Flexipage</type>
+        <pageOrSobjectType>Lead</pageOrSobjectType>
+    </actionOverrides>
+    <brand>
+        <headerColor>#2E609C</headerColor>
+        <logo>ABC_LOGO2</logo>
+        <logoVersion>1</logoVersion>
+        <shouldOverrideOrgTheme>true</shouldOverrideOrgTheme>
+    </brand>
+    <formFactors>Small</formFactors>
+    <formFactors>Large</formFactors>
+    <isNavAutoTempTabsDisabled>false</isNavAutoTempTabsDisabled>
+    <isNavPersonalizationDisabled>false</isNavPersonalizationDisabled>
+    <isNavTabPersistenceDisabled>false</isNavTabPersistenceDisabled>
+    <isOmniPinnedViewEnabled>false</isOmniPinnedViewEnabled>
+    <label>American Book Company</label>
+    <navType>Standard</navType>
+    <profileActionOverrides>
+        <actionName>View</actionName>
+        <content>Product_Record_Page1</content>
+        <formFactor>Small</formFactor>
+        <pageOrSobjectType>Product2</pageOrSobjectType>
+        <type>Flexipage</type>
+        <profile>American Book Company Profile</profile>
+    </profileActionOverrides>
+    <profileActionOverrides>
+        <actionName>View</actionName>
+        <content>Product_Record_Page1</content>
+        <formFactor>Large</formFactor>
+        <pageOrSobjectType>Product2</pageOrSobjectType>
+        <type>Flexipage</type>
+        <profile>American Book Company Profile</profile>
+    </profileActionOverrides>
+    <profileActionOverrides>
+        <actionName>View</actionName>
+        <content>Product_Record_Page1</content>
+        <formFactor>Small</formFactor>
+        <pageOrSobjectType>Product2</pageOrSobjectType>
+        <type>Flexipage</type>
+        <profile>American Book Company Buyer Profile</profile>
+    </profileActionOverrides>
+    <profileActionOverrides>
+        <actionName>View</actionName>
+        <content>Product_Record_Page1</content>
+        <formFactor>Large</formFactor>
+        <pageOrSobjectType>Product2</pageOrSobjectType>
+        <type>Flexipage</type>
+        <profile>American Book Company Buyer Profile</profile>
+    </profileActionOverrides>
+    <profileActionOverrides>
+        <actionName>View</actionName>
+        <content>Product_Record_Page1</content>
+        <formFactor>Small</formFactor>
+        <pageOrSobjectType>Product2</pageOrSobjectType>
+        <type>Flexipage</type>
+        <profile>Analytics Cloud Integration User</profile>
+    </profileActionOverrides>
+    <profileActionOverrides>
+        <actionName>View</actionName>
+        <content>Product_Record_Page1</content>
+        <formFactor>Large</formFactor>
+        <pageOrSobjectType>Product2</pageOrSobjectType>
+        <type>Flexipage</type>
+        <profile>Analytics Cloud Integration User</profile>
+    </profileActionOverrides>
+    <profileActionOverrides>
+        <actionName>View</actionName>
+        <content>Product_Record_Page1</content>
+        <formFactor>Small</formFactor>
+        <pageOrSobjectType>Product2</pageOrSobjectType>
+        <type>Flexipage</type>
+        <profile>Analytics Cloud Security User</profile>
+    </profileActionOverrides>
+    <profileActionOverrides>
+        <actionName>View</actionName>
+        <content>Product_Record_Page1</content>
+        <formFactor>Large</formFactor>
+        <pageOrSobjectType>Product2</pageOrSobjectType>
+        <type>Flexipage</type>
+        <profile>Analytics Cloud Security User</profile>
+    </profileActionOverrides>
+    <profileActionOverrides>
+        <actionName>View</actionName>
+        <content>Product_Record_Page1</content>
+        <formFactor>Small</formFactor>
+        <pageOrSobjectType>Product2</pageOrSobjectType>
+        <type>Flexipage</type>
+        <profile>B2B Reordering Portal Buyer Profile</profile>
+    </profileActionOverrides>
+    <profileActionOverrides>
+        <actionName>View</actionName>
+        <content>Product_Record_Page1</content>
+        <formFactor>Large</formFactor>
+        <pageOrSobjectType>Product2</pageOrSobjectType>
+        <type>Flexipage</type>
+        <profile>B2B Reordering Portal Buyer Profile</profile>
+    </profileActionOverrides>
+    <profileActionOverrides>
+        <actionName>View</actionName>
+        <content>Product_Record_Page1</content>
+        <formFactor>Small</formFactor>
+        <pageOrSobjectType>Product2</pageOrSobjectType>
+        <type>Flexipage</type>
+        <profile>B2BMA Integration User</profile>
+    </profileActionOverrides>
+    <profileActionOverrides>
+        <actionName>View</actionName>
+        <content>Product_Record_Page1</content>
+        <formFactor>Large</formFactor>
+        <pageOrSobjectType>Product2</pageOrSobjectType>
+        <type>Flexipage</type>
+        <profile>B2BMA Integration User</profile>
+    </profileActionOverrides>
+    <profileActionOverrides>
+        <actionName>View</actionName>
+        <content>Product_Record_Page1</content>
+        <formFactor>Small</formFactor>
+        <pageOrSobjectType>Product2</pageOrSobjectType>
+        <type>Flexipage</type>
+        <profile>Chatter External User</profile>
+    </profileActionOverrides>
+    <profileActionOverrides>
+        <actionName>View</actionName>
+        <content>Product_Record_Page1</content>
+        <formFactor>Large</formFactor>
+        <pageOrSobjectType>Product2</pageOrSobjectType>
+        <type>Flexipage</type>
+        <profile>Chatter External User</profile>
+    </profileActionOverrides>
+    <profileActionOverrides>
+        <actionName>View</actionName>
+        <content>Product_Record_Page1</content>
+        <formFactor>Small</formFactor>
+        <pageOrSobjectType>Product2</pageOrSobjectType>
+        <type>Flexipage</type>
+        <profile>Chatter Free User</profile>
+    </profileActionOverrides>
+    <profileActionOverrides>
+        <actionName>View</actionName>
+        <content>Product_Record_Page1</content>
+        <formFactor>Large</formFactor>
+        <pageOrSobjectType>Product2</pageOrSobjectType>
+        <type>Flexipage</type>
+        <profile>Chatter Free User</profile>
+    </profileActionOverrides>
+    <profileActionOverrides>
+        <actionName>View</actionName>
+        <content>Product_Record_Page1</content>
+        <formFactor>Small</formFactor>
+        <pageOrSobjectType>Product2</pageOrSobjectType>
+        <type>Flexipage</type>
+        <profile>Chatter Moderator User</profile>
+    </profileActionOverrides>
+    <profileActionOverrides>
+        <actionName>View</actionName>
+        <content>Product_Record_Page1</content>
+        <formFactor>Large</formFactor>
+        <pageOrSobjectType>Product2</pageOrSobjectType>
+        <type>Flexipage</type>
+        <profile>Chatter Moderator User</profile>
+    </profileActionOverrides>
+    <profileActionOverrides>
+        <actionName>View</actionName>
+        <content>Product_Record_Page1</content>
+        <formFactor>Small</formFactor>
+        <pageOrSobjectType>Product2</pageOrSobjectType>
+        <type>Flexipage</type>
+        <profile>Commerce Business User Profile</profile>
+    </profileActionOverrides>
+    <profileActionOverrides>
+        <actionName>View</actionName>
+        <content>Product_Record_Page1</content>
+        <formFactor>Large</formFactor>
+        <pageOrSobjectType>Product2</pageOrSobjectType>
+        <type>Flexipage</type>
+        <profile>Commerce Business User Profile</profile>
+    </profileActionOverrides>
+    <profileActionOverrides>
+        <actionName>View</actionName>
+        <content>Product_Record_Page1</content>
+        <formFactor>Small</formFactor>
+        <pageOrSobjectType>Product2</pageOrSobjectType>
+        <type>Flexipage</type>
+        <profile>ContractManager</profile>
+    </profileActionOverrides>
+    <profileActionOverrides>
+        <actionName>View</actionName>
+        <content>Product_Record_Page1</content>
+        <formFactor>Large</formFactor>
+        <pageOrSobjectType>Product2</pageOrSobjectType>
+        <type>Flexipage</type>
+        <profile>ContractManager</profile>
+    </profileActionOverrides>
+    <profileActionOverrides>
+        <actionName>View</actionName>
+        <content>Product_Record_Page1</content>
+        <formFactor>Small</formFactor>
+        <pageOrSobjectType>Product2</pageOrSobjectType>
+        <type>Flexipage</type>
+        <profile>CPQ Integration User</profile>
+    </profileActionOverrides>
+    <profileActionOverrides>
+        <actionName>View</actionName>
+        <content>Product_Record_Page1</content>
+        <formFactor>Large</formFactor>
+        <pageOrSobjectType>Product2</pageOrSobjectType>
+        <type>Flexipage</type>
+        <profile>CPQ Integration User</profile>
+    </profileActionOverrides>
+    <profileActionOverrides>
+        <actionName>View</actionName>
+        <content>Product_Record_Page1</content>
+        <formFactor>Small</formFactor>
+        <pageOrSobjectType>Product2</pageOrSobjectType>
+        <type>Flexipage</type>
+        <profile>Custom: Solution Manager</profile>
+    </profileActionOverrides>
+    <profileActionOverrides>
+        <actionName>View</actionName>
+        <content>Product_Record_Page1</content>
+        <formFactor>Large</formFactor>
+        <pageOrSobjectType>Product2</pageOrSobjectType>
+        <type>Flexipage</type>
+        <profile>Custom: Solution Manager</profile>
+    </profileActionOverrides>
+    <profileActionOverrides>
+        <actionName>View</actionName>
+        <content>Product_Record_Page1</content>
+        <formFactor>Small</formFactor>
+        <pageOrSobjectType>Product2</pageOrSobjectType>
+        <type>Flexipage</type>
+        <profile>Einstein Agent User</profile>
+    </profileActionOverrides>
+    <profileActionOverrides>
+        <actionName>View</actionName>
+        <content>Product_Record_Page1</content>
+        <formFactor>Large</formFactor>
+        <pageOrSobjectType>Product2</pageOrSobjectType>
+        <type>Flexipage</type>
+        <profile>Einstein Agent User</profile>
+    </profileActionOverrides>
+    <profileActionOverrides>
+        <actionName>View</actionName>
+        <content>Product_Record_Page1</content>
+        <formFactor>Small</formFactor>
+        <pageOrSobjectType>Product2</pageOrSobjectType>
+        <type>Flexipage</type>
+        <profile>End User</profile>
+    </profileActionOverrides>
+    <profileActionOverrides>
+        <actionName>View</actionName>
+        <content>Product_Record_Page1</content>
+        <formFactor>Large</formFactor>
+        <pageOrSobjectType>Product2</pageOrSobjectType>
+        <type>Flexipage</type>
+        <profile>End User</profile>
+    </profileActionOverrides>
+    <profileActionOverrides>
+        <actionName>View</actionName>
+        <content>Product_Record_Page1</content>
+        <formFactor>Small</formFactor>
+        <pageOrSobjectType>Product2</pageOrSobjectType>
+        <type>Flexipage</type>
+        <profile>Executive Sponsor</profile>
+    </profileActionOverrides>
+    <profileActionOverrides>
+        <actionName>View</actionName>
+        <content>Product_Record_Page1</content>
+        <formFactor>Large</formFactor>
+        <pageOrSobjectType>Product2</pageOrSobjectType>
+        <type>Flexipage</type>
+        <profile>Executive Sponsor</profile>
+    </profileActionOverrides>
+    <profileActionOverrides>
+        <actionName>View</actionName>
+        <content>Product_Record_Page1</content>
+        <formFactor>Small</formFactor>
+        <pageOrSobjectType>Product2</pageOrSobjectType>
+        <type>Flexipage</type>
+        <profile>External Apps Login User</profile>
+    </profileActionOverrides>
+    <profileActionOverrides>
+        <actionName>View</actionName>
+        <content>Product_Record_Page1</content>
+        <formFactor>Large</formFactor>
+        <pageOrSobjectType>Product2</pageOrSobjectType>
+        <type>Flexipage</type>
+        <profile>External Apps Login User</profile>
+    </profileActionOverrides>
+    <profileActionOverrides>
+        <actionName>View</actionName>
+        <content>Product_Record_Page1</content>
+        <formFactor>Small</formFactor>
+        <pageOrSobjectType>Product2</pageOrSobjectType>
+        <type>Flexipage</type>
+        <profile>External Identity User</profile>
+    </profileActionOverrides>
+    <profileActionOverrides>
+        <actionName>View</actionName>
+        <content>Product_Record_Page1</content>
+        <formFactor>Large</formFactor>
+        <pageOrSobjectType>Product2</pageOrSobjectType>
+        <type>Flexipage</type>
+        <profile>External Identity User</profile>
+    </profileActionOverrides>
+    <profileActionOverrides>
+        <actionName>View</actionName>
+        <content>Product_Record_Page1</content>
+        <formFactor>Small</formFactor>
+        <pageOrSobjectType>Product2</pageOrSobjectType>
+        <type>Flexipage</type>
+        <profile>Guest License User</profile>
+    </profileActionOverrides>
+    <profileActionOverrides>
+        <actionName>View</actionName>
+        <content>Product_Record_Page1</content>
+        <formFactor>Large</formFactor>
+        <pageOrSobjectType>Product2</pageOrSobjectType>
+        <type>Flexipage</type>
+        <profile>Guest License User</profile>
+    </profileActionOverrides>
+    <profileActionOverrides>
+        <actionName>View</actionName>
+        <content>Product_Record_Page1</content>
+        <formFactor>Small</formFactor>
+        <pageOrSobjectType>Product2</pageOrSobjectType>
+        <type>Flexipage</type>
+        <profile>Identity User</profile>
+    </profileActionOverrides>
+    <profileActionOverrides>
+        <actionName>View</actionName>
+        <content>Product_Record_Page1</content>
+        <formFactor>Large</formFactor>
+        <pageOrSobjectType>Product2</pageOrSobjectType>
+        <type>Flexipage</type>
+        <profile>Identity User</profile>
+    </profileActionOverrides>
+    <profileActionOverrides>
+        <actionName>View</actionName>
+        <content>Product_Record_Page1</content>
+        <formFactor>Small</formFactor>
+        <pageOrSobjectType>Product2</pageOrSobjectType>
+        <type>Flexipage</type>
+        <profile>MarketingProfile</profile>
+    </profileActionOverrides>
+    <profileActionOverrides>
+        <actionName>View</actionName>
+        <content>Product_Record_Page1</content>
+        <formFactor>Large</formFactor>
+        <pageOrSobjectType>Product2</pageOrSobjectType>
+        <type>Flexipage</type>
+        <profile>MarketingProfile</profile>
+    </profileActionOverrides>
+    <profileActionOverrides>
+        <actionName>View</actionName>
+        <content>Product_Record_Page1</content>
+        <formFactor>Small</formFactor>
+        <pageOrSobjectType>Product2</pageOrSobjectType>
+        <type>Flexipage</type>
+        <profile>Minimum Access - API Only Integrations</profile>
+    </profileActionOverrides>
+    <profileActionOverrides>
+        <actionName>View</actionName>
+        <content>Product_Record_Page1</content>
+        <formFactor>Large</formFactor>
+        <pageOrSobjectType>Product2</pageOrSobjectType>
+        <type>Flexipage</type>
+        <profile>Minimum Access - API Only Integrations</profile>
+    </profileActionOverrides>
+    <profileActionOverrides>
+        <actionName>View</actionName>
+        <content>Product_Record_Page1</content>
+        <formFactor>Small</formFactor>
+        <pageOrSobjectType>Product2</pageOrSobjectType>
+        <type>Flexipage</type>
+        <profile>Minimum Access - Salesforce</profile>
+    </profileActionOverrides>
+    <profileActionOverrides>
+        <actionName>View</actionName>
+        <content>Product_Record_Page1</content>
+        <formFactor>Large</formFactor>
+        <pageOrSobjectType>Product2</pageOrSobjectType>
+        <type>Flexipage</type>
+        <profile>Minimum Access - Salesforce</profile>
+    </profileActionOverrides>
+    <profileActionOverrides>
+        <actionName>View</actionName>
+        <content>Product_Record_Page1</content>
+        <formFactor>Small</formFactor>
+        <pageOrSobjectType>Product2</pageOrSobjectType>
+        <type>Flexipage</type>
+        <profile>Read Only</profile>
+    </profileActionOverrides>
+    <profileActionOverrides>
+        <actionName>View</actionName>
+        <content>Product_Record_Page1</content>
+        <formFactor>Large</formFactor>
+        <pageOrSobjectType>Product2</pageOrSobjectType>
+        <type>Flexipage</type>
+        <profile>Read Only</profile>
+    </profileActionOverrides>
+    <profileActionOverrides>
+        <actionName>View</actionName>
+        <content>Product_Record_Page1</content>
+        <formFactor>Small</formFactor>
+        <pageOrSobjectType>Product2</pageOrSobjectType>
+        <type>Flexipage</type>
+        <profile>Sales Insights Integration User</profile>
+    </profileActionOverrides>
+    <profileActionOverrides>
+        <actionName>View</actionName>
+        <content>Product_Record_Page1</content>
+        <formFactor>Large</formFactor>
+        <pageOrSobjectType>Product2</pageOrSobjectType>
+        <type>Flexipage</type>
+        <profile>Sales Insights Integration User</profile>
+    </profileActionOverrides>
+    <profileActionOverrides>
+        <actionName>View</actionName>
+        <content>Product_Record_Page1</content>
+        <formFactor>Small</formFactor>
+        <pageOrSobjectType>Product2</pageOrSobjectType>
+        <type>Flexipage</type>
+        <profile>Sales Profile</profile>
+    </profileActionOverrides>
+    <profileActionOverrides>
+        <actionName>View</actionName>
+        <content>Product_Record_Page1</content>
+        <formFactor>Large</formFactor>
+        <pageOrSobjectType>Product2</pageOrSobjectType>
+        <type>Flexipage</type>
+        <profile>Sales Profile</profile>
+    </profileActionOverrides>
+    <profileActionOverrides>
+        <actionName>View</actionName>
+        <content>Product_Record_Page1</content>
+        <formFactor>Small</formFactor>
+        <pageOrSobjectType>Product2</pageOrSobjectType>
+        <type>Flexipage</type>
+        <profile>Sales User Profile</profile>
+    </profileActionOverrides>
+    <profileActionOverrides>
+        <actionName>View</actionName>
+        <content>Product_Record_Page1</content>
+        <formFactor>Large</formFactor>
+        <pageOrSobjectType>Product2</pageOrSobjectType>
+        <type>Flexipage</type>
+        <profile>Sales User Profile</profile>
+    </profileActionOverrides>
+    <profileActionOverrides>
+        <actionName>View</actionName>
+        <content>Product_Record_Page1</content>
+        <formFactor>Small</formFactor>
+        <pageOrSobjectType>Product2</pageOrSobjectType>
+        <type>Flexipage</type>
+        <profile>Salesforce API Only System Integrations</profile>
+    </profileActionOverrides>
+    <profileActionOverrides>
+        <actionName>View</actionName>
+        <content>Product_Record_Page1</content>
+        <formFactor>Large</formFactor>
+        <pageOrSobjectType>Product2</pageOrSobjectType>
+        <type>Flexipage</type>
+        <profile>Salesforce API Only System Integrations</profile>
+    </profileActionOverrides>
+    <profileActionOverrides>
+        <actionName>View</actionName>
+        <content>Product_Record_Page1</content>
+        <formFactor>Small</formFactor>
+        <pageOrSobjectType>Product2</pageOrSobjectType>
+        <type>Flexipage</type>
+        <profile>SalesforceIQ Integration User</profile>
+    </profileActionOverrides>
+    <profileActionOverrides>
+        <actionName>View</actionName>
+        <content>Product_Record_Page1</content>
+        <formFactor>Large</formFactor>
+        <pageOrSobjectType>Product2</pageOrSobjectType>
+        <type>Flexipage</type>
+        <profile>SalesforceIQ Integration User</profile>
+    </profileActionOverrides>
+    <profileActionOverrides>
+        <actionName>View</actionName>
+        <content>Product_Record_Page1</content>
+        <formFactor>Small</formFactor>
+        <pageOrSobjectType>Product2</pageOrSobjectType>
+        <type>Flexipage</type>
+        <profile>sfpwebhook Profile</profile>
+    </profileActionOverrides>
+    <profileActionOverrides>
+        <actionName>View</actionName>
+        <content>Product_Record_Page1</content>
+        <formFactor>Large</formFactor>
+        <pageOrSobjectType>Product2</pageOrSobjectType>
+        <type>Flexipage</type>
+        <profile>sfpwebhook Profile</profile>
+    </profileActionOverrides>
+    <profileActionOverrides>
+        <actionName>View</actionName>
+        <content>Product_Record_Page1</content>
+        <formFactor>Small</formFactor>
+        <pageOrSobjectType>Product2</pageOrSobjectType>
+        <type>Flexipage</type>
+        <profile>Solution Manager</profile>
+    </profileActionOverrides>
+    <profileActionOverrides>
+        <actionName>View</actionName>
+        <content>Product_Record_Page1</content>
+        <formFactor>Large</formFactor>
+        <pageOrSobjectType>Product2</pageOrSobjectType>
+        <type>Flexipage</type>
+        <profile>Solution Manager</profile>
+    </profileActionOverrides>
+    <profileActionOverrides>
+        <actionName>View</actionName>
+        <content>Product_Record_Page1</content>
+        <formFactor>Small</formFactor>
+        <pageOrSobjectType>Product2</pageOrSobjectType>
+        <type>Flexipage</type>
+        <profile>SolutionManager</profile>
+    </profileActionOverrides>
+    <profileActionOverrides>
+        <actionName>View</actionName>
+        <content>Product_Record_Page1</content>
+        <formFactor>Large</formFactor>
+        <pageOrSobjectType>Product2</pageOrSobjectType>
+        <type>Flexipage</type>
+        <profile>SolutionManager</profile>
+    </profileActionOverrides>
+    <profileActionOverrides>
+        <actionName>View</actionName>
+        <content>Product_Record_Page1</content>
+        <formFactor>Small</formFactor>
+        <pageOrSobjectType>Product2</pageOrSobjectType>
+        <type>Flexipage</type>
+        <profile>Standard</profile>
+    </profileActionOverrides>
+    <profileActionOverrides>
+        <actionName>View</actionName>
+        <content>Product_Record_Page1</content>
+        <formFactor>Large</formFactor>
+        <pageOrSobjectType>Product2</pageOrSobjectType>
+        <type>Flexipage</type>
+        <profile>Standard</profile>
+    </profileActionOverrides>
+    <profileActionOverrides>
+        <actionName>View</actionName>
+        <content>Product_Record_Page1</content>
+        <formFactor>Small</formFactor>
+        <pageOrSobjectType>Product2</pageOrSobjectType>
+        <type>Flexipage</type>
+        <profile>Admin</profile>
+    </profileActionOverrides>
+    <profileActionOverrides>
+        <actionName>View</actionName>
+        <content>Product_Record_Page1</content>
+        <formFactor>Large</formFactor>
+        <pageOrSobjectType>Product2</pageOrSobjectType>
+        <type>Flexipage</type>
+        <profile>Admin</profile>
+    </profileActionOverrides>
+    <tabs>standard-home</tabs>
+    <tabs>standard-Lead</tabs>
+    <tabs>standard-Account</tabs>
+    <tabs>standard-Contact</tabs>
+    <tabs>standard-Opportunity</tabs>
+    <tabs>standard-Product2</tabs>
+    <tabs>standard-Quote</tabs>
+    <tabs>standard-Order</tabs>
+    <tabs>standard-OrderSummary</tabs>
+    <tabs>AuthorizeNet_Transaction__c</tabs>
+    <tabs>standard-Task</tabs>
+    <tabs>standard-report</tabs>
+    <tabs>standard-Dashboard</tabs>
+    <uiType>Lightning</uiType>
+    <utilityBar>American_Book_Company_UtilityBar</utilityBar>
+</CustomApplication>

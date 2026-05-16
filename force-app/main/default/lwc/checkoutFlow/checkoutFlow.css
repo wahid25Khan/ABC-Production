@@ -668,16 +668,6 @@
     line-height: 1.5;
 }
 
-.summary-place-order {
-    margin-top: 0.75rem;
-    padding: 0 1rem;
-    text-align: center;
-}
-
-.btn-place-order-summary {
-    width: 100%;
-}
-
 .hidden-mobile {
     display: block;
 }
@@ -957,8 +947,8 @@
     border-radius: 12px;
     box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
     width: 100%;
-    max-width: 520px;
-    max-height: 90vh;
+    max-width: 600px;
+    max-height: 92vh;
     display: flex;
     flex-direction: column;
     overflow: hidden;
@@ -997,15 +987,63 @@
     color: #111827;
 }
 
+.an-modal-header-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.an-modal-expand {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 1.1rem;
+    line-height: 1;
+    color: #6b7280;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    transition: background 0.15s, color 0.15s;
+}
+
+.an-modal-expand:hover {
+    background: #f3f4f6;
+    color: #111827;
+}
+
+/* Sandbox mode — larger default */
+.an-modal-container.an-modal-sandbox {
+    max-width: 700px;
+}
+
+.an-modal-sandbox .an-payment-iframe {
+    height: 720px;
+}
+
+/* Expanded mode — near full-screen */
+.an-modal-container.an-modal-expanded {
+    max-width: 95vw;
+    max-height: 95vh;
+}
+
+.an-modal-expanded .an-modal-body {
+    min-height: 0;
+    flex: 1;
+}
+
+.an-modal-expanded .an-payment-iframe {
+    height: 100%;
+    min-height: 600px;
+}
+
 .an-modal-body {
     flex: 1;
     overflow: auto;
-    min-height: 460px;
+    min-height: 500px;
 }
 
 .an-payment-iframe {
     width: 100%;
-    height: 520px;
+    height: 650px;
     border: none;
     display: block;
 }
@@ -1027,6 +1065,23 @@
     font-size: 0.9rem;
     color: #374151;
     font-weight: 500;
+}
+
+/* Mobile: full-screen payment modal */
+@media (max-width: 640px) {
+    .an-modal-backdrop {
+        padding: 0;
+    }
+    .an-modal-container {
+        max-width: 100%;
+        max-height: 100vh;
+        border-radius: 0;
+        height: 100%;
+    }
+    .an-payment-iframe {
+        height: 100%;
+        min-height: 550px;
+    }
 }
 
 /* ─── Order Success Screen ───────────────────────────────────────────────── */

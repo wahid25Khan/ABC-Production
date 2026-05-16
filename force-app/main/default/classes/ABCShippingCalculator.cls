@@ -16,29 +16,88 @@ public class ABCShippingCalculator extends CartExtension.ShippingCartCalculator 
     // Cache the config so we only query once per transaction
     private static Shipping_Config__mdt config;
 
-    public virtual override void calculate(
-        CartExtension.CartCalculateCalculatorRequest request
-    ) {
-        CartExtension.Cart cart = request.getCart();
-        CartExtension.CartValidationOutputList cvos = cart.getCartValidationOutputs();
-        clearShippingValidations(cvos);
+    @TestVisible
+    private class CartLine {
+        Id productId;
+        CartExtension.SalesItemTypeEnum itemType;
+        Decimal totalPrice;
 
-        Shipping_Config__mdt cfg = getConfig();
-        CartExtension.CartDeliveryGroupList groups = cart.getCartDeliveryGroups();
-        Id shippingProductId = resolveShippingProductId();
-        String validationMessage = validateConfiguration(cfg, groups.size(), shippingProductId);
-        if (validationMessage != null) {
-            addError(cvos, validationMessage);
-            return;
+        CartLine(Id productId, CartExtension.SalesItemTypeEnum itemType, Decimal totalPrice) {
+            this.productId = productId;
+            this.itemType = itemType;
+            this.totalPrice = totalPrice;
+        }
+    }
+
+    @TestVisible
+    private interface ValidationState {
+        void clearShippingValidations();
+        void addShippingError(String message);
+    }
+
+    @TestVisible
+    private interface CalculationContext {
+        ValidationState getValidationState();
+        Integer getDeliveryGroupCount();
+        List<CartLine> getCartLines();
+        void replaceDeliveryMethods(CartExtension.CartDeliveryGroupMethod method);
+    }
+
+    private class RuntimeValidationState implements ValidationState {
+        private CartExtension.CartValidationOutputList cvos;
+
+        RuntimeValidationState(CartExtension.CartValidationOutputList cvos) { this.cvos = cvos; }
+
+        public void clearShippingValidations() {
+            for (Integer i = cvos.size() - 1; i >= 0; i--) {
+                CartExtension.CartValidationOutput cvo = cvos.get(i);
+                if (isShippingValidation(cvo)) {
+                    cvos.remove(cvo);
+                }
+            }
         }
 
-        applyShippingMethods(
-            groups,
-            cfg,
-            shippingProductId,
-            calculateShippingFee(sumShippableTotal(cart.getCartItems()), cfg)
-        );
+        public void addShippingError(String message) {
+            cvos.add(buildShippingValidation(message));
+        }
     }
+
+    private class RuntimeCalculationContext implements CalculationContext {
+        private CartExtension.Cart cart;
+
+        RuntimeCalculationContext(CartExtension.Cart cart) { this.cart = cart; }
+
+        public ValidationState getValidationState() { return new RuntimeValidationState(cart.getCartValidationOutputs()); }
+
+        public Integer getDeliveryGroupCount() { return cart.getCartDeliveryGroups().size(); }
+
+        public List<CartLine> getCartLines() {
+            List<CartLine> lines = new List<CartLine>();
+            Iterator<CartExtension.CartItem> iter = cart.getCartItems().iterator();
+            while (iter.hasNext()) {
+                CartExtension.CartItem item = iter.next();
+                lines.add(new CartLine(item.getProduct2Id(), item.getType(), item.getTotalPrice()));
+            }
+            return lines;
+        }
+
+        public void replaceDeliveryMethods(CartExtension.CartDeliveryGroupMethod method) {
+            CartExtension.CartDeliveryGroupList groups = cart.getCartDeliveryGroups();
+            for (Integer i = 0; i < groups.size(); i++) {
+                CartExtension.CartDeliveryGroup cdg = groups.get(i);
+                CartExtension.CartDeliveryGroupMethodList methods = cdg.getCartDeliveryGroupMethods();
+                for (Integer j = methods.size() - 1; j >= 0; j--) {
+                    methods.remove(methods.get(j));
+                }
+                cdg.setSelectedCartDeliveryGroupMethod(null);
+                methods.add(method);
+                cdg.setSelectedCartDeliveryGroupMethod(method);
+            }
+        }
+    }
+
+    public virtual override void calculate(CartExtension.CartCalculateCalculatorRequest request) {
+        runCalculation(new RuntimeCalculationContext(request.getCart()), getConfig(), resolveShippingProductId()); }
 
     @AuraEnabled(cacheable=true)
     public static Decimal getShippingRatePercent() {
@@ -94,6 +153,34 @@ public class ABCShippingCalculator extends CartExtension.ShippingCartCalculator 
         return getShippingRatePercent();
     }
 
+    @TestVisible
+    private static void runCalculation(
+        CalculationContext context,
+        Shipping_Config__mdt cfg,
+        Id shippingProductId
+    ) {
+        ValidationState validationState = context.getValidationState();
+        validationState.clearShippingValidations();
+
+        String validationMessage = validateConfiguration(cfg, context.getDeliveryGroupCount(), shippingProductId);
+        if (validationMessage != null) {
+            validationState.addShippingError(validationMessage);
+            return;
+        }
+
+        Decimal shippingFee = calculateShippingFee(sumShippableTotal(context.getCartLines()), cfg);
+        context.replaceDeliveryMethods(buildDeliveryMethod(cfg, shippingFee, shippingProductId));
+    }
+
+    @TestVisible
+    private static CartLine newCartLine(
+        Id productId,
+        CartExtension.SalesItemTypeEnum itemType,
+        Decimal totalPrice
+    ) {
+        return new CartLine(productId, itemType, totalPrice);
+    }
+
     private static String validateConfiguration(
         Shipping_Config__mdt cfg,
         Integer deliveryGroupCount,
@@ -117,27 +204,39 @@ public class ABCShippingCalculator extends CartExtension.ShippingCartCalculator 
         return (safeTotal * (ratePercent / 100)).setScale(2, RoundingMode.HALF_UP);
     }
 
-    private static Decimal sumShippableTotal(CartExtension.CartItemList items) {
+    private static Decimal sumShippableTotal(List<CartLine> items) {
         Map<Id, Decimal> lineTotalsByProductId = new Map<Id, Decimal>();
-        Iterator<CartExtension.CartItem> iter = items.iterator();
-        while (iter.hasNext()) {
-            CartExtension.CartItem item = iter.next();
-            if (item.getType() != CartExtension.SalesItemTypeEnum.PRODUCT || item.getProduct2Id() == null) {
-                continue;
-            }
-
-            Decimal itemTotal = item.getTotalPrice();
-            if (itemTotal == null || itemTotal <= 0) {
-                continue;
-            }
-
-            Decimal runningTotal = lineTotalsByProductId.containsKey(item.getProduct2Id())
-                ? lineTotalsByProductId.get(item.getProduct2Id())
-                : 0;
-            lineTotalsByProductId.put(item.getProduct2Id(), runningTotal + itemTotal);
+        for (CartLine item : items) {
+            addProductLineTotal(
+                lineTotalsByProductId,
+                item.productId,
+                item.itemType,
+                item.totalPrice
+            );
         }
 
         return sumShippableLineTotals(lineTotalsByProductId);
+    }
+
+    @TestVisible
+    private static void addProductLineTotal(
+        Map<Id, Decimal> lineTotalsByProductId,
+        Id productId,
+        CartExtension.SalesItemTypeEnum itemType,
+        Decimal itemTotal
+    ) {
+        if (lineTotalsByProductId == null || itemType != CartExtension.SalesItemTypeEnum.PRODUCT || productId == null) {
+            return;
+        }
+
+        if (itemTotal == null || itemTotal <= 0) {
+            return;
+        }
+
+        Decimal runningTotal = lineTotalsByProductId.containsKey(productId)
+            ? lineTotalsByProductId.get(productId)
+            : 0;
+        lineTotalsByProductId.put(productId, runningTotal + itemTotal);
     }
 
     private static Decimal sumShippableLineTotals(Map<Id, Decimal> lineTotalsByProductId) {
@@ -175,49 +274,37 @@ public class ABCShippingCalculator extends CartExtension.ShippingCartCalculator 
         return results.isEmpty() ? null : results[0].Id;
     }
 
-    private static void applyShippingMethods(
-        CartExtension.CartDeliveryGroupList groups,
+    @TestVisible
+    private static CartExtension.CartDeliveryGroupMethod buildDeliveryMethod(
         Shipping_Config__mdt cfg,
-        Id shippingProductId,
-        Decimal shippingFee
+        Decimal shippingFee,
+        Id shippingProductId
     ) {
-        for (Integer i = 0; i < groups.size(); i++) {
-            CartExtension.CartDeliveryGroup cdg = groups.get(i);
-            CartExtension.CartDeliveryGroupMethodList methods = cdg.getCartDeliveryGroupMethods();
-            for (Integer j = methods.size() - 1; j >= 0; j--) {
-                methods.remove(methods.get(j));
-            }
-            cdg.setSelectedCartDeliveryGroupMethod(null);
-
-            CartExtension.CartDeliveryGroupMethod method =
-                new CartExtension.CartDeliveryGroupMethod(
-                    cfg.Shipping_Method_Name__c,
-                    shippingFee,
-                    shippingProductId
-                );
-            if (String.isNotBlank(cfg.Carrier__c)) {
-                method.setCarrier(cfg.Carrier__c);
-                method.setClassOfService('Standard');
-            }
-            methods.add(method);
+        CartExtension.CartDeliveryGroupMethod method =
+            new CartExtension.CartDeliveryGroupMethod(
+                cfg.Shipping_Method_Name__c,
+                shippingFee,
+                shippingProductId
+            );
+        if (String.isNotBlank(cfg.Carrier__c)) {
+            method.setCarrier(cfg.Carrier__c);
+            method.setClassOfService('Standard');
         }
+        return method;
     }
 
-    private static void clearShippingValidations(CartExtension.CartValidationOutputList cvos) {
-        for (Integer i = cvos.size() - 1; i >= 0; i--) {
-            CartExtension.CartValidationOutput cvo = cvos.get(i);
-            if (cvo.getType() == CartExtension.CartValidationOutputTypeEnum.SHIPPING) {
-                cvos.remove(cvo);
-            }
-        }
+    @TestVisible
+    private static Boolean isShippingValidation(CartExtension.CartValidationOutput cvo) {
+        return cvo != null && cvo.getType() == CartExtension.CartValidationOutputTypeEnum.SHIPPING;
     }
 
-    private static void addError(CartExtension.CartValidationOutputList cvos, String message) {
+    @TestVisible
+    private static CartExtension.CartValidationOutput buildShippingValidation(String message) {
         CartExtension.CartValidationOutput cvo = new CartExtension.CartValidationOutput(
             CartExtension.CartValidationOutputTypeEnum.SHIPPING,
             CartExtension.CartValidationOutputLevelEnum.ERROR
         );
         cvo.setMessage(message);
-        cvos.add(cvo);
+        return cvo;
     }
 }

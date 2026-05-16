@@ -13,6 +13,52 @@
 @IsTest
 private class ABCShippingCalculatorTest {
 
+    private class FakeValidationState implements ABCShippingCalculator.ValidationState {
+        List<CartExtension.CartValidationOutput> errors = new List<CartExtension.CartValidationOutput>();
+
+        public void clearShippingValidations() {
+            for (Integer i = errors.size() - 1; i >= 0; i--) {
+                if (ABCShippingCalculator.isShippingValidation(errors[i])) {
+                    errors.remove(i);
+                }
+            }
+        }
+
+        public void addShippingError(String message) {
+            errors.add(ABCShippingCalculator.buildShippingValidation(message));
+        }
+    }
+
+    private class FakeCalculationContext implements ABCShippingCalculator.CalculationContext {
+        Integer deliveryGroupCount;
+        FakeValidationState validationState = new FakeValidationState();
+        List<ABCShippingCalculator.CartLine> cartLines = new List<ABCShippingCalculator.CartLine>();
+        List<CartExtension.CartDeliveryGroupMethod> appliedMethods = new List<CartExtension.CartDeliveryGroupMethod>();
+        CartExtension.CartDeliveryGroupMethod selectedMethod;
+
+        FakeCalculationContext(Integer deliveryGroupCount) {
+            this.deliveryGroupCount = deliveryGroupCount;
+        }
+
+        public ABCShippingCalculator.ValidationState getValidationState() {
+            return validationState;
+        }
+
+        public Integer getDeliveryGroupCount() {
+            return deliveryGroupCount;
+        }
+
+        public List<ABCShippingCalculator.CartLine> getCartLines() {
+            return cartLines;
+        }
+
+        public void replaceDeliveryMethods(CartExtension.CartDeliveryGroupMethod method) {
+            appliedMethods.clear();
+            appliedMethods.add(method);
+            selectedMethod = method;
+        }
+    }
+
     @TestSetup
     static void setup() {
         Account acc = new Account(Name = 'Test School District');
@@ -91,6 +137,14 @@ private class ABCShippingCalculatorTest {
         cfg.Carrier__c               = 'USPS';
         cfg.Is_Active__c             = true;
         return cfg;
+    }
+
+    private static ABCShippingCalculator.CartLine makeCartLine(
+        Id productId,
+        CartExtension.SalesItemTypeEnum itemType,
+        Decimal totalPrice
+    ) {
+        return ABCShippingCalculator.newCartLine(productId, itemType, totalPrice);
     }
 
     // ── Config helper tests ──────────────────────────────────────────
@@ -243,6 +297,18 @@ private class ABCShippingCalculatorTest {
     }
 
     @IsTest
+    static void testGetShippingRatePercentForTest_returnsConfiguredValue() {
+        ABCShippingCalculator.setConfigForTest(buildTestConfig());
+
+        Test.startTest();
+        Decimal ratePercent = ABCShippingCalculator.getShippingRatePercentForTest();
+        Test.stopTest();
+
+        System.assertEquals(12.00, ratePercent,
+            'The test-visible rate wrapper should return the active configured rate.');
+    }
+
+    @IsTest
     static void testResolveShippingProductIdForTest_returnsShippingProduct() {
         Test.startTest();
         Id shippingProductId = ABCShippingCalculator.resolveShippingProductIdForTest();
@@ -312,6 +378,218 @@ private class ABCShippingCalculatorTest {
 
         System.assertEquals(150, shippableTotal,
             'Only physical products should contribute to shipping.');
+    }
+
+    @IsTest
+    static void testSumShippableLineTotalsForTest_returnsZeroForEmptyInput() {
+        Test.startTest();
+        Decimal shippableTotal = ABCShippingCalculator.sumShippableLineTotalsForTest(new Map<Id, Decimal>());
+        Test.stopTest();
+
+        System.assertEquals(0, shippableTotal,
+            'Empty shippable line inputs should return a zero shipping base.');
+    }
+
+    @IsTest
+    static void testAddProductLineTotal_accumulatesOnlyValidPhysicalProductLines() {
+        Id physicalProductId = [
+            SELECT Id
+            FROM Product2
+            WHERE Name = 'Test Physical Book'
+            LIMIT 1
+        ].Id;
+
+        Map<Id, Decimal> totals = new Map<Id, Decimal>();
+
+        Test.startTest();
+        ABCShippingCalculator.addProductLineTotal(
+            totals,
+            physicalProductId,
+            CartExtension.SalesItemTypeEnum.CHARGE,
+            25
+        );
+        ABCShippingCalculator.addProductLineTotal(
+            totals,
+            null,
+            CartExtension.SalesItemTypeEnum.PRODUCT,
+            25
+        );
+        ABCShippingCalculator.addProductLineTotal(
+            totals,
+            physicalProductId,
+            CartExtension.SalesItemTypeEnum.PRODUCT,
+            null
+        );
+        ABCShippingCalculator.addProductLineTotal(
+            totals,
+            physicalProductId,
+            CartExtension.SalesItemTypeEnum.PRODUCT,
+            100
+        );
+        ABCShippingCalculator.addProductLineTotal(
+            totals,
+            physicalProductId,
+            CartExtension.SalesItemTypeEnum.PRODUCT,
+            50
+        );
+        Test.stopTest();
+
+        System.assertEquals(1, totals.size(), 'Only valid product lines should be accumulated.');
+        System.assertEquals(150, totals.get(physicalProductId),
+            'Valid product line totals should accumulate for the same product.');
+    }
+
+    @IsTest
+    static void testBuildDeliveryMethod_setsConfiguredCarrierAndService() {
+        Id shippingProductId = [
+            SELECT Id
+            FROM Product2
+            WHERE Name = 'Shipping Charge Product'
+            LIMIT 1
+        ].Id;
+
+        ABCShippingCalculator.setConfigForTest(buildTestConfig());
+
+        Test.startTest();
+        CartExtension.CartDeliveryGroupMethod method = ABCShippingCalculator.buildDeliveryMethod(
+            ABCShippingCalculator.getConfig(),
+            30,
+            shippingProductId
+        );
+        Test.stopTest();
+
+        System.assertEquals('Standard Shipping', method.getName());
+        System.assertEquals(30, method.getShippingFee());
+        System.assertEquals(shippingProductId, method.getProductId());
+        System.assertEquals('USPS', method.getCarrier());
+        System.assertEquals('Standard', method.getClassOfService());
+    }
+
+    @IsTest
+    static void testBuildShippingValidation_createsShippingErrorOutput() {
+        Test.startTest();
+        CartExtension.CartValidationOutput cvo = ABCShippingCalculator.buildShippingValidation('Missing delivery address');
+        Boolean isShippingValidation = ABCShippingCalculator.isShippingValidation(cvo);
+        Test.stopTest();
+
+        System.assertEquals(CartExtension.CartValidationOutputTypeEnum.SHIPPING, cvo.getType());
+        System.assertEquals(CartExtension.CartValidationOutputLevelEnum.ERROR, cvo.getLevel());
+        System.assertEquals('Missing delivery address', cvo.getMessage());
+        System.assertEquals(true, isShippingValidation, 'Shipping validation helper should identify shipping errors.');
+    }
+
+    @IsTest
+    static void testIsShippingValidation_returnsFalseForNonShippingOutput() {
+        CartExtension.CartValidationOutput inventoryCvo = new CartExtension.CartValidationOutput(
+            CartExtension.CartValidationOutputTypeEnum.INVENTORY,
+            CartExtension.CartValidationOutputLevelEnum.ERROR
+        );
+
+        Test.startTest();
+        Boolean result = ABCShippingCalculator.isShippingValidation(inventoryCvo);
+        Test.stopTest();
+
+        System.assertEquals(false, result,
+            'Only shipping validation outputs should be removed from the cart validation list.');
+    }
+
+    @IsTest
+    static void testCalculate_selectsConfiguredDeliveryMethod_forShippableCart() {
+        Id physicalProductId = [
+            SELECT Id
+            FROM Product2
+            WHERE Name = 'Test Physical Book'
+            LIMIT 1
+        ].Id;
+
+        FakeCalculationContext context = new FakeCalculationContext(1);
+        context.validationState.errors.add(ABCShippingCalculator.buildShippingValidation('Old shipping warning'));
+        context.cartLines.add(makeCartLine(physicalProductId, CartExtension.SalesItemTypeEnum.PRODUCT, 250));
+        context.cartLines.add(makeCartLine(physicalProductId, CartExtension.SalesItemTypeEnum.CHARGE, 20));
+
+        ABCShippingCalculator.setConfigForTest(buildTestConfig());
+        Id shippingProductId = [
+            SELECT Id
+            FROM Product2
+            WHERE Name = 'Shipping Charge Product'
+            LIMIT 1
+        ].Id;
+
+        Test.startTest();
+        ABCShippingCalculator.runCalculation(context, ABCShippingCalculator.getConfig(), shippingProductId);
+        Test.stopTest();
+
+        System.assertEquals(0, context.validationState.errors.size(),
+            'Existing shipping validations should be cleared on a successful calculation run.');
+        System.assertEquals(1, context.appliedMethods.size(),
+            'The calculator should replace legacy methods with exactly one configured method.');
+        System.assertEquals('Standard Shipping', context.appliedMethods[0].getName());
+        System.assertEquals(30, context.appliedMethods[0].getShippingFee(),
+            'Shipping fee should be 12% of the 250.00 shippable physical total.');
+        System.assertNotEquals(null, context.selectedMethod,
+            'The configured method must be selected on the delivery group.');
+        System.assertEquals('Standard Shipping', context.selectedMethod.getName(),
+            'The selected delivery method should match the configured shipping method.');
+    }
+
+    @IsTest
+    static void testCalculate_addsShippingValidation_whenNoDeliveryGroupsExist() {
+        Id physicalProductId = [
+            SELECT Id
+            FROM Product2
+            WHERE Name = 'Test Physical Book'
+            LIMIT 1
+        ].Id;
+
+        FakeCalculationContext context = new FakeCalculationContext(0);
+        context.cartLines.add(makeCartLine(physicalProductId, CartExtension.SalesItemTypeEnum.PRODUCT, 250));
+
+        ABCShippingCalculator.setConfigForTest(buildTestConfig());
+        Id shippingProductId = [
+            SELECT Id
+            FROM Product2
+            WHERE Name = 'Shipping Charge Product'
+            LIMIT 1
+        ].Id;
+
+        Test.startTest();
+        ABCShippingCalculator.runCalculation(context, ABCShippingCalculator.getConfig(), shippingProductId);
+        Test.stopTest();
+
+        System.assertEquals(1, context.validationState.errors.size(),
+            'Validation output should be added when the cart has no delivery groups.');
+        System.assertEquals(
+            'No delivery address found. Please add a shipping address.',
+            context.validationState.errors[0].getMessage()
+        );
+        System.assertEquals(0, context.appliedMethods.size(),
+            'No delivery method should be applied when validation fails.');
+    }
+
+    @IsTest
+    static void testCalculate_addsShippingValidation_whenConfigIsMissing() {
+        FakeCalculationContext context = new FakeCalculationContext(1);
+        context.cartLines.add(makeCartLine(null, CartExtension.SalesItemTypeEnum.PRODUCT, 250));
+
+        Id shippingProductId = [
+            SELECT Id
+            FROM Product2
+            WHERE Name = 'Shipping Charge Product'
+            LIMIT 1
+        ].Id;
+
+        Test.startTest();
+        ABCShippingCalculator.runCalculation(context, null, shippingProductId);
+        Test.stopTest();
+
+        System.assertEquals(1, context.validationState.errors.size(),
+            'Missing shipping configuration should add a shipping validation error.');
+        System.assertEquals(
+            'Shipping configuration not found. Please contact support.',
+            context.validationState.errors[0].getMessage()
+        );
+        System.assertEquals(0, context.appliedMethods.size(),
+            'No delivery method should be selected when configuration is missing.');
     }
 
     // ── Calculator instantiation ─────────────────────────────────────

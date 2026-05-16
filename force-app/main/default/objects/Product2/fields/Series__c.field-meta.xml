@@ -6,7 +6,6 @@
     <trackHistory>false</trackHistory>
     <type>Picklist</type>
     <valueSet>
-        <restricted>true</restricted>
         <valueSetDefinition>
             <sorted>false</sorted>
             <value>
@@ -198,78 +197,6 @@
                 <fullName>SOL</fullName>
                 <default>false</default>
                 <label>SOL</label>
-            </value>
-            <value>
-                <fullName>ACT Success</fullName>
-                <default>false</default>
-                <isActive>false</isActive>
-                <label>ACT Success</label>
-            </value>
-            <value>
-                <fullName>Bundle</fullName>
-                <default>false</default>
-                <isActive>false</isActive>
-                <label>Bundle</label>
-            </value>
-            <value>
-                <fullName>Course of Study Success</fullName>
-                <default>false</default>
-                <isActive>false</isActive>
-                <label>Course of Study Success</label>
-            </value>
-            <value>
-                <fullName>EOCEP Success</fullName>
-                <default>false</default>
-                <isActive>false</isActive>
-                <label>EOCEP Success</label>
-            </value>
-            <value>
-                <fullName>EOG Success</fullName>
-                <default>false</default>
-                <isActive>false</isActive>
-                <label>EOG Success</label>
-            </value>
-            <value>
-                <fullName>GET READY Success</fullName>
-                <default>false</default>
-                <isActive>false</isActive>
-                <label>GET READY Success</label>
-            </value>
-            <value>
-                <fullName>Georgia K-12 Standards Success</fullName>
-                <default>false</default>
-                <isActive>false</isActive>
-                <label>Georgia K-12 Standards Success</label>
-            </value>
-            <value>
-                <fullName>Kentucky ACT Achievement</fullName>
-                <default>false</default>
-                <isActive>false</isActive>
-                <label>Kentucky ACT Achievement</label>
-            </value>
-            <value>
-                <fullName>LSS Success</fullName>
-                <default>false</default>
-                <isActive>false</isActive>
-                <label>LSS Success</label>
-            </value>
-            <value>
-                <fullName>MCA Success</fullName>
-                <default>false</default>
-                <isActive>false</isActive>
-                <label>MCA Success</label>
-            </value>
-            <value>
-                <fullName>NC Separates</fullName>
-                <default>false</default>
-                <isActive>false</isActive>
-                <label>NC Separates</label>
-            </value>
-            <value>
-                <fullName>SOL Success</fullName>
-                <default>false</default>
-                <isActive>false</isActive>
-                <label>SOL Success</label>
             </value>
         </valueSetDefinition>
     </valueSet>

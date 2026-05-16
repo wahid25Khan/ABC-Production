@@ -3,19 +3,19 @@
     <label>Default</label>
     <protected>false</protected>
     <values>
-        <field>Is_Active__c</field>
-        <value xsi:type="xsd:boolean">true</value>
+        <field>Carrier__c</field>
+        <value xsi:type="xsd:string">USPS</value>
     </values>
     <values>
-        <field>Shipping_Rate_Percent__c</field>
-        <value xsi:type="xsd:double">12.00</value>
+        <field>Is_Active__c</field>
+        <value xsi:type="xsd:boolean">true</value>
     </values>
     <values>
         <field>Shipping_Method_Name__c</field>
         <value xsi:type="xsd:string">Standard Shipping</value>
     </values>
     <values>
-        <field>Carrier__c</field>
-        <value xsi:type="xsd:string">USPS</value>
+        <field>Shipping_Rate_Percent__c</field>
+        <value xsi:type="xsd:double">12.0</value>
     </values>
 </CustomMetadata>

@@ -1,6 +1,8 @@
 import { LightningElement, api } from "lwc";
 import getHostedPaymentToken from "@salesforce/apex/AuthorizeNetAcceptHostedTokenService.getHostedPaymentToken";
-import { applyStorefrontRequestParams } from "c/utils";
+import {
+  applyStorefrontRequestParams
+} from "c/utils";
 
 const API_VERSION = "v66.0";
 
@@ -141,7 +143,9 @@ export default class AuthorizeNetCheckoutButton extends LightningElement {
 
   async startCheckout(webstoreId, cartId) {
     const response = await fetch(
-      this.buildStorefrontApiUrl(`/commerce/webstores/${webstoreId}/checkouts`),
+      this.buildStorefrontApiUrl(
+        `/commerce/webstores/${webstoreId}/checkouts`
+      ),
       {
         method: "POST",
         credentials: "include",

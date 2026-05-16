@@ -11,10 +11,39 @@
 }
 
 .container {
-    max-width: 1200px;
     margin: 0 auto;
     padding: 24px 20px 32px;
     width: 100%;
+}
+
+@media (min-width: 640px) {
+    .container {
+        max-width: 640px;
+    }
+}
+
+@media (min-width: 768px) {
+    .container {
+        max-width: 768px;
+    }
+}
+
+@media (min-width: 1024px) {
+    .container {
+        max-width: 1024px;
+    }
+}
+
+@media (min-width: 1280px) {
+    .container {
+        max-width: 1280px;
+    }
+}
+
+@media (min-width: 1536px) {
+    .container {
+        max-width: 1536px;
+    }
 }
 
 /* Header */
@@ -62,23 +91,24 @@
     margin: 32px 0;
 }
 
-/* Accessibility */
-.accessibility-row {
+/* Content Layout */
+.content-col {
     display: flex;
     align-items: flex-start;
-    gap: 40px;
+    flex-direction: column;
+    gap: 20px;
     width: 100%;
 }
 
-.accessibility-title {
+/* .content-title {
     flex: 0 0 180px;
-}
+} */
 
-.accessibility-title .sub-heading {
+.content-title .sub-heading {
     margin-bottom: 0;
 }
 
-.accessibility-docs {
+.content-docs {
     flex: 1;
     display: flex;
     justify-content: flex-start;
@@ -89,7 +119,7 @@
     display: flex;
     flex-wrap: wrap;
     align-items: flex-start;
-    gap: 28px;
+    gap: 60px;
     justify-content: flex-start;
 }
 
@@ -104,7 +134,8 @@
 }
 
 .doc-thumbnail {
-    width: 100px;
+    /* width: 100px; */
+    width: 140px;
     height: auto;
     display: block;
     border: 1px solid #ddd;
@@ -113,11 +144,48 @@
 }
 
 .file-label {
-    font-size: 13px;
+    font-size: 16px;
     line-height: 1.35;
     font-weight: 700;
     color: var(--abc-blue);
     word-break: break-word;
+    text-decoration: none;
+}
+
+.help-ordering-section {
+    box-sizing: border-box;
+    width: 100%;
+    max-width: 100%;
+    background: #f3f5f7;
+    padding: 24px 16px;
+    margin-top: 40px;
+}
+
+.help-ordering-title {
+    margin: 0 0 10px 0;
+    color: #0d2f5f;
+    font-size: 24px;
+    line-height: 1.2;
+    font-weight: 700;
+    font-family: Arial, sans-serif;
+}
+
+.help-ordering-description {
+    margin: 0;
+    color: #0d2f5f;
+    font-size: 14px;
+    line-height: 1.4;
+    font-weight: 400;
+    font-family: Arial, sans-serif;
+}
+
+.help-ordering-link {
+    color: #2a5ea8;
+    text-decoration: none;
+}
+
+.help-ordering-phone {
+    color: #0d2f5f;
     text-decoration: none;
 }
 
@@ -136,20 +204,20 @@
     }
 
     .grid-container {
-        gap: 30px;
+        gap: 60px;
     }
 
-    .accessibility-row {
+    /* .content-col {
         gap: 56px;
-    }
+    } */
 
-    .grid-item,
-    .accessibility-card {
+    .grid-item {
         width: 140px;
     }
 
     .doc-thumbnail {
-        width: 100px;
+        /* width: 100px; */
+        width: 140px;
     }
 }
 
@@ -171,27 +239,27 @@
         width: 52px;
     }
 
-    .accessibility-row {
+    /* .content-col {
         gap: 28px;
         align-items: flex-start;
-    }
+    } */
 
-    .accessibility-title {
+    /* .content-title {
         flex: 0 0 150px;
-    }
+    } */
 
     .grid-container {
-        gap: 24px;
+        gap: 50px;
     }
 
-    .grid-item,
-    .accessibility-card {
-        width: calc(33.33% - 16px);
+    .grid-item {
+        /* width: calc(33.33% - 16px); */
         max-width: 160px;
     }
 
     .doc-thumbnail {
-        width: 95px;
+        /* width: 95px; */
+        width: 140px;
     }
 }
 
@@ -228,39 +296,39 @@
         margin-bottom: 18px;
     }
 
-    .accessibility-row {
-        flex-direction: column;
+    .content-col {
         align-items: center;
-        gap: 18px;
+        /* gap: 18px; */
     }
 
-    .accessibility-title {
+    .content-title {
         flex: none;
         width: 100%;
     }
 
-    .accessibility-docs {
+    .content-docs {
         width: 100%;
         justify-content: center;
     }
 
     .grid-container {
         justify-content: center;
-        gap: 20px;
+        gap: 40px;
     }
 
     .grid-item,
     .accessibility-card {
-        width: calc(50% - 10px);
+        /* width: calc(50% - 10px); */
         max-width: 150px;
     }
 
     .doc-thumbnail {
-        width: 90px;
+        /* width: 90px; */
+        width: 120px;
     }
 
     .file-label {
-        font-size: 12px;
+        font-size: 14px;
     }
 
     .divider {
@@ -285,6 +353,7 @@
     }
 
     .doc-thumbnail {
-        width: 86px;
+        /* width: 86px; */
+        width: 120px;
     }
 }

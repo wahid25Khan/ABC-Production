@@ -2,11 +2,11 @@ import { LightningElement, api, track } from "lwc";
 import { loadScript, loadStyle } from "lightning/platformResourceLoader";
 import getCarouselData from "@salesforce/apex/TestimonialCarouselController.getCarouselData";
 import LOGO_URL from "@salesforce/resourceUrl/testimonialsLogo";
-import ABOUT_ABC_IMG from "@salesforce/resourceUrl/AboutABC";
 import SWIPER from "@salesforce/resourceUrl/SwiperJS";
 import US_GEOJSON from "@salesforce/resourceUrl/US_GeoJson";
 import MAPBOX_GL_JS_RESOURCE from "@salesforce/resourceUrl/mapbox_gl";
 import MAPBOX_GL_CSS_RESOURCE from "@salesforce/resourceUrl/mapbox_glcss";
+import { resolveSelectedStateFromLocation } from "c/utils";
 
 const MAPBOX_GL_JS = MAPBOX_GL_JS_RESOURCE;
 const MAPBOX_GL_CSS = MAPBOX_GL_CSS_RESOURCE;
@@ -15,10 +15,10 @@ const FILL_LAYER_ID = "county-fill";
 const LINE_LAYER_ID = "county-outline";
 const VALUE_LAYER_ID = "county-values";
 const COUNTY_NAME_LAYER_ID = "county-name";
-const STORAGE_KEY = "abc_selected_state";
 const STATE_REFINEMENT_KEY = "State__c";
 const REFINEMENTS_PARAM = "refinements";
-const DEFAULT_MAPBOX_ACCESS_TOKEN = "";
+const DEFAULT_MAPBOX_ACCESS_TOKEN = // NOSONAR — default for @api mapboxAccessToken; configurable in Experience Builder
+  "pk.eyJ1IjoiYWthc2h0aGVsb2Rlc3RvbmVncm91cCIsImEiOiJjbW05bG5kaGMwMHQ1Mm9zM3lrM25ydTRwIn0.pSVyEJv1yK_Z8_U1tXKHTA";
 
 const ROLE_PREVIEW = "preview";
 const ROLE_MODAL = "modal";
@@ -235,10 +235,6 @@ export default class MapPlusTestimonial extends LightningElement {
     return LOGO_URL;
   }
 
-  get promoImageUrl() {
-    return ABOUT_ABC_IMG;
-  }
-
   get isCompact() {
     return true;
   }
@@ -321,10 +317,11 @@ export default class MapPlusTestimonial extends LightningElement {
   }
 
   applySelectedStateFromContext() {
-    const urlState = this.getSelectedStateFromUrl();
-    const storedState = globalThis.localStorage.getItem(STORAGE_KEY);
     const resolved = this.getValidStateName(
-      urlState || storedState || this._selectedState
+      resolveSelectedStateFromLocation({
+        defaultState: this._selectedState || "Georgia",
+        refinementKey: STATE_REFINEMENT_KEY
+      })
     );
     this._selectedState = resolved;
   }
@@ -355,10 +352,6 @@ export default class MapPlusTestimonial extends LightningElement {
   }
 
   async initialize() {
-    if (!this.getResolvedAccessToken()) {
-      this.errorMessage = "Map unavailable: no Mapbox access token configured.";
-      return;
-    }
     try {
       await this.loadMapboxAssets();
       this.assetsReady = true;
@@ -496,42 +489,49 @@ export default class MapPlusTestimonial extends LightningElement {
 
   loadMapboxAssets() {
     return Promise.all([
-      this.loadScript(MAPBOX_GL_JS),
-      this.loadStyle(MAPBOX_GL_CSS)
+      loadScript(this, MAPBOX_GL_JS),
+      loadStyle(this, MAPBOX_GL_CSS)
     ]);
   }
 
-  loadScript(src) {
-    return new Promise((resolve, reject) => {
-      if (document.querySelector(`script[src="${src}"]`)) {
-        resolve();
-        return;
-      }
+  // loadMapboxAssets() {
+  //   return Promise.all([
+  //     this.loadScript(MAPBOX_GL_JS),
+  //     this.loadStyle(MAPBOX_GL_CSS)
+  //   ]);
+  // }
 
-      const script = document.createElement("script");
-      script.src = src;
-      script.onload = () => resolve();
-      script.onerror = () => reject(new Error(`Failed to load script: ${src}`));
-      document.head.appendChild(script);
-    });
-  }
+  // loadScript(src) {
+  //   return new Promise((resolve, reject) => {
+  //     if (document.querySelector(`script[src="${src}"]`)) {
+  //       resolve();
+  //       return;
+  //     }
 
-  loadStyle(href) {
-    return new Promise((resolve, reject) => {
-      if (document.querySelector(`link[href="${href}"]`)) {
-        resolve();
-        return;
-      }
+  //     const script = document.createElement("script");
+  //     script.src = src;
+  //     script.onload = () => resolve();
+  //     script.onerror = () => reject(new Error(`Failed to load script: ${src}`));
+  //     document.head.appendChild(script);
+  //   });
+  // }
 
-      const link = document.createElement("link");
-      link.rel = "stylesheet";
-      link.href = href;
-      link.onload = () => resolve();
-      link.onerror = () =>
-        reject(new Error(`Failed to load stylesheet: ${href}`));
-      document.head.appendChild(link);
-    });
-  }
+  // loadStyle(href) {
+  //   return new Promise((resolve, reject) => {
+  //     if (document.querySelector(`link[href="${href}"]`)) {
+  //       resolve();
+  //       return;
+  //     }
+
+  //     const link = document.createElement("link");
+  //     link.rel = "stylesheet";
+  //     link.href = href;
+  //     link.onload = () => resolve();
+  //     link.onerror = () =>
+  //       reject(new Error(`Failed to load stylesheet: ${href}`));
+  //     document.head.appendChild(link);
+  //   });
+  // }
 
   getMapStyle() {
     return {
@@ -1307,7 +1307,7 @@ export default class MapPlusTestimonial extends LightningElement {
         this.isLoading = false;
         globalThis.setTimeout(() => {
           this.setupOrUpdateSwiper();
-        }, 300);
+        }, 0);
       });
   }
 
@@ -1356,14 +1356,12 @@ export default class MapPlusTestimonial extends LightningElement {
       },
       breakpoints: {
         768: { slidesPerView: 2 },
-        1024: { slidesPerView: 3 }
+        1440: { slidesPerView: 3 }
       },
       on: {
         init: () => {
           globalThis.setTimeout(async () => {
-            if (this.assetsReady) {
-              await this.syncMapInstances();
-            }
+            await this.syncMapInstances();
             this.refreshRenderedMaps();
           }, 500);
         },
@@ -1378,29 +1376,12 @@ export default class MapPlusTestimonial extends LightningElement {
   }
 
   updateStateFromUrlOrStorage() {
-    let hashState = this.getStateFromHash();
-    if (!hashState) {
-      hashState = globalThis.localStorage.getItem(STORAGE_KEY);
-    }
-
-    if (hashState) {
-      this.currentState = hashState;
-      this._selectedState = this.getValidStateName(hashState);
-    }
-  }
-
-  getStateFromHash() {
-    try {
-      const hashValue = String(globalThis.location.hash || "")
-        .replace(/^#/, "")
-        .trim();
-      if (!hashValue) {
-        return "";
-      }
-      return decodeURIComponent(hashValue);
-    } catch {
-      return "";
-    }
+    const nextState = resolveSelectedStateFromLocation({
+      defaultState: this._selectedState || "Georgia",
+      refinementKey: STATE_REFINEMENT_KEY
+    });
+    this.currentState = nextState;
+    this._selectedState = this.getValidStateName(nextState);
   }
 
   startHashWatcher() {
@@ -1413,8 +1394,11 @@ export default class MapPlusTestimonial extends LightningElement {
       }
 
       this._lastHash = currentHash;
-      const newState = this.getStateFromHash();
-      if (newState && newState !== this.currentState) {
+      const newState = resolveSelectedStateFromLocation({
+        defaultState: this._selectedState || "Georgia",
+        refinementKey: STATE_REFINEMENT_KEY
+      });
+      if (newState !== this.currentState) {
         this.currentState = newState;
         this.selectedState = this.getValidStateName(newState);
         this.fetchCarouselData();

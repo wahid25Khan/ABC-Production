@@ -3,6 +3,7 @@ import getVariationPricing from "@salesforce/apex/ProductVariationController.get
 import {
   readStateFromStorage,
   writeStateToStorage,
+  resolveSelectedStateFromLocation,
   resolveByPath,
   firstString,
   resolvePrice,
@@ -32,7 +33,7 @@ const DEFAULT_REMOTE_SEARCH_TERM = "all";
 const SEARCH_MARKER = "/global-search/";
 const URL_WATCH_INTERVAL_MS = 250;
 const URL_WATCH_DEBOUNCE_MS = 120;
-const SEARCH_FIELDS = ["StockKeepingUnit"];
+const SEARCH_FIELDS = ["StockKeepingUnit", "Grade_Level__c", "State__c"];
 
 const PRODUCT_DETAIL_FIELDS = [
   "StockKeepingUnit",
@@ -145,6 +146,12 @@ function chunkArray(values, chunkSize) {
   return chunks;
 }
 
+function buildFieldsQueryValue(fields) {
+  return [...new Set(toArray(fields).map((field) => String(field || "").trim()))]
+    .filter(Boolean)
+    .join(",");
+}
+
 export default class CustomResults extends LightningElement {
   @api storeName = DEFAULT_STORE_NAME;
   @api webStoreId = DEFAULT_WEBSTORE_ID;
@@ -235,6 +242,10 @@ export default class CustomResults extends LightningElement {
       }
     };
     document.addEventListener("click", this.docClickHandler);
+  }
+
+  renderedCallback() {
+    this.syncAriaAttributes();
   }
 
   disconnectedCallback() {
@@ -499,7 +510,13 @@ export default class CustomResults extends LightningElement {
     try {
       this.filterDefinitions = this.buildFilterDefinitions();
       this.pageSizeValue = this.resolveInitialPageSize();
-      this.selectedState = readStateFromStorage() || "Georgia";
+      const fallbackState = readStateFromStorage() || "Georgia";
+      this.searchText = this.getTermFromUrl() || this.searchText || "";
+      this.selectedState = resolveSelectedStateFromLocation({
+        defaultState: fallbackState,
+        refinementKey: this.stateFieldApiName
+      });
+      writeStateToStorage(this.selectedState);
       this.updateResultsUrlForState(this.selectedState);
 
       const initialResponse = await this.loadStateProducts();
@@ -864,7 +881,10 @@ export default class CustomResults extends LightningElement {
       })
     );
 
-    PRODUCT_DETAIL_FIELDS.forEach((field) => params.append("fields", field));
+    const fields = buildFieldsQueryValue(PRODUCT_DETAIL_FIELDS);
+    if (fields) {
+      params.set("fields", fields);
+    }
     return `${base}?${params.toString()}`;
   }
 
@@ -881,8 +901,10 @@ export default class CustomResults extends LightningElement {
 
     this.applyRefinementsToParams(params, criteria.refinements);
 
-    const fieldList = this.getSearchFields();
-    fieldList.forEach((field) => params.append("fields", field));
+    const fields = buildFieldsQueryValue(this.getSearchFields());
+    if (fields) {
+      params.set("fields", fields);
+    }
 
     return `${base}?${params.toString()}`;
   }
@@ -896,7 +918,7 @@ export default class CustomResults extends LightningElement {
 
   getSearchFields() {
     const configured = parseCsv(this.searchFieldApiNames);
-    return configured.length ? configured : SEARCH_FIELDS;
+    return [...new Set([...(configured.length ? configured : []), ...SEARCH_FIELDS])];
   }
 
   composeRemoteStateSearchTerm() {
@@ -965,16 +987,7 @@ export default class CustomResults extends LightningElement {
   }
 
   getCombinedSearchTokens() {
-    const tokens = [];
-    const routeSearchText =
-      this.currentPathSearchToken || this.getPathSearchToken();
-
-    if (routeSearchText)
-      tokens.push(...this.tokenizeSearchText(routeSearchText));
-    if (this.searchText)
-      tokens.push(...this.tokenizeSearchText(this.searchText));
-
-    return [...new Set(tokens)];
+    return [...new Set(this.tokenizeSearchText(this.searchText))];
   }
 
   getCurrentHref() {
@@ -1434,28 +1447,11 @@ export default class CustomResults extends LightningElement {
   getRelevanceScore(product) {
     let score = 0;
 
-    const state = String(this.selectedState || "")
-      .trim()
-      .toLowerCase();
     const searchTokens = this.getCombinedSearchTokens();
     const terms = Array.isArray(product?.searchTerms)
       ? product.searchTerms
       : [];
     const filterValues = product?.filterValues || {};
-
-    if (state) {
-      const stateValues = this.resolveProductTextValues(product, [
-        "fields.State__c"
-      ]);
-
-      if (stateValues.includes(state)) {
-        score += 100;
-      }
-
-      if (terms.includes(state)) {
-        score += 40;
-      }
-    }
 
     searchTokens.forEach((token) => {
       if (terms.includes(token)) {
@@ -1622,7 +1618,7 @@ export default class CustomResults extends LightningElement {
   }
 
   handleViewMode(event) {
-    const mode = event?.currentTarget?.dataset?.mode;
+    const mode = event?.detail?.mode || event?.currentTarget?.dataset?.mode;
     if (!mode || (mode !== "grid" && mode !== "list")) return;
 
     this.viewMode = mode;
@@ -1825,6 +1821,8 @@ export default class CustomResults extends LightningElement {
     if (!globalThis.window?.history) return;
 
     const fullName = String(stateValue || "").trim();
+    const currentSearch = globalThis.window.location?.search || "";
+    const currentHash = globalThis.window.location?.hash || "";
     // Use lowercase abbreviation in the URL (e.g. "ga" instead of "Georgia")
     const abbrevToken = fullName
       ? (STATE_ABBREVIATIONS[fullName] || fullName).toLowerCase()
@@ -1836,19 +1834,17 @@ export default class CustomResults extends LightningElement {
         ? currentPath.slice(0, markerIndex + SEARCH_MARKER.length)
         : `/${this.storeName || DEFAULT_STORE_NAME}${SEARCH_MARKER}`;
     const nextPath = `${basePath}${encodeURIComponent(abbrevToken)}`;
+    const currentUrl = `${currentPath}${currentSearch}${currentHash}`;
+    const nextUrl = `${nextPath}${currentSearch}${currentHash}`;
 
-    if (
-      currentPath === nextPath &&
-      !globalThis.window.location?.search &&
-      !globalThis.window.location?.hash
-    ) {
+    if (currentUrl === nextUrl) {
       // Store full state name in token so product filtering still works
       this.currentPathSearchToken = abbrevToken === "all" ? "" : fullName;
       this.lastObservedHref = this.getCurrentHref();
       return;
     }
 
-    globalThis.window.history.pushState({}, "", nextPath);
+    globalThis.window.history.pushState({}, "", nextUrl);
     // Store full state name in token so product filtering still works
     this.currentPathSearchToken = abbrevToken === "all" ? "" : fullName;
     this.lastObservedHref = this.getCurrentHref();
@@ -1901,37 +1897,89 @@ export default class CustomResults extends LightningElement {
     this.isPageSizeDropdownOpen = false;
   }
 
-  toggleStateDropdown(event) {
-    event.stopPropagation();
-    const next = !this.isStateDropdownOpen;
+  syncAriaAttributes() {
+    this.syncBooleanAttribute(
+      ".state-select-trigger",
+      "aria-expanded",
+      this.isStateDropdownOpen
+    );
+    this.syncBooleanAttribute(
+      ".sort-select-trigger",
+      "aria-expanded",
+      this.isSortDropdownOpen
+    );
+    this.syncBooleanAttribute(
+      ".page-size-select-trigger",
+      "aria-expanded",
+      this.isPageSizeDropdownOpen
+    );
+    this.syncBooleanAttribute(
+      '.view-btn[data-mode="grid"]',
+      "aria-pressed",
+      this.isGridView
+    );
+    this.syncBooleanAttribute(
+      '.view-btn[data-mode="list"]',
+      "aria-pressed",
+      this.isListView
+    );
+
+    this.template.querySelectorAll(".filter-header").forEach((button) => {
+      const field = button.dataset.field;
+      const isExpanded = !this.collapsedByField[field];
+      button.setAttribute("aria-expanded", isExpanded ? "true" : "false");
+    });
+  }
+
+  syncBooleanAttribute(selector, attributeName, value) {
+    this.template.querySelectorAll(selector).forEach((element) => {
+      element.setAttribute(attributeName, value ? "true" : "false");
+    });
+  }
+
+  toggleDropdown(event, propertyName) {
+    event?.stopPropagation?.();
+    const next = !this[propertyName];
     this.closeAllDropdowns();
-    this.isStateDropdownOpen = next;
+    this[propertyName] = next;
+  }
+
+  getDropdownSelectionValue(event, fallbackValue = "") {
+    const detailValue = event?.detail?.value;
+    if (detailValue !== undefined && detailValue !== null) {
+      return String(detailValue).trim();
+    }
+
+    const datasetValue = event?.currentTarget?.dataset?.value;
+    if (datasetValue !== undefined && datasetValue !== null) {
+      return String(datasetValue).trim();
+    }
+
+    return String(fallbackValue || "").trim();
+  }
+
+  toggleStateDropdown(event) {
+    this.toggleDropdown(event, "isStateDropdownOpen");
   }
 
   toggleSortDropdown(event) {
-    event.stopPropagation();
-    const next = !this.isSortDropdownOpen;
-    this.closeAllDropdowns();
-    this.isSortDropdownOpen = next;
+    this.toggleDropdown(event, "isSortDropdownOpen");
   }
 
   togglePageSizeDropdown(event) {
-    event.stopPropagation();
-    const next = !this.isPageSizeDropdownOpen;
-    this.closeAllDropdowns();
-    this.isPageSizeDropdownOpen = next;
+    this.toggleDropdown(event, "isPageSizeDropdownOpen");
   }
 
   async handleStateOptionClick(event) {
-    event.stopPropagation();
-    const value = String(event.currentTarget.dataset.value || "").trim();
+    event?.stopPropagation?.();
+    const value = this.getDropdownSelectionValue(event);
     this.closeAllDropdowns();
     await this.handleStateChange({ detail: { value } });
   }
 
   handleSortOptionClick(event) {
-    event.stopPropagation();
-    const value = String(event.currentTarget.dataset.value || "relevance");
+    event?.stopPropagation?.();
+    const value = this.getDropdownSelectionValue(event, "relevance");
     this.closeAllDropdowns();
     this.handleSortChange({ detail: { value } });
   }
@@ -1954,9 +2002,10 @@ export default class CustomResults extends LightningElement {
   }
 
   handlePageSizeOptionClick(event) {
-    event.stopPropagation();
-    const value = String(
-      event.currentTarget.dataset.value || this.pageSizeValueString
+    event?.stopPropagation?.();
+    const value = this.getDropdownSelectionValue(
+      event,
+      this.pageSizeValueString
     );
     this.closeAllDropdowns();
     this.handlePageSizeChange({ detail: { value } });

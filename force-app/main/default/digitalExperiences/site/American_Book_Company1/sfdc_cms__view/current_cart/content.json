@@ -23,6 +23,7 @@
             "children" : [ {
               "attributes" : {
                 "checkoutUrl" : "/checkout",
+                "dxpStyle" : { },
                 "heading" : "Your Cart",
                 "poSubmissionUrl" : "/submit-a-po",
                 "storeName" : "AmericanBookCompany",

@@ -1,22 +1,30 @@
 import { LightningElement, api, track, wire } from 'lwc';
 import isGuestUser from '@salesforce/user/isGuest';
 import getShippingRatePercent from '@salesforce/apex/ABCShippingCalculator.getShippingRatePercent';
+import getAccountDetails from '@salesforce/apex/AccountDetailsController.getAccountDetails';
 import getHostedPaymentToken from '@salesforce/apex/AuthorizeNetAcceptHostedTokenService.getHostedPaymentToken';
-import { splitCartItemName } from 'c/utils';
+import ensureCheckoutSession from '@salesforce/apex/AuthenticatedBuyerCheckoutService.ensureCheckoutSession';
+import ensureDeliveryMethod from '@salesforce/apex/AuthenticatedBuyerCheckoutService.ensureDeliveryMethod';
+import registerExternalPayment from '@salesforce/apex/AuthenticatedBuyerCheckoutService.registerExternalPayment';
+import findLatestAuthorizedTransactionId from '@salesforce/apex/AuthenticatedBuyerCheckoutService.findLatestAuthorizedTransactionId';
+import placeOrder from '@salesforce/apex/AuthenticatedBuyerCheckoutService.placeOrder';
+import clearCart from '@salesforce/apex/AuthenticatedBuyerCheckoutService.clearCart';
+import {
+    DEFAULT_WEBSTORE_ID,
+    splitCartItemName
+} from 'c/utils';
 import CC_VISA from '@salesforce/resourceUrl/ccVisa';
 import CC_MASTERCARD from '@salesforce/resourceUrl/ccMastercard';
 import CC_AMEX from '@salesforce/resourceUrl/ccAmex';
 import CC_DISCOVER from '@salesforce/resourceUrl/ccDiscover';
-import AN_COMMUNICATOR from '@salesforce/resourceUrl/anCommunicator';
 
 const FORM_KEY = 'abc_checkout_flow_form';
-const CHECKOUT_SESSION_KEY = 'abc_checkout_session';
 const API_VERSION = 'v66.0';
-const WEBSTORE_ID = '0ZEam000004dJDNGA2';
 const PAYMENT_FORM_SANDBOX = 'https://test.authorize.net/payment/payment';
 const PAYMENT_FORM_PROD = 'https://accept.authorize.net/payment/payment';
 const AN_ORIGIN_SANDBOX = 'https://test.authorize.net';
 const AN_ORIGIN_PROD = 'https://accept.authorize.net';
+const AUTHORIZED_PAYMENT_RESPONSE_CODE = '1';
 
 const US_STATES = [
     { value: 'AL', label: 'Alabama' }, { value: 'AK', label: 'Alaska' },
@@ -47,9 +55,213 @@ const US_STATES = [
     { value: 'DC', label: 'District of Columbia' }
 ];
 
+function isPhysicalShippableSummaryItem(item) {
+    if (item?.isDigitalProduct === true) {
+        return false;
+    }
+
+    const normalizedFormatLabel = String(item?.formatLabel || '').trim().toLowerCase();
+    const hasColorPrint = normalizedFormatLabel.includes('color');
+    const hasBwPrint =
+        normalizedFormatLabel.includes('b&w') ||
+        normalizedFormatLabel.includes('black and white') ||
+        normalizedFormatLabel.includes('black/white') ||
+        normalizedFormatLabel.includes('black & white') ||
+        normalizedFormatLabel.includes('black');
+    const hasPrint = hasColorPrint || hasBwPrint || normalizedFormatLabel.includes('print');
+    const hasDigital =
+        normalizedFormatLabel.includes('digital') ||
+        normalizedFormatLabel.includes('ebook') ||
+        normalizedFormatLabel.includes('e-book') ||
+        normalizedFormatLabel.includes('coursewave') ||
+        normalizedFormatLabel.includes('online testing');
+
+    if (hasPrint) {
+        return true;
+    }
+
+    if (hasDigital) {
+        return false;
+    }
+
+    return true;
+}
+
+function calculateShippableSummarySubtotal(items) {
+    return (items || []).reduce((runningTotal, item) => {
+        if (!isPhysicalShippableSummaryItem(item)) {
+            return runningTotal;
+        }
+
+        const quantity = Number(item?.quantity ?? 0) || 0;
+        const lineTotal =
+            Number(item?.lineTotal) ||
+            ((Number(item?.unitPrice ?? 0) || 0) * quantity);
+
+        if (!Number.isFinite(lineTotal) || lineTotal <= 0) {
+            return runningTotal;
+        }
+
+        return runningTotal + lineTotal;
+    }, 0);
+}
+
+export function extractAuthorizeNetResponseCode(msg) {
+    const candidates = [
+        msg?.responseCode,
+        msg?.transactionResponse?.responseCode,
+        msg?.transactionData?.responseCode,
+        msg?.response?.responseCode,
+        msg?.payload?.responseCode,
+        msg?.dataValue?.responseCode
+    ];
+
+    for (const candidate of candidates) {
+        if (candidate != null && String(candidate).trim()) {
+            return String(candidate).trim();
+        }
+    }
+
+    return null;
+}
+
+export function isApprovedAuthorizeNetMessage(msg) {
+    return extractAuthorizeNetResponseCode(msg) === AUTHORIZED_PAYMENT_RESPONSE_CODE;
+}
+
+export function extractAuthorizeNetFailureMessage(msg) {
+    const responseCode = extractAuthorizeNetResponseCode(msg);
+    const candidates = [
+        msg?.messages?.message?.[0]?.text,
+        msg?.transactionResponse?.errors?.[0]?.errorText,
+        msg?.transactionResponse?.messages?.[0]?.description,
+        msg?.response?.message,
+        msg?.message,
+        msg?.payload?.message
+    ];
+
+    for (const candidate of candidates) {
+        if (typeof candidate === 'string' && candidate.trim()) {
+            return candidate.trim();
+        }
+    }
+
+    if (responseCode != null) {
+        return `Payment was not authorized (response code ${responseCode}).`;
+    }
+
+    return 'Payment was not authorized. Please try again or use a different payment method.';
+}
+
+export function buildCheckoutStorefrontParams({ asGuest }) {
+    return new URLSearchParams({
+        language: 'en-US',
+        asGuest: asGuest ? 'true' : 'false',
+        htmlEncode: 'false'
+    });
+}
+
+function firstNonBlank(...values) {
+    for (const value of values) {
+        if (typeof value === 'string' && value.trim()) {
+            return value.trim();
+        }
+    }
+
+    return '';
+}
+
+function buildDetailsFullName(details = {}) {
+    return firstNonBlank(
+        details.fullName,
+        [details.firstName, details.lastName].filter((value) => typeof value === 'string' && value.trim()).join(' ')
+    );
+}
+
+export function buildProfileBackedCheckoutDefaults(details = {}, existingForm = {}) {
+    const fullName = buildDetailsFullName(details);
+    const email = firstNonBlank(existingForm.contactEmail, details.email);
+
+    return {
+        ...existingForm,
+        contactName: firstNonBlank(existingForm.contactName, fullName),
+        contactEmail: email,
+        contactEmailConfirm: firstNonBlank(existingForm.contactEmailConfirm, email, details.email),
+        contactPhone: firstNonBlank(existingForm.contactPhone, details.phone),
+        shipName: firstNonBlank(existingForm.shipName, fullName),
+        orgName: firstNonBlank(existingForm.orgName, details.organizationName),
+        street: firstNonBlank(existingForm.street, details.shippingStreet, details.billingStreet),
+        city: firstNonBlank(existingForm.city, details.shippingCity, details.billingCity),
+        stateCode: firstNonBlank(existingForm.stateCode, details.shippingState, details.billingState),
+        postalCode: firstNonBlank(existingForm.postalCode, details.shippingPostalCode, details.billingPostalCode),
+        cardholderName: firstNonBlank(existingForm.cardholderName, fullName),
+        billingStreet: firstNonBlank(existingForm.billingStreet, details.billingStreet, details.shippingStreet),
+        billingCity: firstNonBlank(existingForm.billingCity, details.billingCity, details.shippingCity),
+        billingStateCode: firstNonBlank(existingForm.billingStateCode, details.billingState, details.shippingState),
+        billingZip: firstNonBlank(existingForm.billingZip, details.billingPostalCode, details.shippingPostalCode),
+        poContact: firstNonBlank(existingForm.poContact, fullName),
+        poEmail: firstNonBlank(existingForm.poEmail, details.email)
+    };
+}
+
+export function validateCheckoutContactForm(form = {}) {
+    const contactName = String(form.contactName || '').trim();
+    const contactEmail = String(form.contactEmail || '').trim();
+    const contactEmailConfirm = String(form.contactEmailConfirm || '').trim();
+    const contactPhone = String(form.contactPhone || '').trim();
+
+    if (!contactName) return 'Name is required.';
+    if (!contactEmail) return 'Email address is required.';
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(contactEmail)) return 'Please enter a valid email address.';
+    if (contactEmail !== contactEmailConfirm) return 'Email does not match!';
+    if (!contactPhone) return 'Phone number is required.';
+    return '';
+}
+
+export function validateCheckoutShippingForm(form = {}) {
+    const shipName = String(form.shipName || '').trim();
+    const orgName = String(form.orgName || '').trim();
+    const street = String(form.street || '').trim();
+    const city = String(form.city || '').trim();
+    const stateCode = String(form.stateCode || '').trim();
+    const postalCode = String(form.postalCode || '').trim();
+
+    if (!shipName) return 'Ship To name is required.';
+    if (!orgName) return 'Organization name is required.';
+    if (!street) return 'Street address is required.';
+    if (!city) return 'City is required.';
+    if (!stateCode) return 'Please select a state.';
+    if (!postalCode) return 'ZIP code is required.';
+    return '';
+}
+
+export function deriveCheckoutStepCompletion(form = {}) {
+    return {
+        step1Complete: !validateCheckoutContactForm(form),
+        step2Complete: !validateCheckoutShippingForm(form)
+    };
+}
+
+export function determineHydratedCheckoutStep(currentStep, completion = {}) {
+    if (currentStep !== 1) {
+        return currentStep;
+    }
+
+    if (completion.step1Complete && completion.step2Complete) {
+        return 3;
+    }
+
+    if (completion.step1Complete) {
+        return 2;
+    }
+
+    return 1;
+}
+
 export default class CheckoutFlow extends LightningElement {
     @api cartUrl = '/cart';
     @api signInUrl = '/login';
+    @api webStoreId = DEFAULT_WEBSTORE_ID;
 
     @track form = {
         contactName: '',
@@ -107,12 +319,17 @@ export default class CheckoutFlow extends LightningElement {
     @track showPaymentModal = false;
     @track paymentIframeSrc = '';
     @track isPlacingOrderAfterPayment = false;
+    @track isPaymentExpanded = false;
+    @track paymentSandboxMode = false;
     @track orderPlaced = false;
     @track orderNumber = '';
     @track orderSummaryId = '';
 
     // Internal checkout context (not persisted across page loads)
     _pendingCheckoutId = null;
+    _lastCartAmount = null;       // cart subtotal (ex. shipping) — passed to registerExternalPayment
+    _lastAnChargeAmount = null;   // total including shipping — what AN actually charges the customer
+    _lastPaymentReferenceId = null; // checkoutSessionId used as AN invoiceNumber — unique per checkout attempt
     _messageHandler = null;
 
     currentStep = 1;
@@ -125,10 +342,15 @@ export default class CheckoutFlow extends LightningElement {
         this.currentStep = this._readStepFromUrl();
         this._restoreForm();
         this._loadSummaryFromCart();
+
+        if (!this.isGuest) {
+            this._hydrateFormFromAccountDetails();
+        }
     }
 
     disconnectedCallback() {
         this._removeMessageListener();
+        this._removeIframeLoadListener();
     }
 
     @wire(getShippingRatePercent)
@@ -142,8 +364,8 @@ export default class CheckoutFlow extends LightningElement {
     // ── URL helpers ──────────────────────────────────────────────
     _readStepFromUrl() {
         try {
-            const match = globalThis.location?.pathname?.match(/\/checkout\/step\/(\d+)/);
-            const n = match ? parseInt(match[1], 10) : 1;
+            const match = /\/step\/(\d+)$/.exec(globalThis.location?.pathname || '');
+            const n = match ? Number.parseInt(match[1], 10) : 1;
             return n >= 1 && n <= 3 ? n : 1;
         } catch {
             return 1;
@@ -152,8 +374,11 @@ export default class CheckoutFlow extends LightningElement {
 
     _navigateToStep(step) {
         try {
-            const base = globalThis.location?.pathname?.replace(/\/checkout\/step\/\d+/, '') ?? '';
-            globalThis.history?.pushState({}, '', `${base}/checkout/step/${step}`);
+            const pathname = String(globalThis.location?.pathname || '');
+            if (/\/step\/\d+$/i.test(pathname)) {
+                const base = pathname.replace(/\/step\/\d+$/i, '');
+                globalThis.history?.pushState({}, '', `${base}/step/${step}`);
+            }
         } catch {
             /* non-browser context */
         }
@@ -177,14 +402,12 @@ export default class CheckoutFlow extends LightningElement {
             // SECURITY: Never persist sensitive payment data to sessionStorage.
             // CVV, PANs, ACH account/routing numbers must not be stored outside
             // the component's reactive state. Only safe, non-payment fields are saved.
-            const {
-                cardNumber,      // PAN — never store
-                cardCvv,         // CVV — PCI DSS violation to store anywhere
-                achRoutingNumber,
-                achAccountNumber,
-                achAccountNumberConfirm,
-                ...safeToPersist
-            } = this.form;
+            const safeToPersist = { ...this.form };
+            delete safeToPersist.cardNumber;
+            delete safeToPersist.cardCvv;
+            delete safeToPersist.achRoutingNumber;
+            delete safeToPersist.achAccountNumber;
+            delete safeToPersist.achAccountNumberConfirm;
             globalThis.sessionStorage?.setItem(FORM_KEY, JSON.stringify(safeToPersist));
         } catch {
             /* noop */
@@ -209,6 +432,40 @@ export default class CheckoutFlow extends LightningElement {
         }
     }
 
+    async _hydrateFormFromAccountDetails() {
+        try {
+            const details = await getAccountDetails();
+            this._applyAccountDetailsToForm(details);
+        } catch {
+            /* profile hydration is best-effort */
+        }
+    }
+
+    _applyAccountDetailsToForm(details) {
+        const hydratedForm = buildProfileBackedCheckoutDefaults(details, this.form);
+        const completion = deriveCheckoutStepCompletion(hydratedForm);
+
+        this.completedStep1 = this.completedStep1 || completion.step1Complete;
+        this.completedStep2 = this.completedStep2 || completion.step2Complete;
+
+        this.form = {
+            ...hydratedForm,
+            _completedStep1: this.completedStep1,
+            _completedStep2: this.completedStep2
+        };
+
+        const nextStep = determineHydratedCheckoutStep(this.currentStep, {
+            step1Complete: this.completedStep1,
+            step2Complete: this.completedStep2
+        });
+
+        if (nextStep !== this.currentStep) {
+            this._navigateToStep(nextStep);
+        }
+
+        this._persistForm();
+    }
+
     // ── Cart summary ─────────────────────────────────────────────
     _loadSummaryFromCart() {
         try {
@@ -227,18 +484,30 @@ export default class CheckoutFlow extends LightningElement {
 
             this.summaryItems = items.map((item) => {
                 const nameInfo = splitCartItemName(item.productName ?? item.name ?? 'Product');
-                const formatLabel = (item.formatLabel ?? nameInfo.formatLabel ?? '').toLowerCase();
-                const hasDigital = formatLabel.includes('digital') || formatLabel.includes('ebook') || formatLabel.includes('coursewave');
-                const hasColorPrint = formatLabel.includes('color');
-                const hasBwPrint = formatLabel.includes('b&w') || formatLabel.includes('black');
+                const formatLabel = item.formatLabel ?? nameInfo.formatLabel ?? '';
+                const normalizedFormatLabel = formatLabel.toLowerCase();
+                const hasDigital =
+                    normalizedFormatLabel.includes('digital') ||
+                    normalizedFormatLabel.includes('ebook') ||
+                    normalizedFormatLabel.includes('coursewave');
+                const hasColorPrint = normalizedFormatLabel.includes('color');
+                const hasBwPrint = normalizedFormatLabel.includes('b&w') || normalizedFormatLabel.includes('black');
+                const quantity = Number(item.quantity ?? 1) || 1;
+                const lineTotal =
+                    Number(item.lineTotal) ||
+                    ((Number(item.unitPrice ?? 0) || 0) * quantity);
 
                 return {
                     id: item.id,
                     name: nameInfo.baseName || (item.productName ?? item.name ?? 'Product'),
                     imageUrl: item.imageUrl ?? '',
                     detailUrl: item.detailPath ?? '#',
-                    quantity: item.quantity ?? 1,
-                    totalLabel: this._formatCurrency((item.unitPrice ?? 0) * (item.quantity ?? 1)),
+                    quantity,
+                    unitPrice: Number(item.unitPrice ?? 0) || 0,
+                    lineTotal,
+                    formatLabel,
+                    isDigitalProduct: item.isDigitalProduct,
+                    totalLabel: this._formatCurrency(lineTotal),
                     hasDigital,
                     hasColorPrint,
                     hasBwPrint
@@ -253,9 +522,13 @@ export default class CheckoutFlow extends LightningElement {
     }
 
     _recalcShipping() {
-        if (this.subtotal > 0 && this.shippingRatePercent > 0) {
-            this.shippingCost = (this.subtotal * this.shippingRatePercent) / 100;
+        const shippableSubtotal = calculateShippableSummarySubtotal(this.summaryItems);
+        if (shippableSubtotal > 0 && this.shippingRatePercent > 0) {
+            this.shippingCost = Number(((shippableSubtotal * this.shippingRatePercent) / 100).toFixed(2));
+            return;
         }
+
+        this.shippingCost = 0;
     }
 
     // ── Getters: step visibility ─────────────────────────────────
@@ -557,9 +830,11 @@ export default class CheckoutFlow extends LightningElement {
 
     async _startAuthorizeNetCheckout() {
         try {
+            const webStoreId = this._resolveWebStoreId();
+
             // 1 — Fetch the active cart to get the grand total
             const cartData = await this._fetchJson(
-                `/AmericanBookCompany/webruntime/api/services/data/${API_VERSION}/commerce/webstores/${WEBSTORE_ID}/carts/current`,
+                this._buildStorefrontApiUrl(`/commerce/webstores/${webStoreId}/carts/current`),
                 { method: 'GET' }
             );
 
@@ -567,38 +842,64 @@ export default class CheckoutFlow extends LightningElement {
             if (!amount || amount <= 0) {
                 throw new Error('Could not determine cart total. Please refresh and try again.');
             }
+            // AN charges the full amount (products + shipping)
+            const totalWithShipping = Number((amount + (this.shippingCost ?? 0)).toFixed(2));
+            // Commerce payment registration must match its internal due amount (products only — shipping is tracked via CartDeliveryGroup)
+            this._lastCartAmount = amount; // cache for registerExternalPayment
+            this._lastAnChargeAmount = totalWithShipping; // actual amount charged to customer via AN
 
             const currencyCode = cartData?.currencyIsoCode || 'USD';
             const cartId = cartData?.cartId || cartData?.id || 'current';
 
-            // 2 — Clear any stale checkout session, then start a new one
-            await this._clearCheckoutIfPresent();
-            const checkoutData = await this._fetchJson(
-                `/AmericanBookCompany/webruntime/api/services/data/${API_VERSION}/commerce/webstores/${WEBSTORE_ID}/checkouts`,
-                {
-                    method: 'POST',
-                    body: JSON.stringify({ cartId })
-                }
-            );
-            const checkoutId = checkoutData?.cartCheckoutSessionId || checkoutData?.id;
+            // 2 — Start or refresh the checkout session via Apex so the buyer
+            // session auth context reaches the Commerce APIs server-side.
+            const checkoutData = await ensureCheckoutSession({
+                webStoreId,
+                cartId
+            });
+            const checkoutId = this._extractCheckoutSessionId(checkoutData);
             if (!checkoutId) {
                 throw new Error('Failed to start checkout session.');
             }
+            // Use checkoutSessionId (not cartId) as the AN referenceId/invoiceNumber.
+            // Each checkout attempt gets a unique session — prevents webhook records from one
+            // attempt being matched against a different attempt on the same cart.
+            this._lastPaymentReferenceId = checkoutId;
 
-            // 3 — Build communicator URL (absolute, required by Authorize.Net)
-            const communicatorUrl = `${globalThis.location.origin}/resource/anCommunicator`;
+            // 2.5 — The B2B Commerce placeOrder endpoint requires a delivery
+            //       method to be explicitly selected on each delivery group.
+            //       Because this custom checkout skips the standard delivery-
+            //       selection step, auto-select the first available method now.
+            //       This must run server-side (Apex) because buyer profiles
+            //       do not have the API Enabled permission.
+            try {
+                await ensureDeliveryMethod({ webStoreId, checkoutSessionId: checkoutId, shippingAmount: this.shippingCost ?? 0 });
+            } catch (dmErr) {
+                console.warn('[checkoutFlow] ensureDeliveryMethod', dmErr);
+                // Non-fatal: placeOrder will surface the actual error
+            }
+
+            // 3 — Build return / cancel URLs with distinct query params so the
+            //     iframe load-event handler can tell an approved redirect apart
+            //     from a user cancellation.  We intentionally omit the
+            //     iFrameCommunicatorUrl because Salesforce Experience Cloud
+            //     serves static resources with X-Frame-Options: SAMEORIGIN,
+            //     which prevents Authorize.Net from framing the communicator
+            //     page.  Without a communicator, AN redirects the iframe to
+            //     the return URL after an approved transaction, and the LWC
+            //     detects the redirect via the iframe load event.
+            const baseUrl = `${globalThis.location.origin}${globalThis.location.pathname}`;
 
             // 4 — Get Authorize.Net Accept Hosted token (iFrame mode)
             const tokenResponse = await getHostedPaymentToken({
                 req: {
-                    amount,
+                    amount: totalWithShipping, // full charge including shipping
                     currencyIsoCode: currencyCode,
-                    returnUrl: `${globalThis.location.origin}${globalThis.location.pathname}`,
-                    cancelUrl: `${globalThis.location.origin}${globalThis.location.pathname}`,
+                    returnUrl: `${baseUrl}?an_result=approved`,
+                    cancelUrl: `${baseUrl}?an_result=cancelled`,
                     showReceipt: false,
                     transactionType: 'authCaptureTransaction',
-                    referenceId: cartId,
-                    iFrameCommunicatorUrl: communicatorUrl
+                    referenceId: checkoutId
                 }
             });
 
@@ -611,7 +912,8 @@ export default class CheckoutFlow extends LightningElement {
 
             // 6 — Build the iframe src by POST-ing the token to AN via a hidden form
             //     then opening the result in the modal iframe
-            const isSandbox = tokenResponse.token.length < 200;
+            const isSandbox = tokenResponse.useSandbox === true;
+            this.paymentSandboxMode = isSandbox;
             const formAction = isSandbox ? PAYMENT_FORM_SANDBOX : PAYMENT_FORM_PROD;
 
             this._openPaymentModal(tokenResponse.token, formAction);
@@ -628,7 +930,7 @@ export default class CheckoutFlow extends LightningElement {
         this.showPaymentModal = true;
         this.isPlacingOrder = false;
 
-        // Register the postMessage listener BEFORE the iframe loads
+        // Register the postMessage listener (secondary / future-proofing)
         this._addMessageListener();
 
         // After render, create a hidden form that targets the modal iframe and submit it
@@ -638,6 +940,13 @@ export default class CheckoutFlow extends LightningElement {
             if (!iframe) return;
 
             iframe.name = 'an-payment-iframe';
+
+            // ── Primary detection: iframe redirect after AN approval ────
+            // Without a communicator, AN redirects the iframe to the return
+            // URL after an approved transaction (showReceipt=false).  We
+            // detect this by listening for load events: when the iframe
+            // navigates to our origin we know the payment finished.
+            this._addIframeLoadListener(iframe);
 
             const form = document.createElement('form');
             form.method = 'POST';
@@ -655,6 +964,62 @@ export default class CheckoutFlow extends LightningElement {
             form.submit();
             document.body.removeChild(form);
         }, 100);
+    }
+
+    /**
+     * Listen for load events on the payment iframe.  After the initial
+     * cross-origin load (the AN hosted form), a subsequent load on our own
+     * origin means AN has redirected — either after an approved transaction
+     * (return URL with ?an_result=approved) or after the user cancelled
+     * (cancel URL with ?an_result=cancelled).
+     */
+    _addIframeLoadListener(iframe) {
+        this._removeIframeLoadListener();
+
+        this._iframeLoadHandler = () => {
+            // Guard: if the modal was already closed (e.g. by the postMessage
+            // listener), do nothing.
+            if (!this.showPaymentModal) return;
+
+            let iframeHref;
+            try {
+                // Same-origin iframes allow location access; cross-origin throws.
+                iframeHref = iframe.contentWindow.location.href;
+            } catch {
+                // Still on the AN domain — ignore.
+                return;
+            }
+
+            if (iframeHref?.includes('an_result=approved')) {
+                // Approved transaction — close modal and place the order.
+                // The iframe redirect carries no transaction data, so we pass null
+                // and rely on the cart amount alone for payment registration.
+                this._removeIframeLoadListener();
+                this._removeMessageListener();
+                this.showPaymentModal = false;
+                this._completeOrder(null);
+            } else if (iframeHref?.includes('an_result=cancelled')) {
+                // User cancelled inside the hosted form.
+                this._removeIframeLoadListener();
+                this._removeMessageListener();
+                this.showPaymentModal = false;
+                this.isPlacingOrder = false;
+                this.stepError = 'Payment was cancelled. You can try again when ready.';
+            }
+            // Any other same-origin load (e.g. about:blank) is ignored.
+        };
+
+        iframe.addEventListener('load', this._iframeLoadHandler);
+    }
+
+    _removeIframeLoadListener() {
+        if (this._iframeLoadHandler) {
+            const iframe = this.template.querySelector('.an-payment-iframe');
+            if (iframe) {
+                iframe.removeEventListener('load', this._iframeLoadHandler);
+            }
+            this._iframeLoadHandler = null;
+        }
     }
 
     /** Listen for postMessage events from the Authorize.Net communicator page */
@@ -683,15 +1048,46 @@ export default class CheckoutFlow extends LightningElement {
             return;
         }
 
-        if (!msg || !msg.action) return;
+        if (!msg) return;
 
-        switch (msg.action) {
-            case 'successfulSave':
-            case 'transactResponse':
-                // Payment was authorised/captured — close modal and place the order
+        // Determine the action: AN Accept Hosted may send {action:'transactResponse'}
+        // or a flat object with {resultCode, transactionData} and no action field.
+        let action = msg.action;
+        if (!action && msg.transactionData && msg.resultCode) {
+            action = 'transactResponse';
+        }
+        if (!action) return;
+
+        switch (action) {
+            case 'transactResponse': {
+                if (!isApprovedAuthorizeNetMessage(msg)) {
+                    this._removeMessageListener();
+                    this.showPaymentModal = false;
+                    this.isPlacingOrder = false;
+                    this.isPlacingOrderAfterPayment = false;
+                    this.placeOrderErrorMsg = extractAuthorizeNetFailureMessage(msg);
+                    this.showErrorModal = true;
+                    return;
+                }
+
+                // Payment was authorised/captured — extract the AN transaction ID so we can
+                // register the payment on the Commerce checkout session before placing the order.
+                const anTransactionId =
+                    msg?.transactionData?.transId ||
+                    msg?.transactionResponse?.transId ||
+                    msg?.transactionData?.transactionId ||
+                    null;
+
+                // Close modal and place the order
                 this._removeMessageListener();
                 this.showPaymentModal = false;
-                this._completeOrder();
+                this._completeOrder(anTransactionId);
+                break;
+            }
+            case 'successfulSave':
+                // Accept Hosted can emit successfulSave before the final transaction
+                // payload arrives. Do not place the order until we have an approved
+                // transactResponse from Authorize.Net.
                 break;
             case 'cancel':
             case 'cancelTransaction':
@@ -712,14 +1108,34 @@ export default class CheckoutFlow extends LightningElement {
     /** Close the payment modal when user clicks the X button */
     handleClosePaymentModal() {
         this._removeMessageListener();
+        this._removeIframeLoadListener();
         this.showPaymentModal = false;
         this.isPlacingOrder = false;
+        this.isPaymentExpanded = false;
         this._pendingCheckoutId = null;
         this.stepError = 'Payment was cancelled. You can try again or create an account.';
     }
 
-    /** Called after AN confirms payment — calls placeOrder to create Order in Salesforce */
-    async _completeOrder() {
+    /** Toggle expanded / collapsed state of the payment modal */
+    handleTogglePaymentExpand() {
+        this.isPaymentExpanded = !this.isPaymentExpanded;
+    }
+
+    /** Label for the expand/collapse button (accessibility) */
+    get paymentExpandLabel() {
+        return this.isPaymentExpanded ? 'Collapse window' : 'Expand window';
+    }
+
+    /** Dynamic CSS class for the payment modal container */
+    get paymentModalContainerClass() {
+        let cls = 'an-modal-container';
+        if (this.paymentSandboxMode) cls += ' an-modal-sandbox';
+        if (this.isPaymentExpanded)  cls += ' an-modal-expanded';
+        return cls;
+    }
+
+    /** Called after AN confirms payment — registers payment and places the order */
+    async _completeOrder(anTransactionId = null) {
         const checkoutId = this._pendingCheckoutId;
         this._pendingCheckoutId = null;
 
@@ -731,51 +1147,166 @@ export default class CheckoutFlow extends LightningElement {
         this.isPlacingOrderAfterPayment = true;
 
         try {
-            const placeOrderResponse = await this._fetchJson(
-                `/AmericanBookCompany/webruntime/api/services/data/${API_VERSION}/commerce/webstores/${WEBSTORE_ID}/checkouts/${checkoutId}/actions/placeOrder`,
-                { method: 'POST', body: '{}' }
-            );
+            const webStoreId = this._resolveWebStoreId();
 
-            // Clear saved form — order is complete
-            try { globalThis.sessionStorage?.removeItem(FORM_KEY); } catch { /* noop */ }
+            // 1 — Re-ensure delivery method (cart recalculation can reset SelectedDeliveryMethodId)
+            // This is required before placeOrder — let it throw if it fails
+            await ensureDeliveryMethod({
+                webStoreId,
+                checkoutSessionId: checkoutId,
+                shippingAmount: this.shippingCost ?? 0
+            });
 
-            this.isPlacingOrderAfterPayment = false;
-            this.orderPlaced = true;
-            this.orderNumber = placeOrderResponse?.orderReferenceNumber || placeOrderResponse?.orderId || '';
-            this.orderSummaryId = placeOrderResponse?.orderSummaryId || '';
+            // 2 — Resolve the Authorize.Net transaction ID.
+            // The iframe redirect path provides null — AN delivers the transaction ID via webhook
+            // which inserts an AuthorizeNet_Transaction__c record. Poll briefly for it.
+            let resolvedTransactionId = anTransactionId;
+            if (!resolvedTransactionId) {
+                resolvedTransactionId = await this._waitForAuthorizeNetTransactionId(checkoutId, 12, 2500);
+            }
+
+            // 3 — Register the payment with Commerce so placeOrder sees an authorised payment.
+            // Requires AuthorizeNetPassthroughAdapter + PaymentGateway to be configured in the org.
+            // The adapter is a passthrough — it records the AN transaction ID and returns Success.
+            console.log('[checkoutFlow] resolvedTransactionId:', resolvedTransactionId, 'lastCartAmount:', this._lastCartAmount);
+            if (resolvedTransactionId) {
+                await registerExternalPayment({
+                    webStoreId,
+                    checkoutSessionId: checkoutId,
+                    amount: this._lastCartAmount ?? 0,
+                    transactionId: resolvedTransactionId
+                });
+                console.log('[checkoutFlow] registerExternalPayment succeeded');
+            } else {
+                throw new Error('No Authorize.Net transaction ID found — cannot register payment. Check webhook delivery.');
+            }
+
+            // 4 — Place the order (creates the Salesforce Order record)
+            const orderResult = await placeOrder({ checkoutSessionId: checkoutId });
+
+            await this._onOrderSuccess(orderResult);
 
         } catch (error) {
+            const msg = error?.body?.message || error?.message || '';
+            console.error('[checkoutFlow] _completeOrder failed', JSON.stringify(error));
             this.isPlacingOrderAfterPayment = false;
             this.showErrorModal = true;
-            this.placeOrderErrorMsg = error?.message || 'Payment was received but order creation failed. Please contact support with your transaction details.';
+            this.placeOrderErrorMsg = msg || 'Payment was received but could not complete. Please contact support.';
         }
+    }
+
+    /**
+     * Polls AuthorizeNet_Transaction__c (via Apex) for a successful transaction ID
+     * matching the given referenceId (= checkoutSessionId = AN invoiceNumber).
+     * Returns the transaction ID string, or null if not found within the timeout.
+     * Uses recursive setTimeout via globalThis to avoid LWC eslint restrictions.
+     */
+    _waitForAuthorizeNetTransactionId(referenceId, maxAttempts = 12, delayMs = 2500) {
+        return new Promise((resolve) => {
+            let attempt = 0;
+            const tryOnce = () => {
+                findLatestAuthorizedTransactionId({ referenceId })
+                    .then((transId) => {
+                        if (transId) {
+                            console.log(`[checkoutFlow] Found AN transactionId after ${attempt + 1} poll(s):`, transId);
+                            resolve(transId);
+                            return;
+                        }
+                        attempt += 1;
+                        if (attempt >= maxAttempts) {
+                            console.warn('[checkoutFlow] AN transaction ID not found after', maxAttempts, 'polls');
+                            resolve(null);
+                            return;
+                        }
+                        globalThis.setTimeout(tryOnce, delayMs);
+                    })
+                    .catch((err) => {
+                        console.warn('[checkoutFlow] _waitForAuthorizeNetTransactionId poll error:', err?.body?.message || err?.message);
+                        attempt += 1;
+                        if (attempt >= maxAttempts) {
+                            resolve(null);
+                            return;
+                        }
+                        globalThis.setTimeout(tryOnce, delayMs);
+                    });
+            };
+            tryOnce();
+        });
+    }
+
+    /** Clears form/cart then redirects to the home page after a successful payment */
+    async _onOrderSuccess(orderResult) {
+        try { globalThis.sessionStorage?.removeItem(FORM_KEY); } catch { /* noop */ }
+
+        // Clear the cart — payment is confirmed even if the Salesforce order hasn't been placed yet.
+        try {
+            const cartId = await this._resolveCurrentCartId();
+            if (cartId) {
+                await clearCart({ cartId });
+                globalThis.sessionStorage?.removeItem('abc_custom_cart_page_cache_v1');
+                globalThis.sessionStorage?.removeItem('abc_cart_page_cache');
+            }
+        } catch (clearErr) {
+            console.warn('[checkoutFlow] clearCart (non-fatal):', clearErr?.body?.message || clearErr?.message);
+        }
+
+        this.isPlacingOrderAfterPayment = false;
+        this.orderPlaced = true;
+        this.orderNumber = orderResult?.orderReferenceNumber || orderResult?.orderId || '';
+        this.orderSummaryId = orderResult?.orderSummaryId || '';
+        // Redirect happens when the user closes the success modal (handleOrderSuccessClose)
+    }
+
+    /** Redirects to the storefront home — called when the user closes the order success overlay */
+    handleOrderSuccessClose() {
+        globalThis.location.assign('/AmericanBookCompany/');
     }
 
     /** Navigate to the order confirmation page from the success screen */
     handleViewOrder() {
-        const url = this.orderSummaryId
-            ? `/AmericanBookCompany/order?orderSummaryId=${this.orderSummaryId}`
-            : '/AmericanBookCompany/my-account/orders';
-        globalThis.location.assign(url);
+        globalThis.location.assign('/AmericanBookCompany/my-orders');
     }
 
 
-    async _clearCheckoutIfPresent() {
+    _resolveWebStoreId() {
+        const resolved = String(this.webStoreId || DEFAULT_WEBSTORE_ID || '').trim();
+        if (!resolved) {
+            throw new Error('Checkout configuration is missing webStoreId.');
+        }
+        return resolved;
+    }
+
+    async _resolveCurrentCartId() {
         try {
-            const r = await fetch(
-                `/AmericanBookCompany/webruntime/api/services/data/${API_VERSION}/commerce/webstores/${WEBSTORE_ID}/checkouts/active`,
-                { method: 'GET', headers: { Accept: 'application/json' } }
-            );
-            if (!r.ok) return;
-            await fetch(
-                `/AmericanBookCompany/webruntime/api/services/data/${API_VERSION}/commerce/webstores/${WEBSTORE_ID}/checkouts/active`,
-                { method: 'DELETE', headers: { Accept: 'application/json' } }
-            );
-        } catch { /* non-fatal */ }
+            const cartUrl = this._buildStorefrontApiUrl(`/commerce/webstores/${this._resolveWebStoreId()}/carts/current`);
+            const cartData = await this._fetchJson(cartUrl, { method: 'GET' });
+            return cartData?.cartId || cartData?.id || null;
+        } catch {
+            return null;
+        }
+    }
+
+    // TODO: re-enable _waitForAuthorizeNetTransactionId when order creation is re-enabled.
+    // async _waitForAuthorizeNetTransactionId() { ... }
+
+    _extractCheckoutSessionId(checkoutData) {
+        return checkoutData?.cartCheckoutSessionId || checkoutData?.id || null;
+    }
+
+    _buildStorefrontApiUrl(path) {
+        const params = buildCheckoutStorefrontParams({ asGuest: this.isGuest });
+        const suffix = params.toString();
+        return `/AmericanBookCompany/webruntime/api/services/data/${API_VERSION}${path}${suffix ? `?${suffix}` : ''}`;
     }
 
     async _fetchJson(url, options = {}) {
+        const { data } = await this._fetchJsonWithResponse(url, options);
+        return data;
+    }
+
+    async _fetchJsonWithResponse(url, options = {}) {
         const response = await fetch(url, {
+            credentials: 'include',
             ...options,
             headers: {
                 Accept: 'application/json',
@@ -790,7 +1321,7 @@ export default class CheckoutFlow extends LightningElement {
             const msg = parsed?.message || parsed?.[0]?.message || `HTTP ${response.status}`;
             throw new Error(msg);
         }
-        return parsed;
+        return { response, data: parsed };
     }
 
     _extractCartTotal(cartData) {
@@ -825,28 +1356,13 @@ export default class CheckoutFlow extends LightningElement {
 
     // ── Validation ───────────────────────────────────────────────
     _validateStep1() {
-        const { contactName, contactEmail, contactEmailConfirm, contactPhone } = this.form;
-        if (!contactName.trim()) return 'Name is required.';
-        if (!contactEmail.trim()) return 'Email address is required.';
-        if (!this._isValidEmail(contactEmail.trim())) return 'Please enter a valid email address.';
-        if (contactEmail.trim() !== contactEmailConfirm.trim()) {
-            this.contactEmailError = 'Email does not match!';
-            return 'Email does not match!';
-        }
-        this.contactEmailError = '';
-        if (!contactPhone.trim()) return 'Phone number is required.';
-        return '';
+        const error = validateCheckoutContactForm(this.form);
+        this.contactEmailError = error === 'Email does not match!' ? error : '';
+        return error;
     }
 
     _validateStep2() {
-        const { shipName, orgName, street, city, stateCode, postalCode } = this.form;
-        if (!shipName.trim()) return 'Ship To name is required.';
-        if (!orgName.trim()) return 'Organization name is required.';
-        if (!street.trim()) return 'Street address is required.';
-        if (!city.trim()) return 'City is required.';
-        if (!stateCode) return 'Please select a state.';
-        if (!postalCode.trim()) return 'ZIP code is required.';
-        return '';
+        return validateCheckoutShippingForm(this.form);
     }
 
     _validateStep3() {
@@ -857,10 +1373,6 @@ export default class CheckoutFlow extends LightningElement {
     }
 
     // ── Utilities ────────────────────────────────────────────────
-    _isValidEmail(value) {
-        return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
-    }
-
     _formatCurrency(amount) {
         try {
             return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(amount ?? 0);

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<PaymentGatewayProvider xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apexAdapter>AuthorizeNetPassthroughAdapter</apexAdapter>
+    <comments>Passthrough adapter for Authorize.Net Accept Hosted. Records AN transaction ID; makes no external callouts.</comments>
+    <idempotencySupported>No</idempotencySupported>
+    <masterLabel>AuthorizeNet Passthrough</masterLabel>
+</PaymentGatewayProvider>

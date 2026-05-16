@@ -24,70 +24,67 @@
  * paymentToken=<AN transId>) will route through this adapter and succeed.
  */
 global class AuthorizeNetPassthroughAdapter implements commercepayments.PaymentGatewayAdapter {
-  global commercepayments.GatewayResponse processRequest(
-    commercepayments.PaymentGatewayContext gatewayContext
-  ) {
-    commercepayments.RequestType requestType = gatewayContext.getPaymentRequestType();
 
-    if (requestType == commercepayments.RequestType.PostAuth) {
-      return handlePostAuth(gatewayContext);
-    }
-
-    // Any other request type (Authorize, Capture, Refund, etc.) is not used
-    // in this custom checkout flow — return a non-fatal error.
-    return new commercepayments.GatewayErrorResponse(
-      '400',
-      'AuthorizeNetPassthroughAdapter: unsupported request type ' + requestType
-    );
-  }
-
-  // ── PostAuth ─────────────────────────────────────────────────────────────────
-  // Called by registerExternalPayment (POST /checkouts/{id}/payments, requestType=PostAuth).
-  // The AN transaction ID is passed as paymentToken in the REST body and arrives
-  // here as paymentMethod.gatewayToken on the PostAuthorizationRequest.
-  private static commercepayments.GatewayResponse handlePostAuth(
-    commercepayments.PaymentGatewayContext ctx
-  ) {
-    commercepayments.PostAuthorizationRequest req = (commercepayments.PostAuthorizationRequest) ctx.getPaymentRequest();
-
-    // Extract the AN transaction ID that was passed as paymentToken in the REST call.
-    // The token arrives via paymentMethod.alternativePaymentMethod.gatewayToken —
-    // see AlternativePaymentMethodRequest.gatewayToken in the Apex Reference Guide.
-    String anTransactionId = '';
-    if (
-      req.paymentMethod != null &&
-      req.paymentMethod.alternativePaymentMethod != null
+    global commercepayments.GatewayResponse processRequest(
+        commercepayments.PaymentGatewayContext gatewayContext
     ) {
-      commercepayments.AlternativePaymentMethodRequest apm = (commercepayments.AlternativePaymentMethodRequest) req.paymentMethod.alternativePaymentMethod;
-      anTransactionId = apm.gatewayToken != null ? apm.gatewayToken : '';
+        commercepayments.RequestType requestType = gatewayContext.getPaymentRequestType();
+
+        if (requestType == commercepayments.RequestType.PostAuth) {
+            return handlePostAuth(gatewayContext);
+        }
+
+        // Any other request type (Authorize, Capture, Refund, etc.) is not used
+        // in this custom checkout flow — return a non-fatal error.
+        return new commercepayments.GatewayErrorResponse(
+            '400',
+            'AuthorizeNetPassthroughAdapter: unsupported request type ' + requestType
+        );
     }
 
-    commercepayments.PostAuthorizationResponse response = new commercepayments.PostAuthorizationResponse();
+    // ── PostAuth ─────────────────────────────────────────────────────────────────
+    // Called by registerExternalPayment (POST /checkouts/{id}/payments, requestType=PostAuth).
+    // The AN transaction ID is passed as paymentToken in the REST body and arrives
+    // here as paymentMethod.gatewayToken on the PostAuthorizationRequest.
+    private static commercepayments.GatewayResponse handlePostAuth(
+        commercepayments.PaymentGatewayContext ctx
+    ) {
+        commercepayments.PostAuthorizationRequest req =
+            (commercepayments.PostAuthorizationRequest) ctx.getPaymentRequest();
 
-    // Echo the AN transaction ID as the gateway reference number so it's
-    // stored in PaymentAuthorization.GatewayRefNumber for audit purposes.
-    response.setGatewayReferenceNumber(
-      String.isNotBlank(anTransactionId) ? anTransactionId : 'AN-PASSTHROUGH'
-    );
-    response.setGatewayResultCode('1'); // AN response code 1 = Approved
-    response.setGatewayMessage('Authorized');
-    response.setAmount(req.amount);
+        // Extract the AN transaction ID that was passed as paymentToken in the REST call.
+        // The token arrives via paymentMethod.alternativePaymentMethod.gatewayToken —
+        // see AlternativePaymentMethodRequest.gatewayToken in the Apex Reference Guide.
+        String anTransactionId = '';
+        if (req.paymentMethod != null && req.paymentMethod.alternativePaymentMethod != null) {
+            commercepayments.AlternativePaymentMethodRequest apm =
+                (commercepayments.AlternativePaymentMethodRequest) req.paymentMethod.alternativePaymentMethod;
+            anTransactionId = apm.gatewayToken != null ? apm.gatewayToken : '';
+        }
 
-    // Tell the Salesforce Payments platform this is a success.
-    response.setSalesforceResultCodeInfo(
-      new commercepayments.SalesforceResultCodeInfo(
-        commercepayments.SalesforceResultCode.Success
-      )
-    );
+        commercepayments.PostAuthorizationResponse response =
+            new commercepayments.PostAuthorizationResponse();
 
-    System.debug(
-      LoggingLevel.INFO,
-      'AuthorizeNetPassthroughAdapter PostAuth: anTransactionId=' +
-        anTransactionId +
-        ' amount=' +
-        req.amount
-    );
+        // Echo the AN transaction ID as the gateway reference number so it's
+        // stored in PaymentAuthorization.GatewayRefNumber for audit purposes.
+        response.setGatewayReferenceNumber(
+            String.isNotBlank(anTransactionId) ? anTransactionId : 'AN-PASSTHROUGH'
+        );
+        response.setGatewayResultCode('1');          // AN response code 1 = Approved
+        response.setGatewayMessage('Authorized');
+        response.setAmount(req.amount);
 
-    return response;
-  }
+        // Tell the Salesforce Payments platform this is a success.
+        response.setSalesforceResultCodeInfo(
+            new commercepayments.SalesforceResultCodeInfo(
+                commercepayments.SalesforceResultCode.Success
+            )
+        );
+
+        System.debug(LoggingLevel.INFO,
+            'AuthorizeNetPassthroughAdapter PostAuth: anTransactionId=' + anTransactionId
+            + ' amount=' + req.amount);
+
+        return response;
+    }
 }

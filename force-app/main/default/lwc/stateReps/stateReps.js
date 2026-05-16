@@ -85,11 +85,7 @@ function decodeDeep(str) {
   let prev;
   do {
     prev = out;
-    try {
-      out = decodeURIComponent(out);
-    } catch {
-      break;
-    }
+    try { out = decodeURIComponent(out); } catch { break; }
   } while (out !== prev);
   return out;
 }
@@ -106,20 +102,12 @@ const PLACEHOLDER_SVG =
 const SHARED_ABC_LOGO_BASE = "abc-sales-team";
 
 const BADGES = [
-  { key: "usfcr", file: "usfcr.png", alt: "USFCR Verified Vendor" },
-  {
-    key: "gachamber",
-    file: "gachamber.png",
-    alt: "Georgia Chamber of Commerce"
-  },
-  { key: "bbb", file: "bbb.png", alt: "BBB A+ Accredited Business" },
-  { key: "aap", file: "aap.png", alt: "AAP Pre K-12 Learning Proud Member" },
-  {
-    key: "wbenc",
-    file: "wbenc.png",
-    alt: "Certified WBENC Women's Business Enterprise"
-  },
-  { key: "essa", file: "essa.png", alt: "Instructure Level 4 ESSA 2025" }
+  { key: "usfcr",     file: "usfcr.png",     alt: "USFCR Verified Vendor" },
+  { key: "gachamber", file: "gachamber.png",  alt: "Georgia Chamber of Commerce" },
+  { key: "bbb",       file: "bbb.png",        alt: "BBB A+ Accredited Business" },
+  { key: "aap",       file: "aap.png",        alt: "AAP Pre K-12 Learning Proud Member" },
+  { key: "wbenc",     file: "wbenc.png",      alt: "Certified WBENC Women's Business Enterprise" },
+  { key: "essa",      file: "essa.png",       alt: "Instructure Level 4 ESSA 2025" }
 ];
 
 const REPS_BY_STATE = {
@@ -382,10 +370,7 @@ export default class StateReps extends LightningElement {
     this._watchId = null;
     if (this._boundStateChangeHandler) {
       STATE_CHANGE_EVENT_NAMES.forEach((eventName) => {
-        globalThis.removeEventListener(
-          eventName,
-          this._boundStateChangeHandler
-        );
+        globalThis.removeEventListener(eventName, this._boundStateChangeHandler);
       });
       this._boundStateChangeHandler = null;
     }

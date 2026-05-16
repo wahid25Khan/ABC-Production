@@ -1,7 +1,7 @@
 /* stylelint-disable */
 :host {
   display: block;
-  font-family: "Lato", Arial, sans-serif;
+  font-family: 'Lato', Arial, sans-serif;
 }
 
 .similar-products {
@@ -40,7 +40,7 @@
   white-space: nowrap;
   flex: 0 0 auto;
   color: #143f73;
-  font-family: "Lato", Arial, sans-serif;
+  font-family: 'Lato', Arial, sans-serif;
 }
 
 .carousel-row {
@@ -168,7 +168,7 @@
   line-height: 1.4;
   cursor: pointer;
   color: #1f2937;
-  font-family: "Lato", Arial, sans-serif;
+  font-family: 'Lato', Arial, sans-serif;
   word-break: break-word;
 }
 

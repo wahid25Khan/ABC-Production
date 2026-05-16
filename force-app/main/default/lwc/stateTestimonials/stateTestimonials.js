@@ -39,10 +39,7 @@ export default class TestimonialCarousel extends LightningElement {
     this.stopHashWatcher();
     if (this._boundStateChangeHandler) {
       STATE_CHANGE_EVENT_NAMES.forEach((eventName) => {
-        globalThis.removeEventListener(
-          eventName,
-          this._boundStateChangeHandler
-        );
+        globalThis.removeEventListener(eventName, this._boundStateChangeHandler);
       });
       this._boundStateChangeHandler = null;
     }
@@ -154,16 +151,16 @@ export default class TestimonialCarousel extends LightningElement {
       return;
     }
 
-    Promise.all([
-      loadScript(this, SWIPER + "/SwiperJS/swiper-bundle.min.js"),
-      loadStyle(this, SWIPER + "/SwiperJS/swiper-bundle.min.css")
-    ])
-      .then(() => {
-        this.initSwiper();
-      })
-      .catch((error) => {
-        console.error("Error loading Swiper files: ", error);
-      });
+      Promise.all([
+        loadScript(this, SWIPER + "/SwiperJS/swiper-bundle.min.js"),
+        loadStyle(this, SWIPER + "/SwiperJS/swiper-bundle.min.css")
+      ])
+        .then(() => {
+          this.initSwiper();
+        })
+        .catch((error) => {
+          console.error("Error loading Swiper files: ", error);
+        });
   }
 
   initSwiper() {

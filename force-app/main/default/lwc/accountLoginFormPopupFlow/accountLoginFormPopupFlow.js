@@ -27,6 +27,7 @@ export default class AccountLoginFormPopupFlow extends LightningElement {
 
   username = "";
   password = "";
+  // rememberMe = false;
   errorMessage = "";
   isSubmitting = false;
   isSocialRedirecting = false;
@@ -116,6 +117,8 @@ export default class AccountLoginFormPopupFlow extends LightningElement {
       appendHiddenInput(ownerDocument, form, "loginType", "standard");
       appendHiddenInput(ownerDocument, form, "lt", "standard");
       appendHiddenInput(ownerDocument, form, "useSecure", "true");
+      // appendHiddenInput(ownerDocument, form, "rememberUn", this.rememberMe ? "true" : "false");
+
 
       ownerDocument.body.appendChild(form);
       form.submit();
@@ -220,8 +223,8 @@ export default class AccountLoginFormPopupFlow extends LightningElement {
       const parsed = new URL(decodedUrl, globalThis.location.origin);
       return parsed.origin === globalThis.location.origin
         ? this.applyExperienceBasePath(
-            `${parsed.pathname}${parsed.search}${parsed.hash}`
-          )
+          `${parsed.pathname}${parsed.search}${parsed.hash}`
+        )
         : "";
     } catch {
       return "";
@@ -319,4 +322,9 @@ export default class AccountLoginFormPopupFlow extends LightningElement {
     this.isSocialRedirecting = true;
     globalThis.location.assign(authUrl);
   }
+
+  // handleRememberMeChange(event) {
+  //   this.rememberMe = event.target.checked;
+  // }
+
 }

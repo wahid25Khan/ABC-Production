@@ -7,6 +7,9 @@
         <template if:false={isLoading}>
             <div class="page-header">
                 <h1>{heroTitle}</h1>
+                <template if:true={heroDescription}>
+                    <p class="page-description">{heroDescription}</p>
+                </template>
             </div>
 
             <div class="section-tabs" role="tablist" aria-label="Account Details Sections">

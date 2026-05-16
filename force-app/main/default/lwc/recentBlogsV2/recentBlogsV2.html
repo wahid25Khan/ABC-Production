@@ -1,0 +1,74 @@
+<template>
+    <section class="recent-blogs container mb-10 lg-px-20">
+        <h2 class="my-10 text-center text-3xl font-bold">Recent Posts</h2>
+
+        <template if:true={errorMessage}>
+            <div class="status-card" role="alert">
+                <p>{errorMessage}</p>
+                <button type="button" class="btn-read-more status-button" onclick={handleRetryClick}>
+                    Try Again
+                </button>
+            </div>
+        </template>
+
+        <template if:true={isLoading}>
+            <div class="status-card" aria-live="polite">
+                <p>Loading recent posts...</p>
+            </div>
+        </template>
+
+        <template if:true={hasBlogs}>
+            <template for:each={blogs} for:item="blog">
+                <div key={blog.id} class="blog-item mx-auto mb-6">
+                    <c-blog-post-card
+                        title={blog.title}
+                        excerpt={blog.excerpt}
+                        body-html={blog.bodyHtml}
+                        image-url={blog.imageUrl}
+                        url-name={blog.urlName}
+                    ></c-blog-post-card>
+                </div>
+            </template>
+        </template>
+
+        <template if:true={showEmptyState}>
+            <div class="status-card">
+                <p>No recent posts are available yet.</p>
+            </div>
+        </template>
+
+        <template if:true={hasPagination}>
+            <div class="pagination mt-14 text-center md-text-right">
+                <button
+                    type="button"
+                    class={previousButtonClass}
+                    onclick={handlePreviousClick}
+                    disabled={isPreviousDisabled}
+                    aria-label="Previous page"
+                >
+                    <span class="pagination-circle">
+                        <svg class="pagination-icon" viewBox="0 0 12 12" aria-hidden="true">
+                            <path d="M7.5 2.25 3.75 6l3.75 3.75" />
+                        </svg>
+                    </span>
+                </button>
+
+                <div class="inline-block px-4 page-label">{pageLabel}</div>
+
+                <button
+                    type="button"
+                    class={nextButtonClass}
+                    onclick={handleNextClick}
+                    disabled={isNextDisabled}
+                    aria-label="Next page"
+                >
+                    <span class="pagination-circle">
+                        <svg class="pagination-icon" viewBox="0 0 12 12" aria-hidden="true">
+                            <path d="M4.5 2.25 8.25 6 4.5 9.75" />
+                        </svg>
+                    </span>
+                </button>
+            </div>
+        </template>
+    </section>
+</template>

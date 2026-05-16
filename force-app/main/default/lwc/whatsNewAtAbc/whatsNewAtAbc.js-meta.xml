@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8"?>
 <LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
   <apiVersion>62.0</apiVersion>
   <isExposed>true</isExposed>
@@ -8,24 +8,9 @@
   </targets>
   <targetConfigs>
     <targetConfig targets="lightningCommunity__Default">
-      <property
-        name="imageUrl"
-        type="String"
-        label="Article Image URL"
-        description="Full URL to the article featured image"
-      />
-      <property
-        name="articleTitle"
-        type="String"
-        label="Article Title"
-        default="Build a Lifelong Love of Reading Over Summer Break"
-      />
-      <property
-        name="articleText"
-        type="String"
-        label="Article Text"
-        default="With Summer break hurtling closer, kids everywhere are looking ahead to sunny summer vacation days, and schools are publishing summer reading lists. These are the years when children start to become lifelong readers - and educators and parents can help that process!"
-      />
+      <property name="imageUrl" type="String" label="Article Image URL" description="Full URL to the article featured image"/>
+      <property name="articleTitle" type="String" label="Article Title" default="Build a Lifelong Love of Reading Over Summer Break"/>
+      <property name="articleText" type="String" label="Article Text" default="With Summer break hurtling closer, kids everywhere are looking ahead to sunny summer vacation days, and schools are publishing summer reading lists. These are the years when children start to become lifelong readers - and educators and parents can help that process!"/>
     </targetConfig>
   </targetConfigs>
 </LightningComponentBundle>

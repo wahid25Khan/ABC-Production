@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<StandardValueSet xmlns="http://soap.sforce.com/2006/04/metadata">
+    <sorted>false</sorted>
+    <standardValue>
+        <fullName>Board of Education</fullName>
+        <default>false</default>
+        <label>Board of Education</label>
+    </standardValue>
+    <standardValue>
+        <fullName>College</fullName>
+        <default>false</default>
+        <label>College</label>
+    </standardValue>
+    <standardValue>
+        <fullName>Company</fullName>
+        <default>false</default>
+        <label>Company</label>
+    </standardValue>
+    <standardValue>
+        <fullName>District</fullName>
+        <default>false</default>
+        <label>District</label>
+    </standardValue>
+    <standardValue>
+        <fullName>Individual</fullName>
+        <default>false</default>
+        <label>Individual</label>
+    </standardValue>
+    <standardValue>
+        <fullName>School</fullName>
+        <default>false</default>
+        <label>School</label>
+    </standardValue>
+</StandardValueSet>

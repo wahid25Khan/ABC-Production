@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<DataSourceObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <dataSource>MessagingEventsEmailV2_00Dam00001aloiT_24694165_9b04_4a4e_b70a_0709733a2329</dataSource>
+    <externalRecordIdentifier>MessagingEventsEmailV2_00Dam00001aloiT_EmailEngagement_888BDC14</externalRecordIdentifier>
+    <masterLabel>MessagingEventsEmailV2_00Dam00001aloiT_EmailEngagement_888BDC14</masterLabel>
+    <storageType>LOCAL</storageType>
+    <templateVersion>1</templateVersion>
+</DataSourceObject>

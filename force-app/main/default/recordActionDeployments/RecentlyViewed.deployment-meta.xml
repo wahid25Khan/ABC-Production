@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<RecordActionDeployment xmlns="http://soap.sforce.com/2006/04/metadata">
+    <componentName>ActionsAndRecommendations</componentName>
+    <deploymentContexts>
+        <entityName>Product2</entityName>
+    </deploymentContexts>
+    <hasComponents>false</hasComponents>
+    <hasGuidedActions>false</hasGuidedActions>
+    <hasOmniscripts>false</hasOmniscripts>
+    <hasRecommendations>true</hasRecommendations>
+    <masterLabel>Recently Viewed</masterLabel>
+    <recommendation>
+        <hasDescription>true</hasDescription>
+        <hasImage>true</hasImage>
+        <hasRealtimeRecommendations>false</hasRealtimeRecommendations>
+        <hasRejectAction>true</hasRejectAction>
+        <hasTitle>true</hasTitle>
+        <maxDisplayRecommendations>4</maxDisplayRecommendations>
+        <shouldLaunchActionOnReject>false</shouldLaunchActionOnReject>
+    </recommendation>
+</RecordActionDeployment>

@@ -18,13 +18,8 @@
           title="Previous books"
           aria-label="Previous books"
           onclick={handlePrev}
-          disabled={disablePrev}
-        >
-          <lightning-icon
-            icon-name="utility:chevronleft"
-            size="small"
-            alternative-text="Previous"
-          ></lightning-icon>
+          disabled={disablePrev}>
+          <lightning-icon icon-name="utility:chevronleft" size="small" alternative-text="Previous"></lightning-icon>
         </button>
 
         <div class="products-viewport">
@@ -36,16 +31,10 @@
                   type="button"
                   data-pid={product.id}
                   title={product.name}
-                  onclick={handleClickProduct}
-                >
+                  onclick={handleClickProduct}>
                   <div class="image-frame">
                     <template if:true={product.imageUrl}>
-                      <img
-                        class="product-image"
-                        src={product.imageUrl}
-                        alt={product.name}
-                        loading="lazy"
-                      />
+                      <img class="product-image" src={product.imageUrl} alt={product.name} loading="lazy" />
                     </template>
                     <template if:false={product.imageUrl}>
                       <div class="image-placeholder">No image</div>
@@ -58,8 +47,7 @@
                   type="button"
                   data-pid={product.id}
                   title={product.name}
-                  onclick={handleClickProduct}
-                >
+                  onclick={handleClickProduct}>
                   {product.name}
                 </button>
               </article>
@@ -73,13 +61,8 @@
           title="Next books"
           aria-label="Next books"
           onclick={handleNext}
-          disabled={disableNext}
-        >
-          <lightning-icon
-            icon-name="utility:chevronright"
-            size="small"
-            alternative-text="Next"
-          ></lightning-icon>
+          disabled={disableNext}>
+          <lightning-icon icon-name="utility:chevronright" size="small" alternative-text="Next"></lightning-icon>
         </button>
       </div>
     </template>

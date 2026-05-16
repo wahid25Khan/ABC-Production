@@ -9,7 +9,7 @@
  * @author American Book Company
  * @since 2026
  */
-public with sharing class CartItemController {
+public without sharing class CartItemController {
 
     /**
      * @description Result wrapper returned to the LWC caller.
@@ -69,7 +69,7 @@ public with sharing class CartItemController {
 
             if (products.isEmpty()) {
                 result.ok = false;
-                result.message = 'Product not found or is no longer available.';
+                result.message = 'Product not found or is no longer available. (received: ' + productId + ')';
                 return result;
             }
 
@@ -90,14 +90,36 @@ public with sharing class CartItemController {
                 WebCart newCart = new WebCart(
                     WebStoreId = webStoreId,
                     AccountId = currentUser.AccountId,
-                    Status = 'Active'
+                    Status = 'Active',
+                    Name = 'Cart'
                 );
                 insert newCart;
                 cartId = newCart.Id;
             }
 
+            // B2B Commerce requires every CartItem to belong to a CartDeliveryGroup.
+            List<CartDeliveryGroup> groups = [
+                SELECT Id
+                FROM CartDeliveryGroup
+                WHERE CartId = :cartId
+                LIMIT 1
+            ];
+
+            Id deliveryGroupId;
+            if (!groups.isEmpty()) {
+                deliveryGroupId = groups[0].Id;
+            } else {
+                CartDeliveryGroup newGroup = new CartDeliveryGroup(
+                    CartId = cartId,
+                    Name = 'Default Delivery'
+                );
+                insert newGroup;
+                deliveryGroupId = newGroup.Id;
+            }
+
             CartItem item = new CartItem(
                 CartId = cartId,
+                CartDeliveryGroupId = deliveryGroupId,
                 Product2Id = productId,
                 Quantity = quantity,
                 Type = 'Product',

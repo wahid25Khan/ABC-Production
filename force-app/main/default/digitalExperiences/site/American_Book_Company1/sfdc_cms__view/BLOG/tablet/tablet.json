@@ -1,0 +1,23 @@
+{
+  "type" : "sfdc_cms__view",
+  "title" : "BLOG",
+  "contentBody" : {
+    "component" : {
+      "children" : [ {
+        "id" : "03b94165-6142-4103-a879-1242e10f0836",
+        "attributes" : {
+          "dxpStyle" : {
+            "padding" : {
+              "bottom" : "40px",
+              "left" : "20px",
+              "right" : "20px",
+              "top" : "0px"
+            },
+            "isVisible" : false
+          }
+        }
+      } ]
+    }
+  },
+  "urlName" : "blog"
+}

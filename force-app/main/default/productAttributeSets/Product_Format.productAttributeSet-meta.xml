@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ProductAttributeSet xmlns="http://soap.sforce.com/2006/04/metadata">
+    <developerName>Product_Format</developerName>
+    <masterLabel>Product Format</masterLabel>
+    <productAttributeSetItems>
+        <field>Format__c</field>
+        <isGroupedBy>false</isGroupedBy>
+        <sequence>1</sequence>
+    </productAttributeSetItems>
+</ProductAttributeSet>

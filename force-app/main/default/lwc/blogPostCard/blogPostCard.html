@@ -1,0 +1,22 @@
+<template>
+  <article class="post-card">
+    <a href={articleUrl} class="post-media-link">
+      <template lwc:if={hasImage}>
+        <img class="post-image" src={resolvedImageUrl} alt={title} loading="lazy" />
+      </template>
+      <template lwc:else>
+        <div class="post-image-placeholder" aria-hidden="true"></div>
+      </template>
+    </a>
+
+    <div class="post-content">
+      <h3 class="post-title">
+        <a href={articleUrl} class="post-title-link">{title}</a>
+      </h3>
+
+      <p class="post-excerpt">{normalizedExcerpt}</p>
+
+      <a href={articleUrl} class="post-cta">Read More</a>
+    </div>
+  </article>
+</template>

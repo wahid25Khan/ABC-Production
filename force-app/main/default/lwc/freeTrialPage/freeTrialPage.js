@@ -5,6 +5,7 @@ import {
   normalizeImageUrl,
   extractProductList,
   buildProductDetailPath,
+  buildFreeTrialPath,
   applyStorefrontGuestParams,
   getCurrentProductId,
   DEFAULT_WEBSTORE_ID,
@@ -58,7 +59,7 @@ export default class FreeTrialPage extends LightningElement {
   isSubmitting = false;
 
   form = {
-    sampleType: "Physical",
+    sampleType: "print",
     firstName: "",
     lastName: "",
     email: "",
@@ -69,7 +70,9 @@ export default class FreeTrialPage extends LightningElement {
     stateCode: "",
     postalCode: "",
     referralInfo: "",
-    comments: ""
+    comments: "",
+    agreeTerms: false,
+    consentEmails: true
   };
 
   connectedCallback() {
@@ -89,12 +92,16 @@ export default class FreeTrialPage extends LightningElement {
     return buildProductDetailPath(this.product, this.storeName || DEFAULT_STORE_NAME);
   }
 
-  get isPhysicalSelected() {
-    return this.form.sampleType === "Physical";
+  get isPrintSelected() {
+    return this.form.sampleType === "print";
   }
 
   get isDigitalSelected() {
-    return this.form.sampleType === "Digital";
+    return this.form.sampleType === "digital";
+  }
+
+  get isBothSelected() {
+    return this.form.sampleType === "both";
   }
 
   get usStates() {
@@ -118,6 +125,7 @@ export default class FreeTrialPage extends LightningElement {
       const rawProduct = await this.fetchProductDetails(productId);
       if (rawProduct) {
         this.product = this.normalizeProduct(rawProduct);
+        this.updateUrlWithProductSlug();
       }
     } catch {
       // product info is optional; form still works
@@ -136,6 +144,29 @@ export default class FreeTrialPage extends LightningElement {
     if (fromQuery) return String(fromQuery).trim();
 
     return getCurrentProductId();
+  }
+
+  updateUrlWithProductSlug() {
+    if (
+      !this.product?.id ||
+      typeof globalThis === "undefined" ||
+      !globalThis.history?.replaceState
+    ) {
+      return;
+    }
+
+    const store = this.storeName || DEFAULT_STORE_NAME;
+    const freeTrialPath = buildFreeTrialPath(this.product, store);
+
+    if (freeTrialPath) {
+      const targetUrl = new URL(freeTrialPath, globalThis.location.origin);
+      const currentPathAndQuery = `${globalThis.location.pathname}${globalThis.location.search}`;
+      const targetPathAndQuery = `${targetUrl.pathname}${targetUrl.search}`;
+
+      if (currentPathAndQuery !== targetPathAndQuery) {
+        globalThis.history.replaceState(null, "", freeTrialPath);
+      }
+    }
   }
 
   async fetchProductDetails(productId) {
@@ -186,16 +217,25 @@ export default class FreeTrialPage extends LightningElement {
 
   // ─── Form handlers ────────────────────────────────────────────
 
-  handleSampleTypeChange(event) {
-    this.form = { ...this.form, sampleType: event.target.value };
+  handleFieldChange(event) {
+    const field = event.target.dataset.field || event.target.name;
+    const value = event.target.value;
+    this.form = { ...this.form, [field]: value };
+    this.errorMessage = "";
   }
 
-  handleFieldChange(event) {
+  handleInputChange(event) {
     const { name } = event.target;
     const value = event.target.value;
     this.form = { ...this.form, [name]: value };
     this.errorMessage = "";
     event.target.classList.remove("input-error");
+  }
+
+  handleCheckboxChange(event) {
+    const field = event.target.dataset.field;
+    this.form = { ...this.form, [field]: event.target.checked };
+    this.errorMessage = "";
   }
 
   validateForm() {
@@ -224,6 +264,11 @@ export default class FreeTrialPage extends LightningElement {
     if (!EMAIL_PATTERN.test(normalizeText(this.form.email))) {
       this.markFieldInvalid("email");
       this.errorMessage = "Please enter a valid email address.";
+      return false;
+    }
+
+    if (!this.form.agreeTerms) {
+      this.errorMessage = "You must agree to the terms and conditions to continue.";
       return false;
     }
 

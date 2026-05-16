@@ -43,6 +43,7 @@
     align-items: center;
     justify-content: space-between;
     gap: 1rem;
+    flex-direction: row;
 }
 
 .login-field input {
@@ -196,15 +197,218 @@
 }
 
 @media (max-width: 480px) {
+
+    /* 
     .login-password-row,
     .login-links-row {
         flex-direction: column;
         align-items: flex-start;
         gap: 0.35rem;
-    }
+    } 
+    */
 
     .login-submit,
     .social-button {
         width: 100%;
     }
+}
+
+:host {
+    display: block;
+    padding: 1rem;
+}
+
+.login-card {
+    background: #ffffff;
+    border-radius: 4px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    width: min(100%, 420px);
+    margin: 0 auto;
+    font-family: "Segoe UI", Arial, sans-serif;
+}
+
+.login-alert {
+    padding: 0.875rem 1rem;
+    border: 1px solid #f1b5b5;
+    border-radius: 4px;
+    background: #fff5f5;
+    color: #9f1239;
+    font-size: 0.95rem;
+    line-height: 1.5;
+}
+
+.login-field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+}
+
+.login-field label {
+    font-size: 0.95rem;
+    color: #475569;
+    font-weight: 600;
+}
+
+.login-password-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.login-password-row a {
+    font-size: 0.95rem;
+    color: #007bb5;
+    text-decoration: none;
+}
+
+.login-password-row a:hover {
+    text-decoration: underline;
+}
+
+.login-field input[type="email"],
+.login-field input[type="password"] {
+    width: 100%;
+    min-height: 42px;
+    padding: 0.6rem 0.8rem;
+    border: 1px solid #cbd5e1;
+    border-radius: 2px;
+    background: #ffffff;
+    color: #0f172a;
+    font-size: 0.95rem;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.login-field input:focus {
+    outline: none;
+    border-color: #007bb5;
+    box-shadow: 0 0 0 2px rgba(0, 123, 181, 0.15);
+}
+
+.login-options-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 0.25rem;
+}
+
+.remember-me {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.95rem;
+    color: #475569;
+    cursor: pointer;
+}
+
+.create-account-link {
+    font-size: 0.95rem;
+    color: #007bb5;
+    text-decoration: none;
+}
+
+.create-account-link:hover {
+    text-decoration: underline;
+}
+
+.login-divider-line {
+    border: 0;
+    border-top: 1px solid #e2e8f0;
+    margin: 0.25rem 0;
+}
+
+.login-submit {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    width: 100%;
+    min-height: 44px;
+    border: none;
+    border-radius: 22px;
+    background: #007bb5;
+    color: #ffffff;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.15s ease;
+}
+
+.login-submit:hover {
+    background: #006a9c;
+}
+
+.btn-icon {
+    width: 18px;
+    height: 18px;
+}
+
+.social-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.social-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.625rem;
+    width: 100%;
+    min-height: 44px;
+    border: 1px solid #007bb5;
+    border-radius: 22px;
+    background: #ffffff;
+    color: #007bb5;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.15s ease;
+}
+
+.social-button:hover {
+    background: #f0f7ff;
+}
+
+.social-icon {
+    width: 18px;
+    height: 18px;
+}
+
+.cert-text {
+    text-align: center;
+    font-size: 0.8rem;
+    color: #475569;
+    margin-top: 0.5rem;
+    line-height: 1.4;
+}
+
+@media (max-width: 480px) {
+    .login-card {
+        padding: 1.5rem;
+    }
+}
+
+.login-card {
+    background: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+    border: 1px solid #e2e8f0;
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    width: min(100%, 420px);
+    margin: 0 auto;
+    font-family: "Segoe UI", Arial, sans-serif;
+}
+
+.login-options-row {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    margin-top: 0.25rem;
 }

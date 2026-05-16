@@ -1,210 +1,242 @@
-:host {
-  display: block;
-  color: #1f2937;
-  font-family: lato, sans-serif;
-}
-
 .main-wrapper {
-  padding-bottom: 80px;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    font-family: 'Lato';
 }
 
 .main-heading {
-  margin: 0;
-  color: #1f2937;
-  font-size: 30px;
-  font-weight: 700;
-  line-height: 36px;
+    font-size: 28px;
+    font-weight: bold;
+    color: #1a202c;
+    margin-bottom: 20px;
 }
 
+/* Dropdown Styling */
 .dropdown-box {
-  padding: 16px;
-  background-color: #f4f7fa;
+    background-color: #f3f4f6;
+    padding: 16px;
+    margin-bottom: 30px;
 }
 
 .dropdown-label {
-  display: block;
-  margin: 0 0 4px;
-  color: #4b5563;
-  font-size: 14px;
-  font-weight: 600;
-  line-height: 20px;
+    display: block;
+    font-size: 14px;
+    color: #4a5568;
+    margin-bottom: 8px;
 }
 
 .select-wrapper {
-  position: relative;
-  display: block;
-  height: 36px;
-  padding: 0 16px;
-  border: 1px solid #d1d5db;
-  background-color: #fff;
-}
-
-.select-wrapper::after {
-  position: absolute;
-  top: 50%;
-  right: 16px;
-  width: 10px;
-  height: 6px;
-  background: center / contain no-repeat
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 6' fill='none'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%23374151' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
-  content: "";
-  pointer-events: none;
-  transform: translateY(-50%);
+    background-color: white;
+    border: 1px solid #cbd5e0;
+    width: 250px;
+    height: 40px;
 }
 
 .state-select {
-  display: block;
-  width: 100%;
-  height: 100%;
-  padding: 0 24px 0 0;
-  border: 0;
-  background: transparent;
-  color: #1f2937;
-  cursor: pointer;
-  font: inherit;
-  line-height: 24px;
-  outline: none;
-  -webkit-appearance: none;
-  appearance: none;
+    width: 100%;
+    height: 100%;
+    padding: 0 10px;
+    border: none;
+    outline: none;
+    background: transparent;
+    font-family: 'Lato';
 }
 
+/* Content Layout (Flexbox for side-by-side) */
 .content-section {
-  margin-top: 16px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 30px;
+    margin-bottom: 50px;
 }
 
-.catalog-link {
-  display: block;
-  max-width: 240px;
-  color: inherit;
-  text-decoration: none;
-}
-
+/* Fix Image Size */
 .image-box {
-  width: 100%;
-  border: 1px solid #f3f4f6;
+    width: 220px; /* Ye image ko chota aur fixed rakhega */
+    flex-shrink: 0;
 }
 
 .catalog-image {
-  display: block;
-  width: 100%;
-  height: auto;
+    width: 100%;
+    height: auto;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
+.catalog-image-button {
+    padding: 0;
+    border: 0;
+    background: transparent;
+    cursor: pointer;
+    font-family: 'Lato';
+}
+
+/* Text and Button Styling */
 .text-box {
-  margin-top: 24px;
+    flex: 1;
+    min-width: 300px;
 }
 
 .state-title {
-  margin: 0;
-  color: #007cba;
-  font-size: 20px;
-  font-weight: 700;
-  line-height: 28px;
+    font-size: 22px;
+    font-weight: bold;
+    color: #0076a8; /* Same blue color as image */
+    margin-bottom: 12px;
 }
 
 .state-desc {
-  margin: 12px 0 0;
-  color: #1f2937;
-  font-size: 16px;
-  line-height: 24px;
+    font-size: 15px;
+    color: #4a5568;
+    line-height: 1.5;
+    margin-bottom: 12px;
 }
 
 .button-wrapper {
-  margin-top: 40px;
+    margin-top: 25px;
 }
 
+/* Fix Button UI */
 .download-btn {
-  display: inline-block;
-  padding: 10px 24px;
-  border: 2px solid #007cba;
-  border-radius: 9999px;
-  background-color: #007cba;
-  color: #fff;
-  font-size: 16px;
-  font-weight: 600;
-  line-height: 24px;
-  text-align: center;
-  text-decoration: none;
-  white-space: nowrap;
-  transition:
-    background-color 0.15s ease,
-    border-color 0.15s ease;
+    display: inline-block;
+    background-color: #2b629c; /* Exact button color */
+    color: #ffffff;
+    font-weight: 600;
+    padding: 10px 24px;
+    border-radius: 50px; /* Rounded pill shape */
+    text-decoration: none;
+    border: 2px solid #2b629c;
+    transition: all 0.2s ease;
+    font-family: 'Lato';
 }
 
-.download-btn:hover,
-.download-btn:focus {
-  border-color: #0369a1;
-  background-color: #0369a1;
-  color: #fff;
+.download-btn:hover {
+    background-color: #1f4873;
+    border-color: #1f4873;
+    color: white;
 }
 
-.download-btn:focus-visible {
-  outline: 1px solid #fff;
-  box-shadow: 0 0 0 1px #007cba;
-}
-
+/* Instructions Styling */
 .instructions-section {
-  margin-top: 64px;
+    margin-top: 40px;
+    border-top: 1px solid #e2e8f0;
+    padding-top: 30px;
 }
 
 .inst-heading {
-  margin: 0;
-  color: #1f2937;
-  font-size: 18px;
-  font-weight: 700;
-  line-height: 28px;
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 20px;
 }
 
 .inst-step {
-  margin-top: 24px;
+    margin-bottom: 20px;
 }
 
-.inst-step:first-of-type {
-  margin-top: 8px;
-}
-
-.inst-step-title {
-  color: #1f2937;
-  font-size: 16px;
-  font-weight: 700;
-  line-height: 24px;
+.inst-step strong {
+    display: block;
+    margin-bottom: 5px;
+    color: #2d3748;
 }
 
 .inst-step p {
-  margin: 0;
-  color: #1f2937;
-  font-size: 16px;
-  line-height: 24px;
+    color: #4a5568;
+    line-height: 1.5;
+    margin: 0;
 }
 
-@media (min-width: 768px) {
-  .main-heading {
-    font-size: 36px;
-    line-height: 64px;
-  }
+/* ── Tablet (≤900px) ─────────────────────────────────────────── */
+@media (max-width: 900px) {
+    .main-wrapper {
+        padding: 16px;
+    }
 
-  .select-wrapper {
-    display: inline-block;
-    width: 240px;
-  }
+    .main-heading {
+        font-size: 24px;
+    }
 
-  .content-section {
-    display: flex;
-    align-items: flex-start;
-  }
+    .select-wrapper {
+        width: 100%;
+        max-width: 320px;
+    }
 
-  .catalog-link {
-    flex: 0 0 240px;
-  }
+    .image-box {
+        width: 180px;
+    }
 
-  .text-box {
-    flex: 1 1 auto;
-    margin-top: 0;
-    padding-left: 32px;
-  }
+    .text-box {
+        min-width: 240px;
+    }
+}
 
-  .inst-heading {
-    font-size: 20px;
-    line-height: 48px;
-  }
+/* ── Mobile (≤640px) ─────────────────────────────────────────── */
+@media (max-width: 640px) {
+    .main-wrapper {
+        padding: 14px 12px;
+    }
+
+    .main-heading {
+        font-size: 20px;
+        margin-bottom: 14px;
+    }
+
+    .dropdown-box {
+        padding: 12px;
+        margin-bottom: 20px;
+    }
+
+    .select-wrapper {
+        width: 100%;
+        max-width: 100%;
+    }
+
+    .content-section {
+        flex-direction: column;
+        gap: 16px;
+        margin-bottom: 32px;
+    }
+
+    .image-box {
+        width: 100%;
+        max-width: 260px;
+        margin: 0 auto;
+    }
+
+    .text-box {
+        min-width: 0;
+        width: 100%;
+    }
+
+    .state-title {
+        font-size: 18px;
+    }
+
+    .state-desc {
+        font-size: 14px;
+    }
+
+    .button-wrapper {
+        margin-top: 16px;
+    }
+
+    .download-btn {
+        display: block;
+        width: 100%;
+        text-align: center;
+        padding: 12px 20px;
+    }
+
+    .inst-heading {
+        font-size: 18px;
+    }
+}
+
+/* ── Small mobile (≤400px) ───────────────────────────────────── */
+@media (max-width: 400px) {
+    .main-wrapper {
+        padding: 12px 10px;
+    }
+
+    .main-heading {
+        font-size: 18px;
+    }
 }

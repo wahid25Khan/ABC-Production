@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<OrderManagementSettings xmlns="http://soap.sforce.com/2006/04/metadata">
+    <deliveryEstimationEnabled>false</deliveryEstimationEnabled>
+    <enableActivityFeedPerChangeOrder>false</enableActivityFeedPerChangeOrder>
+    <enableB2CIntegration>false</enableB2CIntegration>
+    <enableBillingTypeOrdSummCreation>true</enableBillingTypeOrdSummCreation>
+    <enableDuplicateManagement>false</enableDuplicateManagement>
+    <enableHighScaleOrders>false</enableHighScaleOrders>
+    <enableMRURecordCaching>false</enableMRURecordCaching>
+    <enableOMAutomation>false</enableOMAutomation>
+    <enableOrderManagement>true</enableOrderManagement>
+    <enablePersonAccountsForShoppers>false</enablePersonAccountsForShoppers>
+    <initOMAutomation>false</initOMAutomation>
+</OrderManagementSettings>

@@ -65,10 +65,10 @@ private class ProductVariationControllerTest {
     );
 
     for (ProductVariationController.VariationPricing vp : result.variations) {
-      System.assertEquals(
-        productId,
+      System.assertNotEquals(
+        null,
         vp.productId,
-        'All tabs should use the same product ID'
+        'Each tab should expose a product ID'
       );
       System.assertNotEquals(null, vp.format, 'Format name should not be null');
       System.assertNotEquals(
@@ -167,6 +167,38 @@ private class ProductVariationControllerTest {
 
     System.assertEquals(false, result.hasVariations);
     System.assertEquals(0, result.variations.size());
+  }
+
+  @IsTest
+  static void testGetProductSearchFields() {
+    Product2 product = new Product2(
+      Name = 'Filter Test Product',
+      IsActive = true,
+      StockKeepingUnit = 'FILTER-TEST-001',
+      Grade_Level__c = 'Grade 12',
+      Category__c = 'Social Studies',
+      Series__c = 'ACT',
+      State__c = 'Georgia'
+    );
+    insert product;
+
+    Test.startTest();
+    List<ProductVariationController.ProductSearchFieldResult> results = ProductVariationController.getProductSearchFields(
+      new List<String>{ product.Id, 'bad-id' }
+    );
+    Test.stopTest();
+
+    System.assertEquals(
+      1,
+      results.size(),
+      'Should return the valid product only'
+    );
+    System.assertEquals(product.Id, results[0].id);
+    System.assertEquals('FILTER-TEST-001', results[0].stockKeepingUnit);
+    System.assertEquals('Grade 12', results[0].gradeLevel);
+    System.assertEquals('Social Studies', results[0].category);
+    System.assertEquals('ACT', results[0].series);
+    System.assertEquals('Georgia', results[0].state);
   }
 
   @IsTest

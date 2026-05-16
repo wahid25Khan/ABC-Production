@@ -3,7 +3,7 @@
     <!-- Desktop / Tablet -->
     <div class="abc-container">
       <a
-        href="/AmericanBookCompany/"
+        href={homePageUrl}
         class="abc-logo-link"
         aria-label="American Book Company home"
       >
@@ -145,7 +145,7 @@
               onkeydown={handleSearchKeyDown}
               aria-label="Search throughout the site."
             />
-            <span class="abc-search-icon" aria-hidden="true">
+            <span class="abc-search-icon" aria-hidden="true" onclick={doTheSearch}>
               <svg
                 viewBox="0 0 24 24"
                 class="abc-search-svg"

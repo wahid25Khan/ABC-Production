@@ -1697,7 +1697,8 @@
       "position" : "center center",
       "size" : "cover"
     },
-    "sfdc_cms:variants" : [ ]
+    "sfdc_cms:variants" : [ ],
+    "sfdc_cms:attachments" : [ ]
   },
   "urlName" : "orderconfirmationemail"
 }

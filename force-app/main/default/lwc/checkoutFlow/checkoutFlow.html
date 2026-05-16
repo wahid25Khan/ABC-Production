@@ -309,13 +309,6 @@
                                 </span>
                             </div>
 
-                            <div class="summary-place-order">
-                                <button type="button" class="btn-primary btn-place-order-summary"
-                                    onclick={handlePlaceOrder}
-                                    disabled={placeOrderDisabled}>
-                                    Place Order
-                                </button>
-                            </div>
                         </template>
                     </div>
 
@@ -409,15 +402,22 @@
         ════════════════════════════════════════════════════════════ -->
         <template if:true={showPaymentModal}>
             <div class="an-modal-backdrop" role="dialog" aria-modal="true" aria-label="Secure Payment">
-                <div class="an-modal-container">
+                <div class={paymentModalContainerClass}>
 
                     <!-- Modal header -->
                     <div class="an-modal-header">
                         <span class="an-modal-title">Secure Payment</span>
-                        <button type="button" class="an-modal-close" onclick={handleClosePaymentModal}
-                            aria-label="Close payment modal" title="Close">
-                            &#x2715;
-                        </button>
+                        <div class="an-modal-header-actions">
+                            <button type="button" class="an-modal-expand" onclick={handleTogglePaymentExpand}
+                                aria-label={paymentExpandLabel} title={paymentExpandLabel}>
+                                <template if:false={isPaymentExpanded}>&#x26F6;</template>
+                                <template if:true={isPaymentExpanded}>&#x2750;</template>
+                            </button>
+                            <button type="button" class="an-modal-close" onclick={handleClosePaymentModal}
+                                aria-label="Close payment modal" title="Close">
+                                &#x2715;
+                            </button>
+                        </div>
                     </div>
 
                     <!-- AN hosted form loads here -->
@@ -428,7 +428,7 @@
                             name="an-payment-iframe"
                             src="about:blank"
                             frameborder="0"
-                            scrolling="no"
+                            scrolling="auto"
                             allowpaymentrequest>
                         </iframe>
                     </div>
@@ -449,8 +449,8 @@
              ORDER SUCCESS SCREEN — shown after placeOrder succeeds
         ════════════════════════════════════════════════════════════ -->
         <template if:true={orderPlaced}>
-            <div class="order-success-overlay">
-                <div class="order-success-card">
+            <div class="order-success-overlay" onclick={handleOrderSuccessClose}>
+                <div class="order-success-card" onclick={stopPropagation}>
                     <div class="order-success-icon">&#10003;</div>
                     <h2 class="order-success-title">Order Placed Successfully!</h2>
                     <p class="order-success-msg">
@@ -467,9 +467,9 @@
                         <button type="button" class="btn-primary" onclick={handleViewOrder}>
                             View My Order
                         </button>
-                        <a href="/AmericanBookCompany/home" class="btn-secondary order-success-continue">
+                        <button type="button" class="btn-secondary order-success-continue" onclick={handleOrderSuccessClose}>
                             Continue Shopping
-                        </a>
+                        </button>
                     </div>
                 </div>
             </div>

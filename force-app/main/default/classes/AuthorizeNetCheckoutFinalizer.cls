@@ -16,46 +16,42 @@
  * (buyer's browser session) will complete the order instead.
  */
 public without sharing class AuthorizeNetCheckoutFinalizer implements Queueable, Database.AllowsCallouts {
-  private Id transactionRecordId;
 
-  public AuthorizeNetCheckoutFinalizer(Id transactionRecordId) {
-    this.transactionRecordId = transactionRecordId;
-  }
+    private Id transactionRecordId;
 
-  public void execute(QueueableContext context) {
-    // TODO: order creation is temporarily disabled while registerExternalPayment / placeOrder
-    // payloads are being debugged. This queueable will be re-enabled once the Commerce API
-    // integration is confirmed working. For now, just mark the transaction as processed.
-    List<AuthorizeNet_Transaction__c> txnList = [
-      SELECT Id, Processed__c
-      FROM AuthorizeNet_Transaction__c
-      WHERE Id = :transactionRecordId
-      LIMIT 1
-    ];
-    if (!txnList.isEmpty() && txnList[0].Processed__c != true) {
-      markProcessed(txnList[0].Id);
+    public AuthorizeNetCheckoutFinalizer(Id transactionRecordId) {
+        this.transactionRecordId = transactionRecordId;
     }
-  }
 
-  private static void markProcessed(Id txnId) {
-    try {
-      update new AuthorizeNet_Transaction__c(Id = txnId, Processed__c = true);
-    } catch (Exception ex) {
-      System.debug(
-        LoggingLevel.ERROR,
-        'AuthorizeNetCheckoutFinalizer: could not mark Processed__c: ' +
-        ex.getMessage()
-      );
+    public void execute(QueueableContext context) {
+        // TODO: order creation is temporarily disabled while registerExternalPayment / placeOrder
+        // payloads are being debugged. This queueable will be re-enabled once the Commerce API
+        // integration is confirmed working. For now, just mark the transaction as processed.
+        List<AuthorizeNet_Transaction__c> txnList = [
+            SELECT Id, Processed__c
+            FROM AuthorizeNet_Transaction__c
+            WHERE Id = :transactionRecordId
+            LIMIT 1
+        ];
+        if (!txnList.isEmpty() && txnList[0].Processed__c != true) {
+            markProcessed(txnList[0].Id);
+        }
     }
-  }
 
-  private static Id safeId(String value) {
-    if (String.isBlank(value))
-      return null;
-    try {
-      return (Id) value;
-    } catch (Exception ex) {
-      return null;
+    private static void markProcessed(Id txnId) {
+        try {
+            update new AuthorizeNet_Transaction__c(Id = txnId, Processed__c = true);
+        } catch (Exception ex) {
+            System.debug(LoggingLevel.ERROR, 'AuthorizeNetCheckoutFinalizer: could not mark Processed__c: ' + ex.getMessage());
+        }
     }
-  }
+
+    private static Id safeId(String value) {
+        if (String.isBlank(value)) return null;
+        try {
+            return (Id) value;
+        } catch (Exception ex) {
+            return null;
+        }
+    }
 }

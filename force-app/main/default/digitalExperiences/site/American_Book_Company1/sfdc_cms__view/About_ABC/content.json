@@ -91,7 +91,15 @@
                 "borderColor" : "",
                 "borderRadius" : "0px",
                 "borderWeight" : "0px",
-                "dxpStyle" : { },
+                "dxpStyle" : {
+                  "isVisible" : false,
+                  "margin" : {
+                    "bottom" : "",
+                    "left" : "20px",
+                    "right" : "20px",
+                    "top" : ""
+                  }
+                },
                 "enableOverflowMenu" : false,
                 "imageFit" : "cover",
                 "imagePosition" : "center center",
@@ -118,7 +126,14 @@
                     "borderColor" : "",
                     "borderRadius" : 0,
                     "borderWidth" : 0,
-                    "dxpStyle" : { },
+                    "dxpStyle" : {
+                      "margin" : {
+                        "bottom" : "",
+                        "left" : "",
+                        "right" : "",
+                        "top" : "30px"
+                      }
+                    },
                     "hideForFewerThan" : 1,
                     "iconBorderRadius" : 0,
                     "iconBorderWidth" : 0,
@@ -126,7 +141,7 @@
                     "indicatorType" : "none",
                     "layout" : "reel",
                     "primaryNavigation" : "arrows",
-                    "width" : 100
+                    "width" : 65
                   },
                   "children" : [ {
                     "children" : [ {
@@ -141,10 +156,18 @@
                         "buttonGroupSpacingHorizontal" : "space-evenly",
                         "buttonGroupSpacingVertical" : "space-evenly",
                         "buttonGroupWidth" : 75,
-                        "dxpStyle" : { },
+                        "dxp:dataProviders" : "",
+                        "dxpStyle" : {
+                          "margin" : {
+                            "bottom" : "",
+                            "left" : "",
+                            "right" : "",
+                            "top" : "25px"
+                          }
+                        },
                         "height" : 325,
                         "imageFit" : "contain",
-                        "imageHeight" : 60,
+                        "imageHeight" : 44,
                         "imageInfo" : "{\"imageInfoV1\":{\"url\":\"{!Item.body.contentBody.bannerImage.url}\",\"altText\":\"\",\"contentKey\":\"\",\"contentType\":null}}",
                         "imagePosition" : "center center",
                         "isLink" : false,
@@ -152,10 +175,10 @@
                         "showButtons" : false,
                         "showSecondaryButton" : false,
                         "singleButtonAlignment" : "center",
-                        "width" : 100
+                        "width" : 60
                       },
                       "children" : [ {
-                        "id" : "d3ad0178-e528-4796-8555-c3076376913a",
+                        "id" : "298a4737-926f-4387-ad0f-4f143e5e4fdf",
                         "name" : "topContentRegion",
                         "title" : "Content Region",
                         "type" : "region"
@@ -163,7 +186,14 @@
                         "children" : [ {
                           "attributes" : {
                             "backgroundColor" : "",
-                            "dxpStyle" : { },
+                            "dxpStyle" : {
+                              "margin" : {
+                                "bottom" : "",
+                                "left" : "",
+                                "right" : "",
+                                "top" : "10px"
+                              }
+                            },
                             "isLinkable" : false,
                             "linkAssistiveText" : "",
                             "paddingHorizontal" : "none",
@@ -171,30 +201,37 @@
                             "text" : "{!Item.name}",
                             "textAlign" : "center",
                             "textDecoration" : "{\"bold\":true}",
-                            "textDisplayInfo" : "{\"textStyle\":\"heading-medium\",\"headingTag\":\"h3\",\"enableOverride\":false}"
+                            "textDisplayInfo" : "{\"textStyle\":\"heading-xsmall\",\"headingTag\":\"h5\",\"enableOverride\":false}"
                           },
                           "definition" : "dxp_base:textBlock",
-                          "id" : "c83c9e07-e3ff-42e4-b9b9-363465facda8",
+                          "id" : "aee2db32-879f-4cb4-a4a3-db7770cd0822",
                           "type" : "component"
                         }, {
                           "attributes" : {
                             "backgroundColor" : "",
-                            "dxpStyle" : { },
+                            "dxpStyle" : {
+                              "margin" : {
+                                "bottom" : "",
+                                "left" : "0px",
+                                "right" : "",
+                                "top" : "10px"
+                              }
+                            },
                             "isLinkable" : false,
                             "linkAssistiveText" : "",
                             "paddingHorizontal" : "none",
                             "paddingVertical" : "none",
                             "text" : "{!Item.body.contentBody.excerpt}",
                             "textAlign" : "center",
-                            "textColor" : "rgb(234, 59, 16)",
+                            "textColor" : "rgb(222, 53, 17)",
                             "textDecoration" : "{}",
                             "textDisplayInfo" : "{\"textStyle\":\"heading-small\",\"headingTag\":\"h4\",\"enableOverride\":false}"
                           },
                           "definition" : "dxp_base:textBlock",
-                          "id" : "3c7f6f6b-a6bf-42aa-92e2-6a16c224dd54",
+                          "id" : "a143d6b5-ab66-49ca-8dc7-e24ce63d58c9",
                           "type" : "component"
                         } ],
-                        "id" : "03e7408a-0cde-4554-8942-f1cfd8852d72",
+                        "id" : "99f235d6-e78b-41d0-bbf5-8be41169dd8e",
                         "name" : "contentRegion",
                         "title" : "Content Region",
                         "type" : "region"
@@ -209,10 +246,10 @@
                             "type" : "primary"
                           },
                           "definition" : "dxp_base:button",
-                          "id" : "73dd9045-ad72-4412-85a4-f5b1cc0efb07",
+                          "id" : "e33c27d9-052e-4fd8-b3df-54c74b36e068",
                           "type" : "component"
                         } ],
-                        "id" : "882df335-ffa2-4aed-ba04-1f1aa98e9bb0",
+                        "id" : "1bf8a291-0870-4165-a256-8f7af76258d1",
                         "name" : "tilePrimaryButton",
                         "title" : "Primary Button Region",
                         "type" : "region"
@@ -227,10 +264,10 @@
                             "type" : "secondary"
                           },
                           "definition" : "dxp_base:button",
-                          "id" : "3052c4d7-5e21-48cd-a08d-b454b90e0789",
+                          "id" : "5bcf8c01-4db0-4fe8-8ddf-76451e25b452",
                           "type" : "component"
                         } ],
-                        "id" : "840af174-7063-473e-beb8-1e53e13551cd",
+                        "id" : "a1ff44f2-1680-4576-ae05-cb3bab69324b",
                         "name" : "tileSecondaryButton",
                         "title" : "Secondary Button Region",
                         "type" : "region"
@@ -240,24 +277,24 @@
                             "dxpStyle" : { }
                           },
                           "definition" : "dxp_page_layout:placeHolder",
-                          "id" : "28675d22-4010-4af6-aecb-4f289963f258",
+                          "id" : "67f06a37-0167-4d06-a6a0-f4766b1d1149",
                           "type" : "component"
                         } ],
-                        "id" : "3b9b3a68-e602-4b6d-91c1-3920735be954",
+                        "id" : "6f6695e0-da1e-45ea-8594-90d567fc2f96",
                         "name" : "placeholder",
                         "title" : "placeholder",
                         "type" : "region"
                       } ],
                       "definition" : "dxp_content_layout:tile2",
-                      "id" : "05796bb0-2459-4cd9-b5d2-9e1b384ffb16",
+                      "id" : "bce63bbd-a4ff-4135-aa95-74d78dd97cfd",
                       "type" : "component"
                     } ],
-                    "id" : "851b66c2-1da0-46c5-a7b4-4f5cd5986ea5",
+                    "id" : "3ef2e587-d1dd-4010-82e2-91871d95e27a",
                     "name" : "sfdcRepeaterItem",
                     "title" : "sfdcRepeaterItem",
                     "type" : "region"
                   }, {
-                    "id" : "add3ecf5-aad9-4fe6-aefd-a4f329f0c370",
+                    "id" : "2e697ca1-6867-42cc-990d-1bb906326e2f",
                     "name" : "carouselHeader",
                     "title" : "carouselHeader",
                     "type" : "region"
@@ -267,16 +304,16 @@
                         "dxpStyle" : { }
                       },
                       "definition" : "dxp_page_layout:placeHolder",
-                      "id" : "ecb1145d-17a0-4a6e-8601-3b3ba59469b4",
+                      "id" : "dd2fc86d-8bc4-4b23-8853-598e1b040e23",
                       "type" : "component"
                     } ],
-                    "id" : "04f085c5-abc3-4564-9cd5-ad3552009a31",
+                    "id" : "b1ff045b-5329-4ccc-abd5-a0db2ccb57e4",
                     "name" : "placeholder",
                     "title" : "placeholder",
                     "type" : "region"
                   } ],
                   "definition" : "experience:carouselV2",
-                  "id" : "e93ab698-4ba1-4025-b6f8-7d8d041f1514",
+                  "id" : "cbb9edf7-0b04-4d82-8370-a90c3a5ea9b1",
                   "type" : "component",
                   "dataProviders" : [ {
                     "definition" : "sfdc_cms__cmsCollectionDataProvider",
@@ -294,24 +331,25 @@
               }, {
                 "children" : [ {
                   "attributes" : {
-                    "alignment" : "center",
                     "dxpStyle" : {
                       "margin" : {
-                        "bottom" : "0px",
-                        "left" : "0px",
-                        "right" : "0px",
-                        "top" : "20px"
+                        "bottom" : "",
+                        "left" : "",
+                        "right" : "",
+                        "top" : ""
+                      },
+                      "padding" : {
+                        "bottom" : "",
+                        "left" : "",
+                        "right" : "",
+                        "top" : ""
                       }
                     },
-                    "fit" : "contain",
-                    "height" : 350,
-                    "imageInfo" : "{\"imageInfoV1\":{\"url\":\"\",\"altText\":\"\",\"contentKey\":\"MCPJXSQJGQYZBYTOFWZR3PDFJN6M\",\"contentType\":null}}",
-                    "overlayColor" : "",
-                    "position" : "center center",
-                    "width" : 80
+                    "imageInfos" : "",
+                    "richTextValue" : "<div style=\"width:100%; background:#f3f5f7; box-sizing:border-box; padding:50px 40px; text-align:center; font-size:0;\">\n  <div style=\"display:inline-block; width:100%; max-width:540px; vertical-align:middle; text-align:left; box-sizing:border-box; padding:0 30px 20px 0;\">\n    <h2 style=\"margin:0 0 28px 0; color:#0d2f5f; font-family:Lato, Arial, sans-serif; font-size:30px; line-height:1.2; font-weight:700;\">\n      Diversity &amp; Culture\n    </h2>\n\n    <p style=\"margin:0 0 28px 0; color:#0d2f5f; font-family:Lato, Arial, sans-serif; font-size:16px; line-height:1.75; font-weight:400;\">\n      At American Book Company, we believe our people are the secret to creating great classroom solutions. We embrace the diversity of our team and make inclusion part of our core values. We celebrate the unique perspectives and skills each team member brings to work every day. A diverse team makes our solutions—the books and digital programs used in classrooms throughout the country—more accessible and engaging for all.\n    </p>\n\n    <p style=\"margin:0; color:#0d2f5f; font-family:Lato, Arial, sans-serif; font-size:16px; line-height:1.75; font-weight:400;\">\n      American Book Company provides equal opportunities to all employees and applicants for employment without regard to race, religion, color, age, sex, national origin, sexual orientation, gender identity, genetic disposition, neurodiversity, disability, veteran status or any other protected category under federal, state and local law.\n    </p>\n  </div>\n\n  <div style=\"display:inline-block; width:100%; max-width:720px; vertical-align:middle; text-align:center; box-sizing:border-box;\">\n    <img src=\"/sfsites/c/resource/DIversity\" style=\"display:block; width:100%; max-width:720px; height:auto; margin:0 auto; border:0;\">\n  </div>\n</div>"
                   },
-                  "definition" : "dxp_base:image",
-                  "id" : "e845cf69-065b-42ae-8a2c-a5175126b75a",
+                  "definition" : "community_builder:htmlEditor",
+                  "id" : "1780145b-21d9-4288-b8c3-4854a34a4ce1",
                   "type" : "component"
                 } ],
                 "id" : "21e32fc2-aa5d-4922-950f-a1d0c1d62248",
@@ -540,10 +578,18 @@
                       "attributes" : {
                         "alignment" : "center",
                         "aspectRatio" : "16:9",
-                        "dxpStyle" : { },
+                        "dxpStyle" : {
+                          "margin" : {
+                            "bottom" : "",
+                            "left" : "10px",
+                            "right" : "",
+                            "top" : ""
+                          }
+                        },
                         "size" : 100,
                         "videoUrl" : "https://www.youtube.com/embed/uI-hK4ZfR7I?start=10"
                       },
+                      "customCssClasses" : "card-style",
                       "definition" : "dxp_base:video",
                       "id" : "245c1aab-57b3-4723-8c0b-d64e4ed37c40",
                       "type" : "component"
@@ -557,10 +603,18 @@
                       "attributes" : {
                         "alignment" : "center",
                         "aspectRatio" : "16:9",
-                        "dxpStyle" : { },
+                        "dxpStyle" : {
+                          "margin" : {
+                            "bottom" : "",
+                            "left" : "10px",
+                            "right" : "",
+                            "top" : ""
+                          }
+                        },
                         "size" : 100,
                         "videoUrl" : "https://www.veed.io/embed/bae6cd3f-19fd-4b02-ad5d-bb5d0f3429eb"
                       },
+                      "customCssClasses" : "card-style",
                       "definition" : "dxp_base:video",
                       "id" : "1889b53d-c272-487b-817d-b173587b92d7",
                       "type" : "component"
@@ -574,10 +628,18 @@
                       "attributes" : {
                         "alignment" : "center",
                         "aspectRatio" : "16:9",
-                        "dxpStyle" : { },
+                        "dxpStyle" : {
+                          "margin" : {
+                            "bottom" : "",
+                            "left" : "10px",
+                            "right" : "",
+                            "top" : ""
+                          }
+                        },
                         "size" : 100,
                         "videoUrl" : "https://www.youtube.com/embed/01vDDRVvVes?start=6"
                       },
+                      "customCssClasses" : "card-style",
                       "definition" : "dxp_base:video",
                       "id" : "4a3a32b0-a4d7-49fb-aeda-b7fc3d0d0471",
                       "type" : "component"
@@ -620,10 +682,18 @@
                       "attributes" : {
                         "alignment" : "center",
                         "aspectRatio" : "16:9",
-                        "dxpStyle" : { },
+                        "dxpStyle" : {
+                          "margin" : {
+                            "bottom" : "",
+                            "left" : "10px",
+                            "right" : "",
+                            "top" : ""
+                          }
+                        },
                         "size" : 100,
                         "videoUrl" : "https://www.youtube.com/embed/7qTvStRVl2Q?start=8"
                       },
+                      "customCssClasses" : "card-style",
                       "definition" : "dxp_base:video",
                       "id" : "5d866e32-b2c5-4898-8777-330b6ce1e444",
                       "type" : "component"
@@ -637,10 +707,18 @@
                       "attributes" : {
                         "alignment" : "center",
                         "aspectRatio" : "16:9",
-                        "dxpStyle" : { },
+                        "dxpStyle" : {
+                          "margin" : {
+                            "bottom" : "",
+                            "left" : "10px",
+                            "right" : "",
+                            "top" : ""
+                          }
+                        },
                         "size" : 100,
                         "videoUrl" : "https://www.youtube.com/embed/2DWvE-K1vhE"
                       },
+                      "customCssClasses" : "card-style",
                       "definition" : "dxp_base:video",
                       "id" : "69a5b4f4-ae7a-44fc-9319-e598ea5b0d74",
                       "type" : "component"
@@ -654,10 +732,18 @@
                       "attributes" : {
                         "alignment" : "center",
                         "aspectRatio" : "16:9",
-                        "dxpStyle" : { },
+                        "dxpStyle" : {
+                          "margin" : {
+                            "bottom" : "",
+                            "left" : "10px",
+                            "right" : "",
+                            "top" : ""
+                          }
+                        },
                         "size" : 100,
                         "videoUrl" : "https://www.youtube.com/embed/HLsScIqBwhQ"
                       },
+                      "customCssClasses" : "card-style",
                       "definition" : "dxp_base:video",
                       "id" : "7cf6549a-d369-4eb7-b168-a61fbf53950f",
                       "type" : "component"
@@ -710,7 +796,9 @@
                 "columnGutterWidth" : "",
                 "columnMinHeight" : "",
                 "columnVerticalAlign" : "flex-start",
-                "dxpStyle" : { },
+                "dxpStyle" : {
+                  "isVisible" : false
+                },
                 "layoutDirectionDesktop" : "row",
                 "layoutDirectionMobile" : "column",
                 "layoutDirectionTablet" : "column",

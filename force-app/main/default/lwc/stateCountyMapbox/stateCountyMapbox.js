@@ -185,10 +185,7 @@ export default class StateCountyMapbox extends LightningElement {
         "abcstatechange",
         this._boundStateEventHandler
       );
-      globalThis.removeEventListener(
-        "statechange",
-        this._boundStateEventHandler
-      );
+      globalThis.removeEventListener("statechange", this._boundStateEventHandler);
     }
     if (this._boundKeyDownHandler) {
       globalThis.removeEventListener("keydown", this._boundKeyDownHandler);

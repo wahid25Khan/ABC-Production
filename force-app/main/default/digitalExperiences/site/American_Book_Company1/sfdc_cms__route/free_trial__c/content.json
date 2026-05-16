@@ -1,0 +1,12 @@
+{
+  "type" : "sfdc_cms__route",
+  "title" : "Free-Trial",
+  "contentBody" : {
+    "activeViewId" : "Free_Trial",
+    "configurationTags" : [ ],
+    "pageAccess" : "UseParent",
+    "routeType" : "custom-free-trial",
+    "urlPrefix" : "free-trial"
+  },
+  "urlName" : "free-trial"
+}

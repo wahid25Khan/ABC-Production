@@ -3,8 +3,7 @@ import getVariationPricing from "@salesforce/apex/ProductVariationController.get
 import SCORE_GUARANTEE from "@salesforce/resourceUrl/ScoreGuarantee";
 import {
   STATE_CHANGE_EVENT_NAMES,
-  readStateFromStorage,
-  decodeUrlValue,
+  resolveSelectedStateFromLocation,
   ALL_STATES,
   normalizeProduct as sharedNormalizeProduct,
   extractProductList as sharedExtractProductList,
@@ -24,8 +23,6 @@ import {
 const SHOP_ALL_URL =
   "https://americanbookcompany.my.site.com/AmericanBookCompany/global-search/all";
 const DEFAULT_STATE = "Georgia";
-const REFINEMENT_PARAM = "refinement";
-const REFINEMENTS_PARAM = "refinements";
 const SEARCH_PRODUCT_FIELDS = ["StockKeepingUnit"];
 export default class FeaturedStateBooks extends LightningElement {
   @api storeName = DEFAULT_STORE_NAME;
@@ -149,7 +146,9 @@ export default class FeaturedStateBooks extends LightningElement {
   get modalMinimumQuantity() {
     const rule = this.modalProduct?.purchaseQuantityRule;
     const ruleMin = rule?.minimum ?? rule?.Minimum ?? null;
-    if (Number.isFinite(ruleMin) && ruleMin > 0) return ruleMin;
+    if (Number.isFinite(ruleMin) && ruleMin > 0) {
+      return ruleMin;
+    }
     return 10;
   }
 
@@ -225,100 +224,10 @@ export default class FeaturedStateBooks extends LightningElement {
   // ─── State resolution ─────────────────────────────────────────────────────
 
   resolveSelectedState() {
-    return (
-      this.getStoredState() ||
-      this.getStateFromParams() ||
-      this.getStateFromHash() ||
-      this.getStateFromPath() ||
-      this.normalizedFallbackState
-    );
-  }
-
-  getStoredState() {
-    const fromStorage = readStateFromStorage();
-    return ALL_STATES.includes(fromStorage) ? fromStorage : "";
-  }
-
-  getStateFromHash() {
-    const hashValue = String(globalThis.location?.hash || "")
-      .replace(/^#/, "")
-      .trim();
-    if (!hashValue) {
-      return "";
-    }
-
-    const decodedHash = decodeUrlValue(hashValue);
-    return ALL_STATES.includes(decodedHash) ? decodedHash : "";
-  }
-
-  getStateFromParams() {
-    try {
-      const url = new URL(globalThis.location.href);
-      const refinementsRaw = url.searchParams.get(REFINEMENTS_PARAM);
-      if (refinementsRaw) {
-        const result = this.getStateFromRefinementsList(refinementsRaw);
-        if (result) {
-          return result;
-        }
-      }
-
-      const refinement = url.searchParams.get(REFINEMENT_PARAM);
-      if (refinement) {
-        const decodedRefinement = decodeUrlValue(refinement);
-        const prefix = `${this.refinementKey}:`;
-        if (decodedRefinement.startsWith(prefix)) {
-          const stateValue = decodedRefinement.slice(prefix.length).trim();
-          return ALL_STATES.includes(stateValue) ? stateValue : "";
-        }
-      }
-    } catch {
-      return "";
-    }
-
-    return "";
-  }
-
-  getStateFromRefinementsList(refinementsRaw) {
-    try {
-      const refinementList = JSON.parse(decodeUrlValue(refinementsRaw));
-      const stateEntry = Array.isArray(refinementList)
-        ? refinementList.find((entry) => entry?.nameOrId === this.refinementKey)
-        : null;
-
-      if (
-        stateEntry &&
-        Array.isArray(stateEntry.values) &&
-        stateEntry.values.length
-      ) {
-        const selectedState = String(stateEntry.values[0] || "").trim();
-        return ALL_STATES.includes(selectedState) ? selectedState : "";
-      }
-    } catch {
-      return "";
-    }
-
-    return "";
-  }
-
-  getStateFromPath() {
-    if (globalThis.window === undefined || !globalThis.location?.pathname) {
-      return "";
-    }
-
-    const path = globalThis.location.pathname;
-    const marker = "/global-search/";
-    const markerIndex = path.indexOf(marker);
-    if (markerIndex === -1) return "";
-
-    const afterMarker = path.slice(markerIndex + marker.length);
-    const firstSegment = afterMarker.split("/")[0] || "";
-    if (!firstSegment || firstSegment.toLowerCase() === "all") return "";
-
-    try {
-      return decodeURIComponent(firstSegment).trim();
-    } catch {
-      return firstSegment.trim();
-    }
+    return resolveSelectedStateFromLocation({
+      defaultState: this.normalizedFallbackState,
+      refinementKey: this.refinementKey
+    });
   }
 
   // ─── API fetch ────────────────────────────────────────────────────────────
@@ -548,7 +457,11 @@ export default class FeaturedStateBooks extends LightningElement {
   }
 
   handleLookInside() {
-    globalThis.window.open("https://coursewave.com/login", "_blank", "noopener");
+    globalThis.window.open(
+      "https://coursewave.com/login",
+      "_blank",
+      "noopener"
+    );
   }
 
   handleTrial() {

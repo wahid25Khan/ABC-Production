@@ -2,25 +2,25 @@
   <div class="container">
     <header class="header-section">
       <div class="header-left">
-        <img src={cert0} alt="ABC Certification Badge" class="badge-icon" />
+        <img src={certificationSeal} alt="ABC Certification Badge" class="badge-icon" />
         <h1 class="main-heading">ABC Certifications</h1>
       </div>
     </header>
 
     <section class="section-wrapper">
-      <div class="accessibility-row">
-        <div class="accessibility-title">
+      <div class="content-col">
+        <div class="content-title">
           <h2 class="sub-heading">Accessibility</h2>
         </div>
 
-        <div class="accessibility-docs">
+        <div class="content-docs grid-container">
           <a
             href={links.vpat}
             target="_blank"
-            class="grid-item accessibility-card"
+            class="grid-item"
           >
             <img
-              src={cert1}
+              src={vpatCertification}
               alt="Accessibility Conformance Report"
               class="doc-thumbnail"
             />
@@ -33,60 +33,89 @@
     <div class="divider"></div>
 
     <section class="section-wrapper">
-      <h2 class="sub-heading">Whitepapers</h2>
-      <div class="grid-container">
-        <a href={links.validationStudyPdf} target="_blank" class="grid-item">
-          <img
-            src={cert2}
-            alt="ABC Test Prep Programs Validation Study"
-            class="doc-thumbnail"
-          />
-          <span class="file-label"
-            >ABC Test Prep Programs Validation Study</span
-          >
-        </a>
+      <div class="content-col">
+        <div class="content-title">
+          <h2 class="sub-heading">Whitepapers</h2>
+        </div>
+        <div class="content-docs grid-container">
+          <a href={links.validationStudyPdf} target="_blank" class="grid-item">
+            <img
+              src={validationCertificate}
+              alt="ABC Test Prep Programs Validation Study"
+              class="doc-thumbnail"
+            />
+            <span class="file-label"
+              >ABC Test Prep Programs Validation Study</span
+            >
+          </a>
 
-        <a href={links.validationStudyDoc} target="_blank" class="grid-item">
-          <img
-            src={cert3}
-            alt="ABC Test Prep Programs Validation Study"
-            class="doc-thumbnail"
-          />
-          <span class="file-label"
-            >ABC Test Prep Programs Validation Study</span
-          >
-        </a>
+          <!-- <a href={links.validationStudyDoc} target="_blank" class="grid-item">
+            <img
+              src={cert3}
+              alt="Security Assessment Public Report"
+              class="doc-thumbnail"
+            />
+            <span class="file-label"
+              >Security Assessment Public Report</span
+            >
+          </a> -->
 
-        <a href={links.instructureReport} target="_blank" class="grid-item">
-          <img src={cert4} alt="ESSA Level IV Study" class="doc-thumbnail" />
-          <span class="file-label">ESSA Level IV Study</span>
-        </a>
+          <a href={links.instructureReport} target="_blank" class="grid-item">
+            <img src={instructureCertificate} alt=" ESSA Level IV Study" class="doc-thumbnail" />
+            <span class="file-label">ESSA Level IV Study</span>
+          </a>
+        </div>
       </div>
     </section>
 
     <div class="divider"></div>
 
     <section class="section-wrapper">
-      <h2 class="sub-heading">CyberGlobal</h2>
-      <div class="grid-container">
-        <a href={links.certSecurity} target="_blank" class="grid-item">
-          <img
-            src={cert5}
-            alt="Certificate of Security"
-            class="doc-thumbnail"
-          />
-          <span class="file-label">Certificate of Security</span>
-        </a>
+      <div class="content-col">
+        <div class="content-title">
+          <h2 class="sub-heading">CyberSecurity</h2>
+        </div>
+        <div class="content-docs grid-container">
+          <a href={links.certSecurity} target="_blank" class="grid-item">
+            <img
+              src={securityCertificate}
+              alt="Certificate of Security"
+              class="doc-thumbnail"
+            />
+            <span class="file-label">Certificate of Security</span>
+          </a>
 
-        <a href={links.securityAssessment} target="_blank" class="grid-item">
-          <img
-            src={cert2}
-            alt="Security Assessment Public Report"
-            class="doc-thumbnail"
-          />
-          <span class="file-label">Security Assessment Public Report</span>
-        </a>
+          <a href={links.securityAssessment} target="_blank" class="grid-item">
+            <img
+              src={assessmentCertificate}
+              alt="Security Assessment Public Report"
+              class="doc-thumbnail"
+            />
+            <span class="file-label">Security Assessment Public Report</span>
+          </a>
+        </div>
       </div>
     </section>
+
+    <div class="help-ordering-section">
+      <h2 class="help-ordering-title">
+        Need Help Ordering?
+      </h2>
+
+      <p class="help-ordering-description">
+        Visit our
+        <a
+          class="help-ordering-link"
+          href="https://americanbookcompany.my.site.com/AmericanBookCompany/how-to-order"
+        >
+          How to Order
+        </a>
+        page or contact our Customer Service team at
+        <a class="help-ordering-phone" href="tel:18882465877">
+          1-888-246-5877
+        </a>
+      </p>
+    </div>
   </div>
+
 </template>

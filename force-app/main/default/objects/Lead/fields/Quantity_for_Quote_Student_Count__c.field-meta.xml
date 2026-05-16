@@ -3,9 +3,10 @@
     <fullName>Quantity_for_Quote_Student_Count__c</fullName>
     <externalId>false</externalId>
     <label>Quantity for Quote (Student Count)</label>
-    <length>255</length>
+    <precision>18</precision>
     <required>false</required>
+    <scale>0</scale>
     <trackFeedHistory>false</trackFeedHistory>
-    <type>Text</type>
+    <type>Number</type>
     <unique>false</unique>
 </CustomField>

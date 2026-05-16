@@ -211,6 +211,10 @@ export default class CustomHeader extends LightningElement {
     globalThis.clearTimeout(this._cleanupTimerId);
   }
 
+  get homePageUrl() {
+    return `${BASE}/#${encodeURIComponent(this.selectedState || DEFAULT_STATE)}`;
+  }
+
   get navLinks() {
     const stateAbbrev = (
       STATE_ABBREVIATIONS[this.selectedState] || "GA"
@@ -608,12 +612,25 @@ export default class CustomHeader extends LightningElement {
 
   handleSearchKeyDown(event) {
     if (event.key !== "Enter") return;
+
+    this.doTheSearch() && event.preventDefault();
+    // const term = (this.searchTerm || "").trim();
+    // if (!term) return;
+    // event.preventDefault();
+    // globalThis.location.assign(
+    //   `${RESULTS_ALL}?term=${encodeURIComponent(term)}`
+    // );
+  }
+
+  doTheSearch() {
     const term = (this.searchTerm || "").trim();
-    if (!term) return;
-    event.preventDefault();
+    if (!term) return false;
+    
     globalThis.location.assign(
       `${RESULTS_ALL}?term=${encodeURIComponent(term)}`
     );
+
+    return true;
   }
 
   _closeDropdowns(event) {

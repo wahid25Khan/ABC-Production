@@ -11,10 +11,10 @@
             "componentSpacerSize" : "",
             "dxpStyle" : {
               "padding" : {
-                "bottom" : "100px",
-                "left" : "80px",
-                "right" : "80px",
-                "top" : "40px"
+                "bottom" : "",
+                "left" : "",
+                "right" : "",
+                "top" : ""
               }
             },
             "layoutDirectionDesktop" : "row",
@@ -36,7 +36,7 @@
                 "layoutDirectionDesktop" : "row",
                 "layoutDirectionMobile" : "column",
                 "layoutDirectionTablet" : "column",
-                "sectionConfig" : "{\"UUID\":\"8354ea3b-59d3-4dd5-88c4-192ff8caa19f\",\"columns\":[{\"UUID\":\"558738da-1d8c-4c59-b61b-411772e3bcfb\",\"columnName\":\"Column 1\",\"columnKey\":\"col1\",\"columnWidth\":\"8\",\"seedComponents\":[]},{\"UUID\":\"6d7ecf51-4e6a-4967-acbc-f9680174446e\",\"columnName\":\"Column 2\",\"columnKey\":\"col2\",\"columnWidth\":\"4\",\"seedComponents\":[]}]}"
+                "sectionConfig" : "{\"UUID\":\"8354ea3b-59d3-4dd5-88c4-192ff8caa19f\",\"columns\":[{\"UUID\":\"558738da-1d8c-4c59-b61b-411772e3bcfb\",\"columnName\":\"Column 1\",\"columnKey\":\"col1\",\"columnWidth\":\"12\",\"seedComponents\":[]}]}"
               },
               "children" : [ {
                 "children" : [ {
@@ -50,35 +50,6 @@
                 "id" : "558738da-1d8c-4c59-b61b-411772e3bcfb",
                 "name" : "col1",
                 "title" : "Column 1",
-                "type" : "region"
-              }, {
-                "children" : [ {
-                  "attributes" : {
-                    "dxpStyle" : {
-                      "margin" : {
-                        "bottom" : "",
-                        "left" : "30px",
-                        "right" : "30px",
-                        "top" : ""
-                      },
-                      "padding" : {
-                        "bottom" : "20px",
-                        "left" : "20px",
-                        "right" : "20px",
-                        "top" : "20px"
-                      }
-                    },
-                    "imageInfos" : "",
-                    "richTextValue" : "<h2 style=\"text-align: center;\"><strong style=\"font-size: 24px; font-family: sans-serif;\">Need Help Ordering?</strong></h2><p><br></p><p style=\"text-align: center;\"><span style=\"font-family: sans-serif; font-size: 16px;\">Visit our&nbsp;</span><a href=\"https://americanbookcompany.my.site.com/AmericanBookCompany/how-to-order\" rel=\"noopener noreferrer\" target=\"_self\" style=\"font-family: sans-serif; font-size: 16px; color: rgb(46, 96, 156);\">How to Order</a><span style=\"font-family: sans-serif; font-size: 16px;\">&nbsp;page or contact our Customer</span></p><p style=\"text-align: center;\"><span style=\"font-family: sans-serif; font-size: 16px;\">Service team at&nbsp;</span><a href=\"tel:18882645877\" rel=\"noopener noreferrer\" target=\"_self\" style=\"font-family: sans-serif; font-size: 16px;\">1-888-264-5877﻿</a></p>"
-                  },
-                  "customCssClasses" : "card-style maxcontent",
-                  "definition" : "community_builder:richTextEditor",
-                  "id" : "974a940a-a94f-41ac-8c85-44b0b2fccfd7",
-                  "type" : "component"
-                } ],
-                "id" : "6d7ecf51-4e6a-4967-acbc-f9680174446e",
-                "name" : "col2",
-                "title" : "Column 2",
                 "type" : "region"
               } ],
               "definition" : "dxp_layout:columns",

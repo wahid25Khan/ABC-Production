@@ -1,0 +1,42 @@
+{
+  "type" : "sfdc_cms__view",
+  "title" : "About ABC",
+  "contentBody" : {
+    "component" : {
+      "children" : [ {
+        "attributes" : {
+          "dxpStyle" : {
+            "isVisible" : false,
+            "margin" : {
+              "bottom" : "",
+              "left" : "20px",
+              "right" : "20px",
+              "top" : ""
+            }
+          }
+        },
+        "id" : "42badfeb-0d28-4426-8093-c0dd680d9214"
+      }, {
+        "id" : "efa80990-e817-4f40-9a5f-0bf8b8bb2066",
+        "attributes" : {
+          "dxpStyle" : {
+            "padding" : {
+              "bottom" : "",
+              "left" : "30px",
+              "right" : "30px",
+              "top" : "30px"
+            },
+            "margin" : {
+              "bottom" : "",
+              "left" : "20px",
+              "right" : "20px",
+              "top" : "20px"
+            },
+            "isVisible" : false
+          }
+        }
+      } ]
+    }
+  },
+  "urlName" : "about-abc"
+}

@@ -1,0 +1,201 @@
+<messaging:emailTemplate subject="Your ABC Sample Order Details – Order #{!relatedTo.OrderNumber}" recipientType="Contact" relatedToType="Order">
+
+  <messaging:htmlEmailBody >
+    <html>
+      <head>
+        <style type="text/css">
+            .blueTable {
+                border: 1px solid #0071BC;
+                background-color: #FFFFFF;
+                width: 100%;
+                border-collapse: collapse;
+            }
+            .blueTable th {
+                background-color: #0071BC;
+                color: #FFFFFF;
+                padding: 10px;
+                font-size: 15px;
+                font-weight: bold;
+                border: 1px solid #0071BC;
+                text-align: center;
+            }
+            .blueTable td {
+                border: 1px solid #0071BC;
+                padding: 10px;
+                font-size: 14px;
+                color: #333;
+            }
+            .blueTable tr:nth-child(even) {
+                background: #D0E4F5;
+            }
+            .es-button {
+                text-decoration: none;
+                color: #FFFFFF;
+                background: #0071BC;
+                padding: 12px 60px;
+                display: inline-block;
+                font-weight: bold;
+                font-size: 18px;
+                border-radius: 2px;
+            }
+        </style>
+      </head>
+      <body style="margin:0; padding:0; background:#ffffff; font-family: Arial, sans-serif;">
+        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#ffffff;">
+          <tr>
+            <td align="center" style="padding:10px;">
+
+              <table role="presentation" width="600" cellpadding="0" cellspacing="0" border="0" style="width:600px; background:#ffffff;">
+                
+                <tr>
+                    <td align="right" style="padding: 0 10px 15px 10px;">
+                        <a href="#" style="font-size: 12px; color: #0071BC; text-decoration: none; white-space: nowrap;">Click here to view in browser</a>
+                    </td>
+                </tr>
+
+                <tr>
+                  <td style="padding:30px 20px 10px 20px; text-align:center;">
+                    <h2 style="color:#0071BC; margin:0; font-size: 26px;">Hello {!recipient.FirstName},</h2>
+                    <p style="margin-top:20px; font-size:15px; line-height:1.6; color: #333;">
+                      Thank you for your ABC sample order! Your Order Number is: <strong style="color: #0071BC;">{!relatedTo.OrderNumber}</strong>.<br/>
+                      You have requested both print and digital preview copies—here’s what happens next.
+                    </p>
+                    <p style="font-size:15px; color:#555; margin-top: 15px;">
+                      You will receive a separate email with tracking information when your print preview copies ship. Please review the order details below.
+                    </p>
+                  </td>
+                </tr>
+
+                <tr>
+                  <td align="center" style="padding:20px 20px;">
+                    <div style="color:#0071BC; font-weight:bold; font-size:18px;">{!relatedTo.ShippingStreet}</div>
+                    <div style="margin-top:5px; font-size:16px; color:#333; line-height:1.4;">
+                      {!relatedTo.ShippingCity}, {!relatedTo.ShippingState} {!relatedTo.ShippingPostalCode}
+                    </div>
+                  </td>
+                </tr>
+
+                <tr>
+                  <td style="padding:10px 20px;">
+                    <div style="border: 1px solid #0071BC; font-size:0;">&nbsp;</div>
+                  </td>
+                </tr>
+
+                <tr>
+                  <td style="padding:20px;">
+                    <table class="blueTable">
+                      <thead>
+                        <tr>
+                          <th style="width:35%;">ISBN</th>
+                          <th>TITLE</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <apex:repeat value="{!relatedTo.OrderItems}" var="oi">
+                          <tr>
+                            <td align="center" style="font-weight: bold;">{!oi.Product2.ProductCode}</td>
+                            <td align="left">{!oi.Product2.Name}</td>
+                          </tr>
+                        </apex:repeat>
+                      </tbody>
+                    </table>
+                  </td>
+                </tr>
+
+                <tr>
+                    <td style="padding: 10px 30px; font-size: 13px; color: #555; text-align: center; line-height: 1.5;">
+                        If you have any questions or would like to make changes to this order before it ships, please call us immediately at <strong style="color: #0071BC;">888-264-5877</strong>. You can view your order details at any time by logging into your account at <strong style="color: #0071BC;"><a href="https://americanbookcompany.com" style="color: #0071BC; text-decoration: none;">americanbookcompany.com</a></strong>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td align="center" style="padding:30px 20px 10px 20px; font-size:15px; color:#333;">
+                        Your digital trials are available instantly! The trial resources are listed below, along with your trial access codes:
+                    </td>
+                </tr>
+
+                <tr>
+                  <td style="padding:10px 20px 20px 20px;">
+                    <table class="blueTable">
+                      <thead>
+                        <tr>
+                          <th style="width:25%;">ISBN</th>
+                          <th>TITLE</th>
+                          <th style="width:25%;">CODE</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <apex:repeat value="{!relatedTo.OrderItems}" var="oi">
+                          <tr>
+                            <td align="center" style="font-weight: bold;">{!oi.Product2.ProductCode}</td>
+                            <td align="left">{!oi.Product2.Name}</td>
+                            <td align="center" style="font-weight:bold; color:#0071BC;">{!oi.Product2.00Nam00001444Bt}</td>
+                          </tr>
+                        </apex:repeat>
+                      </tbody>
+                    </table>
+                  </td>
+                </tr>
+
+                <tr>
+                  <td align="center" style="padding:10px 20px 30px 20px;">
+                    <a href="https://coursewave.com/login" class="es-button">Login</a>
+                  </td>
+                </tr>
+
+                <tr>
+                  <td style="padding:10px 20px;">
+                    <div style="border: 1px solid #0071BC; font-size:0;">&nbsp;</div>
+                  </td>
+                </tr>
+
+                <tr>
+                    <td style="padding:20px 40px;">
+                        <div style="color:#0071BC; font-weight:bold; font-size:18px; text-align:center; margin-bottom:15px;">Redeeming your codes is a simple process:</div>
+                        <ol style="font-size:14px; color:#333; line-height:1.8;">
+                            <li>Go to Coursewave.com and log in or create an account.</li>
+                            <li>On your dashboard, select <strong style="color: #0071BC;">“Add Code”</strong> in the upper right corner.</li>
+                            <li>Enter the code you would like to redeem, and enter your name in the student name field. No additional fields are required.</li>
+                            <li>When the prompt asks if you entered an email address, select <strong style="color: #0071BC;">“no”</strong>.</li>
+                            <li>The resources will be added to your teacher dashboard.</li>
+                        </ol>
+                    </td>
+                </tr>
+
+                <tr>
+                  <td align="center" style="padding:20px 30px; font-size:13px; color:#333; line-height:1.5;">
+                    To view the resource as a student, log out, and then enter the code when you return to the login screen.<br/><br/>
+                    If you have any questions, or if you would like to request a quote for the sampled resources, please contact us at <a href="mailto:contact@abck12.com" style="color:#0071BC; font-weight:bold; text-decoration: none;">contact@abck12.com</a> or call our office at <strong style="color: #0071BC;">888-264-5877</strong>.
+                  </td>
+                </tr>
+                
+                <tr>
+                  <td style="padding:10px 20px;">
+                    <div style="border: 1px solid #0071BC; font-size:0;">&nbsp;</div>
+                  </td>
+                </tr>
+
+                <tr>
+                  <td align="center" style="padding:20px 20px 40px 20px;">
+                    <a href="https://gl1kzmhy.sibpages.com/"
+                       style="display:inline-block; padding:15px 0; background:#0071BC; color:#ffffff; text-decoration:none; border-radius:4px; font-size:16px; font-weight:bold; width: 100%; text-align: center;">
+                       Join our Newsletter
+                    </a>
+                  </td>
+                </tr>
+
+                <tr>
+                  <td align="center" style="padding:15px 20px; background:#0071BC;">
+                    <a href="https://www.americanbookcompany.com" style="color:#ffffff; text-decoration:none; font-size:14px; font-weight:bold;"><strong>americanbookcompany.com</strong></a>
+                  </td>
+                </tr>
+
+              </table>
+
+            </td>
+          </tr>
+        </table>
+      </body>
+    </html>
+  </messaging:htmlEmailBody>
+</messaging:emailTemplate>

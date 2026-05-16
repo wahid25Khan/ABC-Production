@@ -5,6 +5,7 @@
     <columns>State__c</columns>
     <columns>Sort_Order__c</columns>
     <columns>Active__c</columns>
+    <columns>Author_Name__c</columns>
     <columns>Media_Type__c</columns>
     <filterScope>Everything</filterScope>
     <label>All</label>

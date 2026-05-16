@@ -1,11 +1,11 @@
 <template>
-    <div class="login-form-shell">
+    <div class="login-card">
         <template if:true={errorMessage}>
             <div class="login-alert" role="alert">{errorMessage}</div>
         </template>
 
         <div class="login-field">
-            <label for="username">{usernameLabel}</label>
+            <label for="username">Email Address:</label>
             <input
                 id="username"
                 type="email"
@@ -18,8 +18,8 @@
 
         <div class="login-field">
             <div class="login-password-row">
-                <label for="password">{passwordLabel}</label>
-                <a href={resolvedForgotPasswordUrl}>{forgotPasswordLabel}</a>
+                <label for="password">Password:</label>
+                <a href={resolvedForgotPasswordUrl}>Forgot Password?</a>
             </div>
             <input
                 id="password"
@@ -32,22 +32,20 @@
             />
         </div>
 
-        <div class="login-links-row">
-            <span>{selfRegisterLabel}</span>
-            <a href={resolvedSelfRegisterUrl}>Create Account</a>
+        <div class="login-options-row">
+            <a href={resolvedSelfRegisterUrl} class="create-account-link">Create Account</a>
         </div>
 
+        <hr class="login-divider-line" />
+
         <button class="login-submit" type="button" onclick={handleLogin} disabled={isSubmitting}>
+            <svg class="btn-icon" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zM9 6c0-1.66 1.34-3 3-3s3 1.34 3 3v2H9V6zm9 14H6V10h12v10zm-6-3c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2z"/>
+            </svg>
             {buttonLabel}
         </button>
 
         <template if:true={hasSocialOptions}>
-            <p class="login-divider">
-                <span class="login-divider-line" aria-hidden="true"></span>
-                <span>Or continue with</span>
-                <span class="login-divider-line" aria-hidden="true"></span>
-            </p>
-
             <div class="social-actions">
                 <template if:true={googleAuthUrl}>
                     <button class="social-button" type="button" onclick={handleGoogleClick} disabled={socialButtonDisabled}>
@@ -78,5 +76,9 @@
                 </template>
             </div>
         </template>
+        
+        <div class="cert-text">
+            CyberGlobal Certificate of Security and Security Assessment
+        </div>
     </div>
 </template>

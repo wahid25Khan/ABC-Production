@@ -43,28 +43,14 @@
 
         <div class="state-dropdown-wrap">
           <div class="custom-select" data-dropdown="state">
-            <template if:true={isStateDropdownOpen}>
-              <button
-                type="button"
-                class="custom-select-trigger"
-                onclick={toggleStateDropdown}
-                aria-expanded="true"
-              >
-                <span class={stateDisplayClass}>{selectedStateLabel}</span>
-                <span class={stateChevronClass}></span>
-              </button>
-            </template>
-            <template if:false={isStateDropdownOpen}>
-              <button
-                type="button"
-                class="custom-select-trigger"
-                onclick={toggleStateDropdown}
-                aria-expanded="false"
-              >
-                <span class={stateDisplayClass}>{selectedStateLabel}</span>
-                <span class={stateChevronClass}></span>
-              </button>
-            </template>
+            <button
+              type="button"
+              class="custom-select-trigger state-select-trigger"
+              onclick={toggleStateDropdown}
+            >
+              <span class={stateDisplayClass}>{selectedStateLabel}</span>
+              <span class={stateChevronClass}></span>
+            </button>
 
             <template if:true={isStateDropdownOpen}>
               <div class="custom-select-menu">
@@ -96,28 +82,14 @@
 
       <div class="right-controls">
         <div class="custom-select custom-select-sm" data-dropdown="sort">
-          <template if:true={isSortDropdownOpen}>
-            <button
-              type="button"
-              class="custom-select-trigger"
-              onclick={toggleSortDropdown}
-              aria-expanded="true"
-            >
-              <span>Sort</span>
-              <span class={sortChevronClass}></span>
-            </button>
-          </template>
-          <template if:false={isSortDropdownOpen}>
-            <button
-              type="button"
-              class="custom-select-trigger"
-              onclick={toggleSortDropdown}
-              aria-expanded="false"
-            >
-              <span>Sort</span>
-              <span class={sortChevronClass}></span>
-            </button>
-          </template>
+          <button
+            type="button"
+            class="custom-select-trigger sort-select-trigger"
+            onclick={toggleSortDropdown}
+          >
+            <span>Sort</span>
+            <span class={sortChevronClass}></span>
+          </button>
 
           <template if:true={isSortDropdownOpen}>
             <div class="custom-select-menu custom-select-menu-sm">
@@ -137,28 +109,14 @@
         </div>
 
         <div class="custom-select custom-select-sm" data-dropdown="pageSize">
-          <template if:true={isPageSizeDropdownOpen}>
-            <button
-              type="button"
-              class="custom-select-trigger"
-              onclick={togglePageSizeDropdown}
-              aria-expanded="true"
-            >
-              <span>{selectedPageSizeLabel}</span>
-              <span class={pageSizeChevronClass}></span>
-            </button>
-          </template>
-          <template if:false={isPageSizeDropdownOpen}>
-            <button
-              type="button"
-              class="custom-select-trigger"
-              onclick={togglePageSizeDropdown}
-              aria-expanded="false"
-            >
-              <span>{selectedPageSizeLabel}</span>
-              <span class={pageSizeChevronClass}></span>
-            </button>
-          </template>
+          <button
+            type="button"
+            class="custom-select-trigger page-size-select-trigger"
+            onclick={togglePageSizeDropdown}
+          >
+            <span>{selectedPageSizeLabel}</span>
+            <span class={pageSizeChevronClass}></span>
+          </button>
 
           <template if:true={isPageSizeDropdownOpen}>
             <div class="custom-select-menu custom-select-menu-sm">
@@ -180,73 +138,34 @@
         <fieldset class="view-toggle">
           <legend class="slds-assistive-text">View mode</legend>
 
-          <template if:true={isGridView}>
-            <button
-              type="button"
-              class="view-btn"
-              data-mode="grid"
-              aria-pressed="true"
-              onclick={handleViewMode}
-              title="Grid view"
-            >
-              <svg class="view-icon" viewBox="0 0 16 16" aria-hidden="true">
-                <rect x="1" y="1" width="6" height="6" rx="1"></rect>
-                <rect x="9" y="1" width="6" height="6" rx="1"></rect>
-                <rect x="1" y="9" width="6" height="6" rx="1"></rect>
-                <rect x="9" y="9" width="6" height="6" rx="1"></rect>
-              </svg>
-            </button>
-          </template>
-          <template if:false={isGridView}>
-            <button
-              type="button"
-              class="view-btn"
-              data-mode="grid"
-              aria-pressed="false"
-              onclick={handleViewMode}
-              title="Grid view"
-            >
-              <svg class="view-icon" viewBox="0 0 16 16" aria-hidden="true">
-                <rect x="1" y="1" width="6" height="6" rx="1"></rect>
-                <rect x="9" y="1" width="6" height="6" rx="1"></rect>
-                <rect x="1" y="9" width="6" height="6" rx="1"></rect>
-                <rect x="9" y="9" width="6" height="6" rx="1"></rect>
-              </svg>
-            </button>
-          </template>
+          <button
+            type="button"
+            class="view-btn"
+            data-mode="grid"
+            onclick={handleViewMode}
+            title="Grid view"
+          >
+            <svg class="view-icon" viewBox="0 0 16 16" aria-hidden="true">
+              <rect x="1" y="1" width="6" height="6" rx="1"></rect>
+              <rect x="9" y="1" width="6" height="6" rx="1"></rect>
+              <rect x="1" y="9" width="6" height="6" rx="1"></rect>
+              <rect x="9" y="9" width="6" height="6" rx="1"></rect>
+            </svg>
+          </button>
 
-          <template if:true={isListView}>
-            <button
-              type="button"
-              class="view-btn"
-              data-mode="list"
-              aria-pressed="true"
-              onclick={handleViewMode}
-              title="List view"
-            >
-              <svg class="view-icon" viewBox="0 0 16 16" aria-hidden="true">
-                <rect x="1" y="2" width="14" height="2.4" rx="1"></rect>
-                <rect x="1" y="6.8" width="14" height="2.4" rx="1"></rect>
-                <rect x="1" y="11.6" width="14" height="2.4" rx="1"></rect>
-              </svg>
-            </button>
-          </template>
-          <template if:false={isListView}>
-            <button
-              type="button"
-              class="view-btn"
-              data-mode="list"
-              aria-pressed="false"
-              onclick={handleViewMode}
-              title="List view"
-            >
-              <svg class="view-icon" viewBox="0 0 16 16" aria-hidden="true">
-                <rect x="1" y="2" width="14" height="2.4" rx="1"></rect>
-                <rect x="1" y="6.8" width="14" height="2.4" rx="1"></rect>
-                <rect x="1" y="11.6" width="14" height="2.4" rx="1"></rect>
-              </svg>
-            </button>
-          </template>
+          <button
+            type="button"
+            class="view-btn"
+            data-mode="list"
+            onclick={handleViewMode}
+            title="List view"
+          >
+            <svg class="view-icon" viewBox="0 0 16 16" aria-hidden="true">
+              <rect x="1" y="2" width="14" height="2.4" rx="1"></rect>
+              <rect x="1" y="6.8" width="14" height="2.4" rx="1"></rect>
+              <rect x="1" y="11.6" width="14" height="2.4" rx="1"></rect>
+            </svg>
+          </button>
         </fieldset>
       </div>
     </div>
@@ -319,28 +238,14 @@
           <!-- State dropdown (mobile drawer only) -->
           <div class="drawer-state-wrap">
             <div class="custom-select" data-dropdown="state">
-              <template if:true={isStateDropdownOpen}>
-                <button
-                  type="button"
-                  class="custom-select-trigger"
-                  onclick={toggleStateDropdown}
-                  aria-expanded="true"
-                >
-                  <span class={stateDisplayClass}>{selectedStateLabel}</span>
-                  <span class={stateChevronClass}></span>
-                </button>
-              </template>
-              <template if:false={isStateDropdownOpen}>
-                <button
-                  type="button"
-                  class="custom-select-trigger"
-                  onclick={toggleStateDropdown}
-                  aria-expanded="false"
-                >
-                  <span class={stateDisplayClass}>{selectedStateLabel}</span>
-                  <span class={stateChevronClass}></span>
-                </button>
-              </template>
+              <button
+                type="button"
+                class="custom-select-trigger state-select-trigger"
+                onclick={toggleStateDropdown}
+              >
+                <span class={stateDisplayClass}>{selectedStateLabel}</span>
+                <span class={stateChevronClass}></span>
+              </button>
               <template if:true={isStateDropdownOpen}>
                 <div class="custom-select-menu">
                   <button
@@ -373,28 +278,14 @@
               class="custom-select drawer-control-select"
               data-dropdown="sort"
             >
-              <template if:true={isSortDropdownOpen}>
-                <button
-                  type="button"
-                  class="custom-select-trigger"
-                  onclick={toggleSortDropdown}
-                  aria-expanded="true"
-                >
-                  <span>Sort</span>
-                  <span class={sortChevronClass}></span>
-                </button>
-              </template>
-              <template if:false={isSortDropdownOpen}>
-                <button
-                  type="button"
-                  class="custom-select-trigger"
-                  onclick={toggleSortDropdown}
-                  aria-expanded="false"
-                >
-                  <span>Sort</span>
-                  <span class={sortChevronClass}></span>
-                </button>
-              </template>
+              <button
+                type="button"
+                class="custom-select-trigger sort-select-trigger"
+                onclick={toggleSortDropdown}
+              >
+                <span>Sort</span>
+                <span class={sortChevronClass}></span>
+              </button>
               <template if:true={isSortDropdownOpen}>
                 <div class="custom-select-menu custom-select-menu-sm">
                   <template for:each={sortOptionsForUi} for:item="opt">
@@ -416,28 +307,14 @@
               class="custom-select drawer-control-select"
               data-dropdown="pageSize"
             >
-              <template if:true={isPageSizeDropdownOpen}>
-                <button
-                  type="button"
-                  class="custom-select-trigger"
-                  onclick={togglePageSizeDropdown}
-                  aria-expanded="true"
-                >
-                  <span>{selectedPageSizeLabel}</span>
-                  <span class={pageSizeChevronClass}></span>
-                </button>
-              </template>
-              <template if:false={isPageSizeDropdownOpen}>
-                <button
-                  type="button"
-                  class="custom-select-trigger"
-                  onclick={togglePageSizeDropdown}
-                  aria-expanded="false"
-                >
-                  <span>{selectedPageSizeLabel}</span>
-                  <span class={pageSizeChevronClass}></span>
-                </button>
-              </template>
+              <button
+                type="button"
+                class="custom-select-trigger page-size-select-trigger"
+                onclick={togglePageSizeDropdown}
+              >
+                <span>{selectedPageSizeLabel}</span>
+                <span class={pageSizeChevronClass}></span>
+              </button>
               <template if:true={isPageSizeDropdownOpen}>
                 <div class="custom-select-menu custom-select-menu-sm">
                   <template for:each={pageSizeOptionsForUi} for:item="opt">
@@ -457,103 +334,48 @@
 
             <fieldset class="view-toggle">
               <legend class="slds-assistive-text">View mode</legend>
-              <template if:true={isGridView}>
-                <button
-                  type="button"
-                  class="view-btn"
-                  data-mode="grid"
-                  aria-pressed="true"
-                  onclick={handleViewMode}
-                  title="Grid view"
-                >
-                  <svg class="view-icon" viewBox="0 0 16 16" aria-hidden="true">
-                    <rect x="1" y="1" width="6" height="6" rx="1"></rect>
-                    <rect x="9" y="1" width="6" height="6" rx="1"></rect>
-                    <rect x="1" y="9" width="6" height="6" rx="1"></rect>
-                    <rect x="9" y="9" width="6" height="6" rx="1"></rect>
-                  </svg>
-                </button>
-              </template>
-              <template if:false={isGridView}>
-                <button
-                  type="button"
-                  class="view-btn"
-                  data-mode="grid"
-                  aria-pressed="false"
-                  onclick={handleViewMode}
-                  title="Grid view"
-                >
-                  <svg class="view-icon" viewBox="0 0 16 16" aria-hidden="true">
-                    <rect x="1" y="1" width="6" height="6" rx="1"></rect>
-                    <rect x="9" y="1" width="6" height="6" rx="1"></rect>
-                    <rect x="1" y="9" width="6" height="6" rx="1"></rect>
-                    <rect x="9" y="9" width="6" height="6" rx="1"></rect>
-                  </svg>
-                </button>
-              </template>
-              <template if:true={isListView}>
-                <button
-                  type="button"
-                  class="view-btn"
-                  data-mode="list"
-                  aria-pressed="true"
-                  onclick={handleViewMode}
-                  title="List view"
-                >
-                  <svg class="view-icon" viewBox="0 0 16 16" aria-hidden="true">
-                    <rect x="1" y="2" width="14" height="2.4" rx="1"></rect>
-                    <rect x="1" y="6.8" width="14" height="2.4" rx="1"></rect>
-                    <rect x="1" y="11.6" width="14" height="2.4" rx="1"></rect>
-                  </svg>
-                </button>
-              </template>
-              <template if:false={isListView}>
-                <button
-                  type="button"
-                  class="view-btn"
-                  data-mode="list"
-                  aria-pressed="false"
-                  onclick={handleViewMode}
-                  title="List view"
-                >
-                  <svg class="view-icon" viewBox="0 0 16 16" aria-hidden="true">
-                    <rect x="1" y="2" width="14" height="2.4" rx="1"></rect>
-                    <rect x="1" y="6.8" width="14" height="2.4" rx="1"></rect>
-                    <rect x="1" y="11.6" width="14" height="2.4" rx="1"></rect>
-                  </svg>
-                </button>
-              </template>
+              <button
+                type="button"
+                class="view-btn"
+                data-mode="grid"
+                onclick={handleViewMode}
+                title="Grid view"
+              >
+                <svg class="view-icon" viewBox="0 0 16 16" aria-hidden="true">
+                  <rect x="1" y="1" width="6" height="6" rx="1"></rect>
+                  <rect x="9" y="1" width="6" height="6" rx="1"></rect>
+                  <rect x="1" y="9" width="6" height="6" rx="1"></rect>
+                  <rect x="9" y="9" width="6" height="6" rx="1"></rect>
+                </svg>
+              </button>
+              <button
+                type="button"
+                class="view-btn"
+                data-mode="list"
+                onclick={handleViewMode}
+                title="List view"
+              >
+                <svg class="view-icon" viewBox="0 0 16 16" aria-hidden="true">
+                  <rect x="1" y="2" width="14" height="2.4" rx="1"></rect>
+                  <rect x="1" y="6.8" width="14" height="2.4" rx="1"></rect>
+                  <rect x="1" y="11.6" width="14" height="2.4" rx="1"></rect>
+                </svg>
+              </button>
             </fieldset>
           </div>
 
           <!-- Filter groups -->
           <template for:each={filterGroups} for:item="group">
             <section key={group.key} class="filter-group">
-              <template if:true={group.expanded}>
-                <button
-                  type="button"
-                  class="filter-header"
-                  data-field={group.key}
-                  onclick={handleToggleGroup}
-                  aria-expanded="true"
-                >
-                  <span>{group.label}</span>
-                  <span class="toggle-symbol">{group.toggleSymbol}</span>
-                </button>
-              </template>
-
-              <template if:false={group.expanded}>
-                <button
-                  type="button"
-                  class="filter-header"
-                  data-field={group.key}
-                  onclick={handleToggleGroup}
-                  aria-expanded="false"
-                >
-                  <span>{group.label}</span>
-                  <span class="toggle-symbol">{group.toggleSymbol}</span>
-                </button>
-              </template>
+              <button
+                type="button"
+                class="filter-header"
+                data-field={group.key}
+                onclick={handleToggleGroup}
+              >
+                <span>{group.label}</span>
+                <span class="toggle-symbol">{group.toggleSymbol}</span>
+              </button>
 
               <div if:false={group.collapsed} class="filter-options">
                 <template if:true={group.showEmpty}>

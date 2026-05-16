@@ -52,9 +52,9 @@
                 "loginButtonLabel" : "Sign In",
                 "microsoftAuthUrl" : "/services/auth/sso/Microsoft_Login",
                 "passwordLabel" : "Password",
-                "socialAuthSiteUrl" : "https://americanbookcompany.my.site.com/AmericanBookCompanyvforcesite",
                 "selfRegisterLabel" : "Not a member?",
                 "selfRegisterUrl" : "/create-account",
+                "socialAuthSiteUrl" : "https://americanbookcompany.my.site.com/AmericanBookCompanyvforcesite",
                 "usernameLabel" : "Username"
               },
               "definition" : "c:accountLoginFormPopupFlow",

@@ -2,6 +2,8 @@
 <PermissionSetGroup xmlns="http://soap.sforce.com/2006/04/metadata">
     <hasActivationRequired>false</hasActivationRequired>
     <label>Commerce_Buyer</label>
+    <permissionSets>AuthorizeNet_Checkout_Access</permissionSets>
+    <permissionSets>Wishlist_Buyer_Access</permissionSets>
     <permissionSets>force__AuthenticatedPayer</permissionSets>
     <permissionSets>force__B2BBuyer</permissionSets>
     <status>Updated</status>

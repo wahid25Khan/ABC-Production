@@ -10,6 +10,7 @@
         <targetConfig targets="lightningCommunity__Default">
             <property name="cartUrl" type="String" default="/cart" label="Cart URL" />
             <property name="signInUrl" type="String" default="/login" label="Sign In URL" />
+            <property name="webStoreId" type="String" label="Web Store Id" description="Commerce Web Store Id used for checkout/cart/order API calls. Leave blank to use component default." />
         </targetConfig>
     </targetConfigs>
 </LightningComponentBundle>

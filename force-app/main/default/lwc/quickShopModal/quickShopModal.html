@@ -160,7 +160,6 @@
                       type="number"
                       value={quantity}
                       min={minQty}
-                      max={maxQty}
                       step={incrementQty}
                       oninput={handleQtyChange}
                       onblur={handleQtyBlur}
@@ -180,7 +179,7 @@
                     Order Total: <strong>{totalPrice}</strong>
                   </div>
                 </div>
-                <div class="btn-offset">
+                <div>
                   <template if:true={cartError}>
                     <p class="cart-error-msg">{cartError}</p>
                   </template>
@@ -193,7 +192,7 @@
                     Add to Cart
                   </button>
                 </div>
-                <div class="btn-offset">
+                <div>
                   <button
                     class="btn-trial"
                     type="button"
@@ -206,15 +205,20 @@
                 <button
                   class="heart-btn"
                   type="button"
-                  title="Save to favorites"
-                  aria-label="Save to favorites"
+                  title={favoriteButtonLabel}
+                  aria-label={favoriteButtonLabel}
+                  aria-pressed={isFavorite}
                   disabled={isFavoriteDisabled}
                   onclick={handleToggleFavorite}
                 >
-                  <lightning-icon
-                    icon-name={heartIcon}
-                    size="small"
-                  ></lightning-icon>
+                  <svg
+                    class="heart-icon"
+                    viewBox="0 0 512 512"
+                    aria-hidden="true"
+                    focusable="false"
+                  >
+                    <path d={favoriteIconPath}></path>
+                  </svg>
                 </button>
               </div>
             </div>

@@ -92,7 +92,7 @@
       "type" : "component"
     },
     "dataProviders" : [ ],
-    "themeLayoutType" : "MyAccount",
+    "themeLayoutType" : "Inner",
     "viewType" : "address-form"
   },
   "urlName" : "address-form"

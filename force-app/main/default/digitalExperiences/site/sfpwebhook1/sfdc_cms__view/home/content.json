@@ -20,16 +20,6 @@
             "sectionVerticalAlign" : "flex-start"
           },
           "children" : [ {
-            "children" : [ {
-              "attributes" : {
-                "dxpStyle" : { },
-                "imageInfos" : "",
-                "richTextValue" : "<div style=\"display: flex; justify-content: center; align-items: center; margin: 50px 0; flex-direction: column; text-align: center;\"><div style=\"background-image: url(assets/img/desert.svg) !important; background-size: cover; background-position: center; height: 300px; width: 100%; max-width: 600px; min-width: 300px;\"></div><h1 class=\"slds-text-heading_medium slds-p-bottom_x-small\">Start Building Your Page</h1> <div>Drag and drop a component into the content slots.</div></div>"
-              },
-              "definition" : "community_builder:htmlEditor",
-              "id" : "9cc01257-f675-4bc9-b73b-07a64e8e5ea3",
-              "type" : "component"
-            } ],
             "id" : "ec7430be-c1c4-4bbc-a4c7-e39170ddf363",
             "name" : "col1",
             "title" : "Column 1",

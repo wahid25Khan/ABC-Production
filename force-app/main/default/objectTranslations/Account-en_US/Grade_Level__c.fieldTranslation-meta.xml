@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <label><!-- Grade Level --></label>
+    <name>Grade_Level__c</name>
+    <picklistValues>
+        <masterLabel>1st Grade</masterLabel>
+        <translation><!-- 1st Grade --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>2nd Grade</masterLabel>
+        <translation><!-- 2nd Grade --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>3rd Grade</masterLabel>
+        <translation><!-- 3rd Grade --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>4th Grade</masterLabel>
+        <translation><!-- 4th Grade --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>5th Grade</masterLabel>
+        <translation><!-- 5th Grade --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>6th Grade</masterLabel>
+        <translation><!-- 6th Grade --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>7th Grade</masterLabel>
+        <translation><!-- 7th Grade --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>8th Grade</masterLabel>
+        <translation><!-- 8th Grade --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>High School</masterLabel>
+        <translation><!-- High School --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Kindergarten</masterLabel>
+        <translation><!-- Kindergarten --></translation>
+    </picklistValues>
+</CustomFieldTranslation>

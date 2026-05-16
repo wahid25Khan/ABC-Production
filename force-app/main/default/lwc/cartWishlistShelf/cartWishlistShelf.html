@@ -20,7 +20,7 @@
         <div class="wishlist-error" role="alert">{errorMessage}</div>
       </template>
 
-      <template if:true={hasItems}>
+      <!-- <template if:true={hasItems}>
         <div class="wishlist-grid">
           <template for:each={items} for:item="item">
             <article key={item.wishlistItemId} class={item.cardClass}>
@@ -52,6 +52,52 @@
               </button>
             </article>
           </template>
+        </div>
+      </template> -->
+
+      <template if:true={hasItems}>
+        <div class="products-column">
+          <div class="products products-grid">
+            <template for:each={items} for:item="item">
+              <article key={item.wishlistItemId} class="product-card">
+                <div class="product-image-wrap">
+                  <a
+                    href={item.detailPath}
+                    class="image-link image-button"
+                  >
+                    <template if:true={item.imageUrl}>
+                      <img
+                        class="product-image"
+                        src={item.imageUrl}
+                        alt={item.productName}
+                        loading="lazy"
+                      />
+                    </template>
+                    <template if:false={item.imageUrl}>
+                      <div class="wishlist-image placeholder">No image</div>
+                    </template>
+                  </a>
+                </div>
+
+                <div class="product-meta">
+                  <a href={item.detailPath} class="product-name"
+                    >{item.productName}</a
+                  >
+                  
+                  <button
+                    type="button"
+                    class="move-button"
+                    data-product-id={item.productId}
+                    onclick={handleMoveToCart}
+                    disabled={item.isMovingToCart}
+                  >
+                    <template if:true={item.isMovingToCart}>Moving...</template>
+                    <template if:false={item.isMovingToCart}>Move to Cart</template>
+                  </button>
+                </div>
+              </article>
+            </template>
+          </div>
         </div>
       </template>
     </section>

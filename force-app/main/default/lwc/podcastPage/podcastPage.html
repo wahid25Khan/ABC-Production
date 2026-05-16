@@ -1,0 +1,86 @@
+<template>
+  <section class="hero-section">
+    <div class="page-shell page-shell--hero">
+      <div class="hero-grid">
+        <div class="hero-media">
+          <iframe
+            class="episode-frame"
+            src={heroEpisode.videoUrl}
+            title={heroEpisode.title}
+            allow={iframeAllow}
+            loading="eager"
+            allowfullscreen
+          ></iframe>
+        </div>
+
+        <div class="hero-copy">
+          <h1 class="hero-title">{heroEpisode.title}</h1>
+          <div class="episode-date">{heroEpisode.date}</div>
+          <p class="episode-description">{heroEpisode.description}</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="page-shell page-shell--content">
+    <div class="section-header">
+      <h2 class="section-title">Previous Podcasts</h2>
+      <h3 class="platform-label">Other Platforms:</h3>
+      <div class="platform-row">
+        <ul class="platform-list">
+          <template for:each={platformLinks} for:item="link">
+            <li key={link.key} class="platform-item">
+              <a class="platform-link" href={link.href} target="_blank" rel="noopener noreferrer">{link.label}</a>
+              <!-- <template lwc:if={link.separator}>
+                <span class="platform-separator">|</span>
+              </template> -->
+            </li>
+          </template>
+        </ul>
+      </div>
+    </div>
+
+    <template for:each={paginatedEpisodes} for:item="episode">
+      <article key={episode.key} class="podcast-card">
+        <div class="podcast-card-media">
+          <iframe
+            class="episode-frame"
+            src={episode.videoUrl}
+            title={episode.title}
+            allow={iframeAllow}
+            loading="lazy"
+            allowfullscreen
+          ></iframe>
+        </div>
+
+        <div class="podcast-card-copy">
+          <h3 class="podcast-card-title">{episode.title}</h3>
+          <div class="episode-date">{episode.date}</div>
+          <p class="episode-description">{episode.description}</p>
+        </div>
+      </article>
+    </template>
+
+    <div class="pagination-controls" lwc:if={totalPages}>
+      <button
+        class="nav-button"
+        type="button"
+        title="Previous page"
+        aria-label="Previous page"
+        disabled={isFirstPage}
+        onclick={handlePrevPage}>
+        <lightning-icon icon-name="utility:chevronleft" size="small" alternative-text="Previous"></lightning-icon>
+      </button>
+      <div class="page-indicator">{currentPageLabel}</div>
+      <button
+        class="nav-button"
+        type="button"
+        title="Next page"
+        aria-label="Next page"
+        disabled={isLastPage}
+        onclick={handleNextPage}>
+        <lightning-icon icon-name="utility:chevronright" size="small" alternative-text="Next"></lightning-icon>
+      </button>
+    </div>
+  </section>
+</template>

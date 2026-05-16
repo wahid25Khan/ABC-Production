@@ -129,5 +129,5 @@
     <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
     <enableFeeds>false</enableFeeds>
     <externalSharingModel>Private</externalSharingModel>
-    <sharingModel>Read</sharingModel>
+    <sharingModel>Private</sharingModel>
 </CustomObject>

@@ -12,6 +12,7 @@ import CC_AMEX from '@salesforce/resourceUrl/ccAmex';
 import CC_DISCOVER from '@salesforce/resourceUrl/ccDiscover';
 
 const LOGIN_URL = '/AmericanBookCompany/login';
+const DETAIL_SEPARATOR = ' - ';
 
 const US_STATES = [
     { value: 'AL', label: 'Alabama' }, { value: 'AK', label: 'Alaska' },
@@ -141,7 +142,7 @@ export default class AccountDetailsPage extends LightningElement {
         if (this.details.organizationPhone) {
             parts.push(this.details.organizationPhone);
         }
-        return parts.join(' • ');
+        return parts.join(DETAIL_SEPARATOR);
     }
 
     get displayShippingAddress() {
@@ -208,7 +209,7 @@ export default class AccountDetailsPage extends LightningElement {
     }
 
     get paymentYearOptions() {
-        const startYear = new Date().getFullYear() - 1;
+        const startYear = new Date().getFullYear();
         return Array.from({ length: 20 }, (_, i) => {
             const value = String(startYear + i);
             return { value, label: value, selected: value === this.paymentForm.expiryYear };
@@ -593,8 +594,7 @@ export default class AccountDetailsPage extends LightningElement {
             const f = this.paymentForm;
 
             if (f.paymentType === 'ach') {
-                this.setStatus('ACH payment details captured successfully.', 'success');
-                this.resetPaymentForm();
+                this.setStatus('ACH payment saving is not available yet. Please use a credit card.', 'error');
                 return;
             }
 

@@ -64,7 +64,8 @@ button.slds-backdrop {
 .modal-header {
   display: flex;
   justify-content: flex-end;
-  padding: 2px 10px 0;
+  /* padding: 2px 10px 0; */
+  padding: 10px 10px 5px;
 }
 
 .header-text {
@@ -264,8 +265,10 @@ button.slds-backdrop {
 
 .feature-cols {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 28px;
+  /* grid-template-columns: 1fr 1fr; */
+  /* gap: 28px; */
+  grid-template-columns: max-content max-content;
+  gap: 48px;
   padding-top: 4px;
 }
 
@@ -293,6 +296,8 @@ button.slds-backdrop {
   background: #f6f8fb;
   border-radius: 10px;
   padding: 8px 14px;
+
+  position: relative;
 }
 
 .qty-wrap {
@@ -303,7 +308,7 @@ button.slds-backdrop {
   font-size: 14px;
   font-weight: 700;
   color: #111827;
-  margin-bottom: 6px;
+  margin-bottom: 8px;
 }
 
 .qty-stepper {
@@ -366,6 +371,7 @@ button.slds-backdrop {
   margin-top: 8px;
   font-size: 15px;
   color: #111827;
+  display: none;
 }
 
 .btn-offset {
@@ -381,7 +387,8 @@ button.slds-backdrop {
 
 .btns {
   display: flex;
-  align-items: center;
+  /* align-items: center; */
+  align-items: flex-end;
   gap: 12px;
   flex-wrap: wrap;
 }
@@ -403,6 +410,11 @@ button.slds-backdrop {
   border: none;
 }
 
+.btn-add,
+.btn-trial {
+  height: 44px;
+}
+
 .btn-add:disabled,
 .btn-trial:disabled,
 .details-btn:disabled,
@@ -415,13 +427,25 @@ button.slds-backdrop {
   margin-left: auto;
   border: none;
   background: transparent;
+  color: #007cba;
+  width: 42px;
   padding: 4px;
   border-radius: 8px;
   cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  position: absolute;
+  right: 0;
+  top: 0;
 }
 
-.heart-btn lightning-icon {
-  --slds-c-icon-color-foreground-default: #007cba;
+.heart-icon {
+  width: 20px;
+  height: 20px;
+  display: block;
+  fill: currentColor;
 }
 
 .footer-cta {

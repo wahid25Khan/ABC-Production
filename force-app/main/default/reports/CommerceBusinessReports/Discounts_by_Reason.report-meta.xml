@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Report xmlns="http://soap.sforce.com/2006/04/metadata">
+    <columns>
+        <field>OrderSummary$CreatedDate</field>
+    </columns>
+    <columns>
+        <field>OrderSummary$OriginalOrder</field>
+    </columns>
+    <columns>
+        <field>OrderSummary.OrderSummaries$ChangeType</field>
+    </columns>
+    <columns>
+        <field>OrderSummary$Account</field>
+    </columns>
+    <columns>
+        <field>OrderSummary.OrderSummaries$OrderItemSummary.Product2.Name</field>
+    </columns>
+    <columns>
+        <aggregateTypes>Sum</aggregateTypes>
+        <field>OrderSummary.OrderSummaries$OrderItemSummary.TotalLineAdjustmentAmtWithTax</field>
+    </columns>
+    <columns>
+        <field>OrderSummary.OrderSummaries$Reason</field>
+    </columns>
+    <description>Shows the discount data, including product names, discount amounts, reasons, and the customers who received the discounts.</description>
+    <format>Tabular</format>
+    <name>Discounts by Reason</name>
+    <params>
+        <name>co</name>
+        <value>1</value>
+    </params>
+    <reportType>Order_with_Product_Summary_Changes__c</reportType>
+    <scope>organization</scope>
+    <showDetails>true</showDetails>
+    <showGrandTotal>true</showGrandTotal>
+    <showSubTotals>true</showSubTotals>
+    <timeFrameFilter>
+        <dateColumn>OrderSummary$CreatedDate</dateColumn>
+        <interval>INTERVAL_CUSTOM</interval>
+    </timeFrameFilter>
+</Report>

@@ -4,23 +4,17 @@
   "contentBody" : {
     "component" : {
       "children" : [ {
+        "id" : "29969c06-46a4-4bdd-821d-49da210cc607",
         "attributes" : {
           "dxpStyle" : {
-            "margin" : {
-              "bottom" : "",
-              "left" : "",
-              "right" : "",
-              "top" : ""
-            },
             "padding" : {
-              "bottom" : "",
-              "left" : "",
-              "right" : "",
-              "top" : ""
+              "top" : "10px",
+              "right" : "10px",
+              "bottom" : "10px",
+              "left" : "10px"
             }
           }
-        },
-        "id" : "974a940a-a94f-41ac-8c85-44b0b2fccfd7"
+        }
       } ]
     }
   },

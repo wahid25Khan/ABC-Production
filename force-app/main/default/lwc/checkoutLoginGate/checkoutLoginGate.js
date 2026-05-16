@@ -94,11 +94,6 @@ export default class CheckoutLoginGate extends NavigationMixin(LightningElement)
         this.dispatchCheckoutStageChange('details');
 
         try {
-            // The VF relay page reads this entry and immediately removes it
-            // (window.sessionStorage.removeItem) before filling in hidden form
-            // fields server-side, so the credential window is milliseconds-wide.
-            // Clear the reactive 'password' property immediately after handing off
-            // to minimise the time the credential lives in component state.
             globalThis.sessionStorage?.setItem(
                 LOGIN_BRIDGE_STORAGE_KEY,
                 JSON.stringify({
@@ -107,11 +102,9 @@ export default class CheckoutLoginGate extends NavigationMixin(LightningElement)
                     startUrl: this.checkoutUrl
                 })
             );
-            this.password = ''; // clear from reactive state now that it is handed off
 
             globalThis.location.assign(LOGIN_BRIDGE_URL);
         } catch {
-            this.password = ''; // also clear on error path
             this.loginError = 'Unable to sign in. Please check your credentials and try again.';
             this.isLoggingIn = false;
         }
